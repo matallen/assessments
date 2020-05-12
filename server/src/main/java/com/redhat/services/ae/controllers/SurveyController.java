@@ -9,6 +9,7 @@ import java.util.Random;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -97,6 +98,7 @@ public class SurveyController{
 	@Path("/{surveyId}/questions")
 	public Response saveQuestions(@PathParam("surveyId") String surveyId, String questionsJson) throws FileNotFoundException, IOException{
 		Survey survey=Survey.findById(surveyId);
+		System.out.println("XXXX="+questionsJson);
 		survey.setQuestions(questionsJson);
 		survey.update();
 		return Response.ok(Survey.findById(surveyId).getQuestions()).build();
@@ -105,29 +107,46 @@ public class SurveyController{
 	@GET
 	@Path("/{surveyId}/questions")
 	public Response getQuestions(@PathParam("surveyId") String surveyId/*, @QueryParam("questionsOnly") String questionsOnlyP, @QueryParam("responseContentType") String responseContentTypeP*/) throws FileNotFoundException, IOException{
-		
 		String surveyName=surveyId+".json";
-//		String responseContentType=(responseContentTypeP!=null?responseContentTypeP:"application/json");
-//		boolean questionsOnly="true".equalsIgnoreCase(questionsOnlyP);
+		System.out.println("Loading questions: "+surveyName);
+		return Response.ok(Survey.findById(surveyId).getQuestions()).build();
+	}
+	
+	@GET
+	@Path("/{surveyId}/run")
+	public Response getSurveyJavascript(@PathParam("surveyId") String surveyId, 
+			@DefaultValue("application/json") @QueryParam("responseContentType") String responseContentType,
+			@DefaultValue("false") @QueryParam("questionsOnly") String questionsOnly
+			/*, @Context HttpServletRequest request, @Context HttpServletResponse response*/) throws IOException{
+		String surveyName=surveyId+".json";
+	//	String responseContentType=(request.getParameter("responseContentType")!=null?request.getParameter("responseContentType"):"application/json");
+	//	boolean questionsOnly="true".equalsIgnoreCase(request.getParameter("questionsOnly"));
 		
 		System.out.println("Loading questions: "+surveyName);
-//		String surveyToInsert=IOUtils.toString(new File("target/classes", surveyName).exists()?new FileInputStream(new File("target/classes", surveyName).getAbsolutePath()):getClass().getClassLoader().getResourceAsStream(surveyName));
-//		String questionsJson=new Questions().load(surveyName);
+//		String surveyToInsert=IOUtils.toString(new File("target/classes", surveyName).exists()?new FileInputStream(new File("target/classes", surveyName).getAbsolutePath()):getClass().getClassLoader().getResourceAsStream(surveyName), "UTF-8");
 		
-//		String result;
-//		if (questionsOnly){
-//			result=questionsJson;
-//		}else{
-//			String templateName="survey-template.js";
-//			String template=IOUtils.toString(new File("target/classes", templateName).exists()?new FileInputStream(new File("target/classes", templateName).getAbsolutePath()):getClass().getClassLoader().getResourceAsStream(templateName));
-//			result=template.toString();
-//			int i=result.indexOf("SURVEY_CONTENT");
-//			if (i>=0){
-//				result=new StringBuffer(result).delete(i, i+"SURVEY_CONTENT".length()).toString();
-//				result=new StringBuffer(result).insert(i, questionsJson).toString();
-//			}
-//		}
+		String templateName="survey-template.js";
+		String template=IOUtils.toString(new File("target/classes", templateName).exists()?new FileInputStream(new File("target/classes", templateName).getAbsolutePath()):getClass().getClassLoader().getResourceAsStream(templateName), "UTF-8");
 		
-		return Response.ok(Survey.findById(surveyId).getQuestions()).build();
+		String questions=Survey.findById(surveyId).getQuestions();
+		
+		String result;
+		if ("true".equalsIgnoreCase(questionsOnly)){
+			result=questions;
+		}else{
+			result=template.toString();
+			int i=result.indexOf("SURVEY_CONTENT");
+			if (i>=0){
+				result=new StringBuffer(result).delete(i, i+"SURVEY_CONTENT".length()).toString();
+				result=new StringBuffer(result).insert(i, questions).toString();
+			}
+		}
+		
+		return Response.ok(result, null==responseContentType?"text/html; charset=UTF-8":responseContentType).build();
+//	      .header("Access-Control-Allow-Origin",  "*")
+//	      .header("Content-Type", null==responseContentType?"text/html; charset=UTF-8":responseContentType/*"application/json"*/)
+//	      .header("Cache-Control", "no-store, must-revalidate, no-cache, max-age=0")
+//	      .header("Pragma", "no-cache")
+//	      .header("X-Content-Type-Options", "nosniff").entity(result).build();
 	}
 }

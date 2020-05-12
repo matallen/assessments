@@ -1,0 +1,137 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+$(function(){
+  jQuery.each($('[data-include]'), function(){
+    var file = 'components/' + $(this).data('include') + '.html';
+    $(this).load(file);
+  });
+});
+</script>
+<script src="assets/js/http.js"></script>
+<script src="assets/js/utils.js"></script>
+<script src="assets/js/jquery-common.js"></script>
+<script src="assets/js/env.js"></script>
+<style id="customStyles">
+@import "https://go.redhat.com/hubfs/css/styles.min.css";
+</style>
+<link rel="stylesheet" href="assets/css/header.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+	
+	<!-- HEADER -->
+	<section class="assessment-header py-0" style="background-color: black;">
+		<div class="navbar-container">
+			<div class="container pt-2">
+				<div class="row">
+					<a class="navbar-brand" href="//www.redhat.com/" title="Red Hat"><img alt="Red Hat" class="img-fluid navbar-logo" data-alt-text="Red Hat" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg?t=1537976200708" title="Red Hat" data-image-state="ready"> </a>
+				</div>
+			</div>
+		</div>
+	</section>
+	
+	<div class="elevate">
+		<ul class="menu menu_horizontal">
+			<li><a href="admin.html">Surveys</a></li>
+			<li class="exception divider">&gt;</li>
+			<li class="exception menu_needsId _id"><span style="color:white;">XXXXXXX</span></li>
+			<li class="exception divider">|</li>
+			<li class="menu_needsId"><a href="admin-survey-details.html?id=">Details</a></li>
+			<li class="menu_needsId"><a href="admin-survey-reports.html?id=">Reports</a></li>
+			<li class="menu_needsId"><a href="admin-survey-questions.html?id=">Questions</a></li>
+		</ul>
+	</div>
+	
+	<!--  -->
+	<section class="py-1">
+		<div class="row center">
+			<table class="elevate">
+				<tbody id="content">
+				
+				<tr><td>Survey ID</td>							<td><input type="text" disabled id="_id"						value=""/></td></tr>
+				<tr><td>Survey Name</td>						<td><input type="text" disabled id="_name"					value=""/></td></tr>
+				<tr><td>Survey Description</td>			<td><input type="text" disabled id="_description"	value=""/></td></tr>
+				
+				<tr>
+					<td colspan="2">
+				    <a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="#" onclick="save();">Save</a>
+				    <!--a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="/admin.html">Cancel</a-->
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</section>
+	
+	<script>
+
+
+var surveyId;
+$(document).ready(function() {
+	surveyId=Utils.getParameterByName("id");
+	setMenu("Details");
+	
+	if (undefined==surveyId){
+		// We have a new Survey
+		$("[id^=\"_\"]").each(function(index){
+			if ("_id"!=$(this).prop("id")){
+				$(this).prop("disabled", false);
+			}
+		});
+		
+	}else{
+		// We have an existing Survey
+		
+		Http.httpGetObject(env.server+"/api/surveys/"+surveyId, function(status, survey){
+			for (key in survey){
+				$("#_"+key).val(survey[key]);
+				$("#_"+key).prop("disabled", false);
+			}
+	//		$("#content").html(`
+	//				<tr><td>Survey ID</td>						<td><input type="text" id="_id"   value="`+nullToEmpty(survey['id'])+`"/></td></tr>
+	//				<tr><td>Survey Name</td>					<td><input type="text" id="_name" value="`+nullToEmpty(survey['name'])+`"/></td></tr>
+	//				<tr><td>Survey Description</td>		<td><input type="text" id="_desc" value="`+nullToEmpty(survey['description'])+`"/></td></tr>
+	//				<!--tr><td>Survey URL</td>						<td><input type="text" id="" value="NOT SET"/></td></tr-->
+	//				`+$("#content").html());
+		});
+		
+	}
+	
+});
+
+function nullToEmpty(v){ if (undefined!=v) return v; else return "";}
+function newData(){
+	var result={};
+	result["id"]=null;
+	result["name"]=null;
+	result["description"]=null;
+	result["theme"]=null;
+	return result;
+}
+function save(){
+	var data=populate(newData());
+	Http.send((undefined==surveyId?"POST":"PUT"), env.server+"/api/surveys"+(undefined==surveyId?"":"/"+surveyId), data, function(resp, status){
+		jsonToDisplay(resp.response);
+		alert(200==status?"Saved Ok":"Save Error (Status: "+status+")");
+		//window.location.href="admin.html";
+	});
+}
+function jsonToDisplay(surveyJson){ // json to html fields
+	var response=JSON.parse(surveyJson);
+	for (key in response)
+		$("#_"+key).val(response[key]);
+}
+function populate(obj){ // html fields to javascript object
+	for (key in obj){
+		obj[key]=$("#_"+key).val();
+	}
+	return obj
+}
+
+	
+	</script>
+
+</body>
+</html>

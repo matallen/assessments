@@ -1,0 +1,19 @@
+			.navbar-container .navbar-logo {
+			    max-width: 155px;
+			    max-height: 37px;
+			}
+			.navbar-brand {
+			    margin-right: 0 !important;
+			    width: 100%;
+			}
+			.assessment-header .navbar-container {
+			    padding: 27px 0 26px;
+			}
+			.navbar-container {
+			    width: 100%;
+			    padding: 7px 0 9px;
+			}
+			.center {
+			  margin: 30px auto auto auto;
+			  width: 80%;
+			}

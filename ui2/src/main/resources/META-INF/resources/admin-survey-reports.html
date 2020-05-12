@@ -1,0 +1,81 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+$(function(){
+  jQuery.each($('[data-include]'), function(){
+    var file = 'components/' + $(this).data('include') + '.html';
+    $(this).load(file);
+  });
+});
+</script>
+<script src="assets/js/http.js"></script>
+<script src="assets/js/utils.js"></script>
+<script src="assets/js/jquery-common.js"></script>
+<script src="assets/js/env.js"></script>
+<style id="customStyles">
+@import "https://go.redhat.com/hubfs/css/styles.min.css";
+</style>
+<link rel="stylesheet" href="assets/css/header.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+	
+	<!-- HEADER -->
+	<section class="assessment-header py-0" style="background-color: black;">
+		<div class="navbar-container">
+			<div class="container pt-2">
+				<div class="row">
+					<a class="navbar-brand" href="//www.redhat.com/" title="Red Hat"><img alt="Red Hat" class="img-fluid navbar-logo" data-alt-text="Red Hat" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg?t=1537976200708" title="Red Hat" data-image-state="ready"> </a>
+				</div>
+			</div>
+		</div>
+	</section>
+	
+	<div class="elevate">
+		<ul class="menu menu_horizontal">
+			<li><a href="admin.html">Surveys</a></li>
+			<li class="exception divider">&gt;</li>
+			<li class="exception menu_needsId _id"><span style="color:white;">XXXXXXX</span></li>
+			<li class="exception divider">|</li>
+			<li class="menu_needsId"><a href="admin-survey-details.html?id=">Details</a></li>
+			<li class="menu_needsId"><a href="admin-survey-reports.html?id=">Reports</a></li>
+			<li class="menu_needsId"><a href="admin-survey-questions.html?id=">Questions</a></li>
+		</ul>
+	</div>
+	
+	<!--  -->
+	<section class="py-1">
+		<div class="row center">
+			<table class="elevate">
+				<tbody id="content">
+				<tr><td>Reports will go here</td></tr>
+				</tbody>
+			</table>
+		</div>
+	</section>
+	
+	<script>
+
+
+var surveyId;
+$(document).ready(function() {
+	surveyId=Utils.getParameterByName("id");
+	setMenu("Reports");
+	
+	if (undefined!=surveyId){
+		
+		Http.httpGetObject(env.server+"/api/surveys/"+surveyId, function(status, survey){
+			
+		});
+		
+	}else{
+		// Throw error message to page saying survey doesnt exist
+	}
+	
+});
+
+	</script>
+
+</body>
+</html>

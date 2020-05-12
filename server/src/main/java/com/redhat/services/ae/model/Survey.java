@@ -21,6 +21,7 @@ import com.google.api.client.util.Lists;
 //import com.mongodb.DBObject;
 import com.redhat.services.ae.Database;
 import com.redhat.services.ae.Utils;
+import com.redhat.services.ae.utils.Json;
 
 //import io.quarkus.mongodb.panache.MongoEntity;
 //import io.quarkus.mongodb.panache.PanacheMongoEntity;
@@ -69,6 +70,7 @@ public class Survey{
   public String getQuestions() throws FileNotFoundException, IOException{
   	File storage=new File(Database.STORAGE).getParentFile();
   	File questionsLocation=new File(storage, id+".json");
+  	System.out.println("Loading from: "+questionsLocation.getAbsolutePath());
   	if (questionsLocation.exists()){
   		return IOUtils.toString(questionsLocation.exists()?new FileInputStream(questionsLocation.getAbsolutePath()):getClass().getClassLoader().getResourceAsStream(id), "UTF-8");
   	}else{
