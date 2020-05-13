@@ -21,7 +21,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
+//import org.apache.commons.lang3.StringUtils;
 //import org.bson.types.ObjectId;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import org.slf4j.Logger;
@@ -32,6 +32,7 @@ import com.redhat.services.ae.Database;
 import com.redhat.services.ae.Utils;
 import com.redhat.services.ae.model.Survey;
 import com.redhat.services.ae.utils.Json;
+import com.redhat.services.ae.utils.StringUtils;
 
 //import io.quarkus.mongodb.panache.PanacheMongoEntity;
 //import io.quarkus.mongodb.panache.PanacheMongoEntityBase;
