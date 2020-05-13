@@ -44,9 +44,9 @@ public class ReportsController{
 		
 		String YYMMM=FluentCalendar.get(new Date()).getString("yy-MMM");
 		
-		if (!Database.get().getVisitors(YYMMM).contains(visitorId)){
+//		if (!Database.get().getVisitors(YYMMM).contains(visitorId)){
 			o.getMetrics().incrementSurvey(YYMMM);
-		}
+//		}
 		o.getMetrics().incrementPage(YYMMM, pageId);
 		o.persist();
 		return Response.ok(Survey.findById(o.id)).build();
