@@ -56,6 +56,22 @@ window.survey = new Survey.Model(json);
 
 var timeInfo=[];
 
+
+var geoInfo=undefined;
+if (undefined==geoInfo){
+  $.ajax({
+    url: "http://ip-api.com/json",
+    type: 'GET',
+    success: function(json){
+	  geoInfo=json;
+	  console.log("GeoInfo: Country=" + json.country);
+    },
+    error: function(err){
+      console.log("GeoInfo Failed: " + err);
+    }});
+}
+
+
 //survey.showTimerPanelMode = 'page';
 survey.startTimer();
 survey.showTimerPanel = 'bottom';
@@ -84,6 +100,7 @@ survey
 			var match=expr.exec(timeTaken);
 			timeInfo[page.name]=match[1];
 			console.log("page "+ page.name+" - "+timeInfo[page.name]);
+			Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"?cookie="+Cookie.get("rhrti-uid")+"&time="+timeInfo[page.name]+"&country="+geoInfo["countryCode"]+"region"+geoInfo["region"]);
 		})
       
 //survey

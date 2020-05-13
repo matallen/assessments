@@ -132,12 +132,12 @@ $("#Q_lang").change(function(sender) {
 
 $(document).ready(function() {
 	
-//	if (undefined==Cookie.get("rhrti-uid") || ""==Cookie.get("rhrti-uid")){
-//		Cookie.set("rhrti-uid", Cookie.uuid(), 30);
-//	}else{
-//		var c=Cookie.get("rhrti-uid");
-//		console.log("Welcome back: "+c);
-//	}
+	if (undefined==Cookie.get("rhrti-uid") || ""==Cookie.get("rhrti-uid")){
+		Cookie.set("rhrti-uid", Cookie.uuid(), 30);
+	}else{
+		var c=Cookie.get("rhrti-uid");
+		console.log("Welcome back: "+c);
+	}
 //	// Mat TODO: - change logic here - change to "if param doesnt already exist on querystring then add it, then pushState"
 //	window.history.pushState("", "", location.pathname+(location.search!=""?location.search+"&":"?")+"uid="+c);
 	
@@ -226,6 +226,7 @@ function fade(selector){
 			document.getElementsByTagName('head')[0].appendChild(surveyJSElement);
 			surveyStarted=true;
 		}
+		
 	</script>
 
 

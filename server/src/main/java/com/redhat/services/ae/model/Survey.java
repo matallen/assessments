@@ -71,11 +71,14 @@ public class Survey{
   	File storage=new File(Database.STORAGE).getParentFile();
   	File questionsLocation=new File(storage, id+".json");
   	System.out.println("Loading from: "+questionsLocation.getAbsolutePath());
-  	if (questionsLocation.exists()){
+  	if (!questionsLocation.exists())
+  		setQuestions("{}");
+  	
+//  	if (questionsLocation.exists()){
   		return IOUtils.toString(questionsLocation.exists()?new FileInputStream(questionsLocation.getAbsolutePath()):getClass().getClassLoader().getResourceAsStream(id), "UTF-8");
-  	}else{
-  		throw new FileNotFoundException("Can't find survey questions for "+id+" at "+questionsLocation.getAbsolutePath());
-  	}
+//  	}else{
+//  		throw new FileNotFoundException("Can't find survey questions for "+id+" at "+questionsLocation.getAbsolutePath());
+//  	}
   }
 	@JsonIgnore
 	public void setQuestions(String questionsJson) throws IOException{

@@ -87,7 +87,8 @@ $(document).ready(function() {
 		Http.httpGetObject(env.server+"/api/surveys/"+surveyId, function(status, survey){
 			for (key in survey){
 				$("#_"+key).val(survey[key]);
-				$("#_"+key).prop("disabled", false);
+				if ("id"!=key) // don't enable id fields, they need to remain generated/protected
+					$("#_"+key).prop("disabled", false);
 			}
 	//		$("#content").html(`
 	//				<tr><td>Survey ID</td>						<td><input type="text" id="_id"   value="`+nullToEmpty(survey['id'])+`"/></td></tr>
@@ -114,6 +115,13 @@ function save(){
 	var data=populate(newData());
 	Http.send((undefined==surveyId?"POST":"PUT"), env.server+"/api/surveys"+(undefined==surveyId?"":"/"+surveyId), data, function(resp, status){
 		jsonToDisplay(resp.response);
+		// update breadcrumbs
+		// push to url line
+		surveyId=JSON.parse(resp.response)["id"];
+		setMenu("Details");
+		if (undefined==data["id"] || ""==data["id"])
+			window.history.pushState("", "", location.pathname+(location.search!=""?location.search+"&":"?")+"id="+JSON.parse(resp.response)["id"]);
+		
 		alert(200==status?"Saved Ok":"Save Error (Status: "+status+")");
 		//window.location.href="admin.html";
 	});
