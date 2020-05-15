@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -21,6 +22,9 @@ public class Json{
 	}
 	public static <T> T toObject(String s, Class<T> cls) throws JsonParseException, JsonMappingException, IOException{
 		return newObjectMapper(true).readValue(s, cls);
+	}
+	public static <T> T toObject(String s, TypeReference<T> tr) throws JsonParseException, JsonMappingException, IOException{
+		return newObjectMapper(true).readValue(s, tr);
 	}
 	public static <T> String toJson(T o) throws JsonProcessingException{
 		return newObjectMapper(true).writeValueAsString(o);

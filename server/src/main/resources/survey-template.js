@@ -60,11 +60,11 @@ var timeInfo=[];
 var geoInfo=undefined;
 if (undefined==geoInfo){
   $.ajax({
-    url: "http://ip-api.com/json",
+    url: "http://ip-api.com/json?fields=continentCode,country,countryCode,region",
     type: 'GET',
     success: function(json){
 	  geoInfo=json;
-	  console.log("GeoInfo: Country=" + json.country);
+	  console.log("GeoInfo:: Identified country: " + json.country);
     },
     error: function(err){
       console.log("GeoInfo Failed: " + err);
@@ -77,7 +77,7 @@ survey.startTimer();
 survey.showTimerPanel = 'bottom';
 survey
       .onAfterRenderPage
-      .add(function(result){
+      .add(function(result, options){
     	  ////startPageTimer();
     	  //var timeTaken=survey.koTimerInfoText();
     	  //
@@ -91,18 +91,48 @@ survey
       })
 
 survey
-		.onCurrentPageChanged
-		.add(function(sender, options){
-			var page=options.oldCurrentPage;
-			var timeTaken=page.survey.koTimerInfoText();
-			if (""==timeTaken) return;
-			var expr= /.+spent (.+?) on this page and (.+?) in total./g;
-			var match=expr.exec(timeTaken);
-			timeInfo[page.name]=match[1];
-			console.log("page "+ page.name+" - "+timeInfo[page.name]);
-			Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"?cookie="+Cookie.get("rhrti-uid")+"&time="+timeInfo[page.name]+"&country="+geoInfo["countryCode"]+"region"+geoInfo["region"]);
-		})
-      
+	.onCurrentPageChanged
+	.add(function(sender, options){
+		var page=options.oldCurrentPage;
+		var timeTaken=page.survey.koTimerInfoText();
+		if (""==timeTaken) return;
+		var expr= /.+spent (.+?) on this page and (.+?) in total./g;
+		var match=expr.exec(timeTaken);
+		timeInfo[page.name]=match[1];
+		console.log("Metrics:: sending page message: page "+ page.name+" - "+timeInfo[page.name]);
+		
+    	var data={};
+    	data["time_on_page"]=timeInfo[page.name];
+    	data["geo"]=geoInfo["continentCode"];
+    	data["countryCode"]=geoInfo["countryCode"];
+    	data["region"]=geoInfo["region"];
+		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/pageChange?cookie="+Cookie.get("rhrti-uid"), data);
+	});
+		
+survey
+    .onComplete
+    .add(function (result) {
+    	var page=result.currentPageValue;
+    	console.log("Metrics:: sending survey complete message");
+    	
+		var timeTaken=result.currentPageValue.survey.koTimerInfoText();
+		if (""==timeTaken) return;
+		var expr= /.+spent (.+?) on this page and (.+?) in total./g;
+		var match=expr.exec(timeTaken);
+		timeInfo[page.name]=match[1];
+		console.log("Metrics:: sending page message: page "+ page.name+" - "+timeInfo[page.name]);
+
+		var data={};
+    	data["time_on_page"]=timeInfo[page.name];
+    	data["geo"]=geoInfo["continentCode"];
+    	data["countryCode"]=geoInfo["countryCode"];
+    	data["region"]=geoInfo["region"];
+    	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/complete?cookie="+Cookie.get("rhrti-uid"), data);
+    	//Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"?event=onComplete&cookie="+Cookie.get("rhrti-uid")+"&time="+timeInfo[page.name]+"&country="+geoInfo["countryCode"]+"region"+geoInfo["region"]);
+    	
+    	
+    });
+    	
 //survey
 //    .onAfterRenderPage
 //    .add(function (result) {

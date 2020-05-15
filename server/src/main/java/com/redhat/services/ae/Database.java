@@ -34,6 +34,18 @@ public class Database{
   public static final File STORAGE_AS_FILE=new File(STORAGE);
   
   private Map<String, Survey> surveys;
+  private Map<String, List<String>> visitors;
+  
+  public Map<String, List<String>> getVisitors(){
+  	if (null==visitors) visitors=new HashMap<>();
+  	return visitors;
+  }
+  public List<String> getVisitors(String YYMMM){
+  	if (!getVisitors().containsKey(YYMMM))
+  		getVisitors().put(YYMMM, new ArrayList<>());
+  	return getVisitors().get(YYMMM);
+  }
+  
 //  private Map<String, Map<String, String>> users;
 //  private List<Map<String, String>> events;
   

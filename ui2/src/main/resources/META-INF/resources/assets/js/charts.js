@@ -1,7 +1,7 @@
-function refreshGraph(graphName, type){
+function refreshGraph(graphName, type, url){
     var id=graphName.lastIndexOf('_')>=0?graphName.slice(0,graphName.lastIndexOf('_')):graphName;
     var max=undefined!=document.getElementById(id+"_max")?document.getElementById(id+"_max").value:"5";
-    buildChart(graphs[graphName]
+    buildChart(url//graphs[graphName]
 	    .replace("{surveyId}",surveyId)    
 	    .replace("{max}",max)
         , graphName, type);

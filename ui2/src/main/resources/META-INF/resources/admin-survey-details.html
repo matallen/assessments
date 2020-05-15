@@ -35,9 +35,9 @@ $(function(){
 	<div class="elevate">
 		<ul class="menu menu_horizontal">
 			<li><a href="admin.html">Surveys</a></li>
-			<li class="exception divider">&gt;</li>
-			<li class="exception menu_needsId _id"><span style="color:white;">XXXXXXX</span></li>
-			<li class="exception divider">|</li>
+			<li class="noColor divider">/</li>
+			<li class="noColor menu_needsId _id"><span style="color:white;">XXXXXXX</span></li>
+			<li class="noColor divider">|</li>
 			<li class="menu_needsId"><a href="admin-survey-details.html?id=">Details</a></li>
 			<li class="menu_needsId"><a href="admin-survey-reports.html?id=">Reports</a></li>
 			<li class="menu_needsId"><a href="admin-survey-questions.html?id=">Questions</a></li>
@@ -74,28 +74,20 @@ $(document).ready(function() {
 	setMenu("Details");
 	
 	if (undefined==surveyId){
-		// We have a new Survey
+		// We have a new Survey - Enable all all input elements with id=_<something>, except ID
 		$("[id^=\"_\"]").each(function(index){
 			if ("_id"!=$(this).prop("id")){
 				$(this).prop("disabled", false);
 			}
 		});
-		
 	}else{
 		// We have an existing Survey
-		
 		Http.httpGetObject(env.server+"/api/surveys/"+surveyId, function(status, survey){
 			for (key in survey){
 				$("#_"+key).val(survey[key]);
 				if ("id"!=key) // don't enable id fields, they need to remain generated/protected
 					$("#_"+key).prop("disabled", false);
 			}
-	//		$("#content").html(`
-	//				<tr><td>Survey ID</td>						<td><input type="text" id="_id"   value="`+nullToEmpty(survey['id'])+`"/></td></tr>
-	//				<tr><td>Survey Name</td>					<td><input type="text" id="_name" value="`+nullToEmpty(survey['name'])+`"/></td></tr>
-	//				<tr><td>Survey Description</td>		<td><input type="text" id="_desc" value="`+nullToEmpty(survey['description'])+`"/></td></tr>
-	//				<!--tr><td>Survey URL</td>						<td><input type="text" id="" value="NOT SET"/></td></tr-->
-	//				`+$("#content").html());
 		});
 		
 	}

@@ -26,17 +26,14 @@ $(function(){
 
 <script>
 var charts={};
-function onLoad(){
-	Chart.scaleService.updateScaleDefaults('linear', { ticks: { min: 0 } });
-	refresh();
-}
-var graphs={
-		"surveyCount":                     "/api/surveys/{surveyId}/reports/surveyCount?type=Line&maxResults={max}",
-		"pageCount":                       "/api/surveys/{surveyId}/reports/pageCount?type=Line&maxResults={max}",
-};
 function refresh(){
-	surveyCountRefresh();
-	pageCountRefresh();
+	Chart.scaleService.updateScaleDefaults('linear', { ticks: { min: 0 } });
+	$("canvas.graph").each(function(index){
+		var graphId=$(this).data("graph");
+		var graphUrl=$(this).data("graphurl");
+		var type=$(this).data("charttype");
+		refreshGraph(graphId, type, graphUrl);
+	});
 }
 </script>
 <style>
@@ -79,20 +76,14 @@ canvas{
 				<tbody id="content">
 					
 					<tr>
-						<td class="elevate section graph" data-graph="surveyCount" data-charttype="line">
+						<td class="elevate section graph">
 							<h3 class="graph_header center">TOTAL SURVEYS COMPLETED BY MONTH</h3>
 							<!--h5 class="center">Subtitle</span></h5-->
-							<script>
-							function surveyCountRefresh(){
-								refreshGraph('surveyCount', 'line');
-								return false;
-							}
-							</script>
 							<div>
 								<table class="section_content">
 									<tr>
 										<td class="graph_container">
-											<canvas class="surveyCount_canvas" id="surveyCount" ></canvas>
+											<canvas class="surveyCount_canvas graph" id="surveyCount" data-graph="surveyCount" data-graphurl="/api/surveys/{surveyId}/reports/surveyCount?type=Line&maxResults={max}" data-charttype="line"></canvas>
 										</td>
 								</table>
 							</div>
@@ -103,17 +94,11 @@ canvas{
 						<td class="elevate section graph" data-graph="pageCount" data-charttype="line">
 							<h3 class="graph_header center">TOTAL PAGES COMPLETED BY MONTH</h3>
 							<!--h5 class="center">Subtitle</span></h5-->
-							<script>
-							function pageCountRefresh(){
-								refreshGraph('pageCount', 'bar');
-								return false;
-							}
-							</script>
 							<div>
 								<table class="section_content">
 									<tr>
 										<td class="graph_container">
-											<canvas class="pageCount_canvas" id="pageCount" ></canvas>
+											<canvas class="pageCount_canvas graph" id="pageCount" data-graph="pageCount" data-graphurl="/api/surveys/{surveyId}/reports/pageCount?type=Line&maxResults={max}" data-charttype="bar"></canvas>
 										</td>
 								</table>
 							</div>
@@ -136,7 +121,7 @@ $(document).ready(function() {
 	
 	if (undefined!=surveyId){
 	
-		onLoad();
+		refresh();
 //		Http.httpGetObject(env.server+"/api/surveys/"+surveyId, function(status, survey){
 //			refresh();
 //		});
