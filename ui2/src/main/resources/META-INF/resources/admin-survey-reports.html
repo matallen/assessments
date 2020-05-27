@@ -83,7 +83,7 @@ function refresh(){
 function round(num){
 	return Math.round((num + Number.EPSILON) * 100) / 100;
 }
-function refreshAnswerPercentage(elemId){
+function refreshAnswerDistribution(elemId){
 	var graphUrl=env.server+"/api/surveys/"+surveyId+"/reports/answerPercentages?type=horizontalBar";
 	var defaultDateRange=undefined;
 	graphUrl+="&"+$(undefined!=defaultDateRange?"#Months option:contains('"+defaultDateRange+"')":"#Months").val();
@@ -173,7 +173,7 @@ canvas{
 		<ul class="menu menu_horizontal">
 			<li><a href="admin.html">Surveys</a></li>
 			<li class="noColor divider">&gt;</li>
-			<li class="noColor menu_needsId _id"><span style="color:white;">XXXXXXX</span></li>
+			<li class="noColor menu_needsId _id"><span style="color:white;">UNSET</span></li>
 			<li class="noColor divider">|</li>
 			<li class="menu_needsId"><a href="admin-survey-details.html?id=">Details</a></li>
 			<li class="menu_needsId"><a href="admin-survey-reports.html?id=">Reports</a></li>
@@ -248,20 +248,13 @@ canvas{
 					<tr><td style="height: 35px;"></td></tr>
 					<tr>
 						<td class="elevate section graph">
-							<h3 class="graph_header center">QUESTION ANSWER PERCENTAGE</h3>
+							<h3 class="graph_header center">ANSWER DISTRIBUTION</h3>
 							<!--h5 class="center">Subtitle</span></h5-->
 							<div>
 								<table class="section_content">
 									<tr>
 										<td class="graph_container" style="height:500px"">
-											
-											<div id="answerPercentages"></div>
-											
-										<!--
-											<div class="multigraph" id="answerPercentages" data-url="/api/surveys/{surveyId}/reports/answers" data-urltemplate="/api/surveys/{surveyId}/reports/answers/{name}"></div>
-											<span class="multigraph" id="answerPercentages" data-graph="answerPercentages" data-graphurl="/api/surveys/{surveyId}/reports/answerPercentages?type=Bar&maxResults={max}" data-charttype="horizontalBar"></span>
-											<canvas class="multigraph" id="answerPercentages" data-graph="answerPercentages" data-graphurl="/api/surveys/{surveyId}/reports/answerPercentages?type=Bar&maxResults={max}" data-charttype="horizontalBar"></canvas>
-										-->
+											<div id="answerDistribution"></div>
 										</td>
 								</table>
 							</div>
@@ -286,10 +279,7 @@ $(document).ready(function() {
 	if (undefined!=surveyId){
 	
 		refresh();
-		refreshAnswerPercentage("answerPercentages");
-//		Http.httpGetObject(env.server+"/api/surveys/"+surveyId, function(status, survey){
-//			refresh();
-//		});
+		refreshAnswerDistribution("answerDistribution");
 		
 	}else{
 		// Throw error message to page saying survey doesnt exist
