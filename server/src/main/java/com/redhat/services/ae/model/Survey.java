@@ -77,6 +77,15 @@ public class Survey{
   	System.out.println("Removing questionnaire file:"+questionsLocation.getAbsolutePath() );
 		questionsLocation.delete();
 	}
+	public Survey copy() throws FileNotFoundException, IOException{
+		Survey o=new Survey();
+		o.id=Utils.generateId();
+		o.name="Copy of "+this.name;
+		o.description=this.description;
+		o.setQuestions(this.getQuestions());
+		o.persist();
+		return o;
+	}
 	
 	@JsonIgnore
   public String getQuestions() throws FileNotFoundException, IOException{

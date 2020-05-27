@@ -15,7 +15,7 @@ table tbody tr td:first-child{
 body{
 	backkground-color: #f9f9f9;
 }
-
+.btn:disabled { opacity: 0.35; }
 .py-1{
 	/*
 	background-color: #f9f9f9;

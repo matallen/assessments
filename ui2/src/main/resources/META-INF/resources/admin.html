@@ -42,10 +42,22 @@ $(function(){
 		<div class="row center">
 			<div class="button-bar" style="display:inline-flex;">
 				<div style="padding-right: 5px;">
+					<!--
 					<a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="admin-survey-details.html">New</a>
+					-->
+					<button name="btnNew" style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" onclick="location.href='admin-survey-details.html';" >New</button>
 				</div>
 				<div>
+					<!--
 					<a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="#" onclick="deleteAll();">Delete</a>
+					-->
+					<button name="btnDelete" style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white">Delete</button>
+				</div>
+				<div>
+					<!--
+					<a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="#" onclick="duplicate();">Duplicate</a>
+					-->
+					<button name="btnDuplicate" style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white">Duplicate</button>
 				</div>
 			</div>
 			<table class="elevate">
@@ -73,23 +85,60 @@ $(function(){
 	
 	$(document).ready(function() {
 		load();
+		checkActiveButtons();
+		$(document).on('click', "input[type=checkbox]", function() {
+			checkActiveButtons();
+		});
 	});
+	
+	$(document).on('click', "button[name=btnDelete]", function() {
+		Http.httpDelete(env.server+"/api/surveys", asList('input[name="id"]:checked', "value"), function(resp, status){
+			load();
+		});
+	});
+	
+	$(document).on('click', "button[name=btnDuplicate]", function() {
+		Http.httpPost(env.server+"/api/surveys/"+asList('input[name="id"]:checked', "value")[0]+"/copy", null, function(resp, status){
+			load();
+		});
+	});
+	function asList(selector, attr){
+		var list=[];
+		$(selector).each(function(){
+			list.push($(this).attr(attr));
+		});
+		return list;
+	}
+//	function getSelected(){
+//		var selected=[];
+//		$("input:checked").each(function(){
+//			selected.push($(this).attr("value"));
+//		});
+//		return selected;
+//	}
+	
+	
+	function checkActiveButtons(){
+		$('button[name="btnNew"]').attr('disabled', $('input[name="id"]:checked').length>0);
+		$('button[name="btnDelete"]').attr('disabled', $('input[name="id"]:checked').length<1);
+		$('button[name="btnDuplicate"]').attr('disabled', $('input[name="id"]:checked').length!=1);
+	}
 	
 	function load(){
 		$("#surveys").empty();
 		Http.httpGetObject(env.server+"/api/surveys", function(status, surveys){
 			for(i in surveys){
 				var s=surveys[i];
-				console.log(s['id']);
+				//console.log(s['id']);
 				
 				$("#surveys").append(`
 						<tr>
-						<td><input type="checkbox" name="`+s['id']+`"/></td>
+						<td><input type="checkbox" name="id" value="`+s['id']+`"/></td>
 						<td><a href="admin-survey-details.html?id=`+s['id']+`">`+s['id']+`</a></td>
 						<td>`+s['name']+`</td>
 						<td>`+s['theme']+`</td>
-						<td><a href="#">N/A</a></td>
-						<td><a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="index.html?surveyId=`+s['id']+`">Run</a></td>
+						<!--td><a href="#">N/A</a></td-->
+						<td><a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="index.html?surveyId=`+s['id']+`">Live Survey</a></td>
 						<!--td><a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white openModal" href="#" data-id="`+s['id']+`" id="openModal">Configure</a></td-->
 						<!--td><a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="#">Reports</a></td-->
 					</tr>
@@ -99,15 +148,14 @@ $(function(){
 		});
 	}
 	
-	function deleteAll(){
+	function deleteAllChecked(){
 		var selected=[];
 		$("input").each(function(){
 			if ($(this).is(":checked")) {
-				selected.push($(this).attr("name"));
+				selected.push($(this).attr("value"));
 			}
 		});
 		Http.httpDelete(env.server+"/api/surveys", selected, function(resp, status){
-			console.log(status);
 			load();
 		});
 	}

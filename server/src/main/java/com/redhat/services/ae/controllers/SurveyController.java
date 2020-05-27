@@ -67,7 +67,7 @@ public class SurveyController{
 	@PUT
 	@Path("/{surveyId}")
 	public Response update(@PathParam("surveyId") String surveyId, String payload) throws IOException{
-		System.out.println("PUT detected - payload = "+payload);
+//		System.out.println("PUT detected - payload = "+payload);
 		Survey o=Json.toObject(payload, Survey.class);
 		Survey entity=Survey.findById(surveyId);
 		if (null==entity) throw new WebApplicationException("Unable to find "+Survey.class.getSimpleName()+" with id "+surveyId);
@@ -85,13 +85,19 @@ public class SurveyController{
 	}
 	@DELETE
 	public Response deleteMany(String ids) throws IOException{
-		System.out.println("ids="+ids);
+//		System.out.println("ids="+ids);
 		List<String> l=Json.newObjectMapper(true).readValue(ids, new TypeReference<List<String>>(){});
 		for (String id:l)
 			deleteSingle(id);
 		return Response.status(204).build();
 	}
-	
+	@POST
+	@Path("/{surveyId}/copy")
+	public Response copy(@PathParam("surveyId") String surveyId) throws IOException{
+		Survey o=Survey.findById(surveyId);
+		Survey copy=o.copy();
+		return Response.ok(copy).build();
+	}
 	
 	/** #### QUESTION HANDERS #### */
 	
