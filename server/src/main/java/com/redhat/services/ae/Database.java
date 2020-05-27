@@ -30,7 +30,7 @@ import com.redhat.services.ae.utils.Json;
 
 public class Database{
   private static final Logger log=Logger.getLogger(Database.class.getSimpleName());
-  public static final String STORAGE="persistence/database.json";
+  public static String STORAGE="persistence/database.json";
   public static final File STORAGE_AS_FILE=new File(STORAGE);
   
   private Map<String, Survey> surveys;
@@ -106,7 +106,7 @@ public class Database{
   public static Database get(){
     return get(new File(STORAGE));
   }
-  public static Database get(File storage){
+  public static synchronized Database get(File storage){
     if (instance!=null) return instance;
     if (!new File(STORAGE).exists()){
     	log.warning("No database file found, creating new/blank/default one... "+new File(STORAGE).getAbsolutePath());

@@ -99,7 +99,7 @@ public class SurveyController{
 	@Path("/{surveyId}/questions")
 	public Response saveQuestions(@PathParam("surveyId") String surveyId, String questionsJson) throws FileNotFoundException, IOException{
 		Survey survey=Survey.findById(surveyId);
-		System.out.println("XXXX="+questionsJson);
+//		System.out.println("XXXX="+questionsJson);
 		survey.setQuestions(questionsJson);
 		survey.update();
 		return Response.ok(Survey.findById(surveyId).getQuestions()).build();

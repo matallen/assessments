@@ -102,11 +102,11 @@ survey
 		console.log("Metrics:: sending page message: page "+ page.name+" - "+timeInfo[page.name]);
 		
     	var data={};
-    	data["time_on_page"]=timeInfo[page.name];
-    	data["geo"]=geoInfo["continentCode"];
-    	data["countryCode"]=geoInfo["countryCode"];
-    	data["region"]=geoInfo["region"];
-		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/pageChange?cookie="+Cookie.get("rhrti-uid"), data);
+    	data["info.time_on_page"]=timeInfo[page.name];
+    	data["info.geo"]=geoInfo["continentCode"];
+    	data["info.countryCode"]=geoInfo["countryCode"];
+    	data["info.region"]=geoInfo["region"];
+		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onPageChange?cookie="+Cookie.get("rhrti-uid"), data);
 	});
 		
 survey
@@ -122,13 +122,22 @@ survey
 		timeInfo[page.name]=match[1];
 		console.log("Metrics:: sending page message: page "+ page.name+" - "+timeInfo[page.name]);
 
+//		var data={};
+//    	data["time_on_page"]=timeInfo[page.name];
+//    	data["geo"]=geoInfo["continentCode"];
+//    	data["countryCode"]=geoInfo["countryCode"];
+//    	data["region"]=geoInfo["region"];
+		
 		var data={};
-    	data["time_on_page"]=timeInfo[page.name];
-    	data["geo"]=geoInfo["continentCode"];
-    	data["countryCode"]=geoInfo["countryCode"];
-    	data["region"]=geoInfo["region"];
-    	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/complete?cookie="+Cookie.get("rhrti-uid"), data);
+    	data["info.time_on_page"]=timeInfo[page.name];  
+    	data["info.geo"]=geoInfo["continentCode"];      
+    	data["info.countryCode"]=geoInfo["countryCode"];
+    	data["info.region"]=geoInfo["region"];          
+    	
+    	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onComplete?cookie="+Cookie.get("rhrti-uid"), data);
     	//Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"?event=onComplete&cookie="+Cookie.get("rhrti-uid")+"&time="+timeInfo[page.name]+"&country="+geoInfo["countryCode"]+"region"+geoInfo["region"]);
+
+    	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/onResults?cookie="+Cookie.get("rhrti-uid"), survey.data);
     	
     	
     });

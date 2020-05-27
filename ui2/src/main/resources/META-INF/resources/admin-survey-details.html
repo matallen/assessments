@@ -81,7 +81,7 @@ $(document).ready(function() {
 			}
 		});
 	}else{
-		// We have an existing Survey
+		// We have an existing Survey - enable all inputs 
 		Http.httpGetObject(env.server+"/api/surveys/"+surveyId, function(status, survey){
 			for (key in survey){
 				$("#_"+key).val(survey[key]);

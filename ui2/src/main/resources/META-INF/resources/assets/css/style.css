@@ -9,7 +9,8 @@ table thead tr td{
 }
 table thead tr td:first-child,
 table tbody tr td:first-child{
-  padding: 10px 0px 10px 15px; /*TRBL*/
+  /*padding: 10px 0px 10px 15px;*/ /*TRBL*/
+  padding: 10px 10px 10px 10px; /*TRBL*/
 }
 body{
 	backkground-color: #f9f9f9;

@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.io.IOUtils;
@@ -51,6 +52,12 @@ public class Survey{
 	}
 	public static Survey findById(String id){
 //		return findById(new ObjectId(id));
+//		if (null==id) System.err.println("findSurvey.ById():: ERROR!!!!! ID is NULL");
+//		Database db=Database.get();
+//		if (null==Database.get()) System.err.println("findSurvey.ById():: ERROR!!!!! Database.get() returned NULL");
+//		Map<String, Survey> surveys=db.getSurveys();
+//		if (null==Database.get().getSurveys()) System.err.println("findSurvey.ById():: ERROR!!!!! Database.get().getSurveys() returned NULL");
+//		return surveys.get(id);
 		return Database.get().getSurveys().get(id);
 	}
 	public void persist(){
@@ -64,6 +71,11 @@ public class Survey{
 	public void delete(){
 		Database.get().getSurveys().remove(id);
 		Database.get().save();
+		// TODO: Delete file
+  	File storage=new File(Database.STORAGE).getParentFile();
+  	File questionsLocation=new File(storage, id+".json");
+  	System.out.println("Removing questionnaire file:"+questionsLocation.getAbsolutePath() );
+		questionsLocation.delete();
 	}
 	
 	@JsonIgnore
@@ -88,6 +100,9 @@ public class Survey{
   		questionsLocation.getParentFile().mkdirs();
   		questionsLocation.createNewFile();
 		}
+  	
+  	// TODO: check the questions can be read as json / ie valid/readable json format?
+  	
 		IOUtils.write(questionsJson, new FileOutputStream(questionsLocation), "UTF-8");
 	}
 	

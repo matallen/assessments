@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -31,10 +33,11 @@ public class Json{
 	}
   public static ObjectMapper newObjectMapper(boolean pretty){
     ObjectMapper mapper = pretty?new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
-    		.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS).setVisibility(PropertyAccessor.FIELD, Visibility.ANY)
     		:new ObjectMapper()
-    		.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS).setVisibility(PropertyAccessor.FIELD, Visibility.ANY)
     		;
+    		mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+    		mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS).setVisibility(PropertyAccessor.FIELD, Visibility.ANY);
+    		mapper.setSerializationInclusion(Include.NON_NULL);
 //    mapper.configure(SerializationConfig.Feature.INDENT_OUTPUT,pretty);
 //    return mapper.writerWithDefaultPrettyPrinter();
     return mapper;
