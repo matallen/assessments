@@ -16,7 +16,9 @@ table tbody tr td:first-child{
   padding: 10px 10px 10px 10px; /*TRBL*/
 }
 body{
-	backkground-color: #f9f9f9;
+	/*
+	background-color: #f9f9f9;
+	*/
 }
 .btn:disabled { opacity: 0.35; }
 .py-1{

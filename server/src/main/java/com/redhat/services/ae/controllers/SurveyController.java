@@ -35,7 +35,6 @@ import com.redhat.services.ae.utils.Json;
 
 @Path("/api/surveys")
 @Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
 public class SurveyController{
 	public static final Logger log=LoggerFactory.getLogger(SurveyController.class);
 
@@ -52,20 +51,27 @@ public class SurveyController{
 		String templateName="survey-template.js";
 		String template=IOUtils.toString(new File("target/classes", templateName).exists()?new FileInputStream(new File("target/classes", templateName).getAbsolutePath()):getClass().getClassLoader().getResourceAsStream(templateName), "UTF-8");
 		
-		String questions=Survey.findById(surveyId).getQuestions();
+		Survey survey=Survey.findById(surveyId);
+		String questions=survey.getQuestions();
 		
 		String result;
 		if ("true".equalsIgnoreCase(questionsOnly)){
 			result=questions;
 		}else{
 			result=template.toString();
-			int i=result.indexOf("SURVEY_CONTENT");
-			if (i>=0){
-				result=new StringBuffer(result).delete(i, i+"SURVEY_CONTENT".length()).toString();
-				result=new StringBuffer(result).insert(i, questions).toString();
-			}
+			result=findReplace(result, "SURVEY_CONFIG", String.format("{theme: %s}", "\""+survey.theme+"\""));
+			result=findReplace(result, "SURVEY_CONTENT", questions);
 		}
 		return Response.ok(result, null==responseContentType?"text/html; charset=UTF-8":responseContentType).build();
+	}
+	
+	private String findReplace(String allContent, String find, String replace){
+		int i=allContent.indexOf(find);
+		if (i>=0){
+			allContent=new StringBuffer(allContent).delete(i, i+find.length()).toString();
+			allContent=new StringBuffer(allContent).insert(i, replace).toString();
+		}
+		return allContent;
 	}
 	
 	@POST
@@ -74,6 +80,7 @@ public class SurveyController{
 		Survey o=Survey.findById(surveyId);
 		if (null==o) throw new RuntimeException("Survey ID doesn't exist! :"+surveyId);
 		String YYMMM=FluentCalendar.get(new Date()).getString("yy-MMM");
+		System.out.println("onPageChange: payload= "+payload);
 		Map<String,Object> pageData=Json.toObject(payload, new TypeReference<HashMap<String,Object>>(){});
 		Map<String,String> data=(Map<String,String>)pageData.get("data");
 		Map<String,String> info=(Map<String,String>)pageData.get("info");
@@ -85,13 +92,15 @@ public class SurveyController{
 		
 		// TODO: store the data for when a user revisits the page
 		
+//		Database.get().getTemporaryData().get(visitorId)
+		
 		// TODO: log the time window spent on page
 		
 		if (!Database.get().getVisitors(YYMMM).contains(visitorId+pageId))
 			o.getMetrics().getByMonth("page", YYMMM).put(pageId, o.getMetrics().getByMonth("page", YYMMM).containsKey(pageId)?o.getMetrics().getByMonth("page", YYMMM).get(pageId)+1:1);
 
 		o.persist();
-		return Response.ok(Survey.findById(o.id)).build();
+		return Response.ok().build();
 	}
 	
 	
@@ -131,7 +140,7 @@ public class SurveyController{
 		}
 		
 		o.persist();
-		return Response.ok(Survey.findById(o.id)).build();
+		return Response.ok().build();
 	}
 
 	@POST

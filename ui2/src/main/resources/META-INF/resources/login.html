@@ -70,22 +70,18 @@ $(function(){
 	
 	
 	<script>
-	
 	$(document).ready(function() {
 		$("#loginForm").attr("action", env.server+$("#loginForm").attr("action"));
 		$("input[name=onSuccess]").attr("value", document.location.origin+$("input[name=onSuccess]").attr("value"));
 		$("input[name=onFailure]").attr("value", document.location.origin+$("input[name=onFailure]").attr("value"));
-		
 		$("#username").focus();
-		if (Utils.getParameterByName("error")=="0"){
-			$("#error-message").html("Unable to verify, or credentials incorrect, please try again.");
+		
+		switch(Utils.getParameterByName("error")){
+			case "0": $("#error-message").html("Unable to verify, or credentials incorrect, please try again."); break;
+			case "1": $("#error-message").html("Timeout, please login again."); break;
+			case "2": $("#error-message").html("Not authorized, please login again."); break;
 		}
-		if (Utils.getParameterByName("error")=="1"){
-			$("#error-message").html("Timeout, please login again.");
-		}
-		if (Utils.getParameterByName("error")=="2"){
-			$("#error-message").html("Not authorized, please login again.");
-		}
+		
 		checkButtonActiveStatus();
 		$("input[type=text],input[type=password]").keyup(function(){
 			checkButtonActiveStatus();
@@ -95,7 +91,6 @@ $(function(){
 	function checkButtonActiveStatus(){
 		$('input[name="login"]').attr('disabled', $('input[name="username"]').val().length<=0 ||  $('input[name="password"]').val().length<=0);
 	}
-	
 	</script>
 
 </body>

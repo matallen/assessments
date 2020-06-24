@@ -37,6 +37,7 @@ public class Survey{
 	public String name;
 	public String description;
 	public String owner;
+	public String theme;
 	
 	private Metrics metrics;
 	public Metrics getMetrics(){
@@ -94,6 +95,7 @@ public class Survey{
 		o.name="Copy of "+this.name;
 		o.description=this.description;
 		o.owner=this.owner;
+		o.theme=this.theme;
 		o.setQuestions(this.getQuestions());
 		o.persist();
 		return o;
@@ -148,7 +150,7 @@ public class Survey{
 		public String getName(){return name;}                 public Builder name(String v){name=v; return this;}
 		public String getDescription(){return description;}   public Builder description(String v){description=v; return this;}
 		public String getOwner(){return owner;}						    public Builder owner(String v){owner=v; return this;}
-//		public String getTheme(){return theme;}               public Builder theme(String v){theme=v; return this;}
+		public String getTheme(){return theme;}               public Builder theme(String v){theme=v; return this;}
 //		public String getExternalUrl(){return externalUrl;}   public Builder externalUrl(String v){externalUrl=v; return this;}
 //		public String getContent(){return content;}           public Builder content(String v){content=v; return this;}
 		
@@ -158,7 +160,7 @@ public class Survey{
 			c.name=super.name;
 			c.description=super.description;
 			c.owner=super.owner;
-//			c.theme=super.theme;
+			c.theme=super.theme;
 //			c.content=super.content;
 			return c;
 		}
@@ -167,7 +169,7 @@ public class Survey{
 			dst.name=src.name!=null?src.name:dst.name;
 			dst.description=src.description!=null?src.description:dst.description;
 			dst.owner=src.owner!=null?src.owner:dst.owner;
-//			dst.theme=src.theme!=null?src.theme:dst.theme;
+			dst.theme=src.theme!=null?src.theme:dst.theme;
 //			dst.content=src.content!=null?src.content:dst.content;
 			return dst;
 		}
@@ -193,6 +195,7 @@ public class Survey{
     sb.append(", name:").append(Utils.toIndentedString(name));
     sb.append(", description:").append(Utils.toIndentedString(description));
     sb.append(", owner:").append(Utils.toIndentedString(owner));
+    sb.append(", theme:").append(Utils.toIndentedString(theme));
     sb.append("}");
     return sb.toString();
 	}

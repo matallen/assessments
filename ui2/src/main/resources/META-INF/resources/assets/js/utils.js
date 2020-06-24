@@ -16,6 +16,16 @@ Utils = {
 	}
 }
 
+HtmlUtils = {
+	asList: function asList(selector, attr){
+		var list=[];
+		$(selector).each(function(){
+			list.push($(this).attr(attr));
+		});
+		return list;
+	}
+}
+
 if (!String.prototype.format) {
   String.prototype.format = function() {
     var args = arguments;
@@ -27,3 +37,14 @@ if (!String.prototype.format) {
     });
   };
 }
+
+/* Dynamically load a css file */
+loadCSS = function(href) {
+  var cssLink = $("<link>");
+  $("head").append(cssLink); //IE hack: append before setting href
+  cssLink.attr({
+    rel:  "stylesheet",
+    type: "text/css",
+    href: href
+  });
+};

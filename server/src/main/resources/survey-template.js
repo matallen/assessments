@@ -1,3 +1,12 @@
+
+
+var config=SURVEY_CONFIG;
+
+// Page theme
+if (undefined!=config.theme && ""!=config.theme)
+	loadCSS("assets/themes/"+config.theme+"/css/style.css");
+
+
 var defaultThemeColors = Survey
     .StylesManager
     .ThemeColors["default"];
@@ -114,7 +123,10 @@ survey
 		timeInfo[page.name]=match[1];
 		console.log("Metrics:: sending page message: page "+ page.name+" - "+timeInfo[page.name]);
     	
-		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onPageChange?cookie="+Cookie.get("rhrti-uid"), buildOnXPayload(page));
+		
+		window.localStorage.setItem("data", JSON.stringify(survey.data));
+		
+		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onPageChange?visitorId="+Cookie.get("rhrti-uid"), buildOnXPayload(page));
 	});
 		
 survey
@@ -130,9 +142,11 @@ survey
 		timeInfo[page.name]=match[1];
 		console.log("Metrics:: sending page message: page "+ page.name+" - "+timeInfo[page.name]);
 
-    	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onComplete?cookie="+Cookie.get("rhrti-uid"), buildOnXPayload(page));
+    	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onComplete?visitorId="+Cookie.get("rhrti-uid"), buildOnXPayload(page));
     	//Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"?event=onComplete&cookie="+Cookie.get("rhrti-uid")+"&time="+timeInfo[page.name]+"&country="+geoInfo["countryCode"]+"region"+geoInfo["region"]);
-
+    	
+    	window.localStorage.removeItem("data");
+    	
     	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/onResults?cookie="+Cookie.get("rhrti-uid"), survey.data);
     	
     	
@@ -141,11 +155,13 @@ survey
 function buildOnXPayload(page){
 	var payload={};
 	payload["info"]={};
-	payload["info"]["time_on_page"]=timeInfo[page.name];
+	payload["info"]["visitorId"]=Cookie.get("rhrti-uid");
+	payload["info"]["timeOnpage"]=timeInfo[page.name];
 	payload["info"]["geo"]=geoInfo["continentCode"];
 	payload["info"]["countryCode"]=geoInfo["countryCode"];
 	payload["info"]["region"]=geoInfo["region"];
-	payload["data"]=survey.data;        
+	payload["data"]=survey.data;
+	return payload;
 }
 //survey
 //    .onAfterRenderPage
@@ -183,9 +199,11 @@ function buildOnXPayload(page){
 //	  }
 //    });
 
-if (null!=results){
-	survey.data=results;
-}
+if (undefined!=window.localStorage.getItem("data"))
+	survey.data=JSON.parse(window.localStorage.getItem("data"));
+//if (null!=results){
+//	survey.data=results;
+//}
 
 $("#surveyElement").Survey({
     model: survey
@@ -210,7 +228,89 @@ navProgBarDiv.appendChild(navProgBar);
 //leftImg.onclick = function () {
 //    navProgBarDiv.scrollLeft -= 70;
 //};
-var liEls = [];
+//var liEls = [];
+//for (var i = 0; i < survey.PageCount; i++) {
+//    var liEl = document.createElement("li");
+//    if (survey.currentPageNo == i) {
+//        liEl
+//            .classList
+//            .add("current");
+//    }
+//    //liEl.onclick = function (index) {
+//    //    return function () {
+//    //        if (survey['isCompleted']) 
+//    //            return;
+//    //        liEls[survey.currentPageNo]
+//    //            .classList
+//    //            .remove("current");
+//    //        if (index < survey.currentPageNo) {
+//    //            survey.currentPageNo = index;
+//    //        } else if (index > survey.currentPageNo) {
+//    //            var j = survey.currentPageNo;
+//    //            for (; j < index; j++) {
+//    //                if (survey.visiblePages[j].hasErrors(true, true)) 
+//    //                    break;
+//    //                if (!liEls[j].classList.contains("completed")) {
+//    //                    liEls[j]
+//    //                        .classList
+//    //                        .add("completed");
+//    //                }
+//    //            }
+//    //            survey.currentPageNo = j;
+//    //        }
+//    //        liEls[survey.currentPageNo]
+//    //            .classList
+//    //            .add("current");
+//    //    };
+//    //}(i);
+//    var pageTitle = document.createElement("span");
+//    if (!survey.pages[i].navigationTitle) {
+//        pageTitle.innerText = survey.pages[i].name;
+//    } else 
+//        pageTitle.innerText = survey.pages[i].navigationTitle;
+//    pageTitle.className = "pageTitle";
+//    liEl.appendChild(pageTitle);
+//    var br = document.createElement("br");
+//    liEl.appendChild(br);
+//    var pageDescription = document.createElement("span");
+//    if (!!survey.pages[i].navigationDescription) {
+//        pageDescription.innerText = survey.pages[i].navigationDescription;
+//    }
+//    pageDescription.className = "pageDescription";
+//    liEl.appendChild(pageDescription);
+//    liEls.push(liEl);
+//    navProgBar.appendChild(liEl);
+//}
+//survey
+//    .onCurrentPageChanged
+//    .add(function (sender, options) {
+//        var oldIndex = options.oldCurrentPage.visibleIndex;
+//        var newIndex = options.newCurrentPage.visibleIndex;
+//        if (undefined!=liEls[oldIndex])
+//	        liEls[oldIndex]
+//	            .classList
+//	            .remove("current");
+//        if (newIndex > oldIndex) {
+//            for (var i = oldIndex; i < newIndex; i++) {
+//                if (sender.visiblePages[i].hasErrors(true, true)) 
+//                    break;
+//                if (!liEls[i].classList.contains("completed")) {
+//                    liEls[i]
+//                        .classList
+//                        .add("completed");
+//                }
+//            }
+//        }
+//        if (undefined!=liEls[newIndex])
+//	        liEls[newIndex]
+//	            .classList
+//	            .add("current");
+//    });
+
+
+
+
+var liEls = {};
 for (var i = 0; i < survey.PageCount; i++) {
     var liEl = document.createElement("li");
     if (survey.currentPageNo == i) {
@@ -218,33 +318,6 @@ for (var i = 0; i < survey.PageCount; i++) {
             .classList
             .add("current");
     }
-    //liEl.onclick = function (index) {
-    //    return function () {
-    //        if (survey['isCompleted']) 
-    //            return;
-    //        liEls[survey.currentPageNo]
-    //            .classList
-    //            .remove("current");
-    //        if (index < survey.currentPageNo) {
-    //            survey.currentPageNo = index;
-    //        } else if (index > survey.currentPageNo) {
-    //            var j = survey.currentPageNo;
-    //            for (; j < index; j++) {
-    //                if (survey.visiblePages[j].hasErrors(true, true)) 
-    //                    break;
-    //                if (!liEls[j].classList.contains("completed")) {
-    //                    liEls[j]
-    //                        .classList
-    //                        .add("completed");
-    //                }
-    //            }
-    //            survey.currentPageNo = j;
-    //        }
-    //        liEls[survey.currentPageNo]
-    //            .classList
-    //            .add("current");
-    //    };
-    //}(i);
     var pageTitle = document.createElement("span");
     if (!survey.pages[i].navigationTitle) {
         pageTitle.innerText = survey.pages[i].name;
@@ -260,35 +333,35 @@ for (var i = 0; i < survey.PageCount; i++) {
     }
     pageDescription.className = "pageDescription";
     liEl.appendChild(pageDescription);
-    liEls.push(liEl);
+    liEls[survey.pages[i].name]=liEl;
     navProgBar.appendChild(liEl);
 }
 survey
     .onCurrentPageChanged
     .add(function (sender, options) {
-        var oldIndex = options.oldCurrentPage.visibleIndex;
-        var newIndex = options.newCurrentPage.visibleIndex;
+        var oldIndex = options.oldCurrentPage.name;
+        var newIndex = options.newCurrentPage.name;
         if (undefined!=liEls[oldIndex])
 	        liEls[oldIndex]
 	            .classList
 	            .remove("current");
-        if (newIndex > oldIndex) {
-            for (var i = oldIndex; i < newIndex; i++) {
-                if (sender.visiblePages[i].hasErrors(true, true)) 
-                    break;
-                if (!liEls[i].classList.contains("completed")) {
-                    liEls[i]
-                        .classList
-                        .add("completed");
-                }
-            }
-        }
+        //if (newIndex > oldIndex) {
+        //    for (var i = oldIndex; i < newIndex; i++) {
+        //        if (sender.visiblePages[i].hasErrors(true, true)) 
+        //            break;
+        //        if (!liEls[i].classList.contains("completed")) {
+        //            liEls[i]
+        //                .classList
+        //                .add("completed");
+        //        }
+        //    }
+        //}
         if (undefined!=liEls[newIndex])
 	        liEls[newIndex]
 	            .classList
 	            .add("current");
     });
-
+    
 /*
 var rightImg = document.createElement("img");
 rightImg.src = "https://img.icons8.com/material/4ac144/256/user-male.png";

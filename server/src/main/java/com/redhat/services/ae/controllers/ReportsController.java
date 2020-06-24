@@ -175,8 +175,36 @@ public class ReportsController{
 					if (!question.has("choices")) continue;
 					DataSet ds=c.addNewDataSet();
 					for (mjson.Json option:question.at("choices").asJsonList()){
-						String answerId=option.at("value").asString();
-						String answerText=option.at("text").isString()?option.at("text").asString():option.at("text").at("default").asString(); // non, or multilingual answer format
+						String answerId=null;
+						String answerText=null;
+						try{
+							
+							if (option.isString()){
+								answerId=option.asString(); // simple, no value options (unlikely in real questionnaires)
+								answerText=answerId;
+							}else{
+								answerId=option.at("value").asString(); // name/value options
+								if (option.has("imageLink")){ // is an image radio or checkbox control
+									answerText=answerId;
+								}else{ // is a regular radio or checkbox control
+									answerText=option.at("text").isString()?option.at("text").asString():option.at("text").at("default").asString(); // non, or multilingual answer format
+									
+									// todo: may be a better/safer implementation than assuming there's a "default" language text
+//							if (option.has("text") && option.at("text").isString()) answerText=option.at("text").asString();
+//							if (null==answerText && option.has("text") && option.at("text").has("default") && option.at("text").at("default").isString()) answerText=option.at("text").at("default").asString();
+								}
+							}
+							
+							
+							
+						}catch(NullPointerException npe){
+							if (answerId==null) answerId="Unknown";
+							if (answerText==null) answerText="Unknown";
+//							System.err.println("NPE in ReportsController. question="+question);
+//							System.err.println("NPE in ReportsController. option="+option);
+//							System.err.println("NPE in ReportsController. option.at(\"text\")="+option.at("text"));
+//							System.err.println("option.at(\"text\").at(\"default\")="+option.at("text").at("default"));
+						}
 						
 						c.getLabels().add(answerText);
 //						ds.setLabel("Count");

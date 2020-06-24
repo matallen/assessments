@@ -134,18 +134,13 @@ function refreshAnswerDistribution(elemId){
 
 
 var processors = {
-		  "procLine": function(json) {
-			  
-			  for (ds in json["datasets"]){
-				  json["datasets"][ds]["fill"]=false;
-				//  json["datasets"][ds]["backgroundColor"]="#c10000";
-				//  json["datasets"][ds]["borderColor"]="#00c100";
-			  }
-			  //console.log("XXXXXX="+JSON.stringify(json, null, 2));
-			  
-			  return json;
-			 },
-		};
+	"removeFill": function(json) { // Removes the "fill" for the line graph
+		for (ds in json["datasets"]){
+			json["datasets"][ds]["fill"]=false;
+		}
+		return json;
+	},
+};
 		
 </script>
 <style>
@@ -158,7 +153,7 @@ canvas{
 </head>
 <body>
 	
-	<!-- HEADER -->
+	<!-- Header (+Logo) -->
 	<section class="assessment-header py-0" style="background-color: black;">
 		<div class="navbar-container">
 			<div class="container pt-2">
@@ -169,10 +164,11 @@ canvas{
 		</div>
 	</section>
 	
-	<div class="elevate">
-		<ul class="menu menu_horizontal">
+	<!-- Breadcrumb Menu -->
+	<div class="elevate" style="height: 27px">
+		<ul style="float:left" class="menu menu_horizontal">
 			<li><a href="admin.html">Surveys</a></li>
-			<li class="noColor divider">&gt;</li>
+			<li class="noColor divider">/</li>
 			<li class="noColor menu_needsId _id"><span style="color:white;">UNSET</span></li>
 			<li class="noColor divider">|</li>
 			<li class="menu_needsId"><a href="admin-survey-details.html?id=">Details</a></li>
@@ -190,6 +186,7 @@ canvas{
 		</script>
 	</div>
 
+	<!-- Main Content -->
 	<section class="py-1">
 		<div class="row center">
 			<table class="">
@@ -233,7 +230,7 @@ canvas{
 								<table class="section_content">
 									<tr>
 										<td class="graph_container">
-											<canvas class="graph" id="pageCount" data-graph="pageCount" data-graphurl="/api/surveys/{surveyId}/reports/pageCount?type=Line&maxResults={max}" data-charttype="line" data-processor="procLine"></canvas>
+											<canvas class="graph" id="pageCount" data-graph="pageCount" data-graphurl="/api/surveys/{surveyId}/reports/pageCount?type=Line&maxResults={max}" data-charttype="line" data-processor="removeFill"></canvas>
 										</td>
 								</table>
 							</div>

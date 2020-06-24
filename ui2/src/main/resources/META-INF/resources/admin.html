@@ -32,8 +32,8 @@ $(function(){
 		</div>
 	</section>
 	
-	<div class="elevate">
-		<ul class="menu menu_horizontal">
+	<div class="elevate" style="height: 27px">
+		<ul style="float:left" class="menu menu_horizontal">
 			<li><a href="admin.html">Surveys</a></li>
 		</ul>
 		<ul style="float:right" class="menu menu_horizontal">
@@ -82,37 +82,23 @@ $(function(){
 	<script>
 	$(document).ready(function() {
 		load();
+		
 		$(document).on('click', "input[type=checkbox]", function() {
 			checkButtonActiveStatus();
 		});
+		
 		$(document).on('click', "button[name=btnDelete]", function() {
-			Http.httpDelete(env.server+"/api/surveys", asList('input[name="id"]:checked', "value"), function(resp, status){
+			Http.httpDelete(env.server+"/api/surveys", HtmlUtils.asList('input[name="id"]:checked', "value"), function(resp, status){
 				load();
 			});
 		});
 		
 		$(document).on('click', "button[name=btnDuplicate]", function() {
-			Http.httpPost(env.server+"/api/surveys/"+asList('input[name="id"]:checked', "value")[0]+"/copy", null, function(resp, status){
+			Http.httpPost(env.server+"/api/surveys/"+HtmlUtils.asList('input[name="id"]:checked', "value")[0]+"/copy", null, function(resp, status){
 				load();
 			});
 		});
 	});
-	
-	function asList(selector, attr){
-		var list=[];
-		$(selector).each(function(){
-			list.push($(this).attr(attr));
-		});
-		return list;
-	}
-//	function getSelected(){
-//		var selected=[];
-//		$("input:checked").each(function(){
-//			selected.push($(this).attr("value"));
-//		});
-//		return selected;
-//	}
-	
 	
 	function checkButtonActiveStatus(){
 		$('button[name="btnNew"]').attr('disabled', $('input[name="id"]:checked').length>0);
@@ -133,14 +119,10 @@ $(function(){
 						<td><a href="admin-survey-details.html?id=`+s['id']+`">`+s['id']+`</a></td>
 						<td>`+s['name']+`</td>
 						<td>`+s['owner']+`</td>
-						<!--td><a href="#">N/A</a></td-->
 						<td><a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="index.html?surveyId=`+s['id']+`">Live Survey</a></td>
-						<!--td><a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white openModal" href="#" data-id="`+s['id']+`" id="openModal">Configure</a></td-->
-						<!--td><a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="#">Reports</a></td-->
 					</tr>
 					`);
 			}
-			attachHandlers();
 		});
 		checkButtonActiveStatus();
 	}
@@ -156,111 +138,13 @@ $(function(){
 			load();
 		});
 	}
+	
+	function loadConfig(surveyId){
+		Http.httpGet("/api/survey/"+surveyId+"?questionsOnly=true", function(cfg){
+			document.getElementById("config").innerHTML=cfg;
+		});
+	}
 	</script>
 
 </body>
 </html>
-
-
-
-
-<!-- modal "Configure" action-->
-
-<!-- The Modal -->
-<div id="myModal" class="modal">
-  <!-- Modal content -->
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <p><textarea id="config" style="width:100%; height: 500px; font-size: 10pt; font-family: sans-serif;"></textarea></p>
-    <a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="#">Save</a>
-    <a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="#" onclick="document.getElementsByClassName('close')[0].onclick();">Cancel</a>
-  </div>
-</div>
-<style>
-/* The Modal (background) */
-.modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
-
-/* Modal Content/Box */
-.modal-content {
-  background-color: #fefefe;
-  margin: 15% auto; /* 15% from the top and centered */
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%; /* Could be more or less, depending on screen size */
-  display: inherit;
-}
-
-/* The Close Button */
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
-}
-</style>
-<script>
-
-
-
-
-
-//Get the modal
-var modal = document.getElementById("myModal");
-// Get the button that opens the modal
-var btn = document.getElementById("openModal");
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
-// When the user clicks on the button, open the modal
-
-
-function attachHandlers(){
-	var slides = document.getElementsByClassName("openModal");
-	for (var i = 0; i < slides.length; i++) {
-		slides.item(i).addEventListener("click", function() {
-			  modal.style.display = "block";
-			  loadConfig(this.dataset["id"])
-			});
-	}
-}
-
-
-//btn.onclick = function() {
-//  modal.style.display = "block";
-//  loadConfig(this.dataset["id"])
-//}
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-  modal.style.display = "none";
-}
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
-}
-
-function loadConfig(surveyId){
-	Http.httpGet("/api/survey/"+surveyId+"?questionsOnly=true", function(cfg){
-		document.getElementById("config").innerHTML=cfg;
-	});
-}
-
-</script>
