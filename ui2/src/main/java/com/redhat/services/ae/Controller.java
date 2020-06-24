@@ -1,52 +1,21 @@
 package com.redhat.services.ae;
 
-//import static io.restassured.RestAssured.given;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.Arrays;
-import java.util.Collections;
+import java.net.URLDecoder;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.UUID;
 
-import javax.net.ssl.HttpsURLConnection;
-//import javax.servlet.http.HttpServletRequest;
-//import javax.servlet.http.HttpServletResponse;
-//import javax.servlet.http.HttpSession;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 
-import org.apache.commons.io.IOUtils;
-//import org.bson.Document;
-//import org.bson.codecs.BsonTypeClassMap;
-//import org.bson.codecs.DocumentCodec;
-//import org.bson.codecs.configuration.CodecRegistries;
-//import org.bson.codecs.configuration.CodecRegistry;
-
-import com.google.common.base.Charsets;
+import com.google.api.client.util.Base64;
 import com.google.common.base.Splitter;
-import com.google.common.collect.Lists;
-import com.google.common.io.Resources;
-
-//import io.restassured.http.Header;
 
 
 @Path("/")
@@ -58,6 +27,51 @@ public class Controller{
 		return Response.ok("var env={server:"+(System.getenv("SERVER")!=null?"\""+System.getenv("SERVER")+"\"":"undefined")+"}", "application/javascript").build();
 	}
 	
+	
+//	private Map<String,String> parseQueryString(String url) throws UnsupportedEncodingException{
+//		Map<String,String> params=new HashMap<>();
+//		for (String param:Splitter.on("&").trimResults().splitToList(url)){
+//			String key=param.substring(0, param.indexOf("="));
+//			String value=param.substring(param.indexOf("=")+1);
+//			params.put(key,URLDecoder.decode(value, "UTF-8"));
+//		}
+//		return params;
+//	}
+//	
+//	@POST
+//	@Path("/login")
+//	public Response login(String payload) throws Exception{
+//		boolean success=false;
+//		System.out.println("payload was "+payload);
+//		Map<String, String> params=parseQueryString(payload);
+//		if ("admin".equals(params.get("username")) && "admin".equals(params.get("password"))){
+//			success=true;
+//		}
+//		
+//		long ttlMillis=2 /*hrs*/ * 60 * 60 * 1000;
+//		
+//		String jwtToken=Jwt2.createJWT(ttlMillis*1000);
+//		
+////		String jwtToken=Jwt.createJWT(UUID.randomUUID().toString(), "RHAssessments", params.get("username"), ttlMillis);
+////		String jwtTokenEncoded=new String(java.util.Base64.getEncoder().encode(jwtToken.getBytes()), "UTF-8");
+//		
+//		System.out.println(success?"success":"error");
+//		if (success){
+//			return Response.status(302).location(new URI("/admin.html")).cookie(new NewCookie("rhrti-jwt", jwtToken)).build();
+////			return Response.temporaryRedirect(new URI("admin.html")).cookie(new NewCookie("rhjwt", jwtToken)).build();
+//		}else{
+//			return Response.status(302).location(new URI("/login.html?error=")).build();
+//		}
+//	}
+//	@GET
+//	@Path("/logout")
+//	public Response logout() throws URISyntaxException, UnsupportedEncodingException{
+//		
+//		// delete cookie?
+//		// invalidate session?
+//		
+//		return Response.status(302).location(new URI("/login.html")).cookie(new NewCookie("rhrti-jwt", null)) .build();
+//	}
 	
 //	@GET
 //  @Path("/survey/{Id}")

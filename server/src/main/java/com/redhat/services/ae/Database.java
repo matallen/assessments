@@ -99,6 +99,7 @@ public class Database{
     }catch (IOException e){
       e.printStackTrace();
     }
+    log.severe("Returning NULL Database - this is cause issues!");
     return null;
   }
   
@@ -113,7 +114,7 @@ public class Database{
     	new Database().save();
     }
     instance=Database.load();
-    log.info("Loading/Replaced 'instance' of database in memory");
+    log.info("Loading/Replaced 'instance' of database in memory (loaded ok?="+(null==instance?"NO! it's NULL!!":"Yes")+")");
     
     return instance;
   }

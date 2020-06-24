@@ -1,4 +1,4 @@
-package com.redhat.pathfinder.controllers;
+package com.redhat.services.ae.controllers;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -7,6 +7,7 @@ import static org.hamcrest.text.MatchesPattern.matchesPattern;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,6 +63,27 @@ public class SurveyControllerTest {
     	.body("[0].id", matchesPattern("^[A-Z]{6}$"))
     	;
   }
+  
+	@Test
+	public void testResultsGathering() throws ParseException, IOException{
+		String testPayload="{\n" + 
+				"  \"automation-development\" : \"item3\",\n" + 
+				"  \"question7\" : \"item5\",\n" + 
+				"  \"question6\" : \"item1\",\n" + 
+				"  \"question9\" : \"item5\",\n" + 
+				"  \"automation-operations\" : \"item3\",\n" + 
+				"  \"question8\" : \"item3\",\n" + 
+				"  \"question10\" : \"item1\",\n" + 
+				"  \"methodology-operations\" : \"item4\",\n" + 
+				"  \"question5\" : \"item5\",\n" + 
+				"  \"methodology-development\" : \"item4\"\n" + 
+				"}";
+		
+		
+		System.out.println(
+				new SurveyController().onResults("TESTING", "visitorId-123", testPayload)
+		);
+	}
   
   @Test
   public void addWithSameIDShouldFail() {

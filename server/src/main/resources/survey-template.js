@@ -9,11 +9,24 @@ defaultThemeColors["$header-color"] = "#ffffff";
 defaultThemeColors["$header-background-color"] = "#cc0000";
 defaultThemeColors["$body-container-background-color"] = "#f8f8f8";
 defaultThemeColors["$error-color"]="#a30000";
-defaultThemeColors["$border-color"]="#cc0000";
+//defaultThemeColors["$border-color"]="#cc0000";
 
 Survey
     .StylesManager
     .applyTheme();
+
+Survey
+	.Serializer
+	.addProperty("page", {
+	    name: "navigationTitle:string",
+	    isLocalizable: true
+});
+Survey
+	.Serializer
+	.addProperty("page", {
+		name: "navigationDescription:string",
+		isLocalizable: true
+});
 
 Survey.requiredText = "AA";
 
@@ -100,13 +113,8 @@ survey
 		var match=expr.exec(timeTaken);
 		timeInfo[page.name]=match[1];
 		console.log("Metrics:: sending page message: page "+ page.name+" - "+timeInfo[page.name]);
-		
-    	var data={};
-    	data["info.time_on_page"]=timeInfo[page.name];
-    	data["info.geo"]=geoInfo["continentCode"];
-    	data["info.countryCode"]=geoInfo["countryCode"];
-    	data["info.region"]=geoInfo["region"];
-		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onPageChange?cookie="+Cookie.get("rhrti-uid"), data);
+    	
+		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onPageChange?cookie="+Cookie.get("rhrti-uid"), buildOnXPayload(page));
 	});
 		
 survey
@@ -122,26 +130,23 @@ survey
 		timeInfo[page.name]=match[1];
 		console.log("Metrics:: sending page message: page "+ page.name+" - "+timeInfo[page.name]);
 
-//		var data={};
-//    	data["time_on_page"]=timeInfo[page.name];
-//    	data["geo"]=geoInfo["continentCode"];
-//    	data["countryCode"]=geoInfo["countryCode"];
-//    	data["region"]=geoInfo["region"];
-		
-		var data={};
-    	data["info.time_on_page"]=timeInfo[page.name];  
-    	data["info.geo"]=geoInfo["continentCode"];      
-    	data["info.countryCode"]=geoInfo["countryCode"];
-    	data["info.region"]=geoInfo["region"];          
-    	
-    	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onComplete?cookie="+Cookie.get("rhrti-uid"), data);
+    	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onComplete?cookie="+Cookie.get("rhrti-uid"), buildOnXPayload(page));
     	//Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"?event=onComplete&cookie="+Cookie.get("rhrti-uid")+"&time="+timeInfo[page.name]+"&country="+geoInfo["countryCode"]+"region"+geoInfo["region"]);
 
     	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/onResults?cookie="+Cookie.get("rhrti-uid"), survey.data);
     	
     	
     });
-    	
+
+function buildOnXPayload(page){
+	var payload={};
+	payload["info"]={};
+	payload["info"]["time_on_page"]=timeInfo[page.name];
+	payload["info"]["geo"]=geoInfo["continentCode"];
+	payload["info"]["countryCode"]=geoInfo["countryCode"];
+	payload["info"]["region"]=geoInfo["region"];
+	payload["data"]=survey.data;        
+}
 //survey
 //    .onAfterRenderPage
 //    .add(function (result) {
@@ -185,6 +190,137 @@ if (null!=results){
 $("#surveyElement").Survey({
     model: survey
 });
+
+
+
+// MAT - ADDING TOP NAV
+var navTopEl = document.querySelector("#surveyNavigation");
+navTopEl.className = "navigationContainer";
+//var leftImg = document.createElement("img");
+//leftImg.src = "/Content/Images/examples/covid/Left.svg";
+//leftImg.style = "width: 16px; height: 16px";
+//leftImg.className = "navigationProgressbarImage";
+//navTopEl.appendChild(leftImg);
+var navProgBarDiv = document.createElement("div");
+navProgBarDiv.className = "navigationProgressbarDiv";
+navTopEl.appendChild(navProgBarDiv);
+var navProgBar = document.createElement("ul");
+navProgBar.className = "navigationProgressbar";
+navProgBarDiv.appendChild(navProgBar);
+//leftImg.onclick = function () {
+//    navProgBarDiv.scrollLeft -= 70;
+//};
+var liEls = [];
+for (var i = 0; i < survey.PageCount; i++) {
+    var liEl = document.createElement("li");
+    if (survey.currentPageNo == i) {
+        liEl
+            .classList
+            .add("current");
+    }
+    //liEl.onclick = function (index) {
+    //    return function () {
+    //        if (survey['isCompleted']) 
+    //            return;
+    //        liEls[survey.currentPageNo]
+    //            .classList
+    //            .remove("current");
+    //        if (index < survey.currentPageNo) {
+    //            survey.currentPageNo = index;
+    //        } else if (index > survey.currentPageNo) {
+    //            var j = survey.currentPageNo;
+    //            for (; j < index; j++) {
+    //                if (survey.visiblePages[j].hasErrors(true, true)) 
+    //                    break;
+    //                if (!liEls[j].classList.contains("completed")) {
+    //                    liEls[j]
+    //                        .classList
+    //                        .add("completed");
+    //                }
+    //            }
+    //            survey.currentPageNo = j;
+    //        }
+    //        liEls[survey.currentPageNo]
+    //            .classList
+    //            .add("current");
+    //    };
+    //}(i);
+    var pageTitle = document.createElement("span");
+    if (!survey.pages[i].navigationTitle) {
+        pageTitle.innerText = survey.pages[i].name;
+    } else 
+        pageTitle.innerText = survey.pages[i].navigationTitle;
+    pageTitle.className = "pageTitle";
+    liEl.appendChild(pageTitle);
+    var br = document.createElement("br");
+    liEl.appendChild(br);
+    var pageDescription = document.createElement("span");
+    if (!!survey.pages[i].navigationDescription) {
+        pageDescription.innerText = survey.pages[i].navigationDescription;
+    }
+    pageDescription.className = "pageDescription";
+    liEl.appendChild(pageDescription);
+    liEls.push(liEl);
+    navProgBar.appendChild(liEl);
+}
+survey
+    .onCurrentPageChanged
+    .add(function (sender, options) {
+        var oldIndex = options.oldCurrentPage.visibleIndex;
+        var newIndex = options.newCurrentPage.visibleIndex;
+        if (undefined!=liEls[oldIndex])
+	        liEls[oldIndex]
+	            .classList
+	            .remove("current");
+        if (newIndex > oldIndex) {
+            for (var i = oldIndex; i < newIndex; i++) {
+                if (sender.visiblePages[i].hasErrors(true, true)) 
+                    break;
+                if (!liEls[i].classList.contains("completed")) {
+                    liEls[i]
+                        .classList
+                        .add("completed");
+                }
+            }
+        }
+        if (undefined!=liEls[newIndex])
+	        liEls[newIndex]
+	            .classList
+	            .add("current");
+    });
+
+/*
+var rightImg = document.createElement("img");
+rightImg.src = "https://img.icons8.com/material/4ac144/256/user-male.png";
+rightImg.style = "width: 16px; height: 16px";
+rightImg.className = "navigationProgressbarImage";
+rightImg.onclick = function () {
+    navProgBarDiv.scrollLeft += 70;
+};
+navTopEl.appendChild(rightImg);
+
+var updateScroller = setInterval(() => {
+    if (navProgBarDiv.scrollWidth <= navProgBarDiv.offsetWidth) {
+        leftImg
+            .classList
+            .add("hidden");
+        rightImg
+            .classList
+            .add("hidden");
+    } else {
+        leftImg
+            .classList
+            .remove("hidden");
+        rightImg
+            .classList
+            .remove("hidden");
+    }
+}, 100);
+ * */
+// /MAT - ADDING TOP NAV
+
+
+
 
 //survey.locale = languageCode;
 survey.render();

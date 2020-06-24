@@ -1,13 +1,6 @@
 package com.redhat.services.ae;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.Random;
-
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
-import javax.json.bind.JsonbConfig;
-import javax.json.bind.config.PropertyVisibilityStrategy;
 
 public class Utils{
 

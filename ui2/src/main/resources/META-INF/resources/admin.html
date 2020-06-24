@@ -36,28 +36,27 @@ $(function(){
 		<ul class="menu menu_horizontal">
 			<li><a href="admin.html">Surveys</a></li>
 		</ul>
+		<ul style="float:right" class="menu menu_horizontal">
+			<li><a id="logout" href="/logout">Logout</a></li>
+		</ul>
+		<script>
+			$(document).ready(function() {
+				$("a[id=logout]").attr("href", env.server+$("a[id=logout]").attr("href")+"?onSuccess="+document.location.origin+"/login.html");
+			});	
+		</script>
 	</div>
 	
 	<section class="py-1">
 		<div class="row center">
 			<div class="button-bar" style="display:inline-flex;">
 				<div style="padding-right: 5px;">
-					<!--
-					<a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="admin-survey-details.html">New</a>
-					-->
 					<button name="btnNew" style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" onclick="location.href='admin-survey-details.html';" >New</button>
 				</div>
 				<div>
-					<!--
-					<a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="#" onclick="deleteAll();">Delete</a>
-					-->
-					<button name="btnDelete" style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white">Delete</button>
+					<button name="btnDelete" disabled style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white">Delete</button>
 				</div>
 				<div>
-					<!--
-					<a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="#" onclick="duplicate();">Duplicate</a>
-					-->
-					<button name="btnDuplicate" style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white">Duplicate</button>
+					<button name="btnDuplicate" disabled style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white">Duplicate</button>
 				</div>
 			</div>
 			<table class="elevate">
@@ -80,28 +79,25 @@ $(function(){
 	</section>
 	
 
-
 	<script>
-	
 	$(document).ready(function() {
 		load();
-		checkActiveButtons();
 		$(document).on('click', "input[type=checkbox]", function() {
-			checkActiveButtons();
+			checkButtonActiveStatus();
+		});
+		$(document).on('click', "button[name=btnDelete]", function() {
+			Http.httpDelete(env.server+"/api/surveys", asList('input[name="id"]:checked', "value"), function(resp, status){
+				load();
+			});
+		});
+		
+		$(document).on('click', "button[name=btnDuplicate]", function() {
+			Http.httpPost(env.server+"/api/surveys/"+asList('input[name="id"]:checked', "value")[0]+"/copy", null, function(resp, status){
+				load();
+			});
 		});
 	});
 	
-	$(document).on('click', "button[name=btnDelete]", function() {
-		Http.httpDelete(env.server+"/api/surveys", asList('input[name="id"]:checked', "value"), function(resp, status){
-			load();
-		});
-	});
-	
-	$(document).on('click', "button[name=btnDuplicate]", function() {
-		Http.httpPost(env.server+"/api/surveys/"+asList('input[name="id"]:checked', "value")[0]+"/copy", null, function(resp, status){
-			load();
-		});
-	});
 	function asList(selector, attr){
 		var list=[];
 		$(selector).each(function(){
@@ -118,7 +114,7 @@ $(function(){
 //	}
 	
 	
-	function checkActiveButtons(){
+	function checkButtonActiveStatus(){
 		$('button[name="btnNew"]').attr('disabled', $('input[name="id"]:checked').length>0);
 		$('button[name="btnDelete"]').attr('disabled', $('input[name="id"]:checked').length<1);
 		$('button[name="btnDuplicate"]').attr('disabled', $('input[name="id"]:checked').length!=1);
@@ -136,7 +132,7 @@ $(function(){
 						<td><input type="checkbox" name="id" value="`+s['id']+`"/></td>
 						<td><a href="admin-survey-details.html?id=`+s['id']+`">`+s['id']+`</a></td>
 						<td>`+s['name']+`</td>
-						<td>`+s['theme']+`</td>
+						<td>`+s['owner']+`</td>
 						<!--td><a href="#">N/A</a></td-->
 						<td><a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="index.html?surveyId=`+s['id']+`">Live Survey</a></td>
 						<!--td><a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white openModal" href="#" data-id="`+s['id']+`" id="openModal">Configure</a></td-->
@@ -146,6 +142,7 @@ $(function(){
 			}
 			attachHandlers();
 		});
+		checkButtonActiveStatus();
 	}
 	
 	function deleteAllChecked(){

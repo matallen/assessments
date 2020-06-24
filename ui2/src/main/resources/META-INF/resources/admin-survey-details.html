@@ -13,6 +13,8 @@ $(function(){
 <script src="assets/js/utils.js"></script>
 <script src="assets/js/jquery-common.js"></script>
 <script src="assets/js/env.js"></script>
+<script src="assets/js/feedback-alert.js"></script>
+
 <style id="customStyles">
 @import "https://go.redhat.com/hubfs/css/styles.min.css";
 </style>
@@ -21,7 +23,7 @@ $(function(){
 </head>
 <body>
 	
-	<!-- HEADER -->
+	<!-- Header (+Logo) -->
 	<section class="assessment-header py-0" style="background-color: black;">
 		<div class="navbar-container">
 			<div class="container pt-2">
@@ -32,6 +34,7 @@ $(function(){
 		</div>
 	</section>
 	
+	<!-- Breadcrumb Menu -->
 	<div class="elevate">
 		<ul class="menu menu_horizontal">
 			<li><a href="admin.html">Surveys</a></li>
@@ -41,25 +44,40 @@ $(function(){
 			<li class="menu_needsId"><a href="admin-survey-details.html?id=">Details</a></li>
 			<li class="menu_needsId"><a href="admin-survey-reports.html?id=">Reports</a></li>
 			<li class="menu_needsId"><a href="admin-survey-questions.html?id=">Questions</a></li>
+			<li class="menu_needsId"><a href="admin-survey-integration-mapping.html?id=">Eloqua</a></li>
 		</ul>
+		<ul style="float:right" class="menu menu_horizontal">
+			<li><a id="logout" href="/logout">Logout</a></li>
+		</ul>
+		<script>
+			$(document).ready(function() {
+				$("a[id=logout]").attr("href", env.server+$("a[id=logout]").attr("href")+"?onSuccess="+document.location.origin+"/login.html");
+			});	
+		</script>
 	</div>
 	
-	<!--  -->
+	<!-- success/error message --> 
+	<div class="alert alert-success" id="feedback-alert">
+    <button type="button" class="close" data-dismiss="alert">x</button>
+    <span id="feedback-alert-text">&nbsp;</span>
+	</div>
+	
+	<!-- Main Content -->
 	<section class="py-1">
 		<div class="row center">
 			<table class="elevate">
 				<tbody id="content">
 				
-				<tr><td>Survey ID</td>							<td><input type="text" disabled id="_id"						value=""/></td></tr>
-				<tr><td>Survey Name</td>						<td><input type="text" disabled id="_name"					value=""/></td></tr>
-				<tr><td>Survey Description</td>			<td><input type="text" disabled id="_description"	value=""/></td></tr>
-				
-				<tr>
-					<td colspan="2">
-				    <a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="#" onclick="save();">Save</a>
-				    <!--a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="/admin.html">Cancel</a-->
-					</td>
-				</tr>
+					<tr><td>Survey ID</td>							<td><input type="text" disabled id="_id"						value=""/></td></tr>
+					<tr><td>Survey Name</td>						<td><input type="text" disabled id="_name"					value=""/></td></tr>
+					<tr><td>Survey Description</td>			<td><input type="text" disabled id="_description"		value=""/></td></tr>
+					<tr><td>Survey Owner</td>						<td><input type="text" disabled id="_owner"					value=""/></td></tr>
+					
+					<tr>
+						<td colspan="2">
+					    <a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="#" onclick="save();">Save</a>
+						</td>
+					</tr>
 				</tbody>
 			</table>
 		</div>
@@ -70,12 +88,13 @@ $(function(){
 
 var surveyId;
 $(document).ready(function() {
+	$("#feedback-alert").hide();
 	surveyId=Utils.getParameterByName("id");
 	setMenu("Details");
 	
 	if (undefined==surveyId){
 		// We have a new Survey - Enable all all input elements with id=_<something>, except ID
-		$("[id^=\"_\"]").each(function(index){
+		$("input[id^=\"_\"]").each(function(index){
 			if ("_id"!=$(this).prop("id")){
 				$(this).prop("disabled", false);
 			}
@@ -97,10 +116,9 @@ $(document).ready(function() {
 function nullToEmpty(v){ if (undefined!=v) return v; else return "";}
 function newData(){
 	var result={};
-	result["id"]=null;
-	result["name"]=null;
-	result["description"]=null;
-	result["theme"]=null;
+	$('input[id^=\"_\"]').each(function() {
+		result[this.id.substr(1)]=null;
+	});
 	return result;
 }
 function save(){
@@ -114,7 +132,8 @@ function save(){
 		if (undefined==data["id"] || ""==data["id"])
 			window.history.pushState("", "", location.pathname+(location.search!=""?location.search+"&":"?")+"id="+JSON.parse(resp.response)["id"]);
 		
-		alert(200==status?"Saved Ok":"Save Error (Status: "+status+")");
+		showSuccess(200==status?"Saved Ok":"Save Error (Status: "+status+")");
+		//alert(200==status?"Saved Ok":"Save Error (Status: "+status+")");
 		//window.location.href="admin.html";
 	});
 }

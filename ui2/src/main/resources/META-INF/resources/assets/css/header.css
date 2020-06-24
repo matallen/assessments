@@ -17,3 +17,22 @@
 			  margin: 30px auto auto auto;
 			  width: 80%;
 			}
+			
+			
+			.navbar-container-inner{
+			  display:flex;
+			  flex-direction: row;
+			  flex-wrap: nowrap;
+			  justify-content: center;
+			  align-items: center;
+			}
+			.cols3{
+				width:25%;
+				height: 67px;
+				text-align: left;
+		    position: relative;
+    		top: 20px;
+			}
+			.justify-right{
+				text-align: right;
+			}

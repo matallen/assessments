@@ -87,8 +87,8 @@ function refreshAnswerDistribution(elemId){
 	var graphUrl=env.server+"/api/surveys/"+surveyId+"/reports/answerPercentages?type=horizontalBar";
 	var defaultDateRange=undefined;
 	graphUrl+="&"+$(undefined!=defaultDateRange?"#Months option:contains('"+defaultDateRange+"')":"#Months").val();
-	Http.httpGet(graphUrl, function(response){
-		var r=JSON.parse(response);
+	Http.httpGetObject(graphUrl, function(status, r){
+		//var r=JSON.parse(response);
 		for (var i=0;i<r.length;i++){
 			var data=r[i];
 			
@@ -178,7 +178,16 @@ canvas{
 			<li class="menu_needsId"><a href="admin-survey-details.html?id=">Details</a></li>
 			<li class="menu_needsId"><a href="admin-survey-reports.html?id=">Reports</a></li>
 			<li class="menu_needsId"><a href="admin-survey-questions.html?id=">Questions</a></li>
+			<li class="menu_needsId"><a href="admin-survey-integration-mapping.html?id=">Eloqua</a></li>
 		</ul>
+		<ul style="float:right" class="menu menu_horizontal">
+			<li><a id="logout" href="/logout">Logout</a></li>
+		</ul>
+		<script>
+			$(document).ready(function() {
+				$("a[id=logout]").attr("href", env.server+$("a[id=logout]").attr("href")+"?onSuccess="+document.location.origin+"/login.html");
+			});	
+		</script>
 	</div>
 
 	<section class="py-1">

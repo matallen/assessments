@@ -2,135 +2,52 @@ package com.redhat.services.ae.controllers;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
-import java.util.Random;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.IOUtils;
-//import org.apache.commons.lang3.StringUtils;
-//import org.bson.types.ObjectId;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.redhat.services.ae.Database;
-import com.redhat.services.ae.Utils;
 import com.redhat.services.ae.model.Survey;
+import com.redhat.services.ae.plugins.Plugin;
+import com.redhat.services.ae.utils.FluentCalendar;
 import com.redhat.services.ae.utils.Json;
-import com.redhat.services.ae.utils.StringUtils;
-
-//import io.quarkus.mongodb.panache.PanacheMongoEntity;
-//import io.quarkus.mongodb.panache.PanacheMongoEntityBase;
 
 @Path("/api/surveys")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class SurveyController{
 	public static final Logger log=LoggerFactory.getLogger(SurveyController.class);
-	
-	
-	/** #### SURVEY HANDLERS ####  */
-	
+
 	@GET
-	public Response list(){
-		return Response.ok(Survey.findAll()).build();
-	}
-	@GET
-	@Path("/{surveyId}")
-	public Response get(@PathParam("surveyId") String surveyId){
-		return Response.ok(Survey.findById(surveyId)).build();
-	}
-	@POST
-	public Response create(String payload) throws IOException{
-		Survey o=Json.toObject(payload, Survey.class);
-		if (StringUtils.isBlank(o.id)) o.id=Utils.generateId();
-		if (Database.get().getSurveys().containsKey(o.id))
-			throw new RuntimeException("Survey ID already exists");
-		o.persist();
-		return Response.ok(Survey.findById(o.id)).build();
-	}
-	@PUT
-	@Path("/{surveyId}")
-	public Response update(@PathParam("surveyId") String surveyId, String payload) throws IOException{
-//		System.out.println("PUT detected - payload = "+payload);
-		Survey o=Json.toObject(payload, Survey.class);
-		Survey entity=Survey.findById(surveyId);
-		if (null==entity) throw new WebApplicationException("Unable to find "+Survey.class.getSimpleName()+" with id "+surveyId);
-		entity=Survey.builder().populate(o, entity);
-		entity.update();
-		return Response.ok(entity).build();
-	}
-	@DELETE
-	@Path("/{id}")
-	public Response deleteSingle(@PathParam String id) throws IOException{
-		Survey entity=Survey.findById(id);
-		if (null==entity) throw new WebApplicationException("Unable to find "+Survey.class.getClass().getSimpleName()+" with id "+id);
-		entity.delete();
-		return Response.status(204).build();
-	}
-	@DELETE
-	public Response deleteMany(String ids) throws IOException{
-//		System.out.println("ids="+ids);
-		List<String> l=Json.newObjectMapper(true).readValue(ids, new TypeReference<List<String>>(){});
-		for (String id:l)
-			deleteSingle(id);
-		return Response.status(204).build();
-	}
-	@POST
-	@Path("/{surveyId}/copy")
-	public Response copy(@PathParam("surveyId") String surveyId) throws IOException{
-		Survey o=Survey.findById(surveyId);
-		Survey copy=o.copy();
-		return Response.ok(copy).build();
-	}
-	
-	/** #### QUESTION HANDERS #### */
-	
-	@PUT
-	@Path("/{surveyId}/questions")
-	public Response saveQuestions(@PathParam("surveyId") String surveyId, String questionsJson) throws FileNotFoundException, IOException{
-		Survey survey=Survey.findById(surveyId);
-//		System.out.println("XXXX="+questionsJson);
-		survey.setQuestions(questionsJson);
-		survey.update();
-		return Response.ok(Survey.findById(surveyId).getQuestions()).build();
-	}
-	
-	@GET
-	@Path("/{surveyId}/questions")
-	public Response getQuestions(@PathParam("surveyId") String surveyId/*, @QueryParam("questionsOnly") String questionsOnlyP, @QueryParam("responseContentType") String responseContentTypeP*/) throws FileNotFoundException, IOException{
-		String surveyName=surveyId+".json";
-		System.out.println("Loading questions: "+surveyName);
-		return Response.ok(Survey.findById(surveyId).getQuestions()).build();
-	}
-	
-	@GET
+	@PermitAll
 	@Path("/{surveyId}/run")
 	public Response getSurveyJavascript(@PathParam("surveyId") String surveyId, 
 			@DefaultValue("application/json") @QueryParam("responseContentType") String responseContentType,
-			@DefaultValue("false") @QueryParam("questionsOnly") String questionsOnly
-			/*, @Context HttpServletRequest request, @Context HttpServletResponse response*/) throws IOException{
+			@DefaultValue("false") @QueryParam("questionsOnly") String questionsOnly) throws IOException{
 		String surveyName=surveyId+".json";
-	//	String responseContentType=(request.getParameter("responseContentType")!=null?request.getParameter("responseContentType"):"application/json");
-	//	boolean questionsOnly="true".equalsIgnoreCase(request.getParameter("questionsOnly"));
 		
 		System.out.println("Loading questions: "+surveyName);
-//		String surveyToInsert=IOUtils.toString(new File("target/classes", surveyName).exists()?new FileInputStream(new File("target/classes", surveyName).getAbsolutePath()):getClass().getClassLoader().getResourceAsStream(surveyName), "UTF-8");
 		
 		String templateName="survey-template.js";
 		String template=IOUtils.toString(new File("target/classes", templateName).exists()?new FileInputStream(new File("target/classes", templateName).getAbsolutePath()):getClass().getClassLoader().getResourceAsStream(templateName), "UTF-8");
@@ -148,12 +65,111 @@ public class SurveyController{
 				result=new StringBuffer(result).insert(i, questions).toString();
 			}
 		}
-		
 		return Response.ok(result, null==responseContentType?"text/html; charset=UTF-8":responseContentType).build();
-//	      .header("Access-Control-Allow-Origin",  "*")
-//	      .header("Content-Type", null==responseContentType?"text/html; charset=UTF-8":responseContentType/*"application/json"*/)
-//	      .header("Cache-Control", "no-store, must-revalidate, no-cache, max-age=0")
-//	      .header("Pragma", "no-cache")
-//	      .header("X-Content-Type-Options", "nosniff").entity(result).build();
+	}
+	
+	@POST
+	@Path("/{surveyId}/metrics/{pageId}/onPageChange")
+	public Response onPageChange(@PathParam("surveyId") String surveyId, @PathParam("pageId") String pageId, @QueryParam("visitorId") String visitorId, String payload) throws JsonParseException, JsonMappingException, IOException{
+		Survey o=Survey.findById(surveyId);
+		if (null==o) throw new RuntimeException("Survey ID doesn't exist! :"+surveyId);
+		String YYMMM=FluentCalendar.get(new Date()).getString("yy-MMM");
+		Map<String,Object> pageData=Json.toObject(payload, new TypeReference<HashMap<String,Object>>(){});
+		Map<String,String> data=(Map<String,String>)pageData.get("data");
+		Map<String,String> info=(Map<String,String>)pageData.get("info");
+		
+//		Map<String, Map<String, String>> infoAndData=getInfoAndData(payload);
+		
+		System.out.println("onPageChange:: info="+Json.toJson(info));
+		System.out.println("onPageChange:: data="+Json.toJson(data));
+		
+		// TODO: store the data for when a user revisits the page
+		
+		// TODO: log the time window spent on page
+		
+		if (!Database.get().getVisitors(YYMMM).contains(visitorId+pageId))
+			o.getMetrics().getByMonth("page", YYMMM).put(pageId, o.getMetrics().getByMonth("page", YYMMM).containsKey(pageId)?o.getMetrics().getByMonth("page", YYMMM).get(pageId)+1:1);
+
+		o.persist();
+		return Response.ok(Survey.findById(o.id)).build();
+	}
+	
+	
+//	// all because I cant type-strong parse out a map of maps...
+//	private Map<String,Map<String,String>> getInfoAndData(String payload) throws JsonParseException, JsonMappingException, IOException{
+//		Map<String,Map<String,String>> result=new HashMap<String, Map<String,String>>();
+//		Map<String,Object> pageData=Json.toObject(payload, new TypeReference<HashMap<String,Object>>(){});
+//		Map<String,String> data=(Map<String,String>)pageData.get("data");
+//		Map<String,String> info=(Map<String,String>)pageData.get("info");
+//		result.put("info", info);
+//		result.put("data", data);
+//		return result;
+//	}
+
+	@POST
+	@Path("/{surveyId}/metrics/{pageId}/onComplete")
+	public Response onComplete(@PathParam("surveyId") String surveyId, @PathParam("pageId") String pageId, @QueryParam("visitorId") String visitorId, String payload) throws JsonParseException, JsonMappingException, IOException{
+		
+		onPageChange(surveyId, pageId, visitorId, payload);
+		
+		Survey o=Survey.findById(surveyId);
+		if (null==o) throw new RuntimeException("Survey ID doesn't exist! :"+surveyId);
+		String YYMMM=FluentCalendar.get(new Date()).getString("yy-MMM");
+//		Map<String,String> data=Json.toObject(payload, new TypeReference<HashMap<String,String>>(){});
+		Map<String,Object> pageData=Json.toObject(payload, new TypeReference<HashMap<String,Object>>(){});
+		Map<String,String> data=(Map<String,String>)pageData.get("data");
+		Map<String,String> info=(Map<String,String>)pageData.get("info");
+		
+		log.debug("onComplete:: data="+Json.toJson(data));
+		
+		String geo=data.get("info.geo");
+		if (!Database.get().getVisitors(YYMMM).contains(visitorId)){
+			o.getMetrics().getCompletedByMonth().put(YYMMM, o.getMetrics().getCompletedByMonth().containsKey(YYMMM)?o.getMetrics().getCompletedByMonth().get(YYMMM)+1:1);
+//			o.getMetrics().getByMonth("page", YYMMM).put(pageId, o.getMetrics().getByMonth("page", YYMMM).containsKey(pageId)?o.getMetrics().getByMonth("page", YYMMM).get(pageId)+1:1);
+			o.getMetrics().getByMonth("geo", YYMMM).put(geo, o.getMetrics().getByMonth("geo", YYMMM).containsKey(geo)?o.getMetrics().getByMonth("geo", YYMMM).get(geo)+1:1);
+			//o.getMetrics().getByMonth("country", YYMMM).put(countryCode, o.getMetrics().getByMonth("country", YYMMM).containsKey(countryCode)?o.getMetrics().getByMonth("country", YYMMM).get(countryCode)+1:1);
+		}
+		
+		o.persist();
+		return Response.ok(Survey.findById(o.id)).build();
+	}
+
+	@POST
+	@Path("/{surveyId}/metrics/onResults")
+	public Response onResults(@PathParam("surveyId") String surveyId, @QueryParam("visitorId") String visitorId, String payload) throws JsonParseException, JsonMappingException, IOException{
+		Survey o=Survey.findById(surveyId);
+		if (null==o) throw new RuntimeException("Survey ID doesn't exist! :"+surveyId);
+		String YYMMM=FluentCalendar.get(new Date()).getString("yy-MMM");
+		Map<String,String> data=Json.toObject(payload, new TypeReference<HashMap<String,String>>(){});
+		
+		System.out.println("resultsGathering:: data="+Json.toJson(data));
+		
+		// log how many times a specific answer was provided to a question, for reporting % of answers per question
+		for (Entry<String, String> e:data.entrySet()){
+			String questionId=e.getKey();
+			String answerId=e.getValue();
+			
+			Map<String, Map<String,Integer>> answers=o.getMetrics().getAnswersByMonth("answers", YYMMM);
+			if (!answers.containsKey(questionId)) answers.put(questionId, new HashMap<>());
+			answers.get(questionId).put(answerId, answers.get(questionId).containsKey(answerId)?answers.get(questionId).get(answerId)+1:1);
+		}
+		o.persist();
+		
+		// check for post-survey plugins and execute
+		Map<String, Map<String, Object>> plugins=o.getActivePlugins();
+		for(Entry<String, Map<String, Object>> pl:plugins.entrySet()){
+			String pluginName=pl.getKey();
+			String clazz=(String)pl.getValue().get("className");
+			try{
+				Plugin plugin=(Plugin)Class.forName(clazz).newInstance();
+				plugin.setConfig(pl.getValue());
+				plugin.execute(data);
+			}catch(Exception e){
+				
+			}
+		}
+		
+		
+		return Response.ok(Survey.findById(o.id)).build();
 	}
 }

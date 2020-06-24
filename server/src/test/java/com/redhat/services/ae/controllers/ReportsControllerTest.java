@@ -1,19 +1,25 @@
-package com.redhat.pathfinder.controllers;
+package com.redhat.services.ae.controllers;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.redhat.services.ae.Database;
 import com.redhat.services.ae.controllers.ReportsController;
 import com.redhat.services.ae.model.Survey;
+import com.redhat.services.ae.utils.Json;
 
 public class ReportsControllerTest{
 
@@ -25,6 +31,36 @@ public class ReportsControllerTest{
 		IOUtils.write(setupDatabase().getBytes(), new FileOutputStream(new File(Database.STORAGE)));
 		Survey s=Survey.findById("TESTING");
 		s.setQuestions(setupQuestions());
+	}
+	
+	@Test
+	public void testOnResultsWithComplexJson() throws JsonParseException, JsonMappingException, IOException{
+		String payload=
+		"{                                    "+
+		"  \"automation-dev\": \"item4\",     "+
+		"  \"automation-ops\": \"item3\",     "+
+		"  \"methodology-ops\": \"item4\",    "+
+		"  \"methodology-dev\": \"item5\",    "+
+		"  \"architecture-ops\": \"item3\",   "+
+		"  \"architecture-dev\": \"item5\",   "+
+		"  \"strategy-dev\": \"item5\",       "+
+		"  \"strategy-ops\": \"item2\",       "+
+		"  \"environment-ops\": \"item4\",    "+
+		"  \"environment-dev\": \"item5\",    "+
+		"  \"question5\": {                   "+
+		"    \"text1\": \"Mat\",              "+
+		"    \"text2\": \"Allen\",            "+
+		"    \"text3\": \"fred@fred.com\"     "+
+		"  },                                 "+
+		"  \"question1\": {                   "+
+		"    \"text1\": \"RH\",               "+
+		"    \"text2\": \"Architect\",        "+
+		"    \"text3\": \"United States\"     "+
+		"  }                                  "+
+		"}                                    ";
+		
+		Map<String,Object> data=Json.toObject(payload, new TypeReference<HashMap<String,Object>>(){});
+		System.out.println(data);
 	}
 	
 	
@@ -58,26 +94,7 @@ public class ReportsControllerTest{
 	}
 	
 	
-	@Test
-	public void testResultsGathering() throws ParseException, IOException{
-		String testPayload="{\n" + 
-				"  \"automation-development\" : \"item3\",\n" + 
-				"  \"question7\" : \"item5\",\n" + 
-				"  \"question6\" : \"item1\",\n" + 
-				"  \"question9\" : \"item5\",\n" + 
-				"  \"automation-operations\" : \"item3\",\n" + 
-				"  \"question8\" : \"item3\",\n" + 
-				"  \"question10\" : \"item1\",\n" + 
-				"  \"methodology-operations\" : \"item4\",\n" + 
-				"  \"question5\" : \"item5\",\n" + 
-				"  \"methodology-development\" : \"item4\"\n" + 
-				"}";
-		
-		
-		System.out.println(
-				new ReportsController().onResults("TESTING", "visitorId-123", testPayload)
-		);
-	}
+
 	
 	@Test
 	public void testAnswerPercentages() throws JsonProcessingException, ParseException{

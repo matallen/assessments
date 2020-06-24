@@ -5,15 +5,18 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.api.client.util.Lists;
 
 //import org.bson.codecs.pojo.annotations.BsonProperty;
 //import org.bson.types.ObjectId;
@@ -22,7 +25,6 @@ import com.google.api.client.util.Lists;
 //import com.mongodb.DBObject;
 import com.redhat.services.ae.Database;
 import com.redhat.services.ae.Utils;
-import com.redhat.services.ae.utils.Json;
 
 //import io.quarkus.mongodb.panache.MongoEntity;
 //import io.quarkus.mongodb.panache.PanacheMongoEntity;
@@ -34,21 +36,23 @@ public class Survey{
 	public String id; // eek - will this clash with the mongo/panache id field?
 	public String name;
 	public String description;
-//	public String theme;
-//	public String externalUrl;
-//	public String content;
+	public String owner;
 	
 	private Metrics metrics;
 	public Metrics getMetrics(){
 		if (null==metrics) metrics=new Metrics();
 		return metrics;
 	}
-//	public void setMetrics(Metrics m){
-//		this.metrics=m;
-//	}
+	
+	private Map<String,Map<String,Object>> plugins;
+	public Map<String,Map<String,Object>> getPlugins(){
+		if (null==plugins) plugins=new HashMap<String, Map<String,Object>>();
+		return plugins;
+	}
+	
 	
 	public static List<Survey> findAll(){
-		return Lists.newArrayList(Database.get().getSurveys().values());
+		return Database.get().getSurveys().values().stream().collect(Collectors.toList());
 	}
 	public static Survey findById(String id){
 //		return findById(new ObjectId(id));
@@ -58,7 +62,14 @@ public class Survey{
 //		Map<String, Survey> surveys=db.getSurveys();
 //		if (null==Database.get().getSurveys()) System.err.println("findSurvey.ById():: ERROR!!!!! Database.get().getSurveys() returned NULL");
 //		return surveys.get(id);
-		return Database.get().getSurveys().get(id);
+		Database db=Database.get();
+		if (null==db) System.err.println("Database.get() returned NULL!!!!!!");
+		Map<String, Survey> surveys=db.getSurveys();
+		if (null==surveys) System.err.println("Database.get().getSurveys() returned NULL!!!!!!");
+		Survey survey=surveys.get(id);
+		if (null==survey) System.err.println("Database.get().getSurveys().get('"+id+"') returned NULL!!!!!!");
+		return survey;
+//		return Database.get().getSurveys().get(id);
 	}
 	public void persist(){
 		Database.get().getSurveys().put(id, this);
@@ -82,6 +93,7 @@ public class Survey{
 		o.id=Utils.generateId();
 		o.name="Copy of "+this.name;
 		o.description=this.description;
+		o.owner=this.owner;
 		o.setQuestions(this.getQuestions());
 		o.persist();
 		return o;
@@ -115,6 +127,16 @@ public class Survey{
 		IOUtils.write(questionsJson, new FileOutputStream(questionsLocation), "UTF-8");
 	}
 	
+	@JsonIgnore
+	public Map<String,Map<String,Object>> getActivePlugins() throws IOException{
+		Map<String,Map<String,Object>> result=new HashMap<>();
+		for(Entry<String, Map<String, Object>> e:getPlugins().entrySet()){
+			if (e.getValue().containsKey("active") && (Boolean)e.getValue().get("active")){
+				result.put(e.getKey(), e.getValue());
+			}
+		}
+		return result;
+	}
 	
 	
 	
@@ -125,6 +147,7 @@ public class Survey{
 		public String getId(){return id;}                     public Builder id(String v){id=v; return this;}
 		public String getName(){return name;}                 public Builder name(String v){name=v; return this;}
 		public String getDescription(){return description;}   public Builder description(String v){description=v; return this;}
+		public String getOwner(){return owner;}						    public Builder owner(String v){owner=v; return this;}
 //		public String getTheme(){return theme;}               public Builder theme(String v){theme=v; return this;}
 //		public String getExternalUrl(){return externalUrl;}   public Builder externalUrl(String v){externalUrl=v; return this;}
 //		public String getContent(){return content;}           public Builder content(String v){content=v; return this;}
@@ -134,6 +157,7 @@ public class Survey{
 			c.id=super.id;
 			c.name=super.name;
 			c.description=super.description;
+			c.owner=super.owner;
 //			c.theme=super.theme;
 //			c.content=super.content;
 			return c;
@@ -142,6 +166,7 @@ public class Survey{
 			dst.id=src.id!=null?src.id:dst.id;
 			dst.name=src.name!=null?src.name:dst.name;
 			dst.description=src.description!=null?src.description:dst.description;
+			dst.owner=src.owner!=null?src.owner:dst.owner;
 //			dst.theme=src.theme!=null?src.theme:dst.theme;
 //			dst.content=src.content!=null?src.content:dst.content;
 			return dst;
@@ -167,6 +192,7 @@ public class Survey{
     sb.append("id:").append(Utils.toIndentedString(id));
     sb.append(", name:").append(Utils.toIndentedString(name));
     sb.append(", description:").append(Utils.toIndentedString(description));
+    sb.append(", owner:").append(Utils.toIndentedString(owner));
     sb.append("}");
     return sb.toString();
 	}
