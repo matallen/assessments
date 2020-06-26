@@ -318,23 +318,25 @@ for (var i = 0; i < survey.PageCount; i++) {
             .classList
             .add("current");
     }
-    var pageTitle = document.createElement("span");
+
+    var pageTitle = document.createElement("div");
     if (!survey.pages[i].navigationTitle) {
         pageTitle.innerText = survey.pages[i].name;
-    } else 
+    } else
         pageTitle.innerText = survey.pages[i].navigationTitle;
     pageTitle.className = "pageTitle";
-    liEl.appendChild(pageTitle);
-    var br = document.createElement("br");
-    liEl.appendChild(br);
-    var pageDescription = document.createElement("span");
-    if (!!survey.pages[i].navigationDescription) {
-        pageDescription.innerText = survey.pages[i].navigationDescription;
-    }
-    pageDescription.className = "pageDescription";
-    liEl.appendChild(pageDescription);
+	navProgBar.appendChild(pageTitle);
+	navProgBar.appendChild(liEl);
+    // var br = document.createElement("br");
+    // liEl.appendChild(br);
+    // var pageDescription = document.createElement("span");
+    // if (!!survey.pages[i].navigationDescription) {
+    //     pageDescription.innerText = survey.pages[i].navigationDescription;
+    // }
+    // pageDescription.className = "pageDescription";
+    // liEl.appendChild(pageDescription);
     liEls[survey.pages[i].name]=liEl;
-    navProgBar.appendChild(liEl);
+
 }
 survey
     .onCurrentPageChanged
