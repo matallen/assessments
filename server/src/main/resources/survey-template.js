@@ -100,16 +100,6 @@ survey.showTimerPanel = 'bottom';
 survey
       .onAfterRenderPage
       .add(function(result, options){
-    	  ////startPageTimer();
-    	  //var timeTaken=survey.koTimerInfoText();
-    	  //
-    	  //if (""==timeTaken) return;
-    	  //var expr= /.+spent (.+?) on this page and (.+?) in total./g;
-    	  //var match=expr.exec(timeTaken);
-    	  //timeInfo[survey.currentPageValue.name]=match[1];
-    	  ////var arr = /.+spent (.+?) on this page and (.+?) in total./.exec(timeTaken);
-    	  //
-    	  //console.log("page "+ survey.currentPageValue.name+" - "+timeTaken);
       })
 
 survey
@@ -123,10 +113,9 @@ survey
 		timeInfo[page.name]=match[1];
 		console.log("Metrics:: sending page message: page "+ page.name+" - "+timeInfo[page.name]);
     	
+		saveState(survey);
 		
-		window.localStorage.setItem("data", JSON.stringify(survey.data));
-		
-		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onPageChange?visitorId="+Cookie.get("rhrti-uid"), buildOnXPayload(page));
+		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onPageChange?visitorId="+Cookie.get("rhrti-uid"), buildPageChangePayload(page));
 	});
 		
 survey
@@ -142,68 +131,45 @@ survey
 		timeInfo[page.name]=match[1];
 		console.log("Metrics:: sending page message: page "+ page.name+" - "+timeInfo[page.name]);
 
-    	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onComplete?visitorId="+Cookie.get("rhrti-uid"), buildOnXPayload(page));
+		//window.localStorage.removeItem("data");
+		window.localStorage.removeItem(storageName);
+		clearInterval(timerId);
+		saveState(survey);
+    	
+		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onComplete?visitorId="+Cookie.get("rhrti-uid"), buildPageChangePayload(page));
     	//Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"?event=onComplete&cookie="+Cookie.get("rhrti-uid")+"&time="+timeInfo[page.name]+"&country="+geoInfo["countryCode"]+"region"+geoInfo["region"]);
     	
-    	window.localStorage.removeItem("data");
-    	
-    	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/onResults?cookie="+Cookie.get("rhrti-uid"), survey.data);
+    	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/onResults?cookie="+Cookie.get("rhrti-uid"), survey.data, function(result){
+    		if (result.status==200){
+    			// navigate to a results page
+    			
+    		}else{
+    			// Handle the error scenario
+    		}
+    	});
     	
     	
     });
 
-function buildOnXPayload(page){
+function buildPageChangePayload(page){
 	var payload={};
-	payload["info"]={};
-	payload["info"]["visitorId"]=Cookie.get("rhrti-uid");
-	payload["info"]["timeOnpage"]=timeInfo[page.name];
-	payload["info"]["geo"]=geoInfo["continentCode"];
-	payload["info"]["countryCode"]=geoInfo["countryCode"];
-	payload["info"]["region"]=geoInfo["region"];
-	payload["data"]=survey.data;
+	payload["visitorId"]=Cookie.get("rhrti-uid");
+	payload["timeOnpage"]=timeInfo[page.name];
+	payload["geo"]=geoInfo["continentCode"];
+	payload["countryCode"]=geoInfo["countryCode"];
+	payload["region"]=geoInfo["region"];
+//	payload["info"]={};
+//	payload["info"]["visitorId"]=Cookie.get("rhrti-uid");
+//	payload["info"]["timeOnpage"]=timeInfo[page.name];
+//	payload["info"]["geo"]=geoInfo["continentCode"];
+//	payload["info"]["countryCode"]=geoInfo["countryCode"];
+//	payload["info"]["region"]=geoInfo["region"];
+//	payload["data"]=survey.data;
 	return payload;
 }
-//survey
-//    .onAfterRenderPage
-//    .add(function (result) {
-//      console.log("result="+JSON.stringify(survey.data));
-//      
-//      // this adds the question weighting to the css class so we can add a visual clue to where the thresholds are 
-//      $('input', $(".iradio_square-blue")).each(function(){
-//        var valueSplit=this.value.split('-');
-//        if (valueSplit.length>1){
-//          var color=valueSplit[1];
-//          $(this).parent().addClass("radio-weighting");
-//          $(this).parent().addClass("radio-weighting-"+color.toLowerCase());
-//          //console.log("Adding question weighting to: "+$(this).name);
-//        }
-//      });
-//      
-//      var custID = Utils.getParameterByName("customerId");
-//      var appID  = Utils.getParameterByName("applicationId");
-//        
-//      if (survey.currentPageNo === 1){
-//        
-//	    result.data.CUSTID=result.data.CUSTNAME;
-//	    var d1 = survey.getQuestionByName('DEPSOUTLIST');
-//	    d1.choicesByUrl.url = addAuthToken(Utils.SERVER+"/api/pathfinder/customers/"+custID+"/applications/?exclude="+appID);
-//	    d1.choicesByUrl.valueName = "Id";
-//	    d1.choicesByUrl.titleName = "Name";
-//	    d1.choicesByUrl.run();
-//
-//        var d2 = survey.getQuestionByName('DEPSINLIST');
-//        d2.choicesByUrl.url = addAuthToken(Utils.SERVER+"/api/pathfinder/customers/"+custID+"/applications/?exclude="+appID);
-//        d2.choicesByUrl.valueName = "Id";
-//        d2.choicesByUrl.titleName = "Name";
-//        d2.choicesByUrl.run();
-//	  }
-//    });
 
-if (undefined!=window.localStorage.getItem("data"))
-	survey.data=JSON.parse(window.localStorage.getItem("data"));
-//if (null!=results){
-//	survey.data=results;
-//}
+//if (undefined!=window.localStorage.getItem("data"))
+//	survey.data=JSON.parse(window.localStorage.getItem("data"));
 
 $("#surveyElement").Survey({
     model: survey
@@ -339,27 +305,26 @@ for (var i = 0; i < survey.PageCount; i++) {
 survey
     .onCurrentPageChanged
     .add(function (sender, options) {
-        var oldIndex = options.oldCurrentPage.name;
+    	var oldIndex = options.oldCurrentPage.name;
         var newIndex = options.newCurrentPage.name;
+        var oldIndexI = options.oldCurrentPage.visibleIndex;
+        var newIndexI = options.newCurrentPage.visibleIndex;
+        
         if (undefined!=liEls[oldIndex])
-	        liEls[oldIndex]
-	            .classList
-	            .remove("current");
-        //if (newIndex > oldIndex) {
-        //    for (var i = oldIndex; i < newIndex; i++) {
-        //        if (sender.visiblePages[i].hasErrors(true, true)) 
-        //            break;
-        //        if (!liEls[i].classList.contains("completed")) {
-        //            liEls[i]
-        //                .classList
-        //                .add("completed");
-        //        }
-        //    }
-        //}
+	        liEls[oldIndex].classList.remove("current");
+        // change li color once transitioned beyond it
+        if (newIndexI > oldIndexI) {
+            for (var i = oldIndexI; i < newIndexI; i++) {
+                if (sender.visiblePages[i].hasErrors(true, true)) 
+                    break;
+                if (!liEls[sender.visiblePages[i].name].classList.contains("completed")) {
+                    liEls[sender.visiblePages[i].name].classList.add("completed");
+                }
+            }
+        }
+        // highlight current
         if (undefined!=liEls[newIndex])
-	        liEls[newIndex]
-	            .classList
-	            .add("current");
+	        liEls[newIndex].classList.add("current");
     });
     
 /*
@@ -394,6 +359,36 @@ var updateScroller = setInterval(() => {
 
 
 
+// State saving feature (+ timed saving)
+var timerId=0;
+var saveIntervalInSeconds=20;
+var storageName="RHAssessmentPlatform_State";
+function saveState(survey) {
+	console.log("Saving state... (page "+survey.currentPageNo+")");
+    window.localStorage.setItem(storageName, JSON.stringify({ currentPageNo: survey.currentPageNo, data: survey.data }));
+}
+function loadState(survey) {
+	var storageSt = window.localStorage.getItem(storageName) || "";
+	var loaded=storageSt?JSON.parse(storageSt):{ currentPageNo: 1, data: json };
+	if (loaded.data) 
+	    survey.data=loaded.data;
+	if (loaded.currentPageNo){
+		console.log("set page to "+loaded.currentPageNo);
+		survey.currentPageNo=loaded.currentPageNo;
+	}
+}
+//save data every x seconds
+timerId = window.setInterval(function () {
+    saveState(survey);
+}, saveIntervalInSeconds*1000);
+
+loadState(survey);
+// /State saving feature
+
+
+
+
+//survey.showPreviewBeforeComplete = 'showAnsweredQuestions';
 
 //survey.locale = languageCode;
 survey.render();

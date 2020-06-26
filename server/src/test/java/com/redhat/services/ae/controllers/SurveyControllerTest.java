@@ -21,9 +21,12 @@ import org.hamcrest.text.MatchesPattern;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.redhat.services.ae.Database;
 import com.redhat.services.ae.MapBuilder;
+import com.redhat.services.ae.model.Survey;
 import com.redhat.services.ae.utils.Json;
 
 import io.quarkus.test.junit.QuarkusTest;
@@ -66,6 +69,9 @@ public class SurveyControllerTest {
   
 	@Test
 	public void testResultsGathering() throws ParseException, IOException{
+		
+		Survey survey=(Survey)new SurveyAdminController().create("{\"name\":\"TESTING\"}").getEntity();
+		
 		String testPayload="{\n" + 
 				"  \"automation-development\" : \"item3\",\n" + 
 				"  \"question7\" : \"item5\",\n" + 
@@ -81,9 +87,21 @@ public class SurveyControllerTest {
 		
 		
 		System.out.println(
-				new SurveyController().onResults("TESTING", "visitorId-123", testPayload)
+				new SurveyController().onResults(survey.id, "visitorId-123", testPayload)
 		);
 	}
+	
+	
+	@Test
+	public void testResultsGatheringWithMultiChoice() throws JsonParseException, JsonMappingException, IOException{
+		Survey survey=(Survey)new SurveyAdminController().create("{\"name\":\"TESTING\"}").getEntity();
+		String payload="{\"question1\":[\"lion\"],\"cloud_q1\":[\"item1\"],\"question3\":{\"text1\":\"John\",\"text2\":\"Doe\"}}";
+		System.out.println(
+				new SurveyController().onResults(survey.id, "visitorId-123", payload)
+		);
+	}
+	
+	
   
   @Test
   public void addWithSameIDShouldFail() {

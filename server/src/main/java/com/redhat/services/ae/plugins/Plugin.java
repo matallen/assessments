@@ -6,6 +6,6 @@ public interface Plugin{
 
 	void setConfig(Map<String, Object> config);
 
-	void execute(Map<String, String> surveyResults);
+	void execute(Map<String, Object> surveyResults);
 
 }
