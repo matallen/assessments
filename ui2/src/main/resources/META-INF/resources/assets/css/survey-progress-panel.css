@@ -29,7 +29,7 @@
 }
 
 .navigationProgressbar li {
-    height: 138px;
+    height: 80px;
     font-size: 14px;
     width: 100%;
     font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -58,7 +58,7 @@
     background-color: #c10000;
 }
 .navigationProgressbar li:after {
-    height: 112px;
+    height: 55px;
     width: 3px;
     content: '';
     position: absolute;
@@ -79,4 +79,7 @@
 .navigationProgressbar li.current:before {
     border-color: #c10000;
     background-color: white;
+}
+.surveyForm{
+    margin: 100px auto auto auto;
 }
