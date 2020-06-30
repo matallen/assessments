@@ -115,7 +115,7 @@ survey
     	
 		saveState(survey);
 		
-		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onPageChange?visitorId="+Cookie.get("rhrti-uid"), buildPageChangePayload(page));
+		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onPageChange?visitorId="+Cookie.get("rhae-jwt"), buildPageChangePayload(page));
 	});
 		
 survey
@@ -138,7 +138,7 @@ survey
     	
 		// TODO: Remove this double posting, but find a way to make the multi-depth object easier to parse on the java side
 		
-		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onComplete?visitorId="+Cookie.get("rhrti-uid"), buildPageChangePayload(page, false), function(result){
+		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onComplete?visitorId="+Cookie.get("rhae-jwt"), buildPageChangePayload(page, false), function(result){
 			if (result.status==200){
 				// navigate to a results page
 				
@@ -146,9 +146,9 @@ survey
 				// Handle the error scenario
 			}
 		});
-    	//Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"?event=onComplete&cookie="+Cookie.get("rhrti-uid")+"&time="+timeInfo[page.name]+"&country="+geoInfo["countryCode"]+"region"+geoInfo["region"]);
+    	//Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"?event=onComplete&cookie="+Cookie.get("rhae-jwt")+"&time="+timeInfo[page.name]+"&country="+geoInfo["countryCode"]+"region"+geoInfo["region"]);
     	
-    	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/onResults?visitorId="+Cookie.get("rhrti-uid"), survey.data, function(result){
+    	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/onResults?visitorId="+Cookie.get("rhae-jwt"), survey.data, function(result){
 			if (result.status==200){
 				// navigate to a results page
 				
@@ -162,7 +162,7 @@ survey
 
 function buildPageChangePayload(page, includeData){
 	var payload={};
-	payload["visitorId"]=Cookie.get("rhrti-uid");
+	payload["visitorId"]=Cookie.get("rhae-jwt");
 	payload["timeOnpage"]=timeInfo[page.name];
 	payload["geo"]=geoInfo["continentCode"];
 	payload["countryCode"]=geoInfo["countryCode"];
@@ -171,7 +171,7 @@ function buildPageChangePayload(page, includeData){
 		payload["data"]=survey.data;
 	}
 //	payload["info"]={};
-//	payload["info"]["visitorId"]=Cookie.get("rhrti-uid");
+//	payload["info"]["visitorId"]=Cookie.get("rhae-jwt");
 //	payload["info"]["timeOnpage"]=timeInfo[page.name];
 //	payload["info"]["geo"]=geoInfo["continentCode"];
 //	payload["info"]["countryCode"]=geoInfo["countryCode"];
