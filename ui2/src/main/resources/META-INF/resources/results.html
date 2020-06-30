@@ -16,9 +16,6 @@
 	@import "https://go.redhat.com/hubfs/css/styles.min.css";
 	</style>
 	<style>
-	/*
-	.background{background-color: #000; background-image: linear-gradient(to bottom right, #4cb5bd, #347f89)}
-	*/
 	.background{background-color: #000;}
 	</style>
 		
@@ -29,9 +26,6 @@
 	
 	<script src="https://unpkg.com/jquery"></script>
 	<script src="https://surveyjs.azureedge.net/1.7.12/survey.jquery.js"></script>
-	<!--
-	<link href="https://surveyjs.azureedge.net/1.0.23/survey.css" type="text/css" rel="stylesheet" />
-	-->
 	<link href="https://surveyjs.azureedge.net/1.7.12/modern.css" type="text/css" rel="stylesheet"/>
 	
 	<link href="assets/css/survey-progress-panel.css" type="text/css" rel="stylesheet"/>
@@ -48,10 +42,13 @@
 				</div>
 				<div class="cols3"></div>
 				<div class="cols3 justify-right">
-						
+					
+					<!--
 					<p style="float: right; position: relative; left: 20px; top: -20px;"><a style="line-height: 1.0 !important;" class="btn btn-outline-white mt-2 mb-1 btn-color-white" href="admin.html" onclick="fade('.background')">ADMIN</a></p>
-						
+					-->	
+					
 					<!-- Language Selector (top right) -->
+					<!--
 					<div class="LanguageSelectorContainer">
 						<select aria-label="Language" name="Q_lang" id="Q_lang" class="Q_lang" data-runtime-value="runtime.Selected">
 							<option value="DE" lang="DE" data-runtime-text="runtime.Language | property 'DE' | property 'DisplayName'">Deutsch</option>
@@ -65,6 +62,7 @@
 							<option value="ZH-S" lang="ZH-S" data-runtime-text="runtime.Language | property 'ZH-S' | property 'DisplayName'">简体中文</option>
 						</select>
 					</div>
+					-->
 						
 				</div>
 			</div>
@@ -72,72 +70,28 @@
 
 	</section>
 	
-<script>
-var languageCode="en"; //default
-
-// Action Handlers
-$("#Q_lang").change(function(sender) {
-	languageCode=sender.currentTarget.options[sender.currentTarget.selectedIndex].value.toLowerCase();
-	if (surveyStarted){
-		survey.locale = languageCode;
-		survey.render();
-	}
-});
-
-
-$(document).ready(function() {
-	surveyId=Utils.getParameterByName("surveyId");
-	if (undefined==Cookie.get("rhrti-uid") || ""==Cookie.get("rhrti-uid")){
-		Cookie.set("rhrti-uid", surveyId+"-"+Cookie.uuid(), 30);
-	}else{
-		var c=Cookie.get("rhrti-uid");
-		console.log("Welcome back: "+c);
-	}
-	visitorId=Cookie.get("rhrti-uid");
-	startSurvey();
-});
-</script>
-	
 	<section id="xsurvey" class=" py-0">
 		<div class="container">
 			<div class="row">
-				<div class="col-md-1">
-					<!-- THIS IS WHERE WE NEED THE NAV REALLY -->
-				</div>
 				<div class="col-md-10 py-4 py-md-6">
-					<div id="surveyNavigation"></div>
-					<div id="surveyElement"></div>
-					<div id="surveyResult"></div>
+					
+					<h3>Results</h3>
+					<h4>Your results are XX. That's XX% lorem ipsum compared with the industry average.</h4>
+					
+					<div id="results"></div>
+					
+					
 				</div>
 			</div>
 		</div>
 	</section>
 	<script>
-		//var results = null;
-//		var previousAssessmentId=null; // load from cookie
-		var surveyId;
-		var visitorId;
-		var surveyStarted=false;
+		var surveyId=Utils.getParameterByName("surveyId");
+		var rId=Utils.getParameterByName("rId");
 		
-		function startSurvey() {
-//			if (null!=previousAssessmentId) {
-//				Http.httpGetObject(env.server+'/api/survey/'+surveyId+'/results?resultsId='+previousAssessmentId, function(assessmentResults) { // load an old assessment
-//					results=assessmentResults;
-//					loadSurvey();
-//				});
-//			} else {
-				loadSurvey();
-//			}
-		}
-
-		function loadSurvey() {
-			var surveyJsUrl=env.server+"/api/surveys/"+surveyId+"/run"; // request a new assessment
-			var surveyJSElement=document.createElement('script');
-			surveyJSElement.src=surveyJsUrl;
-			document.getElementsByTagName('head')[0].appendChild(surveyJSElement);
-			surveyStarted=true;
-		}
-		
+		Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/results/"+rId, function(status, survey){
+			$("#results").html(JSON.stringify(survey));
+		});
 	</script>
 	
 </body>

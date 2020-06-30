@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.google.common.collect.Lists;
 import com.redhat.services.ae.Database;
 import com.redhat.services.ae.MapBuilder;
 import com.redhat.services.ae.controllers.ReportsController;
@@ -77,9 +79,21 @@ public class EloquaPluginTest{
 						.build())
 				.build();
 	}
-	private Map<String, String> getSurveyResults1() throws JsonParseException, JsonMappingException, IOException{
+	private Map<String, Object> getSurveyResults1() throws JsonParseException, JsonMappingException, IOException{
 		return 
-				new MapBuilder<String,String>()
+				new MapBuilder<String,Object>()
+				.put("automation-dev", "answer 1")
+				.put("automation-ops", "answer 2")
+				.put("firstName", "Fred")
+				.put("lastName", "Bloggs")
+				.put("companyName", "Red Hat Inc")
+				.build()
+				;
+	}
+	private Map<String, Object> getSurveyResults2() throws JsonParseException, JsonMappingException, IOException{
+		return 
+				new MapBuilder<String,Object>()
+				.put("interests", Lists.newArrayList("Clouds","AppDev"))
 				.put("automation-dev", "answer 1")
 				.put("automation-ops", "answer 2")
 				.put("firstName", "Fred")
