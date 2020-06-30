@@ -3,6 +3,7 @@ package com.redhat.services.ae.controllers;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,9 +28,11 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.github.benmanes.caffeine.cache.Cache;
 import com.redhat.services.ae.Database;
 import com.redhat.services.ae.model.Survey;
 import com.redhat.services.ae.plugins.Plugin;
+import com.redhat.services.ae.utils.CacheHelper;
 import com.redhat.services.ae.utils.FluentCalendar;
 import com.redhat.services.ae.utils.Json;
 
@@ -65,6 +68,24 @@ public class SurveyController{
 		return Response.ok(result, null==responseContentType?"text/html; charset=UTF-8":responseContentType).build();
 	}
 	
+	
+	@GET
+	@PermitAll
+	@Path("/{surveyId}/results/{rId}")
+	public Response getSurveyResults(
+			@PathParam("surveyId") String surveyId,
+			@PathParam("rId") String rId
+			) throws IOException{
+		
+		System.out.println("/results/::");
+		Cache<String, String> cache=new CacheHelper<String>().getCache("resultDataTransfer", 10, 100, 300);
+		String xxx=cache.getIfPresent(surveyId+"_"+rId);
+		System.out.println("cache(resultDataTransfer).size="+cache.estimatedSize());
+		System.out.println("cache(resultDataTransfer).get("+(surveyId+"_"+rId)+") = "+xxx);
+		
+		return Response.ok().entity(xxx).build();
+	}
+	
 	private String findReplace(String allContent, String find, String replace){
 		int i=allContent.indexOf(find);
 		if (i>=0){
@@ -89,9 +110,15 @@ public class SurveyController{
 		
 		
 		System.out.println("onPageChange:: info="+Json.toJson(info));
+		
+		
 //		System.out.println("onPageChange:: data="+Json.toJson(data));
 		
 		// TODO: log the time window spent on page
+		
+		// TODO: Metrics: Increment the page count by month (TODO: this would better be implemented using a cache that lasts 24 hours rather than poluting our DB with visitor IDs)
+//		long moreThanAMonthInSeconds=60*60*24*32;
+//		new CacheHelper<String>().getCache("visitors", 10, 1000, moreThanAMonthInSeconds);
 		
 		if (!Database.get().getVisitors(YYMMM).contains(visitorId+pageId))
 			o.getMetrics().getByMonth("page", YYMMM).put(pageId, o.getMetrics().getByMonth("page", YYMMM).containsKey(pageId)?o.getMetrics().getByMonth("page", YYMMM).get(pageId)+1:1);
@@ -143,31 +170,38 @@ public class SurveyController{
 	@POST
 	@Path("/{surveyId}/metrics/onResults")
 	public Response onResults(@PathParam("surveyId") String surveyId, @QueryParam("visitorId") String visitorId, String payload) throws JsonParseException, JsonMappingException, IOException{
+		System.out.println("onResults::");
 		Survey o=Survey.findById(surveyId);
 		if (null==o) throw new RuntimeException("Survey ID doesn't exist! :"+surveyId);
 		String YYMMM=FluentCalendar.get(new Date()).getString("yy-MMM");
 		Map<String,Object> data=Json.toObject(payload, new TypeReference<HashMap<String,Object>>(){});
 		
-		System.out.println("resultsGathering:: data="+Json.toJson(data));
+		System.out.println("onResults:: data="+Json.toJson(data));
 		
-		// log how many times a specific answer was provided to a question, for reporting % of answers per question
+		// Metrics: log how many times a specific answer was provided to a question, for reporting % of answers per question
 		for (Entry<String, Object> e:data.entrySet()){
 			String questionId=e.getKey();
 			
 			
-			if (e.getValue() instanceof String){
+			if (String.class.isAssignableFrom(e.getValue().getClass())){
 				String answerId=(String)e.getValue();
 				Map<String, Map<String,Integer>> answers=o.getMetrics().getAnswersByMonth("answers", YYMMM);
 				if (!answers.containsKey(questionId)) answers.put(questionId, new HashMap<>());
 				answers.get(questionId).put(answerId, answers.get(questionId).containsKey(answerId)?answers.get(questionId).get(answerId)+1:1);
-			}else{
-				System.out.println("erm, what if the answer is not a string????");
+			}else if (ArrayList.class.isAssignableFrom(e.getValue().getClass())){
+				// Increment the metrics for each item selected
+				ArrayList<String> answerList=(ArrayList<String>)e.getValue();
+				for (String answerId:answerList){
+					Map<String, Map<String,Integer>> answers=o.getMetrics().getAnswersByMonth("answers", YYMMM);
+					if (!answers.containsKey(questionId)) answers.put(questionId, new HashMap<>());
+					answers.get(questionId).put(answerId, answers.get(questionId).containsKey(answerId)?answers.get(questionId).get(answerId)+1:1);
+				}
+//				System.out.println("erm, what if the answer is not a string????");
 			}
-			
 		}
 		o.persist();
 		
-		// check for post-survey plugins and execute
+		// Execute post-survey plugins
 		Map<String, Map<String, Object>> plugins=o.getActivePlugins();
 		for(Entry<String, Map<String, Object>> pl:plugins.entrySet()){
 			String pluginName=pl.getKey();
@@ -181,6 +215,14 @@ public class SurveyController{
 				e.printStackTrace();
 			}
 		}
+		
+		// Build report?
+		
+		// Store results temporarily to generate the report content
+		Cache<String, String> cache=new CacheHelper<String>().getCache("resultDataTransfer", 10, 100, 300);
+		System.out.println("onResults:: cache.put("+(surveyId+"_"+visitorId)+") = "+payload);
+		cache.put(surveyId+"_"+visitorId, payload);
+		
 		
 		return Response.ok(Survey.findById(o.id)).build();
 	}
