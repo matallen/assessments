@@ -49,32 +49,6 @@ var json = SURVEY_CONTENT;
 
 window.survey = new Survey.Model(json);
 
-//survey
-//    .onComplete
-//    .add(function (result) {
-//            var xmlhttp = new XMLHttpRequest();
-//            tmpResult = result.data;
-//   		    var custID = Utils.getParameterByName("customerId");
-//   		    var appID  = Utils.getParameterByName("applicationId");
-//
-//            //dependencies array needs special handling
-//            var tmpDEPSOUTLIST = tmpResult.DEPSOUTLIST;
-//            var tmpDEPSINLIST = tmpResult.DEPSINLIST;
-//            delete tmpResult.DEPSOUTLIST;
-//            delete tmpResult.DEPSINLIST;
-//            xmlhttp.open("POST", addAuthToken(Utils.SERVER+"/api/pathfinder/customers/"+custID+"/applications/"+appID+"/assessments"));
-//            xmlhttp.setRequestHeader("Content-Type", "application/json");
-//            myObj = { "payload": tmpResult,"depsOUT":tmpDEPSOUTLIST, "depsIN":tmpDEPSINLIST,"datetime":new Date()};
-//            var payload=JSON.stringify(myObj);
-//            console.log("payload="+payload);
-//            xmlhttp.send(payload);
-//
-//            if (undefined!=$('#surveyCompleteLink')){
-//            	$('#surveyCompleteLink').attr('href', '/pathfinder-ui/assessments-v2.jsp?customerId='+Utils.getParameterByName("customerId"));
-//            }
-//    });
-//
-//
 
 var timeInfo=[];
 

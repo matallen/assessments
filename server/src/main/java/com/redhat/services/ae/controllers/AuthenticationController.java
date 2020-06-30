@@ -87,7 +87,7 @@ public class AuthenticationController{
 				
 				String jwtToken=Jwt.createJWT(jwtClaims, ttlMins*60);
 				log.info("returning jwt token in cookie rhae-jwt: "+jwtToken);
-				return Response.status(302).location(new URI(params.get("onSuccess"))).cookie(new NewCookie("rhae-jwt", jwtToken)).build();
+				return Response.status(302).location(new URI(params.get("onSuccess"))).cookie(new NewCookie("rhae-jwt", jwtToken, "/", "", "comment", 60*60 /*1hr*/, false)).build();
 				
 			}else{
 				log.info("Failure to authenticate user, returning to login screen with error 0");
