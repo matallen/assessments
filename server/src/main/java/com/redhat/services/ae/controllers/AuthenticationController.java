@@ -71,6 +71,7 @@ public class AuthenticationController{
 	public Response login(String payload) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, URISyntaxException{
 		Map<String, String> params=parseQueryString(payload);
 		
+		log.info("Attempting login with "+params.get("username")+"/"+params.get("password"));
 		String loginModuleClass=ConfigProvider.getConfig().getValue("modules.login.class", String.class);
 		try{
 			LoginModule loginModule=(LoginModule)Class.forName(loginModuleClass).newInstance();
@@ -85,10 +86,11 @@ public class AuthenticationController{
 				Long ttlMins=Long.parseLong(ConfigProvider.getConfig().getValue("modules.login.jwt.ttlInMins", String.class));
 				
 				String jwtToken=Jwt.createJWT(jwtClaims, ttlMins*60);
-				
+				log.info("returning jwt token in cookie rhae-jwt: "+jwtToken);
 				return Response.status(302).location(new URI(params.get("onSuccess"))).cookie(new NewCookie("rhae-jwt", jwtToken)).build();
 				
 			}else{
+				log.info("Failure to authenticate user, returning to login screen with error 0");
 				System.out.println("onFailure.url:: "+params.get("onFailure"));
 				return Response.status(302).location(new URI(params.get("onFailure")+"?error=0")).build();
 			}
