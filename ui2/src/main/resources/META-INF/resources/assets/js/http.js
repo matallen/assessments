@@ -35,6 +35,8 @@ Http = {
 	httpGet: function(url, callback){
 		var xhr = new XMLHttpRequest();
 		xhr.open("GET", url, true);
+		var jwt=Http.getCookie("rhae-jwt"); // debug
+		console.log("sending token: "+jwt); // debug
 		xhr.setRequestHeader('Authorization','Bearer '+ Http.getCookie("rhae-jwt"));
 		xhr.send();
 		xhr.onloadend = function () {

@@ -36,6 +36,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
@@ -65,7 +66,18 @@ import com.redhat.services.ae.utils.StringUtils;
 @RequestScoped
 public class AuthenticationController{
 	public static final Logger log=LoggerFactory.getLogger(AuthenticationController.class);
+	
+	@Context
+	UriInfo uri;
 
+	public static String getDomainName(String url, boolean stripSubdomain) throws URISyntaxException {
+    URI uri = new URI(url);
+    String domain = uri.getHost();
+    domain=domain.startsWith("www.") ? domain.substring(4) : domain;
+    domain=domain.substring(domain.indexOf(".")+1);
+    return domain;
+	}
+	
 	@POST
 	@Path("/login")
 	public Response login(String payload) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, URISyntaxException{
@@ -87,7 +99,13 @@ public class AuthenticationController{
 				
 				String jwtToken=Jwt.createJWT(jwtClaims, ttlMins*60);
 				log.info("returning jwt token in cookie rhae-jwt: "+jwtToken);
-				return Response.status(302).location(new URI(params.get("onSuccess"))).cookie(new NewCookie("rhae-jwt", jwtToken, "/", "", "comment", 60*60 /*1hr*/, false)).build();
+				log.info("uri.baseUri = "+uri.getBaseUri());
+				log.info("uri.getPath= "+uri.getPath(true));
+				log.info("uri.getAbsolutePath = "+uri.getAbsolutePath());
+				
+				log.info("uri.domainName = "+getDomainName(uri.getBaseUri().toString(), true));
+				
+				return Response.status(302).location(new URI(params.get("onSuccess"))).cookie(new NewCookie("rhae-jwt", jwtToken, "/", getDomainName(uri.getBaseUri().toString(), true), "comment", 60*60 /*1hr*/, false)).build();
 				
 			}else{
 				log.info("Failure to authenticate user, returning to login screen with error 0");
