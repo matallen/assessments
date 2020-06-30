@@ -136,28 +136,40 @@ survey
 		clearInterval(timerId);
 		saveState(survey);
     	
-		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onComplete?visitorId="+Cookie.get("rhrti-uid"), buildPageChangePayload(page));
+		// TODO: Remove this double posting, but find a way to make the multi-depth object easier to parse on the java side
+		
+		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onComplete?visitorId="+Cookie.get("rhrti-uid"), buildPageChangePayload(page, false), function(result){
+			if (result.status==200){
+				// navigate to a results page
+				
+			}else{
+				// Handle the error scenario
+			}
+		});
     	//Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"?event=onComplete&cookie="+Cookie.get("rhrti-uid")+"&time="+timeInfo[page.name]+"&country="+geoInfo["countryCode"]+"region"+geoInfo["region"]);
     	
-    	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/onResults?cookie="+Cookie.get("rhrti-uid"), survey.data, function(result){
-    		if (result.status==200){
-    			// navigate to a results page
-    			
-    		}else{
-    			// Handle the error scenario
-    		}
+    	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/onResults?visitorId="+Cookie.get("rhrti-uid"), survey.data, function(result){
+			if (result.status==200){
+				// navigate to a results page
+				
+			}else{
+				// Handle the error scenario
+			}
     	});
     	
     	
     });
 
-function buildPageChangePayload(page){
+function buildPageChangePayload(page, includeData){
 	var payload={};
 	payload["visitorId"]=Cookie.get("rhrti-uid");
 	payload["timeOnpage"]=timeInfo[page.name];
 	payload["geo"]=geoInfo["continentCode"];
 	payload["countryCode"]=geoInfo["countryCode"];
 	payload["region"]=geoInfo["region"];
+	if (includeData){
+		payload["data"]=survey.data;
+	}
 //	payload["info"]={};
 //	payload["info"]["visitorId"]=Cookie.get("rhrti-uid");
 //	payload["info"]["timeOnpage"]=timeInfo[page.name];
@@ -389,6 +401,8 @@ loadState(survey);
 
 
 //survey.showPreviewBeforeComplete = 'showAnsweredQuestions';
+survey.showCompletedPage=false;
+survey.navigateToUrl="/results.html?surveyId="+surveyId+"&rId="+visitorId;
 
 //survey.locale = languageCode;
 survey.render();

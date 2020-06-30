@@ -41,10 +41,11 @@ public class EloquaPlugin implements Plugin{
 		
 		// add mapped answers
 		for(Entry<String, String> e:mapping.entrySet()){
-			if (surveyResults.get(e.getKey()) instanceof String){
+			if (String.class.isAssignableFrom(surveyResults.get(e.getKey()).getClass())){
 				eloquaFields.put(e.getValue(), (String)surveyResults.get(e.getKey()));
 			}else{
-				System.out.println("erm, what if the answer is not a string????");
+				System.err.println("error: what if the answer is not a string? do we flatten it into a comma separated string?");
+				throw new RuntimeException("Encountered a non-String answer, don't know how to handle that yet");
 			}
 		}
 		
