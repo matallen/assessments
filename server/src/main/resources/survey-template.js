@@ -89,7 +89,7 @@ survey
     	
 		saveState(survey);
 		
-		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onPageChange?visitorId="+Cookie.get("rhae-jwt"), buildPageChangePayload(page));
+		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onPageChange?visitorId="+Cookie.get("rhae-visitorId"), buildPageChangePayload(page));
 	});
 		
 survey
@@ -112,7 +112,7 @@ survey
     	
 		// TODO: Remove this double posting, but find a way to make the multi-depth object easier to parse on the java side
 		
-		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onComplete?visitorId="+Cookie.get("rhae-jwt"), buildPageChangePayload(page, false), function(result){
+		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onComplete?visitorId="+Cookie.get("rhae-visitorId"), buildPageChangePayload(page, false), function(result){
 			if (result.status==200){
 				// navigate to a results page
 				
@@ -122,7 +122,7 @@ survey
 		});
     	//Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"?event=onComplete&cookie="+Cookie.get("rhae-jwt")+"&time="+timeInfo[page.name]+"&country="+geoInfo["countryCode"]+"region"+geoInfo["region"]);
     	
-    	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/onResults?visitorId="+Cookie.get("rhae-jwt"), survey.data, function(result){
+    	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/onResults?visitorId="+Cookie.get("rhae-visitorId"), survey.data, function(result){
 			if (result.status==200){
 				// navigate to a results page
 				
@@ -136,7 +136,7 @@ survey
 
 function buildPageChangePayload(page, includeData){
 	var payload={};
-	payload["visitorId"]=Cookie.get("rhae-jwt");
+	payload["visitorId"]=Cookie.get("rhae-visitorId");
 	payload["timeOnpage"]=timeInfo[page.name];
 	payload["geo"]=geoInfo["continentCode"];
 	payload["countryCode"]=geoInfo["countryCode"];

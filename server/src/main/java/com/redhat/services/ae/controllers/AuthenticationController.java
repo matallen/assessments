@@ -98,14 +98,21 @@ public class AuthenticationController{
 				Long ttlMins=Long.parseLong(ConfigProvider.getConfig().getValue("modules.login.jwt.ttlInMins", String.class));
 				
 				String jwtToken=Jwt.createJWT(jwtClaims, ttlMins*60);
-				log.info("returning jwt token in cookie rhae-jwt: "+jwtToken);
-				log.info("uri.baseUri = "+uri.getBaseUri());
-				log.info("uri.getPath= "+uri.getPath(true));
-				log.info("uri.getAbsolutePath = "+uri.getAbsolutePath());
+				String domainName=getDomainName(uri.getBaseUri().toString(), true);
+//				log.info("returning jwt token in cookie rhae-jwt: "+jwtToken);
+//				log.info("uri.baseUri = "+uri.getBaseUri());
+//				log.info("uri.getPath= "+uri.getPath(true));
+//				log.info("uri.getAbsolutePath = "+uri.getAbsolutePath());
+//				log.info("uri.domainName = "+domainName);
 				
-				log.info("uri.domainName = "+getDomainName(uri.getBaseUri().toString(), true));
-				
-				return Response.status(302).location(new URI(params.get("onSuccess"))).cookie(new NewCookie("rhae-jwt", jwtToken, "/", getDomainName(uri.getBaseUri().toString(), true), "comment", 60*60 /*1hr*/, false)).build();
+				return Response.status(302)
+						.location(new URI(params.get("onSuccess")))
+//						.header("Access-Control-Allow-Origin", domainName)
+//						.header("Access-Control-Allow-Credentials", "true")
+//						.header("Access-Control-Allow-Methods", "GET, POST")
+//						.header("Access-Control-Allow-Headers", "Content-Type, *")
+						.cookie(new NewCookie("rhae-jwt", jwtToken, "/", domainName, "comment", 60*60 /*1hr*/, false))
+						.build();
 				
 			}else{
 				log.info("Failure to authenticate user, returning to login screen with error 0");

@@ -84,17 +84,24 @@ $("#Q_lang").change(function(sender) {
 	}
 });
 
+function getVisitorId(key){
+	// Assign the visitor a unique ID
+	if (undefined==Cookie.get(key) || ""==Cookie.get(key)){
+		Cookie.set(key, surveyId+"-"+Cookie.uuid(), 30);
+	}else{
+		var c=Cookie.get(key);
+		console.log("Welcome back: "+c);
+	}
+	return Cookie.get(key);
+}
+
 
 $(document).ready(function() {
 	surveyId=Utils.getParameterByName("surveyId");
-	if (undefined==Cookie.get("rhrti-uid") || ""==Cookie.get("rhrti-uid")){
-		Cookie.set("rhrti-uid", surveyId+"-"+Cookie.uuid(), 30);
-	}else{
-		var c=Cookie.get("rhrti-uid");
-		console.log("Welcome back: "+c);
-	}
-	visitorId=Cookie.get("rhrti-uid");
-	startSurvey();
+	
+	visitorId=getVisitorId("rhae-visitorId");
+	if (undefined!=surveyId)
+		startSurvey();
 });
 </script>
 	
