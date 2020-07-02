@@ -78,9 +78,12 @@ public class SurveyController{
 			) throws IOException{
 		
 		System.out.println("/results/::");
-		Cache<String, String> cache=new CacheHelper<String>().getCache("resultDataTransfer", 10, 100, 300);
-		String xxx=cache.getIfPresent(surveyId+"_"+rId);
-		System.out.println("cache(resultDataTransfer).size="+cache.estimatedSize());
+		String xxx=CacheHelper.cache.get(surveyId+"_"+rId);
+		
+		
+//		Cache<String, String> cache=new CacheHelper<String>().getCache("resultDataTransfer", 10, 100, 300);
+//		String xxx=cache.getIfPresent(surveyId+"_"+rId);
+		System.out.println("cache(resultDataTransfer).size="+CacheHelper.cache.size());
 		System.out.println("cache(resultDataTransfer).get("+(surveyId+"_"+rId)+") = "+xxx);
 		
 		return Response.ok().entity(xxx).build();
@@ -203,8 +206,10 @@ public class SurveyController{
 		
 		// Execute post-survey plugins
 		Map<String, Map<String, Object>> plugins=o.getActivePlugins();
+		log.info("Active Plugins: "+(plugins.size()<=0?"None":""));
 		for(Entry<String, Map<String, Object>> pl:plugins.entrySet()){
 			String pluginName=pl.getKey();
+			log.info("  - "+pluginName);
 			System.out.println("Executing Plugin: "+pluginName);
 			String clazz=(String)pl.getValue().get("className");
 			try{
@@ -219,9 +224,10 @@ public class SurveyController{
 		// Build report?
 		
 		// Store results temporarily to generate the report content
-		Cache<String, String> cache=new CacheHelper<String>().getCache("resultDataTransfer", 10, 100, 300);
-		System.out.println("onResults:: cache.put("+(surveyId+"_"+visitorId)+") = "+payload);
-		cache.put(surveyId+"_"+visitorId, payload);
+		CacheHelper.cache.put(surveyId+"_"+visitorId, payload);
+//		Cache<String, String> cache=new CacheHelper<String>().getCache("resultDataTransfer", 10, 100, 300);
+//		System.out.println("onResults:: cache('resultDataTransfer').put("+(surveyId+"_"+visitorId)+") = "+payload);
+//		cache.put(surveyId+"_"+visitorId, payload);
 		
 		
 		return Response.ok(Survey.findById(o.id)).build();

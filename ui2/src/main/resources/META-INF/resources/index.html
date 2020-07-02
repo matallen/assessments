@@ -87,7 +87,7 @@ $("#Q_lang").change(function(sender) {
 function getVisitorId(key){
 	// Assign the visitor a unique ID
 	if (undefined==Cookie.get(key) || ""==Cookie.get(key)){
-		Cookie.set(key, surveyId+"-"+Cookie.uuid(), 30);
+		Cookie.set(key, Cookie.uuid(), 30);
 	}else{
 		var c=Cookie.get(key);
 		console.log("Welcome back: "+c);
@@ -98,6 +98,11 @@ function getVisitorId(key){
 
 $(document).ready(function() {
 	surveyId=Utils.getParameterByName("surveyId");
+	
+	if (undefined!=Utils.getParameterByName("dev_reset")){
+		console.log("Removing Cookie \"rhae-visitorId\"");
+		Cookie.remove("rhae-visitorId");
+	}
 	
 	visitorId=getVisitorId("rhae-visitorId");
 	if (undefined!=surveyId)

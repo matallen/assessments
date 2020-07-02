@@ -11,6 +11,10 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 public class CacheHelper<T>{
+	
+	public static Map<String, String> cache=new HashMap<>();
+	
+	
 	private static Map<String, Cache> caches=new HashMap<String, Cache>();
 	
 	

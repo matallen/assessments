@@ -87,9 +87,9 @@
 	</section>
 	<script>
 		var surveyId=Utils.getParameterByName("surveyId");
-		var rId=Utils.getParameterByName("rId");
+		var visitorId=Utils.getParameterByName("visitorId");
 		
-		Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/results/"+rId, function(status, survey){
+		Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/results/"+visitorId, function(status, survey){
 			$("#results").html(JSON.stringify(survey));
 		});
 	</script>

@@ -119,7 +119,7 @@ $(function(){
 			    .Serializer
 			    .findProperty("question", "weighting")
 			    .readOnly = false;
-				var creatorOptions = {};
+				var creatorOptions = { showLogicTab: true };
 				var creator = new SurveyCreator.SurveyCreator("creatorElement", creatorOptions);
 				creator.showToolbox = "right";
 				creator.showPropertyGrid = "right";

@@ -70,7 +70,8 @@ if (undefined==geoInfo){
 
 //survey.showTimerPanelMode = 'page';
 survey.startTimer();
-survey.showTimerPanel = 'bottom';
+survey.showTimerPanel = 'none'; //bottom
+survey.completeText = 'View Results';
 survey
       .onAfterRenderPage
       .add(function(result, options){
@@ -87,7 +88,7 @@ survey
 		timeInfo[page.name]=match[1];
 		console.log("Metrics:: sending page message: page "+ page.name+" - "+timeInfo[page.name]);
     	
-		saveState(survey);
+		LocalStorage.saveState(survey);
 		
 		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onPageChange?visitorId="+Cookie.get("rhae-visitorId"), buildPageChangePayload(page));
 	});
@@ -106,9 +107,10 @@ survey
 		console.log("Metrics:: sending page message: page "+ page.name+" - "+timeInfo[page.name]);
 
 		//window.localStorage.removeItem("data");
-		window.localStorage.removeItem(storageName);
+		LocalStorage.clearState();
+		//window.localStorage.removeItem(storageName);
 		clearInterval(timerId);
-		saveState(survey);
+		//saveState(survey);
     	
 		// TODO: Remove this double posting, but find a way to make the multi-depth object easier to parse on the java side
 		
@@ -348,27 +350,57 @@ var updateScroller = setInterval(() => {
 // State saving feature (+ timed saving)
 var timerId=0;
 var saveIntervalInSeconds=20;
-var storageName="RHAssessmentPlatform_State";
-function saveState(survey) {
-	console.log("Saving state... (page "+survey.currentPageNo+")");
-    window.localStorage.setItem(storageName, JSON.stringify({ currentPageNo: survey.currentPageNo, data: survey.data }));
+
+
+LocalStorage = {
+		storageName:"RHAssessmentPlatform_State",
+		saveState: function(survey) {
+			console.log("LocalStorage:: Saving state... (page "+survey.currentPageNo+")");
+		    window.localStorage.setItem(LocalStorage.storageName, JSON.stringify({ currentPageNo: survey.currentPageNo, data: survey.data }));
+		},
+		clearState: function(){
+			console.log("LocalStorage:: Clearing state")
+			window.localStorage.removeItem(LocalStorage.storageName);
+		},
+		loadState: function(survey) {
+			var storageSt = window.localStorage.getItem(LocalStorage.storageName) || "";
+			var loaded=storageSt?JSON.parse(storageSt):{ currentPageNo: 1, data: {} };
+			if (loaded.data) 
+			    survey.data=loaded.data;
+			if (loaded.currentPageNo){
+				//console.log("set page to "+loaded.currentPageNo);
+				survey.currentPageNo=loaded.currentPageNo;
+			}
+		}
 }
-function loadState(survey) {
-	var storageSt = window.localStorage.getItem(storageName) || "";
-	var loaded=storageSt?JSON.parse(storageSt):{ currentPageNo: 1, data: json };
-	if (loaded.data) 
-	    survey.data=loaded.data;
-	if (loaded.currentPageNo){
-		console.log("set page to "+loaded.currentPageNo);
-		survey.currentPageNo=loaded.currentPageNo;
-	}
+if (undefined!=Utils.getParameterByName("dev_reset")){
+	console.log("Clearing localstorage of previously answered questions");
+	LocalStorage.clearState();
 }
+//var storageName="RHAssessmentPlatform_State";
+//function saveState(survey) {
+//	console.log("Saving state... (page "+survey.currentPageNo+")");
+//    window.localStorage.setItem(storageName, JSON.stringify({ currentPageNo: survey.currentPageNo, data: survey.data }));
+//}
+//function clearState(){
+//	window.localStorage.removeItem(storageName);
+//}
+//function loadState(survey) {
+//	var storageSt = window.localStorage.getItem(storageName) || "";
+//	var loaded=storageSt?JSON.parse(storageSt):{ currentPageNo: 1, data: json };
+//	if (loaded.data) 
+//	    survey.data=loaded.data;
+//	if (loaded.currentPageNo){
+//		console.log("set page to "+loaded.currentPageNo);
+//		survey.currentPageNo=loaded.currentPageNo;
+//	}
+//}
 //save data every x seconds
 timerId = window.setInterval(function () {
-    saveState(survey);
+    LocalStorage.saveState(survey);
 }, saveIntervalInSeconds*1000);
 
-loadState(survey);
+LocalStorage.loadState(survey);
 // /State saving feature
 
 
@@ -376,7 +408,7 @@ loadState(survey);
 
 //survey.showPreviewBeforeComplete = 'showAnsweredQuestions';
 survey.showCompletedPage=false;
-survey.navigateToUrl="/results.html?surveyId="+surveyId+"&rId="+visitorId;
+survey.navigateToUrl="/results.html?surveyId="+surveyId+"&visitorId="+visitorId;
 
 //survey.locale = languageCode;
 survey.render();
