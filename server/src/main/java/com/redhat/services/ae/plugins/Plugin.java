@@ -6,6 +6,6 @@ public interface Plugin{
 
 	void setConfig(Map<String, Object> config);
 
-	void execute(Map<String, Object> surveyResults);
+	Map<String, Object> execute(String surveyId, String visitorId, Map<String, Object> surveyResults) throws Exception;
 
 }

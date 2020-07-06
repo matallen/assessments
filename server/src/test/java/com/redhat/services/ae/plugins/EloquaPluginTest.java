@@ -31,7 +31,7 @@ public class EloquaPluginTest{
 	public void testEloquaWithFields() throws ParseException, IOException{
 		EloquaPlugin p=new EloquaPlugin();
 		p.setConfig(getConfig());
-		p.execute(getSurveyResults1());
+		p.execute("SURVEY_ID", "VISITOR_ID", getSurveyResults1());
 		
 //		System.out.println(
 //			new ReportsController().getSurveyCount("TESTING", "2020-Jan", "2020-Apr").getEntity()
@@ -47,7 +47,7 @@ public class EloquaPluginTest{
 	 * Sandbox Consulting Assessment Integration form id = 8091 (use this id once you start testing) 
    * Ready to Innovate Offer id (to see how the data currently looks in Eloqua with the active assessment) - 70160000000xZtmAAE
 	 *
-	 * Exalple field mapping: https://docs.google.com/spreadsheets/d/1ZQ4sUfvW2Ukfv0D43NoylKVjm_qyBYw50uwLLgfd8Yw/edit?usp=sharing
+	 * Example field mapping: https://docs.google.com/spreadsheets/d/1ZQ4sUfvW2Ukfv0D43NoylKVjm_qyBYw50uwLLgfd8Yw/edit?usp=sharing
 	 * 
 	 */
 	
@@ -60,9 +60,9 @@ public class EloquaPluginTest{
 				.put("url", "https://s1795.t.eloqua.com/e/f2")
 				.put("config", new MapBuilder<String,Map<String,String>>()
 						.put("mapping", new MapBuilder<String,String>()
-								.put("automation-dev",  "UDF_01_Answer")
-								.put("automation-ops",  "UDF_02_Answer")
-								.put("methodology-dev", "UDF_03_Answer")
+								.put("automation-dev",  "UDF_01")
+								.put("automation-ops",  "UDF_02")
+								.put("methodology-dev", "UDF_03")
 								.put("firstName", "C_FirstName")
 								.put("lastName", "C_LastName")
 								.put("companyName", "C_Company")
@@ -84,8 +84,8 @@ public class EloquaPluginTest{
 				new MapBuilder<String,Object>()
 				.put("automation-dev", "answer 1")
 				.put("automation-ops", "answer 2")
-				.put("firstName", "Fred")
-				.put("lastName", "Bloggs")
+				.put("firstName", "Thisa")
+				.put("lastName", "Test1")
 				.put("companyName", "Red Hat Inc")
 				.build()
 				;
@@ -96,8 +96,8 @@ public class EloquaPluginTest{
 				.put("interests", Lists.newArrayList("Clouds","AppDev"))
 				.put("automation-dev", "answer 1")
 				.put("automation-ops", "answer 2")
-				.put("firstName", "Fred")
-				.put("lastName", "Bloggs")
+				.put("firstName", "Thisa")
+				.put("lastName", "Test2")
 				.put("companyName", "Red Hat Inc")
 				.build()
 				;

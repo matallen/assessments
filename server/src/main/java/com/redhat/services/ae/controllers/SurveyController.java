@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -173,35 +174,40 @@ public class SurveyController{
 	@POST
 	@Path("/{surveyId}/metrics/onResults")
 	public Response onResults(@PathParam("surveyId") String surveyId, @QueryParam("visitorId") String visitorId, String payload) throws JsonParseException, JsonMappingException, IOException{
-		System.out.println("onResults::");
+		log.info("onResults::");
+
+
 		Survey o=Survey.findById(surveyId);
 		if (null==o) throw new RuntimeException("Survey ID doesn't exist! :"+surveyId);
 		String YYMMM=FluentCalendar.get(new Date()).getString("yy-MMM");
 		Map<String,Object> data=Json.toObject(payload, new TypeReference<HashMap<String,Object>>(){});
 		
-		System.out.println("onResults:: data="+Json.toJson(data));
+		log.debug("onResults:: data="+Json.toJson(data));
 		
 		// Metrics: log how many times a specific answer was provided to a question, for reporting % of answers per question
-		for (Entry<String, Object> e:data.entrySet()){
-			String questionId=e.getKey();
-			
-			
-			if (String.class.isAssignableFrom(e.getValue().getClass())){
-				String answerId=(String)e.getValue();
+		new AnswerProcessor(){
+			@Override public void onStringAnswer(String questionId, String answerId, Integer score){ // radiobuttons
+				log.debug("Adding answers for question '"+questionId+"' to metrics");
 				Map<String, Map<String,Integer>> answers=o.getMetrics().getAnswersByMonth("answers", YYMMM);
 				if (!answers.containsKey(questionId)) answers.put(questionId, new HashMap<>());
 				answers.get(questionId).put(answerId, answers.get(questionId).containsKey(answerId)?answers.get(questionId).get(answerId)+1:1);
-			}else if (ArrayList.class.isAssignableFrom(e.getValue().getClass())){
-				// Increment the metrics for each item selected
-				ArrayList<String> answerList=(ArrayList<String>)e.getValue();
-				for (String answerId:answerList){
+			}
+			@Override
+			public void onArrayListAnswer(String questionId, List<Answer> answerList, Integer averageScore){ // multi-checkboxes
+				log.debug("Adding answers for question '"+questionId+"' to metrics");
+				for (Answer answer:answerList){
+					// Increment the metrics for each item selected
 					Map<String, Map<String,Integer>> answers=o.getMetrics().getAnswersByMonth("answers", YYMMM);
 					if (!answers.containsKey(questionId)) answers.put(questionId, new HashMap<>());
-					answers.get(questionId).put(answerId, answers.get(questionId).containsKey(answerId)?answers.get(questionId).get(answerId)+1:1);
+					answers.get(questionId).put(answer.id, answers.get(questionId).containsKey(answer.id)?answers.get(questionId).get(answer.id)+1:1);
 				}
-//				System.out.println("erm, what if the answer is not a string????");
 			}
-		}
+			@Override
+			public void onMapAnswer(String question, Answer answer){ // only seen this as a panel in surveyjs?
+				// ignore because it's most likely a contact form
+			}
+		}.process(data);
+		
 		o.persist();
 		
 		// Execute post-survey plugins
@@ -215,7 +221,7 @@ public class SurveyController{
 			try{
 				Plugin plugin=(Plugin)Class.forName(clazz).newInstance();
 				plugin.setConfig(pl.getValue());
-				plugin.execute(data);
+				data=plugin.execute(surveyId, visitorId, data); // after each plugin, keep the changes to the data (similar to the concept of Tomcat filters)
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -223,8 +229,6 @@ public class SurveyController{
 		
 		// Build report?
 		
-		// Store results temporarily to generate the report content
-		CacheHelper.cache.put(surveyId+"_"+visitorId, payload);
 //		Cache<String, String> cache=new CacheHelper<String>().getCache("resultDataTransfer", 10, 100, 300);
 //		System.out.println("onResults:: cache('resultDataTransfer').put("+(surveyId+"_"+visitorId)+") = "+payload);
 //		cache.put(surveyId+"_"+visitorId, payload);

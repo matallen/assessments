@@ -76,10 +76,12 @@
 				<div class="col-md-10 py-4 py-md-6">
 					
 					<h3>Results</h3>
+					
+					<!--
 					<h4>Your results are XX. That's XX% lorem ipsum compared with the industry average.</h4>
+					-->
 					
-					<div id="results"></div>
-					
+					<div id="results">Loading... please wait</div>
 					
 				</div>
 			</div>
@@ -89,9 +91,24 @@
 		var surveyId=Utils.getParameterByName("surveyId");
 		var visitorId=Utils.getParameterByName("visitorId");
 		
-		Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/results/"+visitorId, function(status, survey){
-			$("#results").html(JSON.stringify(survey));
+		var timerId;
+		var intervalInSeconds=1;
+		$(document).ready(function() {
+			
+			timerId = window.setInterval(function () {
+				
+				Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/results/"+visitorId, function(status, survey){
+					if (200==status){
+						clearInterval(timerId);
+						$("#results").html(JSON.stringify(survey));
+					}
+				});
+				
+			}, intervalInSeconds*1000);
+			
 		});
+
+		
 	</script>
 	
 </body>

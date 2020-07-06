@@ -71,7 +71,7 @@ if (undefined==geoInfo){
 //survey.showTimerPanelMode = 'page';
 survey.startTimer();
 survey.showTimerPanel = 'none'; //bottom
-survey.completeText = 'View Results';
+//survey.completeText = 'View Results';
 survey
       .onAfterRenderPage
       .add(function(result, options){
@@ -107,6 +107,8 @@ survey
 		console.log("Metrics:: sending page message: page "+ page.name+" - "+timeInfo[page.name]);
 
 		//window.localStorage.removeItem("data");
+		
+		// TODO: need to move this to the results.html page so we dont remove the answers too soon (ie, if the results page doesnt display correctly)
 		LocalStorage.clearState();
 		//window.localStorage.removeItem(storageName);
 		clearInterval(timerId);
@@ -377,24 +379,7 @@ if (undefined!=Utils.getParameterByName("dev_reset")){
 	console.log("Clearing localstorage of previously answered questions");
 	LocalStorage.clearState();
 }
-//var storageName="RHAssessmentPlatform_State";
-//function saveState(survey) {
-//	console.log("Saving state... (page "+survey.currentPageNo+")");
-//    window.localStorage.setItem(storageName, JSON.stringify({ currentPageNo: survey.currentPageNo, data: survey.data }));
-//}
-//function clearState(){
-//	window.localStorage.removeItem(storageName);
-//}
-//function loadState(survey) {
-//	var storageSt = window.localStorage.getItem(storageName) || "";
-//	var loaded=storageSt?JSON.parse(storageSt):{ currentPageNo: 1, data: json };
-//	if (loaded.data) 
-//	    survey.data=loaded.data;
-//	if (loaded.currentPageNo){
-//		console.log("set page to "+loaded.currentPageNo);
-//		survey.currentPageNo=loaded.currentPageNo;
-//	}
-//}
+
 //save data every x seconds
 timerId = window.setInterval(function () {
     LocalStorage.saveState(survey);

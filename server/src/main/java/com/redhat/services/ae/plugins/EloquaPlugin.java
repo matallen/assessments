@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Joiner;
+import com.redhat.services.ae.controllers.AnswerProcessor;
+import com.redhat.services.ae.model.Survey;
 
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -40,36 +42,39 @@ public class EloquaPlugin implements Plugin{
 
 	// gather the data from surveyResults, map it for the Eloqua http post request, build and send it
 	@Override
-	public void execute(Map<String, Object> surveyResults){
+	public Map<String, Object> execute(String surveyId, String visitorId, Map<String, Object> surveyResults){
 		Map<String,String> eloquaFields=new HashMap<String, String>();
 		Map<String,String> flattenedSurveyResults=new HashMap<>();
 		
-		for (Entry<String, Object> e:surveyResults.entrySet()){
-			if (String.class.isAssignableFrom(e.getValue().getClass())){
-				flattenedSurveyResults.put(e.getKey(), (String)e.getValue());
-			}else if (List.class.isAssignableFrom(e.getValue().getClass())){
-				List<String> answers=new ArrayList<String>();
-				for(Object v: (List)e.getValue()){
-					if (String.class.isAssignableFrom(v.getClass())){
-						answers.add((String)v);	
-					}else{
-						System.err.println("surveyResults item was a list, but not a list of strings... please investigate. key = "+e.getKey());
-					}
-				}
-				flattenedSurveyResults.put(e.getKey(), Joiner.on(",").join(answers));
-			}else if (Map.class.isAssignableFrom(e.getValue().getClass())){
-				for(Entry<String, String> e2: ((Map<String,String>)e.getValue()).entrySet()){
-					flattenedSurveyResults.put(e2.getKey(), e2.getValue());
-				}
+		
+		new AnswerProcessor(){
+			@Override public void onStringAnswer(String questionId, String answerId, Integer score){
+				System.out.println("Eloqua:: flattening single-string answers for question '"+questionId+"'");
+				flattenedSurveyResults.put(questionId, answerId);
 			}
-		}
+			@Override public void onArrayListAnswer(String questionId, List<Answer> answerList, Integer averageScore){
+				System.out.println("Eloqua:: flattening multi-select answers for question '"+questionId+"'");
+				List<String> sList=new ArrayList<>();
+				for (Answer answer:answerList) sList.add(answer.id);
+				flattenedSurveyResults.put(questionId, Joiner.on(",").join(sList));
+			}
+			@Override public void onMapAnswer(String questionId, Answer answer){
+				System.out.println("Eloqua:: flattening map-based answers for question '"+questionId+"'");
+				flattenedSurveyResults.put(questionId, answer.id);
+			}
+		}.process(surveyResults);
 		
-		
-		// add mapped answers
+		// map answers and add to the list of fields to send to eloqua
 		for(Entry<String, String> e:mapping.entrySet()){
 			if (flattenedSurveyResults.containsKey(e.getKey())){
 				if (String.class.isAssignableFrom(flattenedSurveyResults.get(e.getKey()).getClass())){
-					eloquaFields.put(e.getValue(), (String)flattenedSurveyResults.get(e.getKey()));
+					
+					if (e.getValue().startsWith("UDF_")){
+						eloquaFields.put(e.getValue()+"_Question", e.getKey());
+						eloquaFields.put(e.getValue()+"_Answer", (String)flattenedSurveyResults.get(e.getKey()));
+					}else{
+						eloquaFields.put(e.getValue(), (String)flattenedSurveyResults.get(e.getKey()));
+					}
 				}else{
 					System.err.println("error: what if the answer is not a string? do we flatten it into a comma separated string?");
 					throw new RuntimeException("Encountered a non-String answer, don't know how to handle that yet");
@@ -95,13 +100,13 @@ public class EloquaPlugin implements Plugin{
 		
 		for (Entry<String, String> e:eloquaFields.entrySet()){
 			log.debug(String.format("Sending Eloqua as querystring:: field=%s, value=%s", e.getKey(), e.getValue()));
-			System.out.println(String.format("->Eloqua:: field=%s, value=%s", e.getKey(), e.getValue()));
+			System.out.println(String.format("->Eloqua:: field=%-20s ,value=%s", e.getKey(), e.getValue()));
 			rs.queryParam(e.getKey(), e.getValue());
 		}
 //		url="https://s1795.t.eloqua.com/e/f2?elqSiteID=8091&elqFormName=consulting-assessment-integration-sandbox";
 //		url="https://s1795.t.eloqua.com/e/f2";
 		
-		boolean dummy=true;
+		boolean dummy=false;
 		if (!dummy){
 			Response response=rs.post(url).andReturn();
 			System.out.println(response.statusCode());
@@ -112,5 +117,7 @@ public class EloquaPlugin implements Plugin{
 		
 //		TODO: What happens if we get a statusCode != 200 ??? notify chat? log error?
 		
+		
+		return surveyResults;
 	}
 }
