@@ -1,0 +1,198 @@
+{
+  "pages": [
+    {
+      "name": "Introduction",
+      "elements": [
+        {
+          "type": "html",
+          "name": "p_intro",
+          "html": "<center><h1>Ready to Innovate Assessment</h1>\n\n<p>\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n</p>\n\n<p>\n<img src=\"\" style=\"width: 300px; height:200px;\">\n</p>\n\n<p>\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. The questionnaire is split into four topic areas, you'll be given an option to select which sections you'd like to complete.\n</p>\n\n<p>\n\n</p>\n\n</center>\n"
+        }
+      ]
+    },
+    {
+      "name": "Select Interests",
+      "elements": [
+        {
+          "type": "imagepicker",
+          "name": "interests",
+          "choices": [
+            {
+              "value": "cloud",
+              "imageLink": "unnecessary in test data"
+            },
+            {
+              "value": "appdev",
+              "imageLink": "unnecessary in test data"
+            },
+            {
+              "value": "automation",
+              "imageLink": "unnecessary in test data"
+            },
+            {
+              "value": "other",
+              "imageLink": "unnecessary in test data"
+            }
+          ],
+          "multiSelect": true
+        }
+      ],
+      "title": "Which area(s) are relevant to you?",
+      "description": "Select all that apply"
+    },
+    {
+      "name": "p_cloud_1",
+      "elements": [
+        {
+          "type": "checkbox",
+          "name": "q_cloud_current_culture_process",
+          "title": "What best describes your current culture and process related to automating tasks?",
+          "choices": [
+            {
+              "value": "10#Siloed process",
+              "text": "Siloed process"
+            },
+            {
+              "value": "30#DevOps team created to change processes",
+              "text": "DevOps team created to change processes"
+            },
+            {
+              "value": "60#Automation teams have been created across the organization",
+              "text": "Automation teams have been created across the organization"
+            },
+            {
+              "value": "90#Multiple teams automating their components and contributing to a central repository",
+              "text": "Multiple teams automating their components and contributing to a central repository"
+            }
+          ]
+        },
+        {
+          "type": "rating",
+          "name": "q_cloud_security_practices",
+          "title": "On a scale of 1 (same without automation) to 5 (fully updated to support the modern environment), rate your security practices",
+          "rateValues": [
+            {
+              "value": "20#1",
+              "text": "1"
+            },
+            {
+              "value": "40#2",
+              "text": "2"
+            },
+            {
+              "value": "60#3",
+              "text": "3"
+            },
+            {
+              "value": "80#4",
+              "text": "4"
+            },
+            {
+              "value": "100#5",
+              "text": "5"
+            }
+          ]
+        },
+        {
+          "type": "boolean",
+          "name": "q_cloud_sharing_culture",
+          "title": "Do multiple teams within your organization create and share automation content in a consistent, standardized manner?"
+        }
+      ],
+      "visibleIf": "{interests} contains ['cloud']",
+      "title": "Modernizing Platforms",
+      "description": "Page 1/3: Environment & Process"
+    },
+    {
+      "name": "p_cloud_2",
+      "elements": [
+        {
+          "type": "radiogroup",
+          "name": "q_cloud_dont_know_yet",
+          "choices": [
+            "item1",
+            "item2",
+            "item3"
+          ]
+        }
+      ],
+      "title": "Modernizing Platforms",
+      "description": "Page 2/3: Operations"
+    },
+    {
+      "name": "p_appdev_1",
+      "elements": [
+        {
+          "type": "radiogroup",
+          "name": "appdev1",
+          "title": "App Dev Questions",
+          "choices": [
+            "item1",
+            "item2",
+            "item3"
+          ]
+        }
+      ],
+      "visibleIf": "{interests} contains ['appdev']",
+      "title": "Modernizing Applications",
+      "description": "Page 1/3: Environment & Process"
+    },
+    {
+      "name": "Contact Form",
+      "elements": [
+        {
+          "type": "panel",
+          "name": "panel1",
+          "elements": [
+            {
+              "type": "multipletext",
+              "name": "contactForm",
+              "titleLocation": "top",
+              "hideNumber": true,
+              "items": [
+                {
+                  "name": "FirstName",
+                  "title": "First Name"
+                },
+                {
+                  "name": "LastName",
+                  "title": "Last Name"
+                },
+                {
+                  "name": "Company",
+                  "title": "Company"
+                },
+                {
+                  "name": "JobTitle",
+                  "title": "Job Title"
+                },
+                {
+                  "name": "Email",
+                  "inputType": "email",
+                  "title": "Email"
+                },
+                {
+                  "name": "Phone",
+                  "inputType": "tel",
+                  "title": "Phone"
+                },
+                {
+                  "name": "State",
+                  "title": "State/Province"
+                },
+                {
+                  "name": "Country",
+                  "title": "Country"
+                }
+              ],
+              "colCount": 2
+            }
+          ]
+        }
+      ],
+      "title": "Contact Form"
+    }
+  ],
+  "showProgressBar": "hidden",
+  "progressBarType": "questions"
+}

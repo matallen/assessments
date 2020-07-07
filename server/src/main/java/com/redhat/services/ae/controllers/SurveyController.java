@@ -124,8 +124,11 @@ public class SurveyController{
 //		long moreThanAMonthInSeconds=60*60*24*32;
 //		new CacheHelper<String>().getCache("visitors", 10, 1000, moreThanAMonthInSeconds);
 		
-		if (!Database.get().getVisitors(YYMMM).contains(visitorId+pageId))
+		if (!Database.get().getVisitors(YYMMM).contains(visitorId+pageId)){
+			log.debug("onPageChange:: incrementing monthly page counter for [visitorId="+visitorId+", pageId="+pageId+"]");
 			o.getMetrics().getByMonth("page", YYMMM).put(pageId, o.getMetrics().getByMonth("page", YYMMM).containsKey(pageId)?o.getMetrics().getByMonth("page", YYMMM).get(pageId)+1:1);
+			
+		}
 
 		o.persist();
 		return Response.ok().build();

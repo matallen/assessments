@@ -12,14 +12,32 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.redhat.services.ae.Database;
 import com.redhat.services.ae.MapBuilder;
 import com.redhat.services.ae.controllers.AnswerProcessor;
 import com.redhat.services.ae.model.Survey;
 import com.redhat.services.ae.utils.CacheHelper;
 import com.redhat.services.ae.utils.Json;
 
-public class RTIResultsPlugin implements Plugin{
-	public static final Logger log=LoggerFactory.getLogger(RTIResultsPlugin.class);
+public class ResultsPlugin implements Plugin{
+	public static final Logger log=LoggerFactory.getLogger(ResultsPlugin.class);
+	
+	/**
+	 * 
+	 * results plugin needs to flatten the answers, merge with question text, id and score, and update the data structure to generate the results page
+	 * 
+	 * for example:
+	 * {
+	 * 	"q_cloud_current_culture_process" : {
+	 * 		"title" : "What best describes your current culture and process related to automating tasks?",
+	 * 		"answer" : "Siloed process",
+	 * 		"score" : 10,
+	 * 	},
+	 * ...
+	 * }
+	 * 
+	 */
+	
 	
 	@Override
 	public void setConfig(Map<String, Object> config){
@@ -48,8 +66,12 @@ public class RTIResultsPlugin implements Plugin{
 			@Override public void onStringAnswer(String questionId, String answerId, Integer score){
 				String title=questionsToTitleMapping.get(questionId);
 				result.put(questionId, new MapBuilder<String,String>().put("title",title).put("answer",answerId).put("score", String.valueOf(score)).build());
+				questionsToTitleMapping.put("overallScore", String.valueOf(questionsToTitleMapping.containsKey("overallScore")?Integer.parseInt(questionsToTitleMapping.get("overallScore"))+score:score));
 			}
 			@Override public void onArrayListAnswer(String questionId, List<Answer> answerList, Integer averageScore){
+				String title=questionsToTitleMapping.get(questionId);
+//				result.put(questionId, new MapBuilder<String,String>().put("title",title).put("answer",answerId).put("score", String.valueOf(averageScore)).build());
+				
 //				result.add(averageScore);
 			}
 			@Override public void onMapAnswer(String question, Answer answer){
@@ -58,42 +80,30 @@ public class RTIResultsPlugin implements Plugin{
 			}
 		}.process(surveyResults);
 		
+		
+		result.put("_meta", new MapBuilder<String,String>().put("overallScore", questionsToTitleMapping.get("overallScore")).build());
+		
 		return result;
 	}
 
 	@Override
 	public Map<String, Object> execute(String surveyId, String visitorId, Map<String, Object> surveyResults) throws Exception{
 		try{
-			log.debug("RTIResultsPlugin:: execute. Should generate and cache the results");
-			// Do any parsing and formatting of the result data for the result page to display
+			log.debug("ResultsPlugin:: execute. Flattening and enriching the results data");
+			
+			Map<String, Map<String, String>> result=flattenAndEnrichResults(surveyId, surveyResults);
 			
 			
-			// calculate the score and add to the data structure
-			List<Integer> scores=new LinkedList<>();
-			new AnswerProcessor(){
-				@Override public void onStringAnswer(String questionId, String answerId, Integer score){
-					scores.add(score);
-				}
-				@Override public void onArrayListAnswer(String questionId, List<Answer> answerList, Integer averageScore){
-					scores.add(averageScore);
-				}
-				@Override public void onMapAnswer(String question, Answer answer){
-					log.warn("Due to not expecting mapped answers, not logging score for: "+question);
-					scores.add(0);
-				}
-			}.process(surveyResults);
-			
-			Integer totalScore=0;
-			for(Integer s:scores){
-				totalScore+=s;
-			}
-			
-			surveyResults.put("overallScore", totalScore);
-			
+//			Integer totalScore=0;
+//			for(Integer s:scores){
+//				totalScore+=s;
+//			}
+//			surveyResults.put("overallScore", totalScore);
 			
 			// Store results temporarily to generate the report content (TODO: this could cause a race condition, because if this doesnt get the data in the cache quick enough before the results page tries to load we have an issue)
-			log.debug("RTIResultsPlugin:: putting answers into cache, ready for the results page to render it");
-			CacheHelper.cache.put(surveyId+"_"+visitorId, Json.toJson(surveyResults));
+			log.debug("ResultsPlugin:: putting answers into cache, ready for the results page to render it");
+			log.debug("ResultsPlugin:: cache.put("+(surveyId+"_"+visitorId)+") = "+Json.toJson(result));
+			CacheHelper.cache.put(surveyId+"_"+visitorId, Json.toJson(result));
 			
 			return surveyResults;
 		}catch(JsonProcessingException e){
