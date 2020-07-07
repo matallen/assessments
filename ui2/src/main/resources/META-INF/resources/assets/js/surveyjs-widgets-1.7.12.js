@@ -1901,6 +1901,17 @@ if (typeof Survey !== "undefined") {
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 var Slider = __webpack_require__(15);
 
+
+function toTicks(min,max,step, asLabel){
+  var result=[];
+  for (var i=min;i<=max;i+=step)
+    if (asLabel){
+      result.push(""+i);
+    }else
+      result.push(i);
+  return JSON.stringify(result);
+}
+
 function init(Survey) {
   var widget = {
     name: "bootstrapslider",
@@ -1945,8 +1956,8 @@ function init(Survey) {
       inputEl.setAttribute("data-slider-min", question.rangeMin);
       inputEl.setAttribute("data-slider-max", question.rangeMax);
       inputEl.setAttribute("data-slider-step", question.step);
-      inputEl.setAttribute("data-slider-ticks", "[1,2,3,4,5]");
-      inputEl.setAttribute("data-slider-ticks-labels", '["1","2","3","4","5"]');
+      inputEl.setAttribute("data-slider-ticks",  toTicks(question.rangeMin, question.rangeMax, question.step));
+      inputEl.setAttribute("data-slider-ticks-labels", toTicks(question.rangeMin, question.rangeMax, question.step, true));
 
       inputEl.setAttribute(
         "data-slider-value",
