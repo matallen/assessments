@@ -16,12 +16,9 @@
 	@import "https://go.redhat.com/hubfs/css/styles.min.css";
 	</style>
 	<style>
-	/*
-	.background{background-color: #000; background-image: linear-gradient(to bottom right, #4cb5bd, #347f89)}
-	*/
 	.background{background-color: #000;}
 	</style>
-	
+		
 	<script src="assets/js/http.js"></script>
 	<script src="assets/js/utils.js"></script>
 	<script src="assets/js/cookies.js"></script>
@@ -34,19 +31,6 @@
 	<link href="assets/css/survey-progress-panel.css" type="text/css" rel="stylesheet"/>
 	<link href="assets/css/header.css" type="text/css" rel="stylesheet"/>
 	<link href="assets/css/style.css" type="text/css" rel="stylesheet"/>
-
-  <!--
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.js"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/css/bootstrap-slider.css" rel="stylesheet"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.js"></script>
-  -->
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.js"></script>
-  
-  <link href="assets/css/bootstrap-slider-10.0.0.css" rel="stylesheet"/>
-  <script src="assets/js/surveyjs-widgets-1.7.12.js"></script>
-  <!--
-  -->
 </head>
 
 <body id="SurveyEngineBody" style="direction: inherit;">
@@ -58,10 +42,13 @@
 				</div>
 				<div class="cols3"></div>
 				<div class="cols3 justify-right">
-						
+					
+					<!--
 					<p style="float: right; position: relative; left: 20px; top: -20px;"><a style="line-height: 1.0 !important;" class="btn btn-outline-white mt-2 mb-1 btn-color-white" href="admin.html" onclick="fade('.background')">ADMIN</a></p>
-						
+					-->	
+					
 					<!-- Language Selector (top right) -->
+					<!--
 					<div class="LanguageSelectorContainer">
 						<select aria-label="Language" name="Q_lang" id="Q_lang" class="Q_lang" data-runtime-value="runtime.Selected">
 							<option value="DE" lang="DE" data-runtime-text="runtime.Language | property 'DE' | property 'DisplayName'">Deutsch</option>
@@ -75,6 +62,7 @@
 							<option value="ZH-S" lang="ZH-S" data-runtime-text="runtime.Language | property 'ZH-S' | property 'DisplayName'">简体中文</option>
 						</select>
 					</div>
+					-->
 						
 				</div>
 			</div>
@@ -82,83 +70,44 @@
 
 	</section>
 	
-<script>
-var languageCode="en"; //default
-
-// Action Handlers
-$("#Q_lang").change(function(sender) {
-	languageCode=sender.currentTarget.options[sender.currentTarget.selectedIndex].value.toLowerCase();
-	if (surveyStarted){
-		survey.locale = languageCode;
-		survey.render();
-	}
-});
-
-function getVisitorId(key){
-	// Assign the visitor a unique ID
-	if (undefined==Cookie.get(key) || ""==Cookie.get(key)){
-		Cookie.set(key, Cookie.uuid(), 30);
-	}else{
-		var c=Cookie.get(key);
-		console.log("Welcome back: "+c);
-	}
-	return Cookie.get(key);
-}
-
-
-$(document).ready(function() {
-	surveyId=Utils.getParameterByName("surveyId");
-	
-	if (undefined!=Utils.getParameterByName("dev_reset")){
-		console.log("Removing Cookie \"rhae-visitorId\"");
-		Cookie.remove("rhae-visitorId");
-	}
-	
-	visitorId=getVisitorId("rhae-visitorId");
-	if (undefined!=surveyId)
-		startSurvey();
-});
-</script>
-	
 	<section id="xsurvey" class=" py-0">
 		<div class="container">
 			<div class="row">
-				<div class="col-md-4">
-					<!-- THIS IS WHERE WE NEED THE NAV REALLY -->
-					<div id="surveyNavigation"></div>
-				</div>
-				<div class="col-md-8 surveyform">
-					<div id="surveyElement"></div>
-					<div id="surveyResult"></div>
+				<div class="col-md-10 py-4 py-md-6">
+					
+					<h3>Results</h3>
+					
+					<!--
+					<h4>Your results are XX. That's XX% lorem ipsum compared with the industry average.</h4>
+					-->
+					
+					<div id="results">Loading... please wait</div>
+					
 				</div>
 			</div>
 		</div>
 	</section>
 	<script>
-		//var results = null;
-//		var previousAssessmentId=null; // load from cookie
-		var surveyId;
-		var visitorId;
-		var surveyStarted=false;
+		var surveyId=Utils.getParameterByName("surveyId");
+		var visitorId=Utils.getParameterByName("visitorId");
 		
-		function startSurvey() {
-//			if (null!=previousAssessmentId) {
-//				Http.httpGetObject(env.server+'/api/survey/'+surveyId+'/results?resultsId='+previousAssessmentId, function(assessmentResults) { // load an old assessment
-//					results=assessmentResults;
-//					loadSurvey();
-//				});
-//			} else {
-				loadSurvey();
-//			}
-		}
+		var timerId;
+		var intervalInSeconds=1;
+		$(document).ready(function() {
+			
+			timerId = window.setInterval(function () {
+				
+				Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/results/"+visitorId, function(status, survey){
+					if (200==status){
+						clearInterval(timerId);
+						$("#results").html(JSON.stringify(survey));
+					}
+				});
+				
+			}, intervalInSeconds*1000);
+			
+		});
 
-		function loadSurvey() {
-			var surveyJsUrl=env.server+"/api/surveys/"+surveyId+"/run"; // request a new assessment
-			var surveyJSElement=document.createElement('script');
-			surveyJSElement.src=surveyJsUrl;
-			document.getElementsByTagName('head')[0].appendChild(surveyJSElement);
-			surveyStarted=true;
-		}
 		
 	</script>
 	

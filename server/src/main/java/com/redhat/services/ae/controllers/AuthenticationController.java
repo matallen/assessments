@@ -36,6 +36,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
@@ -65,12 +66,24 @@ import com.redhat.services.ae.utils.StringUtils;
 @RequestScoped
 public class AuthenticationController{
 	public static final Logger log=LoggerFactory.getLogger(AuthenticationController.class);
+	
+	@Context
+	UriInfo uri;
 
+	public static String getDomainName(String url, boolean stripSubdomain) throws URISyntaxException {
+    URI uri = new URI(url);
+    String domain = uri.getHost();
+    domain=domain.startsWith("www.") ? domain.substring(4) : domain;
+    domain=domain.substring(domain.indexOf(".")+1);
+    return domain;
+	}
+	
 	@POST
 	@Path("/login")
 	public Response login(String payload) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, URISyntaxException{
 		Map<String, String> params=parseQueryString(payload);
 		
+		log.info("Attempting login with "+params.get("username")+"/"+params.get("password"));
 		String loginModuleClass=ConfigProvider.getConfig().getValue("modules.login.class", String.class);
 		try{
 			LoginModule loginModule=(LoginModule)Class.forName(loginModuleClass).newInstance();
@@ -85,10 +98,24 @@ public class AuthenticationController{
 				Long ttlMins=Long.parseLong(ConfigProvider.getConfig().getValue("modules.login.jwt.ttlInMins", String.class));
 				
 				String jwtToken=Jwt.createJWT(jwtClaims, ttlMins*60);
+				String domainName=getDomainName(uri.getBaseUri().toString(), true);
+//				log.info("returning jwt token in cookie rhae-jwt: "+jwtToken);
+//				log.info("uri.baseUri = "+uri.getBaseUri());
+//				log.info("uri.getPath= "+uri.getPath(true));
+//				log.info("uri.getAbsolutePath = "+uri.getAbsolutePath());
+//				log.info("uri.domainName = "+domainName);
 				
-				return Response.status(302).location(new URI(params.get("onSuccess"))).cookie(new NewCookie("rhae-jwt", jwtToken)).build();
+				return Response.status(302)
+						.location(new URI(params.get("onSuccess")))
+//						.header("Access-Control-Allow-Origin", domainName)
+//						.header("Access-Control-Allow-Credentials", "true")
+//						.header("Access-Control-Allow-Methods", "GET, POST")
+//						.header("Access-Control-Allow-Headers", "Content-Type, *")
+						.cookie(new NewCookie("rhae-jwt", jwtToken, "/", domainName, "comment", 60*60 /*1hr*/, false))
+						.build();
 				
 			}else{
+				log.info("Failure to authenticate user, returning to login screen with error 0");
 				System.out.println("onFailure.url:: "+params.get("onFailure"));
 				return Response.status(302).location(new URI(params.get("onFailure")+"?error=0")).build();
 			}

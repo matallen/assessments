@@ -7,6 +7,8 @@ import static org.hamcrest.text.MatchesPattern.matchesPattern;
 import static org.hamcrest.core.IsEqual.equalTo;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
@@ -101,8 +103,6 @@ public class SurveyControllerTest {
 		);
 	}
 	
-	
-  
   @Test
   public void addWithSameIDShouldFail() {
   	given()

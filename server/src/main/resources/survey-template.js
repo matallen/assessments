@@ -49,32 +49,6 @@ var json = SURVEY_CONTENT;
 
 window.survey = new Survey.Model(json);
 
-//survey
-//    .onComplete
-//    .add(function (result) {
-//            var xmlhttp = new XMLHttpRequest();
-//            tmpResult = result.data;
-//   		    var custID = Utils.getParameterByName("customerId");
-//   		    var appID  = Utils.getParameterByName("applicationId");
-//
-//            //dependencies array needs special handling
-//            var tmpDEPSOUTLIST = tmpResult.DEPSOUTLIST;
-//            var tmpDEPSINLIST = tmpResult.DEPSINLIST;
-//            delete tmpResult.DEPSOUTLIST;
-//            delete tmpResult.DEPSINLIST;
-//            xmlhttp.open("POST", addAuthToken(Utils.SERVER+"/api/pathfinder/customers/"+custID+"/applications/"+appID+"/assessments"));
-//            xmlhttp.setRequestHeader("Content-Type", "application/json");
-//            myObj = { "payload": tmpResult,"depsOUT":tmpDEPSOUTLIST, "depsIN":tmpDEPSINLIST,"datetime":new Date()};
-//            var payload=JSON.stringify(myObj);
-//            console.log("payload="+payload);
-//            xmlhttp.send(payload);
-//
-//            if (undefined!=$('#surveyCompleteLink')){
-//            	$('#surveyCompleteLink').attr('href', '/pathfinder-ui/assessments-v2.jsp?customerId='+Utils.getParameterByName("customerId"));
-//            }
-//    });
-//
-//
 
 var timeInfo=[];
 
@@ -96,7 +70,8 @@ if (undefined==geoInfo){
 
 //survey.showTimerPanelMode = 'page';
 survey.startTimer();
-survey.showTimerPanel = 'bottom';
+survey.showTimerPanel = 'none'; //bottom
+//survey.completeText = 'View Results';
 survey
       .onAfterRenderPage
       .add(function(result, options){
@@ -113,9 +88,9 @@ survey
 		timeInfo[page.name]=match[1];
 		console.log("Metrics:: sending page message: page "+ page.name+" - "+timeInfo[page.name]);
     	
-		saveState(survey);
+		LocalStorage.saveState(survey);
 		
-		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onPageChange?visitorId="+Cookie.get("rhrti-uid"), buildPageChangePayload(page));
+		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onPageChange?visitorId="+Cookie.get("rhae-visitorId"), buildPageChangePayload(page));
 	});
 		
 survey
@@ -132,34 +107,49 @@ survey
 		console.log("Metrics:: sending page message: page "+ page.name+" - "+timeInfo[page.name]);
 
 		//window.localStorage.removeItem("data");
-		window.localStorage.removeItem(storageName);
+		
+		// TODO: need to move this to the results.html page so we dont remove the answers too soon (ie, if the results page doesnt display correctly)
+		LocalStorage.clearState();
+		//window.localStorage.removeItem(storageName);
 		clearInterval(timerId);
-		saveState(survey);
+		//saveState(survey);
     	
-		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onComplete?visitorId="+Cookie.get("rhrti-uid"), buildPageChangePayload(page));
-    	//Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"?event=onComplete&cookie="+Cookie.get("rhrti-uid")+"&time="+timeInfo[page.name]+"&country="+geoInfo["countryCode"]+"region"+geoInfo["region"]);
+		// TODO: Remove this double posting, but find a way to make the multi-depth object easier to parse on the java side
+		
+		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onComplete?visitorId="+Cookie.get("rhae-visitorId"), buildPageChangePayload(page, false), function(result){
+			if (result.status==200){
+				// navigate to a results page
+				
+			}else{
+				// Handle the error scenario
+			}
+		});
+    	//Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"?event=onComplete&cookie="+Cookie.get("rhae-jwt")+"&time="+timeInfo[page.name]+"&country="+geoInfo["countryCode"]+"region"+geoInfo["region"]);
     	
-    	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/onResults?cookie="+Cookie.get("rhrti-uid"), survey.data, function(result){
-    		if (result.status==200){
-    			// navigate to a results page
-    			
-    		}else{
-    			// Handle the error scenario
-    		}
+    	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/onResults?visitorId="+Cookie.get("rhae-visitorId"), survey.data, function(result){
+			if (result.status==200){
+				// navigate to a results page
+				
+			}else{
+				// Handle the error scenario
+			}
     	});
     	
     	
     });
 
-function buildPageChangePayload(page){
+function buildPageChangePayload(page, includeData){
 	var payload={};
-	payload["visitorId"]=Cookie.get("rhrti-uid");
+	payload["visitorId"]=Cookie.get("rhae-visitorId");
 	payload["timeOnpage"]=timeInfo[page.name];
 	payload["geo"]=geoInfo["continentCode"];
 	payload["countryCode"]=geoInfo["countryCode"];
 	payload["region"]=geoInfo["region"];
+	if (includeData){
+		payload["data"]=survey.data;
+	}
 //	payload["info"]={};
-//	payload["info"]["visitorId"]=Cookie.get("rhrti-uid");
+//	payload["info"]["visitorId"]=Cookie.get("rhae-jwt");
 //	payload["info"]["timeOnpage"]=timeInfo[page.name];
 //	payload["info"]["geo"]=geoInfo["continentCode"];
 //	payload["info"]["countryCode"]=geoInfo["countryCode"];
@@ -364,33 +354,48 @@ var updateScroller = setInterval(() => {
 // State saving feature (+ timed saving)
 var timerId=0;
 var saveIntervalInSeconds=20;
-var storageName="RHAssessmentPlatform_State";
-function saveState(survey) {
-	console.log("Saving state... (page "+survey.currentPageNo+")");
-    window.localStorage.setItem(storageName, JSON.stringify({ currentPageNo: survey.currentPageNo, data: survey.data }));
+
+
+LocalStorage = {
+		storageName:"RHAssessmentPlatform_State",
+		saveState: function(survey) {
+			console.log("LocalStorage:: Saving state... (page "+survey.currentPageNo+")");
+		    window.localStorage.setItem(LocalStorage.storageName, JSON.stringify({ currentPageNo: survey.currentPageNo, data: survey.data }));
+		},
+		clearState: function(){
+			console.log("LocalStorage:: Clearing state")
+			window.localStorage.removeItem(LocalStorage.storageName);
+		},
+		loadState: function(survey) {
+			var storageSt = window.localStorage.getItem(LocalStorage.storageName) || "";
+			var loaded=storageSt?JSON.parse(storageSt):{ currentPageNo: 1, data: {} };
+			if (loaded.data) 
+			    survey.data=loaded.data;
+			if (loaded.currentPageNo){
+				//console.log("set page to "+loaded.currentPageNo);
+				survey.currentPageNo=loaded.currentPageNo;
+			}
+		}
 }
-function loadState(survey) {
-	var storageSt = window.localStorage.getItem(storageName) || "";
-	var loaded=storageSt?JSON.parse(storageSt):{ currentPageNo: 1, data: json };
-	if (loaded.data) 
-	    survey.data=loaded.data;
-	if (loaded.currentPageNo){
-		console.log("set page to "+loaded.currentPageNo);
-		survey.currentPageNo=loaded.currentPageNo;
-	}
+if (undefined!=Utils.getParameterByName("dev_reset")){
+	console.log("Clearing localstorage of previously answered questions");
+	LocalStorage.clearState();
 }
+
 //save data every x seconds
 timerId = window.setInterval(function () {
-    saveState(survey);
+    LocalStorage.saveState(survey);
 }, saveIntervalInSeconds*1000);
 
-loadState(survey);
+LocalStorage.loadState(survey);
 // /State saving feature
 
 
 
 
 //survey.showPreviewBeforeComplete = 'showAnsweredQuestions';
+survey.showCompletedPage=false;
+survey.navigateToUrl="/results.html?surveyId="+surveyId+"&visitorId="+visitorId;
 
 //survey.locale = languageCode;
 survey.render();

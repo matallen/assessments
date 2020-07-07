@@ -158,3 +158,31 @@ div.elevate li.noColor{
 }
 
 
+
+.sv_page_title{
+	font-size: 26pt;
+  margin-bottom: 0px;
+}
+.sv_p_root>div:first-of-type{ /* page description */
+	font-size: 12pt;
+	font-weight: normal;
+  margin-bottom: 20px;
+}
+.sv_q_title span{
+	font-size: 14pt;
+	font-weight: bold; /* questions in bold */
+}
+.sv_qstn {
+  border: 1px solid grey; /* border around questions */
+  padding: 10px;
+  margin: 10px;
+}
+.sv_q_num{ /* hide the question numbers */
+	display: none;
+}
+.sv_nav{
+	text-align: center; /* center the prev/next buttons */
+}
+.sv_prev_btn, .sv_next_btn, .sv_preview_btn, .sv_complete_btn {
+  padding: 13px 23px 10px 23;
+}

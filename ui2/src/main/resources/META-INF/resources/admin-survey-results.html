@@ -20,6 +20,7 @@ $(function(){
 </style>
 <link rel="stylesheet" href="assets/css/header.css">
 <link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/controls-slide-switch.css">
 </head>
 <body>
 	
@@ -44,6 +45,7 @@ $(function(){
 			<li class="menu_needsId"><a href="admin-survey-details.html?id=">Details</a></li>
 			<li class="menu_needsId"><a href="admin-survey-reports.html?id=">Reports</a></li>
 			<li class="menu_needsId"><a href="admin-survey-questions.html?id=">Questions</a></li>
+			<li class="menu_needsId"><a href="admin-survey-results.html?id=">Results</a></li>
 			<li class="menu_needsId"><a href="admin-survey-integration-mapping.html?id=">Eloqua</a></li>
 		</ul>
 		<ul style="float:right" class="menu menu_horizontal">
@@ -68,12 +70,11 @@ $(function(){
 			<table class="elevate">
 				<tbody id="content">
 				
-					<tr><td>Survey ID</td>							<td><input type="text" disabled id="_id"						value=""/></td></tr>
-					<tr><td>Survey Name</td>						<td><input type="text" disabled id="_name"					value=""/></td></tr>
-					<tr><td>Survey Description</td>			<td><input type="text" disabled id="_description"		value=""/></td></tr>
-					<tr><td>Survey Owner</td>						<td><input type="text" disabled id="_owner"					value=""/></td></tr>
-					<tr><td>Survey Theme</td>						<td><input type="text" disabled id="_theme"					value=""/></td></tr>
-					
+					<tr><td>Active:</td><td>
+						<label class="switch-s"><input class="keyvalue" name="active" type="checkbox" checked onchange="this.value=this.checked"><span class="slider-s round"></span></label>
+					</td></tr>
+					<tr><td>Results:</td>                 <td><input class="keyvalue" type="text" name="Eloqua_Url"/></td></tr>
+
 					<tr>
 						<td colspan="2">
 					    <a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="#" onclick="save();">Save</a>
@@ -81,6 +82,69 @@ $(function(){
 					</tr>
 				</tbody>
 			</table>
+			
+			
+			<!-- NEW -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
+        <script src="https://surveyjs.azureedge.net/1.7.15/survey.ko.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.10/ace.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.10/ext-language_tools.js" type="text/javascript" charset="utf-8"></script>
+        <!-- Uncomment to enable Select2 <script src="https://unpkg.com/jquery"></script> <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" /> <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script> -->
+        <link href="https://surveyjs.azureedge.net/1.7.15/survey-creator.css" type="text/css" rel="stylesheet"/>
+        <script src="https://surveyjs.azureedge.net/1.7.15/survey-creator.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="./index.css">
+				<div id="surveyContainer" style="width:100%">
+            <div id="creatorElement"></div>
+        </div>
+        <script type="text/javascript" src="./index.js"></script>
+				<script>
+				SurveyCreator
+			    .StylesManager
+			    .applyTheme("bootstrap");
+				//Add a tag property
+				Survey
+			    .Serializer
+			    .addProperty("question", {
+		        name: "weighting",
+		        category: "general"
+			    });
+				Survey
+			    .Serializer
+			    .addProperty("choices", {
+		        name: "mat",
+		        category: "choices"
+			    });
+				Survey
+			    .Serializer
+			    .findProperty("question", "weighting")
+			    .readOnly = false;
+				var creatorOptions = { showLogicTab: true };
+				var creator = new SurveyCreator.SurveyCreator("creatorElement", creatorOptions);
+				creator.showToolbox = "right";
+				creator.showPropertyGrid = "right";
+				creator.rightContainerActiveItem("toolbox");
+				
+				var questionCounter = 1;
+				//Set the name property different from the default value
+				//and set the tag property to a generated GUID value.
+				creator
+				    .onQuestionAdded
+				    .add(function (sender, options) {
+				        var q = options.question;
+				        var t = q.getType();
+				        q.name = "Question" + t[0].toUpperCase() + t.substring(1) + questionCounter;
+				        q.weighting = 100;
+				        questionCounter++;
+				    });
+
+				
+				Http.httpGetObject(env.server+"/api/surveys/"+Utils.getParameterByName("id")+"/run?questionsOnly=true", function(status, survey){
+					creator.text=JSON.stringify(survey);
+				});
+				</script>
+			<!-- /NEW -->
+			
 		</div>
 	</section>
 	
@@ -91,7 +155,7 @@ var surveyId;
 $(document).ready(function() {
 	$("#feedback-alert").hide();
 	surveyId=Utils.getParameterByName("id");
-	setMenu("Details");
+	setMenu("Results");
 	
 	if (undefined==surveyId){
 		// We have a new Survey - Enable all all input elements with id=_<something>, except ID
