@@ -36,13 +36,26 @@ public class EloquaPluginTest{
 //		);
 	}
 	
+	/**
+	 * TO DEBUG, GO TO https://tyrion-workbenchprod.int.open.paas.redhat.com/ and search for 8091 (elqFormName in database.json config)
+	 * 
+	 * Here is the link to the mojo space that explains Tyrion and how you can use it:
+	 * https://mojo.redhat.com/videos/932000
+	 * 
+	 * Sandbox Consulting Assessment Integration form id = 8091 (use this id once you start testing) 
+   * Ready to Innovate Offer id (to see how the data currently looks in Eloqua with the active assessment) - 70160000000xZtmAAE
+	 *
+	 * Exalple field mapping: https://docs.google.com/spreadsheets/d/1ZQ4sUfvW2Ukfv0D43NoylKVjm_qyBYw50uwLLgfd8Yw/edit?usp=sharing
+	 * 
+	 */
+	
 	private Map<String, Object> getConfig() throws JsonParseException, JsonMappingException, IOException{
-		
 		return
 				new MapBuilder<String, Object>()
 				.put("active", true)
 				.put("className", "com.redhat.services.ae.plugins.EloquaPlugin")
-				.put("url", "https://s1795.t.eloqua.com/e/f2?elqSiteID=1795&elqFormName=consulting-assessment-integration-sandbox")
+//				.put("url", "https://s1795.t.eloqua.com/e/f2?elqSiteID=1795&elqFormName=consulting-assessment-integration-sandbox")
+				.put("url", "https://s1795.t.eloqua.com/e/f2")
 				.put("config", new MapBuilder<String,Map<String,String>>()
 						.put("mapping", new MapBuilder<String,String>()
 								.put("automation-dev",  "UDF_01_Answer")
@@ -50,36 +63,19 @@ public class EloquaPluginTest{
 								.put("methodology-dev", "UDF_03_Answer")
 								.put("firstName", "C_FirstName")
 								.put("lastName", "C_LastName")
+								.put("companyName", "C_Company")
 								.build())
 						.put("values", new MapBuilder<String,String>()
-								.put("elqFormName",  "ready-to-innovate")
+								.put("elqSiteID",  "1795")
+								.put("elqFormName",  "consulting-assessment-integration-sandbox")
+								.put("A_OfferID",  "70160000000xZtmAAE")
 								.put("elqCustomerGUID",  "60e60dD55c-aec7-4b45-a936-d621ec1e8a6c")
-								.put("",  "")
-								.put("",  "")
-								.put("",  "")
-								.put("A_OfferID",  "70160000000xZtrAAE")
+								.put("C_Salutation",  "Mr")
+								.put("C_EmailAddress",  "mallen@redhat.com")
 								.build()
 								)
 						.build())
 				.build();
-		
-//		return 
-//				Json.toObject(
-//						"{    \"active\" : true,\n" + 
-//						"    \"className\" : \"com.redhat.services.ae.plugins.EloquaPlugin\",\n" + 
-//						"    \"url\" : \"https://s1795.t.eloqua.com/e/f2?elqSiteID=1795&elqFormName=consulting-assessment-integration-sandbox\",\n" + 
-//						"    \"config\" : {\n" + 
-//						"      \"mapping\" : {\n" + 
-//						"        \"automation-dev\" : \"UDF_01_Answer\",\n" + 
-//						"        \"automation-ops\" : \"UDF_02_Answer\",\n" + 
-//						"        \"methodology-dev\" : \"UDF_03_Answer\"\n" + 
-//						"      },\n" + 
-//						"      \"values\" : {\n" + 
-//						"        \"UDF_Custom1\" : \"Test\",\n" + 
-//						"        \"UDF_Custom2\" : \"Test2\"\n" + 
-//						"      }\n" + 
-//						"}    }\n"
-//						, new TypeReference<HashMap<String, Object>>() {});
 	}
 	private Map<String, String> getSurveyResults1() throws JsonParseException, JsonMappingException, IOException{
 		return 
@@ -88,6 +84,7 @@ public class EloquaPluginTest{
 				.put("automation-ops", "answer 2")
 				.put("firstName", "Fred")
 				.put("lastName", "Bloggs")
+				.put("companyName", "Red Hat Inc")
 				.build()
 				;
 	}

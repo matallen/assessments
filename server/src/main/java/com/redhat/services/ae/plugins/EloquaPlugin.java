@@ -7,10 +7,6 @@ import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.redhat.services.ae.controllers.SurveyAdminController;
-import com.redhat.services.ae.utils.Json;
-
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
@@ -38,58 +34,50 @@ public class EloquaPlugin implements Plugin{
 			throw new RuntimeException(String.format("Config not set correctly. Url is %s, and config==null is %s", url, (config==null)));
 	}
 
-	@SuppressWarnings("unused")
+	// gather the data from surveyResults, map it for the Eloqua http post request, build and send it
 	@Override
-	public void execute(Map<String, String> surveyResults){
-		
-		// gather the data from surveyResults, map it for the Eloqua http post request, build and send it
-		
+	public void execute(Map<String, Object> surveyResults){
 		Map<String,String> eloquaFields=new HashMap<String, String>();
 		
+		// add mapped answers
 		for(Entry<String, String> e:mapping.entrySet()){
-			eloquaFields.put(e.getValue(), surveyResults.get(e.getKey()));
+			if (surveyResults.get(e.getKey()) instanceof String){
+				eloquaFields.put(e.getValue(), (String)surveyResults.get(e.getKey()));
+			}else{
+				System.out.println("erm, what if the answer is not a string????");
+			}
 		}
 		
+		// add literal values
 		for(Entry<String, String> e:values.entrySet()){
 			eloquaFields.put(e.getKey(), e.getValue());
 		}
 		
-		boolean asJson=false;
-		boolean asForm=true;
+		// Build & POST the request
+		RequestSpecification rs=given()
+		.urlEncodingEnabled(true)
+		.contentType(ContentType.JSON)
+		.header("Accept", ContentType.JSON.getAcceptHeader())
+		;
 		
-		try{
-			
-			RequestSpecification rs=given()
-			.urlEncodingEnabled(true)
-			.contentType(ContentType.JSON)
-			.header("Accept", ContentType.JSON.getAcceptHeader())
-			;
-			
-			if (asJson){
-				String json=Json.toJson(eloquaFields);
-				log.debug(String.format("Sending Eloqua as json:: \n%s", json));
-				rs.body(json);
-			}
-			if (asForm){
-				for (Entry<String, String> e:eloquaFields.entrySet()){
-					log.debug(String.format("Sending Eloqua as form:: field=%s, value=%s", e.getKey(), e.getValue()));
-					rs.param(e.getKey(), e.getValue());
-				}
-			}
-			
-				
+		for (Entry<String, String> e:eloquaFields.entrySet()){
+			log.debug(String.format("Sending Eloqua as querystring:: field=%s, value=%s", e.getKey(), e.getValue()));
+			System.out.println(String.format("->Eloqua:: field=%s, value=%s", e.getKey(), e.getValue()));
+			rs.queryParam(e.getKey(), e.getValue());
+		}
+//		url="https://s1795.t.eloqua.com/e/f2?elqSiteID=8091&elqFormName=consulting-assessment-integration-sandbox";
+//		url="https://s1795.t.eloqua.com/e/f2";
+		
+		boolean dummy=true;
+		if (!dummy){
 			Response response=rs.post(url).andReturn();
-			
-//			Response response=given()
-//					.urlEncodingEnabled(true)
-//					.contentType(ContentType.JSON)
-//					.body(Json.toJson(eloquaFields))
-//					.post(url).andReturn();
-			
-		}catch (JsonProcessingException e1){
-			e1.printStackTrace();
+			System.out.println(response.statusCode());
+		}else{
+			System.out.println("Dummy call, not sent to Eloqua");
 		}
 		
+		
+//		TODO: What happens if we get a statusCode != 200 ??? notify chat? log error?
 		
 	}
 }
