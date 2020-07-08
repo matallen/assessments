@@ -345,6 +345,9 @@ var updateScroller = setInterval(() => {
     }
 }, 100);
  * */
+
+//$(".sv_progress_bar").addClass("progress-bar");
+
 // /MAT - ADDING TOP NAV
 
 

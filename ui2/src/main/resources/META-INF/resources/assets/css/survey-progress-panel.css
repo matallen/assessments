@@ -83,3 +83,18 @@
     border-color: #c10000;
     background-color: white;
 }
+
+
+
+/* progress bar (x of 3 question complete) bar, not the page nav bar*/
+.sv_progress_bar{
+    float: left;
+    background-color: rgb(193, 0, 0);
+    height: 6px;
+    border-radius: 6px;
+    transition: 1s;
+    position: absolute;
+}
+.sv_progress>span{
+	display: none !important;
+}

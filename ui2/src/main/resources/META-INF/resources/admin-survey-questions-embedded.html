@@ -45,8 +45,8 @@ $(function(){
 			<li class="menu_needsId"><a href="admin-survey-details.html?id=">Details</a></li>
 			<li class="menu_needsId"><a href="admin-survey-reports.html?id=">Reports</a></li>
 			<li class="menu_needsId"><a href="admin-survey-questions.html?id=">Questions</a></li>
-			<li class="menu_needsId"><a href="admin-survey-results.html?id=">Results</a></li>
-			<li class="menu_needsId"><a href="admin-survey-integration-mapping.html?id=">Eloqua</a></li>
+			<li class="menu_needsId"><a href="admin-survey-questions-embedded.html?id=">Questions (experimental)</a></li>
+			<li class="menu_needsId"><a href="admin-survey-eloqua.html?id=">Eloqua</a></li>
 		</ul>
 		<ul style="float:right" class="menu menu_horizontal">
 			<li><a id="logout" href="/logout">Logout</a></li>
@@ -94,6 +94,13 @@ $(function(){
         <script src="https://surveyjs.azureedge.net/1.7.15/survey-creator.js"></script>
         <link rel="stylesheet" href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="./index.css">
+        
+        <!-- custom controls (slider) -->
+			  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.js"></script>
+			  <link href="assets/css/bootstrap-slider-10.0.0.css" rel="stylesheet"/>
+			  <script src="assets/js/surveyjs-widgets-1.7.12.js"></script>
+        
+        
 				<div id="surveyContainer" style="width:100%">
             <div id="creatorElement"></div>
         </div>
@@ -112,8 +119,7 @@ $(function(){
 				Survey
 			    .Serializer
 			    .addProperty("choices", {
-		        name: "mat",
-		        category: "choices"
+		        name: "mat"
 			    });
 				Survey
 			    .Serializer
