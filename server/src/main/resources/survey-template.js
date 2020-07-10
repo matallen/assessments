@@ -108,16 +108,16 @@ survey
 
 		//window.localStorage.removeItem("data");
 		
-		// TODO: need to move this to the results.html page so we dont remove the answers too soon (ie, if the results page doesnt display correctly)
-		LocalStorage.clearState();
 		//window.localStorage.removeItem(storageName);
 		clearInterval(timerId);
 		//saveState(survey);
     	
 		// TODO: Remove this double posting, but find a way to make the multi-depth object easier to parse on the java side
 		
-		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onComplete?visitorId="+Cookie.get("rhae-visitorId"), buildPageChangePayload(page, false), function(result){
-			if (result.status==200){
+		survey.data["language"]=languageCode;
+		
+		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onComplete?visitorId="+Cookie.get("rhae-visitorId"), buildPageChangePayload(page, false), function(response){
+			if (response.status==200){
 				// navigate to a results page
 				
 			}else{
@@ -126,9 +126,13 @@ survey
 		});
     	//Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"?event=onComplete&cookie="+Cookie.get("rhae-jwt")+"&time="+timeInfo[page.name]+"&country="+geoInfo["countryCode"]+"region"+geoInfo["region"]);
     	
-    	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/onResults?visitorId="+Cookie.get("rhae-visitorId"), survey.data, function(result){
-			if (result.status==200){
+    	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/onResults?visitorId="+Cookie.get("rhae-visitorId"), survey.data, function(response){
+			if (response.status==200){
 				// navigate to a results page
+				
+				console.log("Completed posting results to server");
+				
+				//window.location.assign("/results.html?surveyId="+surveyId+"&visitorId="+visitorId);
 				
 			}else{
 				// Handle the error scenario
@@ -357,27 +361,27 @@ var timerId=0;
 var saveIntervalInSeconds=20;
 
 
-LocalStorage = {
-		storageName:"RHAssessmentPlatform_State",
-		saveState: function(survey) {
-			console.log("LocalStorage:: Saving state... (page "+survey.currentPageNo+")");
-		    window.localStorage.setItem(LocalStorage.storageName, JSON.stringify({ currentPageNo: survey.currentPageNo, data: survey.data }));
-		},
-		clearState: function(){
-			console.log("LocalStorage:: Clearing state")
-			window.localStorage.removeItem(LocalStorage.storageName);
-		},
-		loadState: function(survey) {
-			var storageSt = window.localStorage.getItem(LocalStorage.storageName) || "";
-			var loaded=storageSt?JSON.parse(storageSt):{ currentPageNo: 1, data: {} };
-			if (loaded.data) 
-			    survey.data=loaded.data;
-			if (loaded.currentPageNo){
-				//console.log("set page to "+loaded.currentPageNo);
-				survey.currentPageNo=loaded.currentPageNo;
-			}
-		}
-}
+//LocalStorage = {
+//		storageName:"RHAssessmentPlatform_State",
+//		saveState: function(survey) {
+//			console.log("LocalStorage:: Saving state... (page "+survey.currentPageNo+")");
+//		    window.localStorage.setItem(LocalStorage.storageName, JSON.stringify({ currentPageNo: survey.currentPageNo, data: survey.data }));
+//		},
+//		clearState: function(){
+//			console.log("LocalStorage:: Clearing state")
+//			window.localStorage.removeItem(LocalStorage.storageName);
+//		},
+//		loadState: function(survey) {
+//			var storageSt = window.localStorage.getItem(LocalStorage.storageName) || "";
+//			var loaded=storageSt?JSON.parse(storageSt):{ currentPageNo: 1, data: {} };
+//			if (loaded.data) 
+//			    survey.data=loaded.data;
+//			if (loaded.currentPageNo){
+//				//console.log("set page to "+loaded.currentPageNo);
+//				survey.currentPageNo=loaded.currentPageNo;
+//			}
+//		}
+//}
 if (undefined!=Utils.getParameterByName("dev_reset")){
 	console.log("Clearing localstorage of previously answered questions");
 	LocalStorage.clearState();

@@ -49,7 +49,7 @@ Http = {
 	httpGetObject: function(url, callback, onError){
 		Http.httpGet(url, function(status, responseText){
 			if (status==200){
-				callback(status, JSON.parse(responseText));
+				callback(status, responseText!="" && responseText!=undefined?JSON.parse(responseText):responseText);
 			}else
 				onError(status);
 		});

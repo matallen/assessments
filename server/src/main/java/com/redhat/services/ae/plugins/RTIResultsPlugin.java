@@ -72,9 +72,11 @@ public class RTIResultsPlugin implements Plugin{
 			List<Integer> scores=new LinkedList<>();
 			new AnswerProcessor(){
 				@Override public void onStringAnswer(String questionId, String answerId, Integer score){
+					log.debug("Incrementing score by "+score+" for "+questionId);
 					scores.add(score);
 				}
 				@Override public void onArrayListAnswer(String questionId, List<Answer> answerList, Integer averageScore){
+					log.debug("Incrementing score by the average "+averageScore+" for "+questionId);
 					scores.add(averageScore);
 				}
 				@Override public void onMapAnswer(String question, Answer answer){

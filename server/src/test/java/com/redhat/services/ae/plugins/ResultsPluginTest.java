@@ -33,7 +33,7 @@ public class ResultsPluginTest{
 	@Test
 	public void test1() throws Exception{
 		String questionsJson=IOUtils.toString(this.getClass().getClassLoader().getResource("ResultsPlugin_test1_questions.json"), "UTF-8");
-		String answersJson="{\"q_cloud_current_culture_process\":[\"10#Siloed process\",\"30#DevOps team created to change processes\"],\"overallScore\":21,\"interests\":[\"cloud\"]}";
+		String answersJson="{\"q_cloud_current_culture_process\":[\"10#Siloed process\",\"30#DevOps team created to change processes\"],\"overallScore\":21,\"interests\":[\"cloud\"],\"contactForm\":{\"FirstName\":\"aaa\",\"LastName\":\"aaa\",\"Email\":\"test@redhat.com\"}}";
 
 		Survey s=Survey.builder().id("test1").name("Test Survey").build();
 		s.setQuestions(questionsJson);
@@ -42,8 +42,10 @@ public class ResultsPluginTest{
 		ResultsPlugin test=new ResultsPlugin();
 		
 		Map<String,Object> answers=Json.toObject(answersJson, new TypeReference<HashMap<String,Object>>(){});
-		test.execute("test1", "TEST_VISITOR_ID", answers);
+		System.out.println("from:"+Json.toJson(answers));
+		Map<String, Object> newData=test.execute("test1", "TEST_VISITOR_ID", answers);
 		
+		System.out.println("to:"+Json.toJson(newData));
 		
 	}
 }

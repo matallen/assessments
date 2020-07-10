@@ -26,6 +26,27 @@ HtmlUtils = {
 	}
 }
 
+LocalStorage = {
+		storageName:"RHAssessmentPlatform_State",
+		saveState: function(survey) {
+			console.log("LocalStorage:: Saving state... (page "+survey.currentPageNo+")");
+		    window.localStorage.setItem(LocalStorage.storageName, JSON.stringify({ currentPageNo: survey.currentPageNo, data: survey.data }));
+		},
+		clearState: function(){
+			console.log("LocalStorage:: Clearing state")
+			window.localStorage.removeItem(LocalStorage.storageName);
+		},
+		loadState: function(survey) {
+			var storageSt = window.localStorage.getItem(LocalStorage.storageName) || "";
+			var loaded=storageSt?JSON.parse(storageSt):{ currentPageNo: 1, data: {} };
+			if (loaded.data) 
+			    survey.data=loaded.data;
+			if (loaded.currentPageNo){
+				survey.currentPageNo=loaded.currentPageNo;
+			}
+		}
+}
+
 if (!String.prototype.format) {
   String.prototype.format = function() {
     var args = arguments;
