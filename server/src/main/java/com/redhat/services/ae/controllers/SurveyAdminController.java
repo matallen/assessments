@@ -118,7 +118,7 @@ public class SurveyAdminController{
 	@Path("/{surveyId}/questions")
 	public Response saveQuestions(@PathParam("surveyId") String surveyId, String questionsJson) throws FileNotFoundException, IOException{
 		Survey survey=Survey.findById(surveyId);
-//		System.out.println("XXXX="+questionsJson);
+		log.debug("Saving Questions:/n"+questionsJson);
 		survey.setQuestions(questionsJson);
 		survey.update();
 		return Response.ok(Survey.findById(surveyId).getQuestions()).build();
@@ -128,7 +128,7 @@ public class SurveyAdminController{
 	@Path("/{surveyId}/questions")
 	public Response getQuestions(@PathParam("surveyId") String surveyId) throws FileNotFoundException, IOException{
 		String surveyName=surveyId+".json";
-		System.out.println("Loading questions: "+surveyName);
+		log.debug("Loading questions for: "+surveyName);
 		return Response.ok(Survey.findById(surveyId).getQuestions()).build();
 	}
 	

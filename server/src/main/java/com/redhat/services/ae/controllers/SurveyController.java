@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -174,6 +175,17 @@ public class SurveyController{
 		return Response.ok().build();
 	}
 
+	
+	@DELETE
+	@Path("/{surveyId}/metrics/reset")
+	public Response metricsReset(@PathParam("surveyId") String surveyId) throws JsonParseException, JsonMappingException, IOException{
+		Survey o=Survey.findById(surveyId);
+		o.clearMetrics();
+		o.persist();
+		return Response.ok().build();
+	}
+	
+	
 	@POST
 	@Path("/{surveyId}/metrics/onResults")
 	public Response onResults(@PathParam("surveyId") String surveyId, @QueryParam("visitorId") String visitorId, String payload) throws JsonParseException, JsonMappingException, IOException{

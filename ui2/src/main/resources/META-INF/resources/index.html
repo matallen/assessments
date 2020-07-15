@@ -3,13 +3,19 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>Online Assessments | Red Hat Inc</title>
-	
+
 	<meta name="description" content="Red Hat Assessment platform.">
 	<meta name="robots" content="noindex">
 	<meta id="meta-viewport" name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=2.5">
 	<meta property="og:title" content="Online Assessment | Red Hat Inc">
 	<meta property="og:description" content="">
 	
+  <link rel="preload" href="https://static.redhat.com/libs/redhat/redhat-font/2/webfonts/RedHatText/RedHatText-Regular.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="https://static.redhat.com/libs/redhat/redhat-font/2/webfonts/RedHatText/RedHatText-Medium.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="https://static.redhat.com/libs/redhat/redhat-font/2/webfonts/RedHatDisplay/RedHatDisplay-Regular.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="https://static.redhat.com/libs/redhat/redhat-font/2/webfonts/RedHatDisplay/RedHatDisplay-Medium.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="https://static.redhat.com/libs/redhat/redhat-font/2/webfonts/RedHatDisplay/RedHatDisplay-Bold.woff" as="font" type="font/woff" crossorigin>
+  <link type="text/css" rel="stylesheet" href="https://static.redhat.com/libs/redhat/redhat-font/2/webfonts/red-hat-font.css" media="all" />
   <link rel="icon" href="https://www.redhat.com/profiles/rh/themes/redhatdotcom/favicon.ico">
 	  
 	<style id="customStyles">
@@ -112,10 +118,17 @@ $(document).ready(function() {
 });
 </script>
 	
+	<div style="position:absolute; left: 0px;">
+					        <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
+					        <script src="https://surveyjs.azureedge.net/1.7.15/survey.ko.js"></script>
+					        <button onclick="$('#debug').html(JSON.stringify(survey.data, null, 2));">debug</button>
+									<pre id="debug" >XXX</pre>
+	</div>
+	
 	<section id="xsurvey" class=" py-0">
 		<div class="container">
 			<div class="row">
-				<div class="col-md-1">
+				<div class="col-md-5">
 					<!-- THIS IS WHERE WE NEED THE NAV REALLY -->
 				</div>
 				<div class="col-md-10 py-4 py-md-6">

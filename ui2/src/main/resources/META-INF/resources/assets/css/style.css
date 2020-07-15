@@ -159,22 +159,30 @@ div.elevate li.noColor{
 
 
 
+.sv_p_root, .sv_row, .sv_nav{
+	background-color: #f0f0f0 !important;
+}
 .sv_page_title{
 	font-size: 26pt;
   margin-bottom: 0px;
+  text-align: center;
 }
 .sv_p_root>div:first-of-type{ /* page description */
 	font-size: 12pt;
 	font-weight: normal;
   margin-bottom: 20px;
+  text-align: center;
 }
 .sv_q_title span{
 	font-size: 14pt;
 	font-weight: bold; /* questions in bold */
 }
 .sv_qstn {
-  border: 1px solid grey; /* border around questions */
-  padding: 10px;
+/*
+  border: 1px solid grey; 
+*/
+  /* border around questions */
+  padding: 0 10 0 10; /*TRBL*/
   margin: 10px;
 }
 .sv_q_num{ /* hide the question numbers */
@@ -182,7 +190,66 @@ div.elevate li.noColor{
 }
 .sv_nav{
 	text-align: center; /* center the prev/next buttons */
+	padding: 30px;
 }
 .sv_prev_btn, .sv_next_btn, .sv_preview_btn, .sv_complete_btn {
   padding: 13px 23px 10px 23;
+  
+  /* taken from: https://www.redhat.com/forms/css/jquery.gatedform.min.css */
+  
+  /* TODO: bug - the default.main_sv from the survey is overwriting these colors */
+    background-color: #06C;
+    color: #fff;
+    display: inline-block;
+    font-family: var(--pfe-theme--font-family,RedHatText,Helvetica,Arial,sans-serif);
+    border: 1px solid #06C;
+    border-radius: 3px;
+    font-size: 16px;
+    padding: 6px 16px;
+    font-weight: 400;
+    text-decoration: none;
+    text-transform: none;
+    margin-top: 10px;
+    transition: background .2s ease-in 0s;
+    cursor: pointer;
 }
+
+.sv_prev_btn:hover, .sv_next_btn:hover, .sv_preview_btn:hover, .sv_complete_btn:hover {
+		background-color: #0057ad;
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+    border-color: #0057ad;
+}
+
+/*
+.sv_main, .sv_default_css, .sv_p_root, .sv_row{
+	background-color: #fff !important;
+}
+*/
+.sv_q_title{
+	margin-bottom: 0;
+}
+.sv_q_title span{
+	font-size: 11pt;
+}
+.sv_q_dropdown_control, .sv_q_text_root{
+	width: 80%;
+	line-height: 1.25em;
+}
+
+
+/* Altering image selects */
+.sv_q_imgsel_label{
+	text-align: center;
+}
+.sv_q_imgsel_text{
+	font-size: 18pt;
+	position: relative;
+  top: -140px;
+}
+.sv_qstn .sv_q_imgsel label > div{
+	padding: 1px !important;
+}
+
+

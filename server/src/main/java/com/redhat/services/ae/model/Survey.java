@@ -44,6 +44,9 @@ public class Survey{
 		if (null==metrics) metrics=new Metrics();
 		return metrics;
 	}
+	public void clearMetrics(){
+		metrics=new Metrics();
+	}
 	
 	private Map<String,Map<String,Object>> plugins;
 	public Map<String,Map<String,Object>> getPlugins(){

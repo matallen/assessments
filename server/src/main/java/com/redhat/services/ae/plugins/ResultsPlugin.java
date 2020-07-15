@@ -33,8 +33,12 @@ public class ResultsPlugin implements Plugin{
 	 * {
 	 * 	"q_cloud_current_culture_process" : {
 	 * 		"title" : "What best describes your current culture and process related to automating tasks?",
-	 * 		"answer" : "Siloed process",
-	 * 		"score" : 10,
+	 *    "answers": [
+	 *    	{
+	 *    		"answer" : "Siloed process",
+	 *    		"score" : 10
+	 *    	}
+	 *    ]
 	 * 	},
 	 * ...
 	 * }

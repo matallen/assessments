@@ -41,7 +41,7 @@ Survey.requiredText = "AA";
 
 
 Survey.ChoicesRestfull.onBeforeSendRequest = function(sender, options) {
-        options.request.setRequestHeader("Content-Type", "application/javascript");
+        //options.request.setRequestHeader("Content-Type", "application/json");
         //options.request.setRequestHeader("Authorization", "Bearer "+jwtToken);
 };
 
@@ -132,7 +132,7 @@ survey
 				
 				console.log("Completed posting results to server");
 				
-				//window.location.assign("/results.html?surveyId="+surveyId+"&visitorId="+visitorId);
+				window.location.assign("/results.html?surveyId="+surveyId+"&visitorId="+visitorId);
 				
 			}else{
 				// Handle the error scenario
@@ -382,10 +382,10 @@ var saveIntervalInSeconds=20;
 //			}
 //		}
 //}
-if (undefined!=Utils.getParameterByName("dev_reset")){
-	console.log("Clearing localstorage of previously answered questions");
-	LocalStorage.clearState();
-}
+//if (undefined!=Utils.getParameterByName("dev_reset")){
+//	console.log("Clearing localstorage of previously answered questions");
+//	LocalStorage.clearState();
+//}
 
 //save data every x seconds
 timerId = window.setInterval(function () {
@@ -399,8 +399,10 @@ LocalStorage.loadState(survey);
 
 
 //survey.showPreviewBeforeComplete = 'showAnsweredQuestions';
-survey.showCompletedPage=false;
-survey.navigateToUrl="/results.html?surveyId="+surveyId+"&visitorId="+visitorId;
+//survey.showCompletedPage=false;
+//survey.navigateToUrl="/results.html?surveyId="+surveyId+"&visitorId="+visitorId;
+
+survey.completedHtml="";
 
 //survey.locale = languageCode;
 survey.render();
