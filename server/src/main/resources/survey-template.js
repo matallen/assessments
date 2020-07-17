@@ -175,6 +175,10 @@ navTopEl.className = "navigationContainer";
 //leftImg.style = "width: 16px; height: 16px";
 //leftImg.className = "navigationProgressbarImage";
 //navTopEl.appendChild(leftImg);
+var textDiv = document.createElement("p");
+textDiv.className = "textProgress"
+textDiv.innerText = "PROGRESS";
+navTopEl.appendChild(textDiv);
 var navProgBarDiv = document.createElement("div");
 navProgBarDiv.className = "navigationProgressbarDiv";
 navTopEl.appendChild(navProgBarDiv);
