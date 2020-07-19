@@ -17,7 +17,7 @@ public abstract class AnswerProcessor{
 		public Integer score;
 	}
 	
-	private Answer splitThis(String answer){
+	public Answer splitThis(String answer){
 		Answer result=new Answer();
 		result.score=1; // default score is 1 point for everything
 		result.id=answer;

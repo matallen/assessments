@@ -45,8 +45,8 @@ $(function(){
 			<li class="menu_needsId"><a href="admin-survey-details.html?id=">Details</a></li>
 			<li class="menu_needsId"><a href="admin-survey-reports.html?id=">Reports</a></li>
 			<li class="menu_needsId"><a href="admin-survey-questions.html?id=">Questions</a></li>
-			<li class="menu_needsId"><a href="admin-survey-results.html?id=">Results</a></li>
-			<li class="menu_needsId"><a href="admin-survey-integration-mapping.html?id=">Eloqua</a></li>
+			<li class="menu_needsId"><a href="admin-survey-questions-embedded.html?id=">Questions (experimental)</a></li>
+			<li class="menu_needsId"><a href="admin-survey-eloqua.html?id=">Eloqua</a></li>
 		</ul>
 		<ul style="float:right" class="menu menu_horizontal">
 			<li><a id="logout" href="/logout">Logout</a></li>
@@ -59,7 +59,7 @@ $(function(){
 	</div>
 	
 	<!-- success/error message --> 
-	<div class="alert alert-success" id="feedback-alert">
+	<div class="alert alert-success" id="feedback-alert" style="display:none;"">
     <button type="button" class="close" data-dismiss="alert">x</button>
     <span id="feedback-alert-text">&nbsp;</span>
 	</div>
@@ -67,6 +67,9 @@ $(function(){
 	<!-- Main Content -->
 	<section class="py-1">
 		<div class="row center">
+			
+			
+			<!--
 			<table class="elevate">
 				<tbody id="content">
 				
@@ -82,9 +85,14 @@ $(function(){
 					</tr>
 				</tbody>
 			</table>
+			-->
 			
 			
 			<!-- NEW -->
+			<style>
+				.row{ margin-right: auto !important;  margin-left: auto !important; }
+				
+			</style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
         <script src="https://surveyjs.azureedge.net/1.7.15/survey.ko.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.10/ace.min.js" type="text/javascript" charset="utf-8"></script>
@@ -93,16 +101,34 @@ $(function(){
         <link href="https://surveyjs.azureedge.net/1.7.15/survey-creator.css" type="text/css" rel="stylesheet"/>
         <script src="https://surveyjs.azureedge.net/1.7.15/survey-creator.js"></script>
         <link rel="stylesheet" href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+				<!--
         <link rel="stylesheet" href="./index.css">
+        <script type="text/javascript" src="./index.js"></script>
+				-->
+        
+        <!-- custom controls (slider) -->
+			  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.js"></script>
+			  <link href="assets/css/bootstrap-slider-10.0.0.css" rel="stylesheet"/>
+			  <script src="assets/js/surveyjs-widgets-1.7.12.js"></script>
+        
+        
+        			<table class="elevate">
+				<tbody id="content">
+				<tr>
+				<td>
 				<div id="surveyContainer" style="width:100%">
             <div id="creatorElement"></div>
         </div>
-        <script type="text/javascript" src="./index.js"></script>
+        </td>
+        </tr>
+        				</tbody>
+			</table>
+        
 				<script>
 				SurveyCreator
 			    .StylesManager
 			    .applyTheme("bootstrap");
-				//Add a tag property
+				//Add a new property
 				Survey
 			    .Serializer
 			    .addProperty("question", {
@@ -110,16 +136,40 @@ $(function(){
 		        category: "general"
 			    });
 				Survey
-			    .Serializer
-			    .addProperty("choices", {
-		        name: "mat",
-		        category: "choices"
-			    });
+				.Serializer
+				.addProperty("page", {
+				    name: "navigationTitle:string",
+				    category: "general",
+				    isLocalizable: true
+				});
+
 				Survey
 			    .Serializer
-			    .findProperty("question", "weighting")
-			    .readOnly = false;
-				var creatorOptions = { showLogicTab: true };
+			    .addProperty("question", {
+		        name: "eloqua",
+		        category: "general"
+			    });
+
+				
+				//Survey
+			  //  .Serializer
+			  //  .addProperty("choices", {
+		    //    name: "mat"
+			  //  });
+				
+				Survey.JsonObject.metaData.addProperty("itemvalue", "score");
+				
+				//Survey
+			  //  .Serializer
+			  //  .findProperty("question", "weighting")
+			  //  .readOnly = false;
+				
+				//var allowedQuestionTypes = ["checkbox", "radiogroup", "dropdown", "imagepicker", "html" ];
+				//var creatorOptions = { showLogicTab: true, questionTypes: allowedQuestionTypes };
+				var creatorOptions = { showLogicTab: true }
+						
+				
+				Survey.Survey.cssType = "bootstrap";
 				var creator = new SurveyCreator.SurveyCreator("creatorElement", creatorOptions);
 				creator.showToolbox = "right";
 				creator.showPropertyGrid = "right";
@@ -128,16 +178,27 @@ $(function(){
 				var questionCounter = 1;
 				//Set the name property different from the default value
 				//and set the tag property to a generated GUID value.
-				creator
-				    .onQuestionAdded
-				    .add(function (sender, options) {
-				        var q = options.question;
-				        var t = q.getType();
-				        q.name = "Question" + t[0].toUpperCase() + t.substring(1) + questionCounter;
-				        q.weighting = 100;
-				        questionCounter++;
-				    });
+//				creator
+//				    .onQuestionAdded
+//				    .add(function (sender, options) {
+//				        var q = options.question;
+//				        var t = q.getType();
+//				        q.name = "Question" + t[0].toUpperCase() + t.substring(1) + questionCounter;
+//				        q.weighting = 100;
+//				        questionCounter++;
+//				    });
 
+				//Survey.surveyLocalization.supportedLocales = ["en", "de", "es"];
+				
+				creator.saveSurveyFunc = function (saveNo, callback) {
+					//console.log("dummy save "+creator.text);
+					
+					Http.send((undefined==surveyId?"POST":"PUT"), env.server+"/api/surveys"+(undefined==surveyId?"/?????":"/"+surveyId)+"/questions", JSON.parse(creator.text), function(resp, status){
+						//$("#_questions").text(prettyPrint(resp.response));
+						showSuccess(200==status?"Saved Ok":"Save Error (Status: "+status+")");
+					});
+
+				};
 				
 				Http.httpGetObject(env.server+"/api/surveys/"+Utils.getParameterByName("id")+"/run?questionsOnly=true", function(status, survey){
 					creator.text=JSON.stringify(survey);

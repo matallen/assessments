@@ -13,6 +13,7 @@ $(function(){
 <script src="assets/js/utils.js"></script>
 <script src="assets/js/jquery-common.js"></script>
 <script src="assets/js/env.js"></script>
+<script src="assets/js/feedback-alert.js"></script>
 
 <script src="https://github.com/chartjs/Chart.js/releases/download/v2.9.3/Chart.min.js"></script>
 <!--script src="https://chartjs-plugin-datalabels.netlify.app/chartjs-plugin-datalabels.js"></script-->
@@ -31,43 +32,6 @@ $(function(){
 var charts={};
 function refresh(){
 	Chart.scaleService.updateScaleDefaults('linear', { ticks: { min: 0 } });
-//	$(".multigraph").each(function(index){
-//		
-//		var url=$(this).data("url");
-//		var urltemplate=$(this).data("urltemplate");
-//		
-//		url=url.replace("{surveyId}",surveyId);
-//		
-//	  var xhr = new XMLHttpRequest();
-//	  var elem=$(this);
-//	  xhr.open("GET", env.server+url, true);
-//	  xhr.send();
-//	  xhr.onloadend = function () {
-//			//var raw=setColors(type, xhr.responseText);
-//			var json=JSON.parse(xhr.responseText);
-//	    
-//	    for(var i=0;i<json.length;i++){
-//	    	elem.append(
-//					`
-//					<h3>`+json[i].name+`</h3>
-//					<canvas style="height:100px" class="multigraph2" id="answerPercentages-`+json[i].name+`" data-graph="answerPercentages-`+json[i].name+`" data-graphurl="`+json[i].url+`" data-charttype="`+json[i].type+`"></canvas>
-//					`
-//				);
-//	    }
-//	    $("canvas.multigraph2").each(function(index){
-//			var graphId=$(this).data("graph");
-//			var graphUrl=$(this).data("graphurl");
-//			var processor=$(this).data("processor");
-//			var type=$(this).data("charttype");
-//			var defaultDateRange=$(this).data("defaultdaterange");
-//			graphUrl+="?type="+type;
-//			graphUrl+="&"+$(undefined!=defaultDateRange?"#Months option:contains('"+defaultDateRange+"')":"#Months").val();
-//
-//			refreshGraph(graphId, type, graphUrl, processor);
-//		});
-//	  }
-//		
-//	});
 	$("canvas.graph").each(function(index){
 		var graphId=$(this).data("graph");
 		var graphUrl=$(this).data("graphurl");
@@ -174,7 +138,8 @@ canvas{
 			<li class="menu_needsId"><a href="admin-survey-details.html?id=">Details</a></li>
 			<li class="menu_needsId"><a href="admin-survey-reports.html?id=">Reports</a></li>
 			<li class="menu_needsId"><a href="admin-survey-questions.html?id=">Questions</a></li>
-			<li class="menu_needsId"><a href="admin-survey-integration-mapping.html?id=">Eloqua</a></li>
+			<li class="menu_needsId"><a href="admin-survey-questions-embedded.html?id=">Questions (experimental)</a></li>
+			<li class="menu_needsId"><a href="admin-survey-eloqua.html?id=">Eloqua</a></li>
 		</ul>
 		<ul style="float:right" class="menu menu_horizontal">
 			<li><a id="logout" href="/logout">Logout</a></li>
@@ -186,6 +151,12 @@ canvas{
 		</script>
 	</div>
 
+	<!-- success/error message --> 
+	<div class="alert alert-success" id="feedback-alert" style="display:none;">
+    <button type="button" class="close" data-dismiss="alert">x</button>
+    <span id="feedback-alert-text">&nbsp;</span>
+	</div>
+
 	<!-- Main Content -->
 	<section class="py-1">
 		<div class="row center">
@@ -193,8 +164,12 @@ canvas{
 				<tbody id="content">
 					<tr>
 						<td class="elevate section">
-							Period: <span id="monthswrapper"></span>
-							<input type="button" value="Reset" disabled/>
+							<span style="float:left;">
+								Period: <span id="monthswrapper"></span>
+							</span>
+							<span style="float:right;">
+								<a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="#" onclick="metricsReset();">Reset Metrics</a>
+							</span>
 						</td>
 					</tr>
 				</tbody>
@@ -293,6 +268,14 @@ $(document).ready(function() {
 	
 });
 
+function metricsReset(){
+	if (undefined!=surveyId){
+		Http.send("DELETE", env.server+"/api/surveys"+(undefined==surveyId?"/?????":"/"+surveyId)+"/metrics/reset", null, function(resp, status){
+			showSuccess(200==status?"Metrics Reset Successfully":"Metrics Reset Error (Status: "+status+")");
+			//alert(200==status?"Saved Ok":"Save Error (Status: "+status+")");
+		});
+	}
+}
 
 	</script>
 
