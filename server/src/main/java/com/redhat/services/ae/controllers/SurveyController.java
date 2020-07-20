@@ -123,7 +123,7 @@ public class SurveyController{
 		
 		// TODO: Metrics: Increment the page count by month (TODO: this would better be implemented using a cache that lasts 24 hours rather than poluting our DB with visitor IDs)
 //		long moreThanAMonthInSeconds=60*60*24*32;
-//		new CacheHelper<String>().getCache("visitors", 10, 1000, moreThanAMonthInSeconds);
+//		Cache<String, String> visitorsThisMonth=new CacheHelper<String>().getCache("visitors", 10, 1000, moreThanAMonthInSeconds);
 		
 		if (!Database.get().getVisitors(YYMMM).contains(visitorId+pageId)){
 			log.debug("onPageChange:: incrementing monthly page counter for [visitorId="+visitorId+", pageId="+pageId+"]");
@@ -219,7 +219,7 @@ public class SurveyController{
 			}
 			@Override
 			public void onMapAnswer(String question, Answer answer){ // only seen this as a panel in surveyjs?
-				// ignore because it's most likely a contact form
+				// ignore for the purpose of metrics because it's most likely a contact form
 			}
 		}.process(data);
 		
@@ -229,9 +229,11 @@ public class SurveyController{
 		Map<String, Map<String, Object>> plugins=o.getActivePlugins();
 		log.info("Active Plugins: "+(plugins.size()<=0?"None":""));
 		for(Entry<String, Map<String, Object>> pl:plugins.entrySet()){
+			log.info("  - "+pl.getKey());
+		}
+		for(Entry<String, Map<String, Object>> pl:plugins.entrySet()){
 			String pluginName=pl.getKey();
-			log.info("  - "+pluginName);
-			System.out.println("Executing Plugin: "+pluginName);
+			log.debug("Executing Plugin: "+pluginName);
 			String clazz=(String)pl.getValue().get("className");
 			try{
 				Plugin plugin=(Plugin)Class.forName(clazz).newInstance();
@@ -241,6 +243,11 @@ public class SurveyController{
 				e.printStackTrace();
 			}
 		}
+		
+		// store the enriched/processed results for the results page to use
+		log.debug("putting answers into cache, ready for the results page to render it");
+		log.debug("cache.put("+(surveyId+"_"+visitorId)+") = "+Json.toJson(data));
+		CacheHelper.cache.put(surveyId+"_"+visitorId, Json.toJson(data));
 		
 		// Build report?
 		

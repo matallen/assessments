@@ -28,7 +28,7 @@ public class EloquaPlugin implements Plugin{
 	private Map<String,String> values;
 	
 	
-	@SuppressWarnings({"unchecked", "unused"})
+	@SuppressWarnings({"unchecked"})
 	@Override
 	public void setConfig(Map<String, Object> cfg){
 		url=(String)cfg.get("url");
@@ -40,13 +40,28 @@ public class EloquaPlugin implements Plugin{
 			throw new RuntimeException(String.format("Config not set correctly. Url is %s, and config==null is %s", url, (config==null)));
 	}
 
+	
 	// gather the data from surveyResults, map it for the Eloqua http post request, build and send it
 	@Override
 	public Map<String, Object> execute(String surveyId, String visitorId, Map<String, Object> surveyResults){
 		Map<String,String> eloquaFields=new HashMap<String, String>();
 		Map<String,String> flattenedSurveyResults=new HashMap<>();
 		
+		// exclude sending data to eloqua if your email is @redhat.com
+		for (Entry<String, Object> e:surveyResults.entrySet()){
+			String questionId=e.getKey();
+			if (questionId.toLowerCase().contains("email")){
+				if (String.class.isAssignableFrom(e.getValue().getClass())){
+					String value=(String)e.getValue();
+					if (value.toLowerCase().contains("@redhat.com")){
+						log.info("Skipping Eloqua plugin because email is an @redhat.com email");
+						return surveyResults;
+					}
+				}
+			}
+		}
 		
+		// Flatten the answers so they can be parsed more easily to send to Eloqua
 		new AnswerProcessor(){
 			@Override public void onStringAnswer(String questionId, String answerId, Integer score){
 				System.out.println("Eloqua:: flattening single-string answers for question '"+questionId+"'");
@@ -106,7 +121,7 @@ public class EloquaPlugin implements Plugin{
 //		url="https://s1795.t.eloqua.com/e/f2?elqSiteID=8091&elqFormName=consulting-assessment-integration-sandbox";
 //		url="https://s1795.t.eloqua.com/e/f2";
 		
-		boolean dummy=false;
+		boolean dummy=true;
 		if (!dummy){
 			Response response=rs.post(url).andReturn();
 			System.out.println(response.statusCode());

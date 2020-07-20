@@ -182,8 +182,13 @@ div.elevate li.noColor{
   border: 1px solid grey; 
 */
   /* border around questions */
-  padding: 0 10 0 10; /*TRBL*/
+  /*
+  padding: 0 10 0 10; 
   margin: 10px;
+  */
+  
+  /*TRBL*/
+  
 }
 .sv_q_num{ /* hide the question numbers */
 	display: none;
@@ -252,4 +257,36 @@ div.elevate li.noColor{
 	padding: 1px !important;
 }
 
+/* contact form panel elements need to be side-by-side. There's no class associated so i chose a class associated with panels and moved that to a grid structure */
+.sv_p_container>div:nth-of-type(3){
+	display: grid;
+  grid-gap: 15px;
+  grid-template-columns: repeat(2,1fr);
+}
 
+
+.sv_row{
+    border: 1px solid #ccc;
+    margin: 30px;
+}
+.sv_row:last-child{
+	margin: 0px 30px 0px 30px;
+}
+
+
+/* spacing out each question with margins and borders on a white background */
+.sv_qstn>div:nth-child(1){
+	padding: 10px;
+  border: 1px solid #ccc;
+	background-color: white !important;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+}
+.sv_qstn>div:nth-child(2){
+	padding: 10px;
+  border: 1px solid #ccc;
+  border-top: 0px;
+  background-color: white !important;
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;
+}

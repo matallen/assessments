@@ -15,7 +15,7 @@ import com.redhat.services.ae.Database;
 import com.redhat.services.ae.model.Survey;
 import com.redhat.services.ae.utils.Json;
 
-public class ResultsPluginTest{
+public class AddQuestionTitlePluginTest{
 
 	@BeforeEach
 	public void init() throws FileNotFoundException, IOException{
@@ -32,18 +32,27 @@ public class ResultsPluginTest{
 	
 	@Test
 	public void test1() throws Exception{
-		String questionsJson=IOUtils.toString(this.getClass().getClassLoader().getResource("ResultsPlugin_test1_questions.json"), "UTF-8");
-		String answersJson="{\"q_cloud_current_culture_process\":[\"10#Siloed process\",\"30#DevOps team created to change processes\"],\"overallScore\":21,\"interests\":[\"cloud\"],\"contactForm\":{\"FirstName\":\"aaa\",\"LastName\":\"aaa\",\"Email\":\"test@redhat.com\"}}";
-
+		String questionsJson=IOUtils.toString(this.getClass().getClassLoader().getResource("QuestionTitlePlugin_test1_questions.json"), "UTF-8");
+		
+		String answersJson="{\n" + 
+				"  \"interests\": [\n" + 
+				"    \"platforms\"\n" + 
+				"  ],\n" + 
+				"  \"platforms_q1\": \"20#software\",\n" + 
+				"  \"platforms_q2\": \"20#21-50\",\n" + 
+				"  \"platforms_q3\": [\n" + 
+				"    \"20#Agile\"\n" + 
+				"  ],\n" +
+				"  \"FirstName\": \"Mat\"\n" +
+				"}";
+		
 		Survey s=Survey.builder().id("test1").name("Test Survey").build();
 		s.setQuestions(questionsJson);
 		s.persist();
 		
-		ResultsPlugin test=new ResultsPlugin();
-		
 		Map<String,Object> answers=Json.toObject(answersJson, new TypeReference<HashMap<String,Object>>(){});
 		System.out.println("from:"+Json.toJson(answers));
-		Map<String, Object> newData=test.execute("test1", "TEST_VISITOR_ID", answers);
+		Map<String, Object> newData=new AddQuestionTitlePlugin().execute("test1", "TEST_VISITOR_ID", answers);
 		
 		System.out.println("to:"+Json.toJson(newData));
 		

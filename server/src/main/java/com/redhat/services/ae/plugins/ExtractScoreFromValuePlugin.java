@@ -22,8 +22,8 @@ import com.redhat.services.ae.model.Survey;
 import com.redhat.services.ae.utils.CacheHelper;
 import com.redhat.services.ae.utils.Json;
 
-public class ResultsPlugin implements Plugin{
-	public static final Logger log=LoggerFactory.getLogger(ResultsPlugin.class);
+public class ExtractScoreFromValuePlugin implements Plugin{
+	public static final Logger log=LoggerFactory.getLogger(ExtractScoreFromValuePlugin.class);
 	
 	/**
 	 * 
@@ -48,9 +48,7 @@ public class ResultsPlugin implements Plugin{
 	
 	@Override
 	public void setConfig(Map<String, Object> config){
-		
 	}
-	
 	
 	class Answer{
 		private String id;
@@ -59,7 +57,7 @@ public class ResultsPlugin implements Plugin{
 	
 	public Answer splitThis(String answer){
 		Answer result=new Answer();
-		result.score=1; // default score is 1 point for everything
+		result.score=0; // default score is 1 point for everything
 		result.id=answer;
 		if (answer.contains("#")){
 			result.id=answer.split("#")[1];
@@ -68,56 +66,97 @@ public class ResultsPlugin implements Plugin{
 		return result;
 	}
 	
+	
 	private Map<String, Object> flattenAndEnrichResults(String surveyId, Map<String,Object> surveyResults) throws FileNotFoundException, IOException{
 		Map<String, Object> result=new HashMap<>();
 		
-		
-	Map<String, String> questionsToTitleMapping=new HashMap<>();
-	Survey s=Survey.findById(surveyId);
-	List<mjson.Json> pages=mjson.Json.read(s.getQuestions()).at("pages").asJsonList();
-	for(mjson.Json page:pages){
-		for(mjson.Json question:page.at("elements").asJsonList()){
-			String title=question.at("name").asString();
-			if (question.has("title"))
-				title=question.at("title").isString()?question.at("title").asString():question.at("title").at("default").asString();
-			
-		  System.out.println("Adding title mapping: "+question.at("name").asString()+" -> "+title);
-		  questionsToTitleMapping.put(question.at("name").asString(), title);
-		}
-	}
+		result.putAll(surveyResults);
 		
 		for (Entry<String, Object> e:surveyResults.entrySet()){
 			String questionId=e.getKey();
 			
-			// TODO: What do we do if the answer has no score, split evenly from the number of available options? but that means we need to parse the questions configuration too
-			
-			if (String.class.isAssignableFrom(e.getValue().getClass())){
-				Answer answer=splitThis((String)e.getValue());
-				result.put(questionId, new MapBuilder<String, Object>().put("title", questionsToTitleMapping.get(questionId)).put("answer", answer.id).put("score", answer.score).build());
-//				onStringAnswer(questionId, answer.id, answer.score);
+			if (Map.class.isAssignableFrom(e.getValue().getClass())){
+				Map<String,Object> value=((Map<String,Object>)e.getValue());
 				
-			}else if (ArrayList.class.isAssignableFrom(e.getValue().getClass())){
-				ArrayList<String> answerList=(ArrayList<String>)e.getValue();
-				
-				List<Map<String,Object>> answers=new ArrayList<>();
-				for (String answerString:answerList){
-					Answer answer=splitThis(answerString);
-					answers.add(new MapBuilder<String, Object>().put("answer", answer.id).put("score", answer.score).build());
-				}
-				result.put(questionId, new MapBuilder<String,Object>().put("title", questionsToTitleMapping.get(questionId)).put("answers", answers).build());
-				
-//				onArrayListAnswer(questionId, answers, answers.size()>0?totalScore/answers.size():0);
-				
-//				System.out.println("erm, what if the answer is not a string????");
-			}else if (Map.class.isAssignableFrom(e.getValue().getClass())){
-				// assume it's a panel with sub-questions
-				for(Entry<String, String> e2: ((Map<String,String>)e.getValue()).entrySet()){
-//					onMapAnswer(e2.getKey(), splitThis(e2.getValue()));
-					Answer answer=splitThis((String)e2.getValue());
-					result.put(e2.getKey(), new MapBuilder<String, Object>().put("title", questionsToTitleMapping.get(questionId)).put("answer", answer.id).put("score", answer.score).build());
+				if (value.containsKey("answer")){ // single answer
+					Answer answer=splitThis((String)value.get("answer"));
+					result.remove("answer");
+					Map<String,Object> newAnswerMap=new MapBuilder<String,Object>().put("answer", answer.id).put("score", answer.score).build();
+					result.put("answer", newAnswerMap);
+					
+				}else if (value.containsKey("answers")){ // list of answers
+					ArrayList<String> answerList=(ArrayList<String>)value.get("answers");
+					List<Map<String,Object>> newAnswers=new ArrayList<>();
+					result.remove("answer");
+					for (String answerString:answerList){
+						Answer answer=splitThis(answerString);
+						newAnswers.add(new MapBuilder<String,Object>().put("answer", answer.id).put("score", answer.score).build());
+					}
+					result.put("answer", newAnswers);
 				}
 				
+			}else{
+				System.err.println("EEK!");
 			}
+			
+			
+			
+			
+//			if (String.class.isAssignableFrom(e.getValue().getClass())){
+//				Answer answer=splitThis((String)e.getValue());
+//				
+//			}else if (ArrayList.class.isAssignableFrom(e.getValue().getClass())){
+//				ArrayList<String> answerList=(ArrayList<String>)e.getValue();
+//				List<Map<String,Object>> answers=new ArrayList<>();
+//				for (String answerString:answerList){
+//					Answer answer=splitThis(answerString);
+//					
+//				}
+//			}
+			
+			
+			
+			
+//			
+//			if (String.class.isAssignableFrom(e.getValue().getClass())){
+//				Answer answer=splitThis((String)e.getValue());
+//				
+//				Map<String,Object> answerMap=new MapBuilder<String, Object>().build();
+//				answerMap.puta
+//				
+//				Map<String,Object> answerMap=new MapBuilder<String, Object>().put("answer", answer.id).build();
+//				if (answer.score>0) answerMap.put("score", answer.score);
+//				result.put(questionId, answerMap);
+////				onStringAnswer(questionId, answer.id, answer.score);
+//				
+//			}else if (ArrayList.class.isAssignableFrom(e.getValue().getClass())){
+//				ArrayList<String> answerList=(ArrayList<String>)e.getValue();
+//				
+//				List<Map<String,Object>> answers=new ArrayList<>();
+//				for (String answerString:answerList){
+//					Answer answer=splitThis(answerString);
+//					Map<String,Object> answerMap=new MapBuilder<String, Object>().put("answer", answer.id).build();
+//					if (answer.score>0) answerMap.put("score", answer.score);
+//					answers.add(answerMap);
+//				}
+//				result.put(questionId, new MapBuilder<String,Object>().put("title", questionsToTitleMapping.get(questionId)).put("answers", answers).build());
+//				
+////				onArrayListAnswer(questionId, answers, answers.size()>0?totalScore/answers.size():0);
+//				
+////				System.out.println("erm, what if the answer is not a string????");
+//			}else if (Map.class.isAssignableFrom(e.getValue().getClass())){
+//				// assume it's a panel with sub-questions
+//				for(Entry<String, String> e2: ((Map<String,String>)e.getValue()).entrySet()){
+////					onMapAnswer(e2.getKey(), splitThis(e2.getValue()));
+//					Answer answer=splitThis((String)e2.getValue());
+////					result.put(e2.getKey(), new MapBuilder<String, Object>().put("title", questionsToTitleMapping.get(questionId)).put("answer", answer.id)/*.put("score", answer.score)*/.build());
+//					
+//					Map<String, Object> answerMap=new MapBuilder<String, Object>().put("title", questionsToTitleMapping.get(questionId)).put("answer", answer.id).build();
+//					if (answer.score>0) answerMap.put("score", answer.score);
+//					result.put(e2.getKey(), answerMap);
+//				}
+//				
+//			}
 		}
 		
 		return result;
@@ -168,7 +207,7 @@ public class ResultsPlugin implements Plugin{
 
 	@Override
 	public Map<String, Object> execute(String surveyId, String visitorId, Map<String, Object> surveyResults) throws Exception{
-		try{
+//		try{
 			log.debug("ResultsPlugin:: execute. Flattening and enriching the results data");
 			
 			Map<String, Object> result=flattenAndEnrichResults(surveyId, surveyResults);
@@ -180,16 +219,16 @@ public class ResultsPlugin implements Plugin{
 //			}
 //			surveyResults.put("overallScore", totalScore);
 			
-			// Store results temporarily to generate the report content (TODO: this could cause a race condition, because if this doesnt get the data in the cache quick enough before the results page tries to load we have an issue)
-			log.debug("ResultsPlugin:: putting answers into cache, ready for the results page to render it");
-			log.debug("ResultsPlugin:: cache.put("+(surveyId+"_"+visitorId)+") = "+Json.toJson(result));
-			CacheHelper.cache.put(surveyId+"_"+visitorId, Json.toJson(result));
-			
+//			// Store results temporarily to generate the report content (TODO: this could cause a race condition, because if this doesnt get the data in the cache quick enough before the results page tries to load we have an issue)
+//			log.debug("ResultsPlugin:: putting answers into cache, ready for the results page to render it");
+//			log.debug("ResultsPlugin:: cache.put("+(surveyId+"_"+visitorId)+") = "+Json.toJson(result));
+//			CacheHelper.cache.put(surveyId+"_"+visitorId, Json.toJson(result));
+//			
 			return result;
-		}catch(JsonProcessingException e){
-			e.printStackTrace();
-			throw e;
-		}
+//		}catch(JsonProcessingException e){
+//			e.printStackTrace();
+//			throw e;
+//		}
 	}
 
 }

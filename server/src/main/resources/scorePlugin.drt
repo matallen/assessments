@@ -1,0 +1,23 @@
+template header
+scoreLow
+scoreHeigh
+recommendation
+
+package com.redhat.services.assessments;
+
+import com.redhat.services.ae.plugins.ScoreRecommendationsPlugin.RecommendationConfig;
+
+template "recommendations"
+
+rule "recommendation text @{row.rowNumber}"
+dialect "java"
+when
+	$rec : RecommendationConfig(
+			score > @{scoreLow}
+			,score < @{scoreHeigh}
+		)
+then
+	System.out.println("$rec");
+end
+
+end template
