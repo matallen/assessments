@@ -43,7 +43,7 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.js"></script>
   <link href="assets/css/bootstrap-slider-10.0.0.css" rel="stylesheet"/>
-  
+
   <script src="assets/js/surveyjs-widgets-1.7.12.js"></script>
 </head>
 
@@ -124,16 +124,16 @@ $(document).ready(function() {
 					        <button onclick="$('#debug').html(JSON.stringify(survey.data, null, 2));">debug</button>
 									<pre id="debug" >XXX</pre>
 	</div>
-	
+
 	<section id="xsurvey" class=" py-0">
 		<div class="container">
 			<div class="row">
-				<div class="col-md-5">
+				<div class="col-md-3 hidden-xs">
 					<!-- THIS IS WHERE WE NEED THE NAV REALLY -->
-				</div>
-				<div class="col-md-10 py-4 py-md-6">
 					<div id="surveyNavigation"></div>
-					<div id="surveyElement"></div>
+				</div>
+				<div class="col-md-9">
+					<div id="surveyElement" class="surveyStyle"></div>
 					<div id="surveyResult"></div>
 				</div>
 			</div>
