@@ -104,6 +104,21 @@
     transition: 1s;
     position: absolute;
 }
+
+
+
+/* progress bar (x of 3 question complete) bar, not the page nav bar*/
+.sv_progress_bar{
+    float: left;
+    background-color: rgb(193, 0, 0);
+    height: 6px;
+    /*
+    height: 20px;
+    */
+    border-radius: 6px;
+    transition: 1s;
+    position: absolute;
+}
 .sv_progress{
 		padding: 10px 0px 16px 0px;
    	background-color: white !important;
