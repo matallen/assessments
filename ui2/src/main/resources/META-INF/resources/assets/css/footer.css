@@ -1,0 +1,19 @@
+footer.footerStyle{
+    background-color: black;
+    padding-top: 12px;
+}
+footer.footerStyle p{
+    color: #aaa;
+    padding-top: 10px;
+    font-size: 15px;
+}
+footer.footerStyle nav a{
+     color: #aaa;
+     padding-top: 10px;
+     font-size: 15px;
+ }
+.rightBorder{
+    border-right: 1px solid #6c6c6c;
+    height: 20px;
+    margin-top: 10px;
+}

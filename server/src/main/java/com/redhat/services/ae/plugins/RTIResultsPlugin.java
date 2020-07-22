@@ -63,7 +63,7 @@ public class RTIResultsPlugin implements Plugin{
 
 	@Override
 	public Map<String, Object> execute(String surveyId, String visitorId, Map<String, Object> surveyResults) throws Exception{
-		try{
+//		try{
 			log.debug("RTIResultsPlugin:: execute. Should generate and cache the results");
 			// Do any parsing and formatting of the result data for the result page to display
 			
@@ -72,9 +72,11 @@ public class RTIResultsPlugin implements Plugin{
 			List<Integer> scores=new LinkedList<>();
 			new AnswerProcessor(){
 				@Override public void onStringAnswer(String questionId, String answerId, Integer score){
+					log.debug("Incrementing score by "+score+" for "+questionId);
 					scores.add(score);
 				}
 				@Override public void onArrayListAnswer(String questionId, List<Answer> answerList, Integer averageScore){
+					log.debug("Incrementing score by the average "+averageScore+" for "+questionId);
 					scores.add(averageScore);
 				}
 				@Override public void onMapAnswer(String question, Answer answer){
@@ -91,15 +93,15 @@ public class RTIResultsPlugin implements Plugin{
 			surveyResults.put("overallScore", totalScore);
 			
 			
-			// Store results temporarily to generate the report content (TODO: this could cause a race condition, because if this doesnt get the data in the cache quick enough before the results page tries to load we have an issue)
-			log.debug("RTIResultsPlugin:: putting answers into cache, ready for the results page to render it");
-			CacheHelper.cache.put(surveyId+"_"+visitorId, Json.toJson(surveyResults));
+//			// Store results temporarily to generate the report content (TODO: this could cause a race condition, because if this doesnt get the data in the cache quick enough before the results page tries to load we have an issue)
+//			log.debug("RTIResultsPlugin:: putting answers into cache, ready for the results page to render it");
+//			CacheHelper.cache.put(surveyId+"_"+visitorId, Json.toJson(surveyResults));
 			
 			return surveyResults;
-		}catch(JsonProcessingException e){
-			e.printStackTrace();
-			throw e;
-		}
+//		}catch(JsonProcessingException e){
+//			e.printStackTrace();
+//			throw e;
+//		}
 	}
 
 }

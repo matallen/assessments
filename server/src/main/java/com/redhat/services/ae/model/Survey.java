@@ -5,13 +5,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
@@ -44,10 +43,13 @@ public class Survey{
 		if (null==metrics) metrics=new Metrics();
 		return metrics;
 	}
+	public void clearMetrics(){
+		metrics=new Metrics();
+	}
 	
 	private Map<String,Map<String,Object>> plugins;
 	public Map<String,Map<String,Object>> getPlugins(){
-		if (null==plugins) plugins=new HashMap<String, Map<String,Object>>();
+		if (null==plugins) plugins=new TreeMap<String, Map<String,Object>>();
 		return plugins;
 	}
 	
