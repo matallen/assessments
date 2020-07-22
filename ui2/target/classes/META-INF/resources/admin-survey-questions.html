@@ -1,0 +1,137 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+$(function(){
+  jQuery.each($('[data-include]'), function(){
+    var file = 'components/' + $(this).data('include') + '.html';
+    $(this).load(file);
+  });
+});
+</script>
+<script src="assets/js/http.js"></script>
+<script src="assets/js/utils.js"></script>
+<script src="assets/js/jquery-common.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/feedback-alert.js"></script>
+
+<style id="customStyles">
+@import "https://go.redhat.com/hubfs/css/styles.min.css";
+</style>
+<link rel="stylesheet" href="assets/css/header.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+	
+	<!-- Header (+Logo) -->
+	<section class="assessment-header py-0" style="background-color: black;">
+		<div class="navbar-container">
+			<div class="container pt-2">
+				<div class="row">
+					<a class="navbar-brand" href="//www.redhat.com/" title="Red Hat"><img alt="Red Hat" class="img-fluid navbar-logo" data-alt-text="Red Hat" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg?t=1537976200708" title="Red Hat" data-image-state="ready"> </a>
+				</div>
+			</div>
+		</div>
+	</section>
+	
+	<!-- Breadcrumb Menu -->
+	<div class="elevate" style="height: 27px">
+		<ul style="float:left" class="menu menu_horizontal">
+			<li><a href="admin.html">Surveys</a></li>
+			<li class="noColor divider">/</li>
+			<li class="noColor menu_needsId _id"><span style="color:white;">UNSET</span></li>
+			<li class="noColor divider">|</li>
+			<li class="menu_needsId"><a href="admin-survey-details.html?id=">Details</a></li>
+			<li class="menu_needsId"><a href="admin-survey-reports.html?id=">Reports</a></li>
+			<li class="menu_needsId"><a href="admin-survey-questions.html?id=">Questions</a></li>
+			<li class="menu_needsId"><a href="admin-survey-questions-embedded.html?id=">Questions (experimental)</a></li>
+			<li class="menu_needsId"><a href="admin-survey-eloqua.html?id=">Eloqua</a></li>
+		</ul>
+		<ul style="float:right" class="menu menu_horizontal">
+			<li><a id="logout" href="/logout">Logout</a></li>
+		</ul>
+		<script>
+			$(document).ready(function() {
+				$("a[id=logout]").attr("href", env.server+$("a[id=logout]").attr("href")+"?onSuccess="+document.location.origin+"/login.html");
+			});	
+		</script>
+	</div>
+	
+	<!-- success/error message --> 
+	<div class="alert alert-success" id="feedback-alert">
+    <button type="button" class="close" data-dismiss="alert">x</button>
+    <span id="feedback-alert-text">&nbsp;</span>
+	</div>
+	
+	<!-- Main Content -->
+	<section class="py-1">
+		<div class="row center">
+			<table class="elevate">
+				<tbody id="content">
+					<tr>
+						<td>
+							<a href="https://surveyjs.io/Examples/Survey-Creator" target="_new">SurveyJS Editor</a> - copy/paste the content into the SurveyJS Editor to configure the survey questions
+						</td>
+					</tr>
+					<tr>
+						<td><textarea id="_questions" style="width: 100%; height: 800px;"></textarea></td>
+					</tr>
+					<tr>
+						<td colspan="2">
+					    <a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="#" onclick="save();">Save</a>
+					    <!--a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="/admin.html">Cancel</a-->
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</section>
+	
+	<script>
+
+
+var surveyId;
+$(document).ready(function() {
+	$("#feedback-alert").hide();
+	surveyId=Utils.getParameterByName("id");
+	setMenu("Questions");
+	
+	if (undefined!=surveyId){
+		
+		Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/questions", function(status, survey){
+			// on success
+			$("#_questions").text(JSON.stringify(survey, null, 2));
+		}, function(status){
+			// on error
+			alert("Error: response code was "+status);
+		});
+		
+	}else{
+		// Throw error message to page saying survey doesnt exist
+	}
+	
+});
+
+function nullToEmpty(v){ if (undefined!=v) return v; else return "";}
+function save(){
+	var data=$("#_questions").val();
+	Http.send((undefined==surveyId?"POST":"PUT"), env.server+"/api/surveys"+(undefined==surveyId?"/?????":"/"+surveyId)+"/questions", JSON.parse(data), function(resp, status){
+		$("#_questions").text(prettyPrint(resp.response));
+		showSuccess(200==status?"Saved Ok":"Save Error (Status: "+status+")");
+		//alert(200==status?"Saved Ok":"Save Error (Status: "+status+")");
+	});
+}
+function prettyPrint(jsonText){
+	return JSON.stringify(JSON.parse(jsonText), null, 2);
+}
+function populate(obj){ // html fields to javascript object
+	for (key in obj){
+		obj[key]=$("#_"+key).val();
+	}
+	return obj
+}
+
+	</script>
+
+</body>
+</html>

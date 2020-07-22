@@ -1,0 +1,624 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+$(function(){
+  jQuery.each($('[data-include]'), function(){
+    var file = 'components/' + $(this).data('include') + '.html';
+    $(this).load(file);
+  });
+});
+</script>
+<script src="assets/js/http.js"></script>
+<script src="assets/js/utils.js"></script>
+<script src="assets/js/jquery-common.js"></script>
+<script src="assets/js/env.js"></script>
+
+<style id="customStyles">
+@import "https://go.redhat.com/hubfs/css/styles.min.css";
+</style>
+<link rel="stylesheet" href="assets/css/header.css">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/controls-slide-switch.css">
+</head>
+<body>
+	
+	<!-- HEADER -->
+	<section class="assessment-header py-0" style="background-color: black;">
+		<div class="navbar-container">
+			<div class="container pt-2">
+				<div class="row">
+					<a class="navbar-brand" href="//www.redhat.com/" title="Red Hat"><img alt="Red Hat" class="img-fluid navbar-logo" data-alt-text="Red Hat" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg?t=1537976200708" title="Red Hat" data-image-state="ready"> </a>
+				</div>
+			</div>
+		</div>
+	</section>
+	
+	<!-- Breadcrumb Menu -->
+	<div class="elevate" style="height: 27px">
+		<ul style="float:left" class="menu menu_horizontal">
+			<li><a href="admin.html">Surveys</a></li>
+			<li class="noColor divider">/</li>
+			<li class="noColor menu_needsId _id"><span style="color:white;">UNSET</span></li>
+			<li class="noColor divider">|</li>
+			<li class="menu_needsId"><a href="admin-survey-details.html?id=">Details</a></li>
+			<li class="menu_needsId"><a href="admin-survey-reports.html?id=">Reports</a></li>
+			<li class="menu_needsId"><a href="admin-survey-questions.html?id=">Questions</a></li>
+			<li class="menu_needsId"><a href="admin-survey-questions-embedded.html?id=">Questions (experimental)</a></li>
+			<li class="menu_needsId"><a href="admin-survey-eloqua.html?id=">Eloqua</a></li>
+		</ul>
+		<ul style="float:right" class="menu menu_horizontal">
+			<li><a id="logout" href="/logout">Logout</a></li>
+		</ul>
+		<script>
+			$(document).ready(function() {
+				$("a[id=logout]").attr("href", env.server+$("a[id=logout]").attr("href")+"?onSuccess="+document.location.origin+"/login.html");
+			});	
+		</script>
+	</div>
+	
+	<!--  -->
+	<section class="py-1">
+		<div class="row center">
+			
+			<script src="assets/js/plain-draggable.min.js"></script>
+			<script src="assets/js/leader-line.min.js"></script>
+			             
+			<script>
+			  
+function createLine(draggable, assignable){
+	var line=new LeaderLine(
+			assignable,
+			draggable,
+			{
+				dropShadow: true,
+				dash: undefined,
+				startSocket: 'right',
+				endSocket: 'left'
+			}
+		);
+	return line;
+}
+
+  (function(listener) {
+    ['transitionend', 'webkitTransitionEnd', 'oTransitionEnd', 'otransitionend'].forEach(function(type) {
+//      target.addEventListener(type, listener, true);
+    });
+  })(function(event) {
+    if (inAnim && event.target === target && event.elapsedTime >= DURATION) {
+      animMode(false);
+      draggable.position();
+    }
+  });
+				// ================================
+			  
+			
+			</script>
+			
+			<button onclick="save();">Save</button>
+			
+			<table id="containment" style="width:100%; min-width:800px">
+				<tr>
+					<td colspan="3">
+						<table class="elevate w100">
+						<thead><tr><td style="width:20%">Base Info</td></tr></thead>
+							<tbody id="base_content">
+								<tr><td>Active:</td><td>
+									<label class="switch-s"><input class="keyvalue" name="active" type="checkbox" checked onchange="this.value=this.checked"><span class="slider-s round"></span></label>
+								</td></tr>
+								<tr><td>Eloqua Url:</td>                 <td><input class="keyvalue" type="text" name="Eloqua_Url" value="https://s1795.t.eloqua.com/e/f2?elqSiteID=1795&elqFormName=consulting-assessment-integration-sandbox" style="width:100%;"/></td></tr>
+								<tr><td>Offer ID:</td>                   <td><input class="keyvalue" type="text" name="A_OfferID" value="70160000000xZtmAAE"/></td></tr>
+								<tr><td>Form Name:</td>                  <td><input class="keyvalue" type="text" name="elqFormName"/></td></tr>
+								<tr><td>Customer GUID (cookie name):</td><td><input class="keyvalue" type="text" name="elqCustomerGUID" value="rhae-id" disabled/></td></tr>
+								<tr><td>Landing Page Url:</td><td><input type="text" name="A_LandingPageURL"/></td></tr>
+								<!--
+								<tr><td>Referring Page Url:</td><td><input type="text" name="A_ReferringPageURL"/></td></tr>
+								<tr><td>Tactic ID (TODO):</td><td><input type="text" name="A_TacticID_External"/></td></tr>
+								<tr><td>OfferID:</td><td><input type="text" name="A_OfferID"/></td></tr>
+								<tr><td>ElqVisitorGuid:</td><td><input type="text" name="A_ElqVisitorGuid"/></td></tr>
+								<tr><td>FormData Trigger:</td><td><input type="text" name="A_FormData_Trigger"/></td></tr>
+								-->
+								
+							</tbody>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<table class="elevate" style="min-width: 386px; max-width: 386px;">
+							<thead><tr><td>Answers</td></tr></thead>
+							<tbody id="ans_content">
+							</tbody>
+						</table>
+						
+					</td>
+					<td style="width: 100px"></td>
+					<td>
+						<table class="elevate" style="float:right;">
+							<thead><tr><td>Eloqua Fields</td><td><button onclick="addEloquaFieldWithSnapPoints()" disabled>Add</button></td></tr></thead>
+							<tbody id="eloqua_fields">
+							</tbody>
+						</table>
+						
+					</td>
+				</tr>
+			</table>
+			<div id="draggableList"></div>
+		</div>
+	</section>
+	
+	<style>
+	table thead tr td, table tbody tr td{
+		vertical-align: top;
+	}
+	input{
+		height: 20px;
+		margin-left: 5px;
+	}
+	. w100{
+		width: 100%;
+	}
+	.snap{
+		/*
+		background-color:#c10000;
+		*/
+		width:20px;
+		height:20px;
+		float:left;
+		border: silver solid 2px;
+		z-index:-1;
+	}
+	.r{
+		float:right;
+	}
+	.draggable{
+		background-color:#eee;
+		/*
+		position:absolute;
+		*/
+		width:20px;
+		height:20px;
+		z-index:1;
+	}
+	.draggable{
+		left:20px;
+		position:relative;
+	}
+	</style>
+	<script>
+	
+	function save(){
+		
+		config["values"]={};
+		
+		$(".keyvalue").each(function(){
+			var key=this["name"];
+			var value=this["value"];
+			config["values"][key]=value;
+		});
+		
+		$(".snap").each(function(){
+			if (!this.id.includes("home_")){
+				var key=$("#el_field_"+this.id).val();
+				//var key=$("input[id="+$(this).data("targetkeyid")+"]").attr("value");
+				if (!mapContainsValue(config["mapping"], key)){ // there must be an editbox since it's not mapped with an arrow
+					console.log("found: "+key);
+					var value=$("input[name=el_value_"+this.id+"]").val();
+					if (undefined!=value){
+						config["values"][key]=value;
+					}
+				}
+			}
+		});
+		
+		console.log("SAVE: config="+JSON.stringify(config, null, 2));
+	}
+	
+	function mapContainsValue(map, val){
+		for (k in map){
+			if (map[k]==val) return true;
+		}
+		return false;
+	}
+	
+	var eloquaFieldCount=0;
+	function addEloquaFieldWithSnapPoints(name, value){
+		addEloquaField(name, value);
+		updateSnapPoints();
+		updateArrowWithSnapPoints();
+	}
+	function addEloquaField(name, value){
+		var id=name;
+//		$("#eloqua_fields").append(`
+//				<tr>
+//					<td>
+//						<div id="`+id+`" class="snap"></div>
+//						<input id="`+eloquaFieldCount+`" name="el_field_`+(undefined!=name?name:"")+`" class="recipient" type="text" value="`+(undefined!=name?name:"")+`" onxxxxxxchange="eloquaFieldChangeName(this)"/>
+//					</td>
+//					<td><span id="valuewrapper_`+(undefined!=name?name:"")+`">Value: <input type="text" name="el_value_`+(undefined!=name?name:"")+`" value="`+(undefined!=value?value:"")+`"/></span></td>
+//				</tr>
+//		`);
+//		$("#eloqua_fields").append(`
+//				<tr>
+//					<td>
+//						<div id="`+id+`" class="snap" data-targetKey="el_field_`+(undefined!=name?name:"")+`" data-targetValue="valuewrapper_`+(undefined!=name?name:"")+`"></div>
+//						<input disabled id="`+eloquaFieldCount+`" name="el_field_`+(undefined!=name?name:"")+`" class="recipient" type="text" value="`+(undefined!=name?name:"")+`" onxxxxxxchange="eloquaFieldChangeName(this)"/>
+//					</td>
+//					<td><span id="valuewrapper_`+(undefined!=name?name:"")+`">Value: <input type="text" name="el_value_`+(undefined!=name?name:"")+`" value="`+(undefined!=value?value:"")+`"/></span></td>
+//				</tr>
+//		`);
+		$("#eloqua_fields").append(`
+				<tr>
+					<td>
+						<div id="`+eloquaFieldCount+`" class="snap" data-targetKeyIdxx="el_field_`+eloquaFieldCount+`" data-targetValueIdxx="valuewrapper_`+(undefined!=name?name:"")+`"></div>
+						<input  id="el_field_`+eloquaFieldCount+`" name="el_field_`+(undefined!=name?name:"")+`" class="recipient" type="text" value="`+(undefined!=name?name:"")+`" onchange="eloquaFieldChangeName(this, eloquaFieldCount)"/>
+					</td>
+					<td><span id="valuewrapper_`+(undefined!=name?name:"")+`">Value: <input type="text" name="el_value_`+eloquaFieldCount+`" value="`+(undefined!=value?value:"")+`"/></span></td>
+				</tr>
+		`);
+		eloquaFieldCount+=1;
+//		count+=1;
+//		updateSnapPoints();
+//		updateArrowWithSnapPoints();
+	}
+	function eloquaFieldChangeName(o, targetId){
+		o.name="el_field_"+o.value;
+		document.getElementById(targetId).name=o.value;
+	}
+	var x=1;
+	function displaySurveyFields(control, key){
+		for(var e=0;e<control[key].length;e++){
+			var c=control[key][e];
+			console.log("surveyFIeld->"+c.name);
+			if (c["elements"]!=undefined){
+				return displaySurveyFields(c, "elements"); // used by panel
+			}else if (c["item"]!=undefined){
+				return displaySurveyFields(c, "items"); // used my multipanel
+			}else if (c["name"]!=undefined){
+				//var c2=JSON.parse(JSON.stringify(c));
+				addSurveyField(c);
+				addEloquaField("UDF_"+x);
+				//addEloquaField("UDF_"+x+"_Question");
+				//addEloquaField("UDF_"+x+"_Answer");
+				x+=1;
+			}
+		}
+	}
+	function addSurveyField(control){
+		var id=control["name"];
+		$("#ans_content").append(`<tr><td><span id="anchor_`+id+`" class="assignable">`+control["name"]+`</span><div id="home_`+id+`" class="snap r"></div><div id="draggable_`+id+`" class="r draggable"></div></td></tr>`);
+		$("#draggableList").append(``);
+		
+		var draggable=document.getElementById("draggable_"+id);
+		var home=document.getElementById("home_"+id);
+		var anchor=document.getElementById("anchor_"+id);
+		//home.style.position="relative";
+		//home.style.left=0;//anchor.getBoundingClientRect().left+"px";
+		//home.style.top =0;//anchor.getBoundingClientRect().top+"px";
+		
+		//draggable.home={left:document.getElementById("home_"+id).getBoundingClientRect().left+window.pageXOffset, top:document.getElementById("home_"+id).getBoundingClientRect().top+window.pageYOffset};
+		
+		
+		//if (snap.length<=0) console.log("ALERT: no snap points");
+			
+		dragables[id]=new PlainDraggable(draggable, {
+			  snap: snap,
+		    onDrag: function(moveTo) {
+		      animMode(!!(snapped = moveTo.snapped));
+		      snapPositionY=moveTo.top;
+		      var id=this.element.id.replace("draggable_","");
+		      var draggable=document.getElementById("draggable_"+id);
+		      draggable.style["background-color"]=moveTo.snapped?"green":"orange";
+		      if (undefined!=document.getElementById("valuewrapper_"+snapInfo[snapPositionY]))
+		    	  document.getElementById("valuewrapper_"+snapInfo[snapPositionY]).style["visibility"]="initial";
+		      //console.log(moveTo);
+		    },
+		    onMove: function(){
+		    	var id=this.element.id.replace("draggable_","");
+		    	if (undefined==lines[id]) lines[id]=createLine(document.getElementById("draggable_"+id), document.getElementById("anchor_"+id));
+		    	lines[id].dash={animation:true};
+		    	lines[id].position();
+		    },
+		    onDragEnd: function(){
+		      var id=this.element.id.replace("draggable_","");
+		      var draggable=document.getElementById("draggable_"+id);
+		      if (!snapped){
+		        animMode(true);
+		        //draggable.style.left = document.getElementById("home_"+id).getBoundingClientRect().left;
+		        //draggable.style.top = document.getElementById("home_"+id).getBoundingClientRect().top;
+		        //this.left=draggable.home.left;
+		        //this.top =draggable.home.left;
+		        //draggable.goHome();
+		        this.goHome();
+		        draggable.style["background-color"]="#eee";
+		        if (undefined!=lines[id]){
+		        	lines[id].remove();
+		        	delete lines[id];
+		        }
+		      }else{
+		        console.log(id+" snapped to: "+snapInfo[snapPositionY]);
+		        if (undefined!=lines[id]) lines[id].dash=undefined;
+		        if (snapInfo[snapPositionY].includes("home_")){
+		        	delete config["mapping"][id];
+			        draggable.style["background-color"]="#eee";
+			        if (undefined!=lines[id]){
+			        	lines[id].remove();
+			        	delete lines[id];
+			        }		        	
+		        	
+		        }else
+		        	config["mapping"][id]=snapInfo[snapPositionY];
+		        
+		        if (undefined!=document.getElementById("valuewrapper_"+snapInfo[snapPositionY]))
+		        	document.getElementById("valuewrapper_"+snapInfo[snapPositionY]).style["visibility"]="hidden";
+		        
+		        
+		      }
+		      //lines[id]=createLine(document.getElementById("draggable_"+id), document.getElementById("anchor_"+id))
+		      if (undefined!=lines[id]) lines[id].position();
+		    }
+		});
+		dragables[id].id=id;
+		dragables[id].home={
+//				left:341,//document.getElementById("home_"+id).getBoundingClientRect().left,//-window.pageXOffset-400, 
+//				top: document.getElementById("home_"+id).getBoundingClientRect().top//-window.pageYOffset-100
+				left:document.getElementById("home_"+id).getBoundingClientRect().left+window.pageXOffset, 
+				top: document.getElementById("home_"+id).getBoundingClientRect().top+window.pageYOffset
+			};
+		dragables[id].goHome=function(){
+	        this.left=document.getElementById("home_"+this.id).getBoundingClientRect().left+window.pageXOffset;
+	        this.top =document.getElementById("home_"+this.id).getBoundingClientRect().top+window.pageYOffset;
+	        lines[this.id]!=undefined?lines[this.id].dash=undefined:undefined;
+	        console.log("home is "+JSON.stringify(this.home));
+		};
+		draggable.style["z-index"]="0"; // make it display above other boxes?
+		//draggable.style.left=document.getElementById("home_"+id).getBoundingClientRect().left;
+		//draggable.style.top=document.getElementById("home_"+id).getBoundingClientRect().top;
+		//draggable.style.transform="translate(0px, 0px)";
+		//dragables[id].goHome();
+		//dragables[id].onMove();
+		//dragables[id].onDrag({snapped:false});
+		//dragables[id].onDragEnd();
+		dragables[id].containment = {left: 0, top: 0, width: '100%', height: '100%'};
+
+	}
+	
+	
+	function updateSnapPoints(){
+		snap=[];
+		snapInfo={};
+		// set snap points
+		$(".snap").each(function(){
+			var x=this.getBoundingClientRect().left+window.pageXOffset, y=this.getBoundingClientRect().top+window.pageYOffset;
+			snap.push({x:x,y:y});
+			
+			if (this.id.includes("home_")){
+				snapInfo[y]=this.id;
+			}else
+				snapInfo[y]=$("#el_field_"+$(this).attr("id")).val();
+				
+			console.log("Adding snap (x="+x+",y="+y+",id="+snapInfo[y]+")");
+		});
+	}
+	
+	function updateArrowWithSnapPoints(){
+		for (key in dragables){
+			var draggable=dragables[key];
+			draggable.snap=snap;
+			
+			// if configured, draw the arrow to the mapped field
+			if (undefined!=config["mapping"][key]){
+				var source=document.getElementById("draggable_"+key);
+				var target=document.getElementById(config["mapping"][key]);
+				var draggable=dragables[key];
+				draggable.left=target.getBoundingClientRect().left;
+				draggable.top=target.getBoundingClientRect().top;
+				// set this so snapInfo can find the snap location
+				snapPositionY=draggable.top;
+				draggable.position();
+				// set these so the arrow appears on load
+				draggable.onMove();
+				snapped=true;
+				draggable.onDragEnd();
+				source.style["background-color"]="green";
+				// hide the edit/value box for the mapped fields 
+				document.getElementById("valuewrapper_"+config["mapping"][key]).style["display"]="None";
+				
+				
+			}
+			
+			
+		}
+	}
+	
+	function applyConfig(){
+		
+	}
+	
+	var config;
+	
+	function drawRHS(){
+		// Load eloqua plugin config from database and update/initialize the display
+		Http.httpGet(env.server+"/api/surveys/"+surveyId+"/plugins/eloqua", function(status, response){
+			var j=JSON.parse(response);
+			
+			config=j["config"];
+			for(key in config["mapping"]){
+				var value=config["mapping"][key];
+				// add eloqua field
+				addEloquaField(value);
+				// Add mapping from question to eloqua field
+//				TODO - Add mapping arrow/draggable object from question to eloqua field!
+				
+			}
+			for(key in config["values"]){
+				addEloquaField(key, config["values"][key]);
+			}
+			
+			drawLHS();
+			
+		});
+	}
+	
+	function drawLHS(){
+		$("#ans_content").html("");
+		Http.httpGet(env.server+"/api/surveys/"+surveyId+"/questions", function(status, response){
+			var j=JSON.parse(response);
+			
+			for(var i=0;i<j["pages"].length;i++){
+				var pageName=j["pages"][i]["name"];
+				displaySurveyFields(j["pages"][i], "elements");
+				
+			}
+			
+			// now we have both LHS and RHS we can update the snap points and arrows
+			updateSnapPoints();
+			updateArrowWithSnapPoints();
+			
+		});
+	}
+
+	
+	
+	var surveyId;
+  var inAnim = false, DURATION = 0.2, snapped, snapPositionY;
+	var lines={};
+	var dragables={};
+	var snap=[];
+	var snapInfo={};
+
+	
+//	$(document).ready(function() {
+//		
+//		drawRHS();
+//		//drawLHS();
+//		//drawArrows();
+//		//initializeArrows();
+//		
+//
+//		
+//	});
+	
+	
+	
+//	$(document).ready(function() {
+//		
+//		// Load eloqua plugin config from database and update/initialize the display
+//		Http.httpGet(env.server+"/api/surveys/DUWHSK/plugins/eloqua", function(status, response){
+//			var j=JSON.parse(response);
+//			
+//			var config=j["config"];
+//			for(key in config["mapping"]){
+//				var value=config["mapping"][key];
+//				// add eloqua field
+//				addEloquaField(value);
+//				// Add mapping from question to eloqua field
+////				TODO - Add mapping arrow/draggable object from question to eloqua field!
+//				var source=document.getElementById("draggable_"+key);
+//				var target=document.getElementById(value);
+//				var draggable=dragables[key];
+//				//draggable.position();
+//				
+//			}
+//			for(key in config["values"]){
+//				addEloquaField(key, config["values"][key]);
+//			}
+//			
+//			$(".snap").each(function(){
+//				snap.push({x:this.getBoundingClientRect().left+window.pageXOffset,y:this.getBoundingClientRect().top+window.pageYOffset});
+//				snapLoc[this.getBoundingClientRect().top+window.pageYOffset]=this.id;
+//			});
+//	
+//			Http.httpGet(env.server+"/api/surveys/DUWHSK/questions", function(status, response){
+//				var j=JSON.parse(response);
+//				
+//				for(var i=0;i<j["pages"].length;i++){
+//					var pageName=j["pages"][i]["name"];
+//					displaySurveyFields(j["pages"][i], "elements");
+//					
+//				}
+//				
+//				
+//			});
+//			
+//		});
+//		
+//		
+//	});
+
+function animMode(toOn) {
+  if (toOn !== inAnim) {
+    inAnim = toOn;
+    //mClassList(target)[inAnim ? 'add' : 'remove']('ex-060-anim');
+  }
+}
+//var count=0;
+//
+var surveyId;
+$(document).ready(function() {
+	surveyId=Utils.getParameterByName("id");
+	setMenu("Eloqua");
+	drawRHS();
+	
+	
+//	if (undefined==surveyId){
+//		// We have a new Survey - Enable all all input elements with id=_<something>, except ID
+//		$("input[id^=\"_\"]").each(function(index){
+//			if ("_id"!=$(this).prop("id")){
+//				$(this).prop("disabled", false);
+//			}
+//		});
+//	}else{
+//		// We have an existing Survey - enable all inputs 
+//		Http.httpGetObject(env.server+"/api/surveys/"+surveyId, function(status, survey){
+//			for (key in survey){
+//				$("#_"+key).val(survey[key]);
+//				if ("id"!=key) // don't enable id fields, they need to remain generated/protected
+//					$("#_"+key).prop("disabled", false);
+//			}
+//		});
+//		
+//	}
+	
+});
+//
+//function nullToEmpty(v){ if (undefined!=v) return v; else return "";}
+//function newData(){
+//	var result={};
+//	$('input[id^=\"_\"]').each(function() {
+//		result[this.id.substr(1)]=null;
+//	});
+//	return result;
+//}
+//function save(){
+//	var data=populate(newData());
+//	Http.send((undefined==surveyId?"POST":"PUT"), env.server+"/api/surveys"+(undefined==surveyId?"":"/"+surveyId), data, function(resp, status){
+//		jsonToDisplay(resp.response);
+//		// update breadcrumbs
+//		// push to url line
+//		surveyId=JSON.parse(resp.response)["id"];
+//		setMenu("Details");
+//		if (undefined==data["id"] || ""==data["id"])
+//			window.history.pushState("", "", location.pathname+(location.search!=""?location.search+"&":"?")+"id="+JSON.parse(resp.response)["id"]);
+//		
+//		alert(200==status?"Saved Ok":"Save Error (Status: "+status+")");
+//		//window.location.href="admin.html";
+//	});
+//}
+//function jsonToDisplay(surveyJson){ // json to html fields
+//	var response=JSON.parse(surveyJson);
+//	for (key in response)
+//		$("#_"+key).val(response[key]);
+//}
+//function populate(obj){ // html fields to javascript object
+//	for (key in obj){
+//		obj[key]=$("#_"+key).val();
+//	}
+//	return obj
+//}
+
+	
+	</script>
+
+</body>
+</html>

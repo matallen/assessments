@@ -1,0 +1,119 @@
+.navigationContainer {
+    height: 100%;
+    width: 100%;
+    max-width: 1100px;
+    max-height: 110px;
+    margin: 100px auto auto auto;
+    position: absolute;
+}
+
+.navigationProgressbarImage {
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 26px;
+}
+
+.navigationProgressbarImage.hidden {
+    visibility: hidden;
+}
+
+.navigationProgressbarDiv {
+    display: inline-block;
+}
+
+.navigationProgressbar {
+    padding-left: 28px;
+    padding-right: 28px;
+    list-style-type: none;
+
+}
+
+.navigationProgressbar li {
+    height: 70px;
+    font-size: 14px;
+    width: 100%;
+    font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    position: relative;
+}
+
+.navigationProgressbar .pageTitle {
+    color: black;
+    position: absolute;
+    padding-left: 30px;
+}
+
+.navigationProgressbar .pageDescription {
+    color: black;
+}
+.navigationProgressbar li:before {
+    width: 20px;
+    height: 19px;
+    content: '';
+    line-height: 35px;
+    border: 3px solid rgb(223,223,223);
+    display: block;
+    margin: 0 auto 12px auto;
+    border-radius: 50%;
+    background-color: white;
+}
+.navigationProgressbar li:after {
+    height: 50px;
+    width: 2px;
+    content: '';
+    position: absolute;
+    background-color: #d4d4d4;
+    bottom: 1px;
+    right: 9px;
+}
+.navigationProgressbar li.completed:before {
+    border-color: rgb(223,223,223);
+    background-color: rgb(240,240,240) ;
+}
+.navigationProgressbar li:last-child:after {
+    content: none;
+}
+.navigationProgressbar li.completed + li:after {
+    background-color: white;
+}
+.navigationProgressbar li.current:before {
+    border-color: #c10000;
+    background-color: #c10000;
+}
+
+.surveyStyle{
+
+    margin: 100px auto auto auto;
+    padding-left: 50px;
+}
+.textProgress{
+    padding-left: 40px;
+}
+
+/* progress bar (x of 3 question complete) bar, not the page nav bar*/
+.sv_progress_bar{
+    float: left;
+    background-color: rgb(193, 0, 0);
+    height: 6px;
+    /*
+    height: 20px;
+    */
+    border-radius: 6px;
+    transition: 1s;
+    position: absolute;
+}
+.sv_progress{
+		padding: 10px 0px 16px 0px;
+   	background-color: white !important;
+}
+.sv_progress>span{
+		display: none !important;
+}
+/*
+.sv_progress_bar>span:nth-child(1){
+		display: block !important;
+    color: white;
+    padding-left: 5px;
+}
+*/
+.sv_progress_bar>span:nth-child(2){
+}

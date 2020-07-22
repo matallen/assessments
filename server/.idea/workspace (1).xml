@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="48a61228-98d8-4601-956c-9e48b9f359d1" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="importAutomatically" value="true" />
+      </MavenImportingSettings>
+    </option>
+  </component>
+  <component name="ProjectId" id="1dpAeJMQdAgBTq1XX6gHlmUE97k" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="48a61228-98d8-4601-956c-9e48b9f359d1" name="Default Changelist" comment="" />
+      <created>1593111754576</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1593111754576</updated>
+      <workItem from="1593111757706" duration="24005000" />
+      <workItem from="1593805334553" duration="3581000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ORDER">
+      <list>
+        <option value="0" />
+        <option value="2" />
+        <option value="3" />
+        <option value="1" />
+      </list>
+    </option>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="-1820" y="-80" width="1720" height="880" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1594160886477">
+      <screen x="-1920" y="-180" width="1920" height="1080" />
+    </state>
+    <state x="-1820" y="-80" width="1720" height="880" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1440.900/-1920.-180.1920.1080@-1920.-180.1920.1080" timestamp="1594160842086" />
+    <state x="-1820" y="-80" width="1720" height="880" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.23.1440.826/-1920.-157.1920.1057@-1920.-157.1920.1057" timestamp="1594004676449" />
+    <state x="-1820" y="-80" width="1720" height="880" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.23.1440.826/-1920.-180.1920.1080@-1920.-180.1920.1080" timestamp="1593204349102" />
+    <state x="-1820" y="-80" width="1720" height="880" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.23.1440.877/-1920.-180.1920.1080@-1920.-180.1920.1080" timestamp="1594160886477" />
+    <state x="-1820" y="-80" width="1720" height="880" key="com.intellij.history.integration.ui.views.SelectionHistoryDialog" timestamp="1594160967047">
+      <screen x="-1920" y="-180" width="1920" height="1080" />
+    </state>
+    <state x="-1820" y="-80" width="1720" height="880" key="com.intellij.history.integration.ui.views.SelectionHistoryDialog/0.0.1440.900/-1920.-180.1920.1080@-1920.-180.1920.1080" timestamp="1594160967047" />
+    <state x="-1294" y="117" width="735" height="486" key="find.popup" timestamp="1593201244229">
+      <screen x="-1920" y="-180" width="1920" height="1080" />
+    </state>
+    <state x="-1294" y="117" width="735" height="486" key="find.popup/0.0.1440.900/-1920.-180.1920.1080@-1920.-180.1920.1080" timestamp="1593201244229" />
+    <state x="-1294" y="134" width="667" height="486" key="find.popup/0.23.1440.826/-1920.-157.1920.1057@-1920.-157.1920.1057" timestamp="1593129790826" />
+  </component>
+</project>

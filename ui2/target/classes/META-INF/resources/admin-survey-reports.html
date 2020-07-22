@@ -1,0 +1,283 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+$(function(){
+  jQuery.each($('[data-include]'), function(){
+    var file = 'components/' + $(this).data('include') + '.html';
+    $(this).load(file);
+  });
+});
+</script>
+<script src="assets/js/http.js"></script>
+<script src="assets/js/utils.js"></script>
+<script src="assets/js/jquery-common.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/feedback-alert.js"></script>
+
+<script src="https://github.com/chartjs/Chart.js/releases/download/v2.9.3/Chart.min.js"></script>
+<!--script src="https://chartjs-plugin-datalabels.netlify.app/chartjs-plugin-datalabels.js"></script-->
+
+<script src="assets/js/charts.js"></script>
+<script src="assets/js/charts-datepicker.js"></script>
+
+<style id="customStyles">
+@import "https://go.redhat.com/hubfs/css/styles.min.css";
+</style>
+<link rel="stylesheet" href="assets/css/header.css">
+<link rel="stylesheet" href="assets/css/style.css">
+
+
+<script>
+var charts={};
+function refresh(){
+	Chart.scaleService.updateScaleDefaults('linear', { ticks: { min: 0 } });
+	$("canvas.graph").each(function(index){
+		var graphId=$(this).data("graph");
+		var graphUrl=$(this).data("graphurl");
+		var processor=$(this).data("processor");
+		var type=$(this).data("charttype");
+		var defaultDateRange=$(this).data("defaultdaterange");
+		graphUrl+="&"+$(undefined!=defaultDateRange?"#Months option:contains('"+defaultDateRange+"')":"#Months").val();
+
+		refreshGraph(graphId, type, graphUrl, processor);
+	});
+}
+
+function round(num){
+	return Math.round((num + Number.EPSILON) * 100) / 100;
+}
+function refreshAnswerDistribution(elemId){
+	var graphUrl=env.server+"/api/surveys/"+surveyId+"/reports/answerPercentages?type=horizontalBar";
+	var defaultDateRange=undefined;
+	graphUrl+="&"+$(undefined!=defaultDateRange?"#Months option:contains('"+defaultDateRange+"')":"#Months").val();
+	Http.httpGetObject(graphUrl, function(status, r){
+		//var r=JSON.parse(response);
+		for (var i=0;i<r.length;i++){
+			var data=r[i];
+			
+			var elemName=data.name;
+			
+			$("#"+elemId+"").append(`<div id="`+elemName+`">`);
+			
+			var table=[];
+			var total=0;
+			for (var n=0;n<data.labels.length;n++){
+				var label=data.labels[n];
+				var value=data.datasets[0].data[n];
+				total+=value;
+				table.push({"label":label, "value": value});
+			}
+			
+			var answerGraph=`<table style="border-top: 1px solid #BBB">
+					<thead>
+					<tr>
+						<td>Question - `+elemName+`</td>
+						<td>%</td>
+						<td>#</td>
+					</tr>
+				</thead>`;
+			for (var n=0;n<table.length;n++){
+				var percent=table[n].value>0?round((table[n].value/total)*100):0;
+				answerGraph+=`
+						<tr>
+							<td><div style="width:`+percent+`%; background-color:#c10000; height:3px;"></div>`+table[n].label+`</td>
+							<td style="width:7%">`+percent+`%</td>
+							<td style="width:7%">`+table[n].value+`</td>
+						</tr>
+				`;
+			}
+			$("#"+elemName).html(answerGraph+`</table><br/>`);
+			
+		}
+		
+	});
+	
+}
+
+
+
+var processors = {
+	"removeFill": function(json) { // Removes the "fill" for the line graph
+		for (ds in json["datasets"]){
+			json["datasets"][ds]["fill"]=false;
+		}
+		return json;
+	},
+};
+		
+</script>
+<style>
+
+canvas{
+	height: 400px;
+}
+</style>
+
+</head>
+<body>
+	
+	<!-- Header (+Logo) -->
+	<section class="assessment-header py-0" style="background-color: black;">
+		<div class="navbar-container">
+			<div class="container pt-2">
+				<div class="row">
+					<a class="navbar-brand" href="//www.redhat.com/" title="Red Hat"><img alt="Red Hat" class="img-fluid navbar-logo" data-alt-text="Red Hat" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg?t=1537976200708" title="Red Hat" data-image-state="ready"> </a>
+				</div>
+			</div>
+		</div>
+	</section>
+	
+	<!-- Breadcrumb Menu -->
+	<div class="elevate" style="height: 27px">
+		<ul style="float:left" class="menu menu_horizontal">
+			<li><a href="admin.html">Surveys</a></li>
+			<li class="noColor divider">/</li>
+			<li class="noColor menu_needsId _id"><span style="color:white;">UNSET</span></li>
+			<li class="noColor divider">|</li>
+			<li class="menu_needsId"><a href="admin-survey-details.html?id=">Details</a></li>
+			<li class="menu_needsId"><a href="admin-survey-reports.html?id=">Reports</a></li>
+			<li class="menu_needsId"><a href="admin-survey-questions.html?id=">Questions</a></li>
+			<li class="menu_needsId"><a href="admin-survey-questions-embedded.html?id=">Questions (experimental)</a></li>
+			<li class="menu_needsId"><a href="admin-survey-eloqua.html?id=">Eloqua</a></li>
+		</ul>
+		<ul style="float:right" class="menu menu_horizontal">
+			<li><a id="logout" href="/logout">Logout</a></li>
+		</ul>
+		<script>
+			$(document).ready(function() {
+				$("a[id=logout]").attr("href", env.server+$("a[id=logout]").attr("href")+"?onSuccess="+document.location.origin+"/login.html");
+			});	
+		</script>
+	</div>
+
+	<!-- success/error message --> 
+	<div class="alert alert-success" id="feedback-alert" style="display:none;">
+    <button type="button" class="close" data-dismiss="alert">x</button>
+    <span id="feedback-alert-text">&nbsp;</span>
+	</div>
+
+	<!-- Main Content -->
+	<section class="py-1">
+		<div class="row center">
+			<table class="">
+				<tbody id="content">
+					<tr>
+						<td class="elevate section">
+							<span style="float:left;">
+								Period: <span id="monthswrapper"></span>
+							</span>
+							<span style="float:right;">
+								<a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="#" onclick="metricsReset();">Reset Metrics</a>
+							</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</section>
+	<!--  -->
+	<section class="py-1">
+		<div class="row center">
+			<table class="">
+				<tbody id="content">
+					
+					<tr>
+						<td class="elevate section">
+							<h3 class="graph_header center">TOTAL SURVEYS COMPLETED BY MONTH</h3>
+							<!--h5 class="center">Subtitle</span></h5-->
+							<div>
+								<table class="section_content">
+									<tr>
+										<td class="graph_container">
+											<canvas class="graph" id="surveyCount" data-graph="surveyCount" data-graphurl="/api/surveys/{surveyId}/reports/surveyCount?type=Line&maxResults={max}" data-charttype="line" data-defaultdaterange="6 Months"></canvas>
+										</td>
+								</table>
+							</div>
+						</td>
+					</tr>
+					<tr><td style="height: 35px;"></td></tr>
+					<tr>
+						<td class="elevate section">
+							<h3 class="graph_header center">TOTAL PAGES COMPLETED</h3>
+							<!--h5 class="center">Subtitle</span></h5-->
+							<div>
+								<table class="section_content">
+									<tr>
+										<td class="graph_container">
+											<canvas class="graph" id="pageCount" data-graph="pageCount" data-graphurl="/api/surveys/{surveyId}/reports/pageCount?type=Line&maxResults={max}" data-charttype="line" data-processor="removeFill"></canvas>
+										</td>
+								</table>
+							</div>
+						</td>
+					</tr>
+					<tr><td style="height: 35px;"></td></tr>
+					<tr>
+						<td class="elevate section">
+							<h3 class="graph_header center">SURVEYS COMPLETED BY GEO</h3>
+							<!--h5 class="center">Subtitle</span></h5-->
+							<div>
+								<table class="section_content">
+									<tr>
+										<td class="graph_container">
+											<canvas class="graph" id="surveyCountByGeo" data-graph="surveyCountByGeo" data-graphurl="/api/surveys/{surveyId}/reports/surveyCountByGeo?type=Pie&maxResults={max}" data-charttype="pie"></canvas>
+										</td>
+								</table>
+							</div>
+						</td>
+					</tr>
+					<tr><td style="height: 35px;"></td></tr>
+					<tr>
+						<td class="elevate section graph">
+							<h3 class="graph_header center">ANSWER DISTRIBUTION</h3>
+							<!--h5 class="center">Subtitle</span></h5-->
+							<div>
+								<table class="section_content">
+									<tr>
+										<td class="graph_container" style="height:500px"">
+											<div id="answerDistribution"></div>
+										</td>
+								</table>
+							</div>
+						</td>
+					</tr>
+					<tr><td style="height: 50px;"></td></tr>
+				</tbody>
+			</table>
+		</div>
+	</section>
+	
+	<script>
+
+
+var surveyId;
+$(document).ready(function() {
+	surveyId=Utils.getParameterByName("id");
+	setMenu("Reports");
+	
+	document.getElementById("monthswrapper").innerHTML=generateDateRangeSelect("", "Current Month");
+	
+	if (undefined!=surveyId){
+	
+		refresh();
+		refreshAnswerDistribution("answerDistribution");
+		
+	}else{
+		// Throw error message to page saying survey doesnt exist
+	}
+	
+});
+
+function metricsReset(){
+	if (undefined!=surveyId){
+		Http.send("DELETE", env.server+"/api/surveys"+(undefined==surveyId?"/?????":"/"+surveyId)+"/metrics/reset", null, function(resp, status){
+			showSuccess(200==status?"Metrics Reset Successfully":"Metrics Reset Error (Status: "+status+")");
+			//alert(200==status?"Saved Ok":"Save Error (Status: "+status+")");
+		});
+	}
+}
+
+	</script>
+
+</body>
+</html>

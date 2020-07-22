@@ -1,0 +1,282 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+$(function(){
+  jQuery.each($('[data-include]'), function(){
+    var file = 'components/' + $(this).data('include') + '.html';
+    $(this).load(file);
+  });
+});
+</script>
+<script src="assets/js/http.js"></script>
+<script src="assets/js/utils.js"></script>
+<script src="assets/js/jquery-common.js"></script>
+<script src="assets/js/env.js"></script>
+<script src="assets/js/feedback-alert.js"></script>
+
+<style id="customStyles">
+@import "https://go.redhat.com/hubfs/css/styles.min.css";
+</style>
+<link rel="stylesheet" href="assets/css/header.css">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/controls-slide-switch.css">
+</head>
+<body>
+	
+	<!-- Header (+Logo) -->
+	<section class="assessment-header py-0" style="background-color: black;">
+		<div class="navbar-container">
+			<div class="container pt-2">
+				<div class="row">
+					<a class="navbar-brand" href="//www.redhat.com/" title="Red Hat"><img alt="Red Hat" class="img-fluid navbar-logo" data-alt-text="Red Hat" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg?t=1537976200708" title="Red Hat" data-image-state="ready"> </a>
+				</div>
+			</div>
+		</div>
+	</section>
+	
+	<!-- Breadcrumb Menu -->
+	<div class="elevate" style="height: 27px">
+		<ul style="float:left" class="menu menu_horizontal">
+			<li><a href="admin.html">Surveys</a></li>
+			<li class="noColor divider">/</li>
+			<li class="noColor menu_needsId _id"><span style="color:white;">UNSET</span></li>
+			<li class="noColor divider">|</li>
+			<li class="menu_needsId"><a href="admin-survey-details.html?id=">Details</a></li>
+			<li class="menu_needsId"><a href="admin-survey-reports.html?id=">Reports</a></li>
+			<li class="menu_needsId"><a href="admin-survey-questions.html?id=">Questions</a></li>
+			<li class="menu_needsId"><a href="admin-survey-questions-embedded.html?id=">Questions (experimental)</a></li>
+			<li class="menu_needsId"><a href="admin-survey-eloqua.html?id=">Eloqua</a></li>
+		</ul>
+		<ul style="float:right" class="menu menu_horizontal">
+			<li><a id="logout" href="/logout">Logout</a></li>
+		</ul>
+		<script>
+			$(document).ready(function() {
+				$("a[id=logout]").attr("href", env.server+$("a[id=logout]").attr("href")+"?onSuccess="+document.location.origin+"/login.html");
+			});	
+		</script>
+	</div>
+	
+	<!-- success/error message --> 
+	<div class="alert alert-success" id="feedback-alert" style="display:none;"">
+    <button type="button" class="close" data-dismiss="alert">x</button>
+    <span id="feedback-alert-text">&nbsp;</span>
+	</div>
+	
+	<!-- Main Content -->
+	<section class="py-1">
+		<div class="row center">
+			
+			
+			<!--
+			<table class="elevate">
+				<tbody id="content">
+				
+					<tr><td>Active:</td><td>
+						<label class="switch-s"><input class="keyvalue" name="active" type="checkbox" checked onchange="this.value=this.checked"><span class="slider-s round"></span></label>
+					</td></tr>
+					<tr><td>Results:</td>                 <td><input class="keyvalue" type="text" name="Eloqua_Url"/></td></tr>
+
+					<tr>
+						<td colspan="2">
+					    <a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="#" onclick="save();">Save</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			-->
+			
+			
+			<!-- NEW -->
+			<style>
+				.row{ margin-right: auto !important;  margin-left: auto !important; }
+				
+			</style>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
+        <script src="https://surveyjs.azureedge.net/1.7.15/survey.ko.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.10/ace.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.10/ext-language_tools.js" type="text/javascript" charset="utf-8"></script>
+        <!-- Uncomment to enable Select2 <script src="https://unpkg.com/jquery"></script> <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" /> <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script> -->
+        <link href="https://surveyjs.azureedge.net/1.7.15/survey-creator.css" type="text/css" rel="stylesheet"/>
+        <script src="https://surveyjs.azureedge.net/1.7.15/survey-creator.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+				<!--
+        <link rel="stylesheet" href="./index.css">
+        <script type="text/javascript" src="./index.js"></script>
+				-->
+        
+        <!-- custom controls (slider) -->
+			  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.js"></script>
+			  <link href="assets/css/bootstrap-slider-10.0.0.css" rel="stylesheet"/>
+			  <script src="assets/js/surveyjs-widgets-1.7.12.js"></script>
+        
+        
+        			<table class="elevate">
+				<tbody id="content">
+				<tr>
+				<td>
+				<div id="surveyContainer" style="width:100%">
+            <div id="creatorElement"></div>
+        </div>
+        </td>
+        </tr>
+        				</tbody>
+			</table>
+        
+				<script>
+				SurveyCreator
+			    .StylesManager
+			    .applyTheme("bootstrap");
+				//Add a new property
+				Survey
+			    .Serializer
+			    .addProperty("question", {
+		        name: "weighting",
+		        category: "general"
+			    });
+				Survey
+				.Serializer
+				.addProperty("page", {
+				    name: "navigationTitle:string",
+				    category: "general",
+				    isLocalizable: true
+				});
+
+				Survey
+			    .Serializer
+			    .addProperty("question", {
+		        name: "eloqua",
+		        category: "general"
+			    });
+
+				
+				//Survey
+			  //  .Serializer
+			  //  .addProperty("choices", {
+		    //    name: "mat"
+			  //  });
+				
+				Survey.JsonObject.metaData.addProperty("itemvalue", "score");
+				
+				//Survey
+			  //  .Serializer
+			  //  .findProperty("question", "weighting")
+			  //  .readOnly = false;
+				
+				//var allowedQuestionTypes = ["checkbox", "radiogroup", "dropdown", "imagepicker", "html" ];
+				//var creatorOptions = { showLogicTab: true, questionTypes: allowedQuestionTypes };
+				var creatorOptions = { showLogicTab: true }
+						
+				
+				Survey.Survey.cssType = "bootstrap";
+				var creator = new SurveyCreator.SurveyCreator("creatorElement", creatorOptions);
+				creator.showToolbox = "right";
+				creator.showPropertyGrid = "right";
+				creator.rightContainerActiveItem("toolbox");
+				
+				var questionCounter = 1;
+				//Set the name property different from the default value
+				//and set the tag property to a generated GUID value.
+//				creator
+//				    .onQuestionAdded
+//				    .add(function (sender, options) {
+//				        var q = options.question;
+//				        var t = q.getType();
+//				        q.name = "Question" + t[0].toUpperCase() + t.substring(1) + questionCounter;
+//				        q.weighting = 100;
+//				        questionCounter++;
+//				    });
+
+				//Survey.surveyLocalization.supportedLocales = ["en", "de", "es"];
+				
+				creator.saveSurveyFunc = function (saveNo, callback) {
+					//console.log("dummy save "+creator.text);
+					
+					Http.send((undefined==surveyId?"POST":"PUT"), env.server+"/api/surveys"+(undefined==surveyId?"/?????":"/"+surveyId)+"/questions", JSON.parse(creator.text), function(resp, status){
+						//$("#_questions").text(prettyPrint(resp.response));
+						showSuccess(200==status?"Saved Ok":"Save Error (Status: "+status+")");
+					});
+
+				};
+				
+				Http.httpGetObject(env.server+"/api/surveys/"+Utils.getParameterByName("id")+"/run?questionsOnly=true", function(status, survey){
+					creator.text=JSON.stringify(survey);
+				});
+				</script>
+			<!-- /NEW -->
+			
+		</div>
+	</section>
+	
+	<script>
+
+
+var surveyId;
+$(document).ready(function() {
+	$("#feedback-alert").hide();
+	surveyId=Utils.getParameterByName("id");
+	setMenu("Results");
+	
+	if (undefined==surveyId){
+		// We have a new Survey - Enable all all input elements with id=_<something>, except ID
+		$("input[id^=\"_\"]").each(function(index){
+			if ("_id"!=$(this).prop("id")){
+				$(this).prop("disabled", false);
+			}
+		});
+	}else{
+		// We have an existing Survey - enable all inputs 
+		Http.httpGetObject(env.server+"/api/surveys/"+surveyId, function(status, survey){
+			for (key in survey){
+				$("#_"+key).val(survey[key]);
+				if ("id"!=key) // don't enable id fields, they need to remain generated/protected
+					$("#_"+key).prop("disabled", false);
+			}
+		});
+		
+	}
+	
+});
+
+function nullToEmpty(v){ if (undefined!=v) return v; else return "";}
+function newData(){
+	var result={};
+	$('input[id^=\"_\"]').each(function() {
+		result[this.id.substr(1)]=null;
+	});
+	return result;
+}
+function save(){
+	var data=populate(newData());
+	Http.send((undefined==surveyId?"POST":"PUT"), env.server+"/api/surveys"+(undefined==surveyId?"":"/"+surveyId), data, function(resp, status){
+		jsonToDisplay(resp.response);
+		// update breadcrumbs
+		// push to url line
+		surveyId=JSON.parse(resp.response)["id"];
+		setMenu("Details");
+		if (undefined==data["id"] || ""==data["id"])
+			window.history.pushState("", "", location.pathname+(location.search!=""?location.search+"&":"?")+"id="+JSON.parse(resp.response)["id"]);
+		
+		showSuccess(200==status?"Saved Ok":"Save Error (Status: "+status+")");
+		//alert(200==status?"Saved Ok":"Save Error (Status: "+status+")");
+		//window.location.href="admin.html";
+	});
+}
+function jsonToDisplay(surveyJson){ // json to html fields
+	var response=JSON.parse(surveyJson);
+	for (key in response)
+		$("#_"+key).val(response[key]);
+}
+function populate(obj){ // html fields to javascript object
+	for (key in obj){
+		obj[key]=$("#_"+key).val();
+	}
+	return obj
+}
+
+	
+	</script>
+
+</body>
+</html>

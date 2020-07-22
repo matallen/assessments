@@ -1,0 +1,7 @@
+{
+    "iss": "https://quarkus.io/using-jwt-rbac",
+    "upn": "jdoe@quarkus.io",
+    "groups": [
+        "Admin"
+    ]
+}

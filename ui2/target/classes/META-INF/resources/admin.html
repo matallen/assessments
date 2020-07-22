@@ -1,0 +1,150 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+$(function(){
+  jQuery.each($('[data-include]'), function(){
+    var file = 'components/' + $(this).data('include') + '.html';
+    $(this).load(file);
+  });
+});
+</script>
+<script src="assets/js/http.js"></script>
+<script src="assets/js/utils.js"></script>
+<script src="assets/js/jquery-common.js"></script>
+<script src="assets/js/env.js"></script>
+<style id="customStyles">
+@import "https://go.redhat.com/hubfs/css/styles.min.css";
+</style>
+<link rel="stylesheet" href="assets/css/header.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+	
+	<!-- HEADER -->
+	<section class="assessment-header py-0" style="background-color: black;">
+		<div class="navbar-container">
+			<div class="container pt-2">
+				<div class="row">
+					<a class="navbar-brand" href="//www.redhat.com/" title="Red Hat"><img alt="Red Hat" class="img-fluid navbar-logo" data-alt-text="Red Hat" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg?t=1537976200708" title="Red Hat" data-image-state="ready"> </a>
+				</div>
+			</div>
+		</div>
+	</section>
+	
+	<div class="elevate" style="height: 27px">
+		<ul style="float:left" class="menu menu_horizontal">
+			<li><a href="admin.html">Surveys</a></li>
+		</ul>
+		<ul style="float:right" class="menu menu_horizontal">
+			<li><a id="logout" href="/logout">Logout</a></li>
+		</ul>
+		<script>
+			$(document).ready(function() {
+				$("a[id=logout]").attr("href", env.server+$("a[id=logout]").attr("href")+"?onSuccess="+document.location.origin+"/login.html");
+			});	
+		</script>
+	</div>
+	
+	<section class="py-1">
+		<div class="row center">
+			<div class="button-bar" style="display:inline-flex;">
+				<div style="padding-right: 5px;">
+					<button name="btnNew" style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" onclick="location.href='admin-survey-details.html';" >New</button>
+				</div>
+				<div>
+					<button name="btnDelete" disabled style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white">Delete</button>
+				</div>
+				<div>
+					<button name="btnDuplicate" disabled style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white">Duplicate</button>
+				</div>
+			</div>
+			<table class="elevate">
+				<thead>
+					<tr>
+						<td></td>
+						<td>Survey ID</td>
+						<td>Survey Name</td>
+						<td>Owner</td>
+						<!--
+						<td>Survey Theme</td>
+						<td>Survey URL</td>
+						-->
+						<td></td>
+					</tr>
+				</thead>
+				<tbody id="surveys"></tbody>
+			</table>
+		</div>
+	</section>
+	
+
+	<script>
+	$(document).ready(function() {
+		load();
+		
+		$(document).on('click', "input[type=checkbox]", function() {
+			checkButtonActiveStatus();
+		});
+		
+		$(document).on('click', "button[name=btnDelete]", function() {
+			Http.httpDelete(env.server+"/api/surveys", HtmlUtils.asList('input[name="id"]:checked', "value"), function(resp, status){
+				load();
+			});
+		});
+		
+		$(document).on('click', "button[name=btnDuplicate]", function() {
+			Http.httpPost(env.server+"/api/surveys/"+HtmlUtils.asList('input[name="id"]:checked', "value")[0]+"/copy", null, function(resp, status){
+				load();
+			});
+		});
+	});
+	
+	function checkButtonActiveStatus(){
+		$('button[name="btnNew"]').attr('disabled', $('input[name="id"]:checked').length>0);
+		$('button[name="btnDelete"]').attr('disabled', $('input[name="id"]:checked').length<1);
+		$('button[name="btnDuplicate"]').attr('disabled', $('input[name="id"]:checked').length!=1);
+	}
+	
+	function load(){
+		$("#surveys").empty();
+		Http.httpGetObject(env.server+"/api/surveys", function(status, surveys){
+			for(i in surveys){
+				var s=surveys[i];
+				//console.log(s['id']);
+				
+				$("#surveys").append(`
+						<tr>
+						<td><input type="checkbox" name="id" value="`+s['id']+`"/></td>
+						<td><a href="admin-survey-details.html?id=`+s['id']+`">`+s['id']+`</a></td>
+						<td>`+s['name']+`</td>
+						<td>`+s['owner']+`</td>
+						<td><a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="index.html?surveyId=`+s['id']+`">Live Survey</a></td>
+					</tr>
+					`);
+			}
+		});
+		checkButtonActiveStatus();
+	}
+	
+	function deleteAllChecked(){
+		var selected=[];
+		$("input").each(function(){
+			if ($(this).is(":checked")) {
+				selected.push($(this).attr("value"));
+			}
+		});
+		Http.httpDelete(env.server+"/api/surveys", selected, function(resp, status){
+			load();
+		});
+	}
+	
+	function loadConfig(surveyId){
+		Http.httpGet("/api/survey/"+surveyId+"?questionsOnly=true", function(cfg){
+			document.getElementById("config").innerHTML=cfg;
+		});
+	}
+	</script>
+
+</body>
+</html>

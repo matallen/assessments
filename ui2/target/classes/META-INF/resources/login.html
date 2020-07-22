@@ -1,0 +1,97 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script>
+$(function(){
+  jQuery.each($('[data-include]'), function(){
+    var file = 'components/' + $(this).data('include') + '.html';
+    $(this).load(file);
+  });
+});
+</script>
+<script src="assets/js/http.js"></script>
+<script src="assets/js/utils.js"></script>
+<script src="assets/js/jquery-common.js"></script>
+<script src="assets/js/env.js"></script>
+<style id="customStyles">
+@import "https://go.redhat.com/hubfs/css/styles.min.css";
+</style>
+<link rel="stylesheet" href="assets/css/header.css">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+	
+	<!-- HEADER -->
+	<section class="assessment-header py-0" style="background-color: black;">
+		<div class="navbar-container">
+			<div class="container pt-2">
+				<div class="row">
+					<a class="navbar-brand" href="//www.redhat.com/" title="Red Hat"><img alt="Red Hat" class="img-fluid navbar-logo" data-alt-text="Red Hat" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg?t=1537976200708" title="Red Hat" data-image-state="ready"> </a>
+				</div>
+			</div>
+		</div>
+	</section>
+	
+	<div class="elevate">
+		<ul class="menu menu_horizontal" style="height:27px;">
+		</ul>
+	</div>
+	
+	
+	<section class="py-1">
+		<div id="error-message" style="width: 100%; text-align:center;"></div>
+		<div class="center" style="width: 30%;">
+			<form id="loginForm" action="/login" method="post">
+				<table class="elevate">
+					<tr>
+						<td>Login ID</td>
+						<td><input id="username" name="username" type="text"/></td>
+					</tr>
+					<tr>
+						<td>Password:</td>
+						<td><input name="password" type="password"/></td>
+					</tr>
+					<tr>
+						<td colspan="2" style="text-align:right;">
+							<input type="hidden" name="onSuccess" value="/admin.html"/>
+							<input type="hidden" name="onFailure" value="/login.html"/>
+							<input type="submit" name="login" disabled style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" value="Login"></input>
+						</td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</section>
+
+	<br/><br/>
+	<center>
+	<span style="color: #c10000">Please use admin/admin to access the system whilst we're in DEV mode</span>
+	</center>
+	
+	
+	<script>
+	$(document).ready(function() {
+		$("#loginForm").attr("action", env.server+$("#loginForm").attr("action"));
+		$("input[name=onSuccess]").attr("value", document.location.origin+$("input[name=onSuccess]").attr("value"));
+		$("input[name=onFailure]").attr("value", document.location.origin+$("input[name=onFailure]").attr("value"));
+		$("#username").focus();
+		
+		switch(Utils.getParameterByName("error")){
+			case "0": $("#error-message").html("Unable to verify, or credentials incorrect, please try again."); break;
+			case "1": $("#error-message").html("Timeout, please login again."); break;
+			case "2": $("#error-message").html("Not authorized, please login again."); break;
+		}
+		
+		checkButtonActiveStatus();
+		$("input[type=text],input[type=password]").keyup(function(){
+			checkButtonActiveStatus();
+		});
+		
+	});
+	function checkButtonActiveStatus(){
+		$('input[name="login"]').attr('disabled', $('input[name="username"]').val().length<=0 ||  $('input[name="password"]').val().length<=0);
+	}
+	</script>
+
+</body>
+</html>
