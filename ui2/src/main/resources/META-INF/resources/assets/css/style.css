@@ -209,8 +209,12 @@ div.elevate li.noColor{
 	text-align: center; /* center the prev/next buttons */
 	padding: 30px;
 }
+.sv_main.sv_default_css input[type="button"], .sv_default_css button {
+    color: white !important;
+    background-color: #06C !important;
+}
 .sv_prev_btn, .sv_next_btn, .sv_preview_btn, .sv_complete_btn {
-  padding: 13px 23px 10px 23;
+  padding: 13px 23px 10px 23px;
   
   /* taken from: https://www.redhat.com/forms/css/jquery.gatedform.min.css */
   
