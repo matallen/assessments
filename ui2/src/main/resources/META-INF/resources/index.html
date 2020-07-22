@@ -40,11 +40,21 @@
 	<link href="assets/css/survey-progress-panel.css" type="text/css" rel="stylesheet"/>
 	<link href="assets/css/header.css" type="text/css" rel="stylesheet"/>
 	<link href="assets/css/style.css" type="text/css" rel="stylesheet"/>
+	<link href="assets/css/footer.css" type="text/css" rel="stylesheet"/>
 
+  <!--
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/css/bootstrap-slider.css" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.js"></script>
+  -->
+  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.js"></script>
+  
   <link href="assets/css/bootstrap-slider-10.0.0.css" rel="stylesheet"/>
 
   <script src="assets/js/surveyjs-widgets-1.7.12.js"></script>
+  <!--
+  -->
 </head>
 
 <body id="SurveyEngineBody" style="direction: inherit;">
@@ -128,7 +138,8 @@ $(document).ready(function() {
 	<section id="xsurvey" class=" py-0">
 		<div class="container">
 			<div class="row">
-				<div class="col-md-3 hidden-xs">
+				<div class="col-md-3">
+
 					<!-- THIS IS WHERE WE NEED THE NAV REALLY -->
 					<div id="surveyNavigation"></div>
 				</div>
@@ -166,6 +177,29 @@ $(document).ready(function() {
 		}
 		
 	</script>
-	
+
+<div id="footer">
+	<footer class="footerStyle">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-3"><a href="//www.redhat.com/" target="_blank" ><img alt="Red Hat" class="img-fluid" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg" style="height: 40px !important;" href="//www.redhat.com/"></a></div>
+
+				<div class="col-md-3 copyrightStyle">
+					<p>Copyright © 2019&nbsp;<span class="text-nowrap">Red Hat, Inc.</span></p>
+				</div>
+
+				<div class="col-md">
+					<nav class="nav">
+						<a class="nav-link"  target="_blank" href="https://www.redhat.com/en/about/privacy-policy" >Privacy statement</a>
+						<span class ="rightBorder"></span>
+						<a class="nav-link" target="_blank" href="https://www.redhat.com/en/about/terms-use">Terms of use</a>
+						<span class ="rightBorder"></span>
+						<a class="nav-link" target="_blank" href="https://www.redhat.com/en/about/all-policies-guidelines">All policies and guidelines</a>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</footer>
+</div>
 </body>
 </html>
