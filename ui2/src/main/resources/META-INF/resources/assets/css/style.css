@@ -198,7 +198,7 @@ div.elevate li.noColor{
 	padding: 30px;
 }
 .sv_prev_btn, .sv_next_btn, .sv_preview_btn, .sv_complete_btn {
-  padding: 13px 23px 10px 23;
+  padding: 13px 23px 10px 23px;
   
   /* taken from: https://www.redhat.com/forms/css/jquery.gatedform.min.css */
   
@@ -206,7 +206,7 @@ div.elevate li.noColor{
     background-color: #06C;
     color: #fff;
     display: inline-block;
-    font-family: var(--pfe-theme--font-family,RedHatText,Helvetica,Arial,sans-serif);
+    font-family: var(--pfe-theme--font-family,RedHatText, Helvetica, Arial, sans-serif);
     border: 1px solid #06C;
     border-radius: 3px;
     font-size: 16px;
@@ -220,7 +220,7 @@ div.elevate li.noColor{
 }
 
 .sv_prev_btn:hover, .sv_next_btn:hover, .sv_preview_btn:hover, .sv_complete_btn:hover {
-		background-color: #0057ad;
+    background-color: #0057ad;
     color: #fff;
     text-decoration: none;
     cursor: pointer;
@@ -289,4 +289,14 @@ div.elevate li.noColor{
   background-color: white !important;
 	border-bottom-left-radius: 3px;
 	border-bottom-right-radius: 3px;
+}
+
+.loginForm{
+    width: 50%;
+   padding-left: 375px;
+}
+
+.sv_main.sv_default_css input[type="button"], .sv_default_css button {
+    color: white !important;
+    background-color: #06C !important;
 }

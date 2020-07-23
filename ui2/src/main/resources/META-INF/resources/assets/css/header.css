@@ -1,38 +1,13 @@
-			.navbar-container .navbar-logo {
-			    max-width: 155px;
-			    max-height: 37px;
-			}
-			.navbar-brand {
-			    margin-right: 0 !important;
-			    width: 100%;
-			}
-			.assessment-header .navbar-container {
-			    padding: 27px 0 26px;
-			}
-			.navbar-container {
-			    width: 100%;
-			    padding: 7px 0 9px;
-			}
-			.center {
-			  margin: 30px auto auto auto;
-			  width: 80%;
-			}
-			
-			
-			.navbar-container-inner{
-			  display:flex;
-			  flex-direction: row;
-			  flex-wrap: nowrap;
-			  justify-content: center;
-			  align-items: center;
-			}
-			.cols3{
-				width:25%;
-				height: 67px;
-				text-align: left;
-		    position: relative;
-    		top: 20px;
-			}
-			.justify-right{
-				text-align: right;
-			}
+.navbar-container {
+	background-color: #050505;
+}
+.btnStyle{
+	margin-left: 10px;
+	cursor: pointer;
+	border-radius: 0;
+	background-color: #050505;
+	border: 1px solid #FFFFFF;
+	padding: 6px 24px 6px 12px;
+	color: #FFFFFF;
+	background-size: 6px 6px, 6px 6px, 1px 1.5em;
+}
