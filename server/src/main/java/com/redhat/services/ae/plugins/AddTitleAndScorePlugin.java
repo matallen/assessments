@@ -20,21 +20,48 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 	 * 
 	 */
 	
-//	int totalScore=0;
-//	int scoreQuestionsCount=0;
+	private String getPage(Json question){
+		int i=0;
+		List<Json> l=new ArrayList<>();
+		Json p=question;
+		Json page=null;
+		while(p!=null){
+			if (!p.isArray() && p.has("elements")){
+				page=p;
+//				break; // first?
+			}
+			l.add(p);
+			i=i+1;
+			p=p.up();
+		}
+		if (null!=page && page.has("name")){
+			return page.at("name").asString();
+		}
+		return null;
+	}
 	
 	@Override
 	public Map<String, Object> OnSingleStringAnswer(String questionId, String answer, Json question){
+		
+//		if (null==question) return new MapBuilder<String,Object>().put("answer", answer).build();;
+		
 		Answer answerSplit=splitThis((String)answer);
 		
 		Map<String,Object> answerData=new MapBuilder<String,Object>().put("answer", answerSplit.text).build();
+		
+		if (null==question) return answerData;
+
 		if (answerSplit.score>0){
 //			scoreQuestionsCount+=1;
 //			totalScore+=answerSplit.score;
 			answerData.put("score", answerSplit.score);
 		}
-		
 		if (question.has("title")) answerData.put("title", question.at("title").asString());
+		
+		answerData.put("pageId", question.up().up().at("name").asString());
+		
+		
+		answerData.put("pageId", getPage(question));
 		
 		return answerData;
 	}
@@ -66,7 +93,7 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 			answerData.put("score", highestScore);
 		}
 		
-		
+		answerData.put("pageId", getPage(question));
 //		answer.put(questionId, answerData);
 
 		return answerData;

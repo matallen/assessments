@@ -200,7 +200,7 @@ $(function(){
 
 				};
 				
-				Http.httpGetObject(env.server+"/api/surveys/"+Utils.getParameterByName("id")+"/run?questionsOnly=true", function(status, survey){
+				Http.httpGetObject(env.server+"/api/surveys/"+Utils.getParameterByName("id")+"/survey-config.js?questionsOnly=true", function(status, survey){
 					creator.text=JSON.stringify(survey);
 				});
 				</script>

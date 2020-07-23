@@ -114,7 +114,7 @@ survey
     	
 		// TODO: Remove this double posting, but find a way to make the multi-depth object easier to parse on the java side
 		
-		survey.data["language"]=languageCode;
+		//survey.data["language"]=languageCode;
 		
 		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onComplete?visitorId="+Cookie.get("rhae-visitorId"), buildPageChangePayload(page, false), function(response){
 			if (response.status==200){
@@ -125,8 +125,11 @@ survey
 			}
 		});
     	//Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"?event=onComplete&cookie="+Cookie.get("rhae-jwt")+"&time="+timeInfo[page.name]+"&country="+geoInfo["countryCode"]+"region"+geoInfo["region"]);
+		
+		var data=survey.data;
+		data["language"]=languageCode;
     	
-    	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/onResults?visitorId="+Cookie.get("rhae-visitorId"), survey.data, function(response){
+    	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/onResults?visitorId="+Cookie.get("rhae-visitorId"), data, function(response){
 			if (response.status==200){
 				// navigate to a results page
 				
@@ -274,20 +277,33 @@ navProgBarDiv.appendChild(navProgBar);
 
 
 
+var navTitlesUniqueSet=[];
+//var navTitleToIndex={};
+//var indexToNavTitle={};
+
 var liEls = {};
 for (var i = 0; i < survey.PageCount; i++) {
     var liEl = document.createElement("li");
-    if (survey.currentPageNo == i) {
-        liEl
-            .classList
-            .add("current");
-    }
+//    if (survey.currentPageNo == i) {
+//        liEl
+//            .classList
+//            .add("current");
+//    }
 
     var pageTitle = document.createElement("div");
-    if (!survey.pages[i].navigationTitle) {
-        pageTitle.innerText = survey.pages[i].name;
-    } else
-        pageTitle.innerText = survey.pages[i].navigationTitle;
+    pageTitle.innerText=!survey.pages[i].navigationTitle?
+    		pageTitle.innerText = survey.pages[i].name:
+    		pageTitle.innerText = survey.pages[i].navigationTitle;
+    
+    
+    
+    // logic to group question pages in progress panel
+    if (navTitlesUniqueSet.includes(pageTitle.innerText)) continue;
+    navTitlesUniqueSet.push(pageTitle.innerText);
+    
+//    navTitleToIndex[pageTitle]=i;
+    
+    
     pageTitle.className = "pageTitle";
 	navProgBar.appendChild(pageTitle);
 	navProgBar.appendChild(liEl);
@@ -299,16 +315,22 @@ for (var i = 0; i < survey.PageCount; i++) {
     // }
     // pageDescription.className = "pageDescription";
     // liEl.appendChild(pageDescription);
-    liEls[survey.pages[i].name]=liEl;
+    liEls[undefined!=survey.pages[i].navigationTitle?survey.pages[i].navigationTitle:survey.pages[i].name]=liEl;
 
 }
 survey
     .onCurrentPageChanged
     .add(function (sender, options) {
-    	var oldIndex = options.oldCurrentPage.name;
-        var newIndex = options.newCurrentPage.name;
+    	var oldIndex = options.oldCurrentPage.navigationTitle;
+        var newIndex = options.newCurrentPage.navigationTitle;
         var oldIndexI = options.oldCurrentPage.visibleIndex;
         var newIndexI = options.newCurrentPage.visibleIndex;
+        
+        // Only transition if the navigation Title is different, so it hangs around if we want to collate them
+        var oldIndex = options.oldCurrentPage.navigationTitle!=undefined?options.oldCurrentPage.navigationTitle:options.oldCurrentPage.name;
+        var newIndex = options.newCurrentPage.navigationTitle!=undefined?options.newCurrentPage.navigationTitle:options.newCurrentPage.name;
+        if (oldIndex==newIndex) return;
+        
         
         if (undefined!=liEls[oldIndex])
 	        liEls[oldIndex].classList.remove("current");
@@ -317,8 +339,8 @@ survey
             for (var i = oldIndexI; i < newIndexI; i++) {
                 if (sender.visiblePages[i].hasErrors(true, true)) 
                     break;
-                if (!liEls[sender.visiblePages[i].name].classList.contains("completed")) {
-                    liEls[sender.visiblePages[i].name].classList.add("completed");
+                if (!liEls[sender.visiblePages[i].navigationTitle!=null?sender.visiblePages[i].navigationTitle:sender.visiblePages[i].name].classList.contains("completed")) {
+                    liEls[sender.visiblePages[i].navigationTitle!=null?sender.visiblePages[i].navigationTitle:sender.visiblePages[i].name].classList.add("completed");
                 }
             }
         }
@@ -408,7 +430,7 @@ LocalStorage.loadState(survey);
 //survey.showCompletedPage=false;
 //survey.navigateToUrl="/results.html?surveyId="+surveyId+"&visitorId="+visitorId;
 
-survey.completedHtml="";
+survey.completedHtml=" ";
 
 //survey.locale = languageCode;
 survey.render();

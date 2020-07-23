@@ -496,42 +496,36 @@
      "name": "panel1",
      "elements": [
       {
-       "type": "panel",
-       "name": "panel2",
-       "elements": [
-        {
-         "type": "text",
-         "name": "FirstName",
-         "title": "First Name",
-         "isRequired": true
-        },
-        {
-         "type": "text",
-         "name": "WorkEmail",
-         "title": "Work Email",
-         "isRequired": true,
-         "inputType": "email"
-        },
-        {
-         "type": "text",
-         "name": "Company",
-         "title": "Company",
-         "isRequired": true
-        },
-        {
-         "type": "dropdown",
-         "name": "JobRole",
-         "title": "Job Role",
-         "choices": [
-          "item1",
-          "item2",
-          "item3"
-         ],
-         "choicesByUrl": {
-          "url": "http://localhost:8081/api/surveys/xxx/jobroles"
-         }
-        }
-       ]
+       "type": "text",
+       "name": "FirstName",
+       "title": "First Name",
+       "isRequired": true
+      },
+      {
+       "type": "text",
+       "name": "WorkEmail",
+       "title": "Work Email",
+       "isRequired": true,
+       "inputType": "email"
+      },
+      {
+       "type": "text",
+       "name": "Company",
+       "title": "Company",
+       "isRequired": true
+      },
+      {
+       "type": "dropdown",
+       "name": "JobRole",
+       "title": "Job Role",
+       "choices": [
+        "item1",
+        "item2",
+        "item3"
+       ],
+       "choicesByUrl": {
+        "url": "http://localhost:8081/api/surveys/xxx/jobroles"
+       }
       },
       {
        "type": "panel",

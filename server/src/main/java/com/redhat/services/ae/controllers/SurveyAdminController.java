@@ -112,6 +112,16 @@ public class SurveyAdminController{
 		return Response.ok(copy).build();
 	}
 	
+	/** ### Database Backup endpoint ### */
+	
+	@GET
+	@PermitAll
+	@Path("/database")
+	public Response getDatabase(@PathParam("surveyId") String surveyId) throws FileNotFoundException, IOException{
+		return Response.ok(Json.toJson(Database.get())).build();
+		
+	}	
+	
 	/** #### QUESTION HANDLERS #### */
 	
 	@PUT
@@ -125,6 +135,7 @@ public class SurveyAdminController{
 	}
 	
 	@GET
+	@PermitAll
 	@Path("/{surveyId}/questions")
 	public Response getQuestions(@PathParam("surveyId") String surveyId) throws FileNotFoundException, IOException{
 		String surveyName=surveyId+".json";

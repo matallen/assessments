@@ -126,10 +126,10 @@ $(document).ready(function() {
 </script>
 	
 	<div style="position:absolute; left: 0px;">
-					        <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
-					        <script src="https://surveyjs.azureedge.net/1.7.15/survey.ko.js"></script>
-					        <button onclick="$('#debug').html(JSON.stringify(survey.data, null, 2));">debug</button>
-									<pre id="debug" >XXX</pre>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
+      <script src="https://surveyjs.azureedge.net/1.7.15/survey.ko.js"></script>
+      <!--button onclick="$('#debug').html(JSON.stringify(survey.data, null, 2));">debug</button-->
+		<pre id="debug" ></pre>
 	</div>
 
 	<section id="xsurvey" class=" py-0">
@@ -140,7 +140,7 @@ $(document).ready(function() {
 					<!-- THIS IS WHERE WE NEED THE NAV REALLY -->
 					<div id="surveyNavigation"></div>
 				</div>
-				<div class="col-md-9">
+				<div class="col-md-9 survey-wrapper">
 					<div id="surveyElement" class="surveyStyle"></div>
 					<div id="surveyResult"></div>
 				</div>
@@ -148,25 +148,16 @@ $(document).ready(function() {
 		</div>
 	</section>
 	<script>
-		//var results = null;
-//		var previousAssessmentId=null; // load from cookie
 		var surveyId;
 		var visitorId;
 		var surveyStarted=false;
 		
 		function startSurvey() {
-//			if (null!=previousAssessmentId) {
-//				Http.httpGetObject(env.server+'/api/survey/'+surveyId+'/results?resultsId='+previousAssessmentId, function(assessmentResults) { // load an old assessment
-//					results=assessmentResults;
-//					loadSurvey();
-//				});
-//			} else {
 				loadSurvey();
-//			}
 		}
 
 		function loadSurvey() {
-			var surveyJsUrl=env.server+"/api/surveys/"+surveyId+"/run"; // request a new assessment
+			var surveyJsUrl=env.server+"/api/surveys/"+surveyId+"/survey-config.js"; // request a new assessment
 			var surveyJSElement=document.createElement('script');
 			surveyJSElement.src=surveyJsUrl;
 			document.getElementsByTagName('head')[0].appendChild(surveyJSElement);
@@ -182,7 +173,7 @@ $(document).ready(function() {
 				<div class="col-md-3"><a href="//www.redhat.com/" target="_blank" ><img alt="Red Hat" class="img-fluid" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg" style="height: 40px !important;" href="//www.redhat.com/"></a></div>
 
 				<div class="col-md-3 copyrightStyle">
-					<p>Copyright © 2019&nbsp;<span class="text-nowrap">Red Hat, Inc.</span></p>
+					<p>Copyright © 2020&nbsp;<span class="text-nowrap">Red Hat, Inc.</span></p>
 				</div>
 
 				<div class="col-md">
