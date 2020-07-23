@@ -100,6 +100,11 @@ public abstract class EnrichAnswersPluginBase implements Plugin{
 		// Now go through answers and enrich with titles
 		for (Entry<String, Object> e:surveyResults.entrySet()){
 			String questionId=e.getKey();
+			System.out.println("looking up page for question: "+questionId +"("+e.getValue().getClass().getSimpleName()+")");
+			
+			if ("language".equalsIgnoreCase(questionId)){
+				continue;
+			}
 			
 			if (String.class.isAssignableFrom(e.getValue().getClass())){
 				String answer=(String)e.getValue();

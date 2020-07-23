@@ -1,23 +1,43 @@
 template header
+salience
+language
+description
+overallScoreLow
+overallScoreHigh
+pageId
+questionId
 scoreLow
-scoreHeigh
+scoreHigh
+section
 recommendation
 
 package com.redhat.services.assessments;
 
-import com.redhat.services.ae.plugins.ScoreRecommendationsPlugin.RecommendationConfig;
+import com.redhat.services.ae.model.Recommendation;
+import com.redhat.services.ae.model.Answer;
+import com.redhat.services.ae.model.AnswerSurvey;
 
 template "recommendations"
 
-rule "recommendation text @{row.rowNumber}"
-dialect "java"
+rule "@{row.rowNumber}: @{description}"
+salience @{salience}
 when
-	$rec : RecommendationConfig(
-			score > @{scoreLow}
-			,score < @{scoreHeigh}
-		)
+	$ans : Answer(true==true
+		,language == "@{language}"
+		,questionId == "@{questionId}"
+		,pageId == "@{pageId}"
+		,score >= @{scoreLow}
+		,score <= @{scoreHigh}
+	)
+	$surv : AnswerSurvey(true==true
+		,language == "@{language}"
+		,score >= @{overallScoreLow}
+		,score <= @{overallScoreHigh}
+	)
 then
-	System.out.println("$rec");
+	insert(new Recommendation("@{section}", "@{recommendation}"));
+//	insert("@{recommendation}");
+//	$ans.addRecommendation("@{recommendation}");
 end
 
 end template

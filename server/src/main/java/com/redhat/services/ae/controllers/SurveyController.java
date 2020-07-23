@@ -45,7 +45,7 @@ public class SurveyController{
 
 	@GET
 	@PermitAll
-	@Path("/{surveyId}/run")
+	@Path("/{surveyId}/survey-config.js")
 	public Response getSurveyJavascript(@PathParam("surveyId") String surveyId, 
 			@DefaultValue("application/json") @QueryParam("responseContentType") String responseContentType,
 			@DefaultValue("false") @QueryParam("questionsOnly") String questionsOnly) throws IOException{
