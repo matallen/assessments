@@ -7,7 +7,18 @@
 	border-radius: 0;
 	background-color: #050505;
 	border: 1px solid #FFFFFF;
-	padding: 6px 24px 6px 12px;
+	padding: 6px 18px 6px 12px;
+	color: #FFFFFF;
+	background-size: 6px 6px, 6px 6px, 1px 1.5em;
+}
+
+.btnStyle1{
+	float: right;
+	cursor: pointer;
+	border-radius: 0;
+	background-color: #050505;
+	border: 1px solid #FFFFFF !important;
+	padding: 6px 18px 6px 12px;
 	color: #FFFFFF;
 	background-size: 6px 6px, 6px 6px, 1px 1.5em;
 }
