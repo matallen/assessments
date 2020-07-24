@@ -11,8 +11,10 @@ var defaultThemeColors = Survey
     .StylesManager
     .ThemeColors["default"];
 
-defaultThemeColors["$main-color"] = "#06C";
-defaultThemeColors["$main-hover-color"] = "#0057ad";
+defaultThemeColors["$main-color"] = "#a30000";
+defaultThemeColors["$main-hover-color"] = "#820000";
+//defaultThemeColors["$main-color"] = "#06C";
+//defaultThemeColors["$main-hover-color"] = "#0057ad";
 defaultThemeColors["$text-color"] = "#4a4a4a";
 defaultThemeColors["$header-color"] = "#ffffff";
 defaultThemeColors["$header-background-color"] = "#cc0000";
