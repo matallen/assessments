@@ -24,15 +24,17 @@ $(function(){
 <body>
 	
 	<!-- HEADER -->
-	<section class="assessment-header" style="background-color: black;">
+	<div id="header">
 		<div class="navbar-container">
-			<div class="container pt-2">
-				<div class="row">
-					<a class="navbar-brand" href="//www.redhat.com/" title="Red Hat"><img alt="Red Hat" class="img-fluid navbar-logo" data-alt-text="Red Hat" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg?t=1537976200708" title="Red Hat" data-image-state="ready"> </a>
+			<div class="container">
+				<div class="row" style="padding: 20px 0 20px;">
+					<div class="col-md-3" >
+						<a class="navbar-brand" href="//www.redhat.com/" title="Red Hat"><img alt="Red Hat" class="img-fluid navbar-logo" data-alt-text="Red Hat" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg?t=1537976200708" title="Red Hat" data-image-state="ready"> </a>
+					</div>
 				</div>
 			</div>
 		</div>
-	</section>
+	</div>
 	
 	<!-- Breadcrumb Menu -->
 	<div class="elevate" style="height: 27px">
@@ -58,9 +60,7 @@ $(function(){
 	</div>
 	
 	<!--  -->
-	<section class="py-1">
-		<div class="row center">
-			
+	<div class="container py-1">
 			<script src="assets/js/plain-draggable.min.js"></script>
 			<script src="assets/js/leader-line.min.js"></script>
 			             
@@ -144,8 +144,7 @@ function createLine(draggable, assignable){
 				</tr>
 			</table>
 			<div id="draggableList"></div>
-		</div>
-	</section>
+	</div>
 	
 	<style>
 	table thead tr td, table tbody tr td{

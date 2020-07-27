@@ -22,15 +22,17 @@ $(function(){
 <body>
 	
 	<!-- HEADER -->
-	<section class="assessment-header" style="background-color: black;">
+	<div id="header">
 		<div class="navbar-container">
-			<div class="container pt-2">
-				<div class="row">
-					<a class="navbar-brand" href="//www.redhat.com/" title="Red Hat"><img alt="Red Hat" class="img-fluid navbar-logo" data-alt-text="Red Hat" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg?t=1537976200708" title="Red Hat" data-image-state="ready"> </a>
+			<div class="container">
+				<div class="row" style="padding: 20px 0 20px;">
+					<div class="col-md-3" >
+						<a class="navbar-brand" href="//www.redhat.com/" title="Red Hat"><img alt="Red Hat" class="img-fluid navbar-logo" data-alt-text="Red Hat" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg?t=1537976200708" title="Red Hat" data-image-state="ready"> </a>
+					</div>
 				</div>
 			</div>
 		</div>
-	</section>
+	</div>
 	
 	<div class="elevate">
 		<ul class="menu menu_horizontal" style="height:27px;">
@@ -38,10 +40,9 @@ $(function(){
 	</div>
 	
 	
-	<section class="py-1">
+	<div class="container py-1" >
 		<div id="error-message" style="width: 100%; text-align:center;"></div>
-		<div class="center" style="width: 30%;">
-			<form id="loginForm" action="/login" method="post">
+			<form id="loginForm" action="/login" method="post" class="loginForm">
 				<table class="elevate">
 					<tr>
 						<td>Login ID</td>
@@ -61,7 +62,7 @@ $(function(){
 				</table>
 			</form>
 		</div>
-	</section>
+	</div>
 
 	<br/><br/>
 	<center>

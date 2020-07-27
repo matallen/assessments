@@ -291,11 +291,11 @@ var navTitlesUniqueSet=[];
 var liEls = {};
 for (var i = 0; i < survey.PageCount; i++) {
     var liEl = document.createElement("li");
-//    if (survey.currentPageNo == i) {
-//        liEl
-//            .classList
-//            .add("current");
-//    }
+   if (survey.currentPageNo == i) {
+       liEl
+           .classList
+           .add("current");
+   }
 
     var pageTitle = document.createElement("div");
     pageTitle.innerText=!survey.pages[i].navigationTitle?

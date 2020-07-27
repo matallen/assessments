@@ -58,63 +58,34 @@
 			}
 			</style>
 
-	<section id="header" class="assessment-header py-0 background"> 
-		<div class="navbar-container">
-			
-		
-			<div class="containerx">
-				<div class="cols3">
-							<a class="navbar-brand" href="//www.redhat.com/" title="Red Hat"><img alt="Red Hat" class="img-fluid navbar-logo" data-alt-text="Red Hat" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg?t=1537976200708" title="Red Hat" data-image-state="ready"> </a>
-				</div>
-				<div class="cols3"></div>
-				
-				<div class="cols3 justify-right">
-				
-						<p style="float: right; position: relative; left: 20px; top: -20px;"><a style="line-height: 1.0 !important;" class="btn btn-outline-white mt-2 mb-1 btn-color-white" href="admin.html" onclick="fade('.background')">ADMIN</a></p>
-							
-						
-				
-				
-					<!-- Language Selector (top right) -->
-					<div class="LanguageSelectorContainer">
-						<select aria-label="Language" name="Q_lang" id="Q_lang" class="Q_lang" data-runtime-value="runtime.Selected">
-		<!-- Tier 1 languages to support -->
-		<!--
-		Arabic
-		Chinese Simplified
-		Chinese Traditional
-		English
-		English (USA)
-		French (France)
-		German
-		Italian
-		Portuguese (Brazil)
-		Portuguese (Portugal)
-		Russian
-		Spanish (Latin America)
-		Spanish (Spain)
-		Spanish (US)
-		Turkish
-		Urdu
-		-->
-		
-							<option value="DE" lang="DE" data-runtime-text="runtime.Language | property 'DE' | property 'DisplayName'">Deutsch</option>
-							<option value="EN" lang="EN" selected data-runtime-text="runtime.Language | property 'EN' | property 'DisplayName'">English</option>
-							<option value="ES-ES" lang="ES-ES" data-runtime-text="runtime.Language | property 'ES-ES' | property 'DisplayName'">Español</option>
-							<option value="FR" lang="FR" data-runtime-text="runtime.Language | property 'FR' | property 'DisplayName'">Français</option>
-							<option value="IT" lang="IT" data-runtime-text="runtime.Language | property 'IT' | property 'DisplayName'">Italiano</option>
-							<option value="PT" lang="PT" data-runtime-text="runtime.Language | property 'PT' | property 'DisplayName'">Português</option>
-							<option value="KO" lang="KO" data-runtime-text="runtime.Language | property 'KO' | property 'DisplayName'">한국어</option>
-							<option value="JA" lang="JA" data-runtime-text="runtime.Language | property 'JA' | property 'DisplayName'">日本語</option>
-							<option value="ZH-S" lang="ZH-S" data-runtime-text="runtime.Language | property 'ZH-S' | property 'DisplayName'">简体中文</option>
-						</select>
+			<div id="header">
+				<div class="navbar-container">
+					<div class="container">
+						<div class="row" style="padding: 20px 0 20px;">
+							<div class="col-md-3" >
+								<a class="navbar-brand" href="//www.redhat.com/" title="Red Hat"><img alt="Red Hat" class="img-fluid navbar-logo" data-alt-text="Red Hat" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg?t=1537976200708" title="Red Hat" data-image-state="ready"> </a>
+							</div>
+							<div class="col-md ">
+								<!-- Language Selector (top right) -->
+								<div class="LanguageSelectorContainer float-right">
+									<select aria-label="Language" name="Q_lang" id="Q_lang" class="Q_lang" data-runtime-value="runtime.Selected">
+										<option value="DE" lang="DE" data-runtime-text="runtime.Language | property 'DE' | property 'DisplayName'">Deutsch</option>
+										<option value="EN" lang="EN" selected data-runtime-text="runtime.Language | property 'EN' | property 'DisplayName'">English</option>
+										<option value="ES-ES" lang="ES-ES" data-runtime-text="runtime.Language | property 'ES-ES' | property 'DisplayName'">Español</option>
+										<option value="FR" lang="FR" data-runtime-text="runtime.Language | property 'FR' | property 'DisplayName'">Français</option>
+										<option value="IT" lang="IT" data-runtime-text="runtime.Language | property 'IT' | property 'DisplayName'">Italiano</option>
+										<option value="PT" lang="PT" data-runtime-text="runtime.Language | property 'PT' | property 'DisplayName'">Português</option>
+										<option value="KO" lang="KO" data-runtime-text="runtime.Language | property 'KO' | property 'DisplayName'">한국어</option>
+										<option value="JA" lang="JA" data-runtime-text="runtime.Language | property 'JA' | property 'DisplayName'">日本語</option>
+										<option value="ZH-S" lang="ZH-S" data-runtime-text="runtime.Language | property 'ZH-S' | property 'DisplayName'">简体中文</option>
+									</select>
+									<a class="btn btn-outline-white btn-color-white btnStyle" href="admin.html" onclick="fade('.background')">ADMIN</a>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
-			
-		
-
-		</div>
 
 		<section id="section-titles" class="assessment-header">
 			<div class="container">

@@ -24,15 +24,17 @@ $(function(){
 <body>
 	
 	<!-- Header (+Logo) -->
-	<section class="assessment-header" style="background-color: black;">
+	<div id="header">
 		<div class="navbar-container">
-			<div class="container pt-2">
-				<div class="row">
-					<a class="navbar-brand" href="//www.redhat.com/" title="Red Hat"><img alt="Red Hat" class="img-fluid navbar-logo" data-alt-text="Red Hat" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg?t=1537976200708" title="Red Hat" data-image-state="ready"> </a>
+			<div class="container">
+				<div class="row" style="padding: 20px 0 20px;">
+					<div class="col-md-3" >
+						<a class="navbar-brand" href="//www.redhat.com/" title="Red Hat"><img alt="Red Hat" class="img-fluid navbar-logo" data-alt-text="Red Hat" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg?t=1537976200708" title="Red Hat" data-image-state="ready"> </a>
+					</div>
 				</div>
 			</div>
 		</div>
-	</section>
+	</div>
 	
 	<!-- Breadcrumb Menu -->
 	<div class="elevate" style="height: 27px">
@@ -64,28 +66,26 @@ $(function(){
 	</div>
 	
 	<!-- Main Content -->
-	<section class="py-1">
-		<div class="row center">
-			<table class="elevate">
-				<tbody id="content">
-					<tr>
-						<td>
-							<a href="https://surveyjs.io/Examples/Survey-Creator" target="_new">SurveyJS Editor</a> - copy/paste the content into the SurveyJS Editor to configure the survey questions
-						</td>
-					</tr>
-					<tr>
-						<td><textarea id="_questions" style="width: 100%; height: 800px;"></textarea></td>
-					</tr>
-					<tr>
-						<td colspan="2">
-					    <a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="#" onclick="save();">Save</a>
-					    <!--a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="/admin.html">Cancel</a-->
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	</section>
+	<div class="container py-1">
+		<table class="elevate">
+			<tbody id="content">
+				<tr>
+					<td>
+						<a href="https://surveyjs.io/Examples/Survey-Creator" target="_new">SurveyJS Editor</a> - copy/paste the content into the SurveyJS Editor to configure the survey questions
+					</td>
+				</tr>
+				<tr>
+					<td><textarea id="_questions" style="width: 100%; height: 800px;"></textarea></td>
+				</tr>
+				<tr>
+					<td colspan="2">
+					<a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="#" onclick="save();">Save</a>
+					<!--a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="/admin.html">Cancel</a-->
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 	
 	<script>
 
