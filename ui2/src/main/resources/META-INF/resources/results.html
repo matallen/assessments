@@ -65,21 +65,30 @@
 </div>
 	
 	<section id="xsurvey" class=" py-0">
+		
+		
 		<div class="container">
 			<div class="row">
 				<div class="col-md-10 py-4 py-md-6">
 					
-					<h3>Results</h3>
+					<h3>Recommendations</h3>
 					
-					<!--
-					<h4>Your results are XX. That's XX% lorem ipsum compared with the industry average.</h4>
-					-->
+					<div id="page">
+						<div class="results-subheader">You ranked at a maturity level of <span id="your-score-text"></span>%</div>
+						<div class="results-comparison">
+							<table>
+								<tr><td>You</td><td><div id="your-score-width" class="score-bar"></div></td></tr>
+								<tr><td>Industry</td><td><div id="industry-score" class="score-bar"></div></td></tr>
+							</table>
+						</div>
+					</div>
 					
 					<div id="results">Loading... please wait</div>
 					
 				</div>
 			</div>
 		</div>
+		
 	</section>
 	<script>
 		var surveyId=Utils.getParameterByName("surveyId");
@@ -131,7 +140,7 @@
 			}
 			$("#results").html(html);
 
-			$("#your-score-width").css("width", jsonResponse["averageScore"]);
+			$("#your-score-width").css("width", jsonResponse["averageScore"]+"%");
 			$("#your-score-text").html(jsonResponse["averageScore"]);
 
 //			{
@@ -175,9 +184,10 @@
 	
 	<style>
 	#wrapper{text-align: center;}
-	#page{display: inline-block; text-align: left; width: 50%;}
+	#page,.rec{display: inline-block; text-align: left; width: 100%; margin-top: 20px; margin-bottom: 20px;}
 	#you-score{width: 55%; background-color: #999;}
 	#industry-score{width: 70%}
+	.rec-title{font-size: 23px; background-color: #eee; padding: 5px;}
 	.score-bar{
 		background-color: #ccc;
 		height:10px;
@@ -186,6 +196,7 @@
 	table tr td:nth-child(1){width:20%;}
 	</style>
 	
+	<!--
 	<section id="xsurvey" class=" ">
 		<div class="container">
 			<div class="row">
@@ -196,22 +207,9 @@
 			</div>
 		</div>
 
-		<div id="wrapper">
-			<div id="page">
-				<div class="results-header">Results</div>
-				<div class="results-subheader">You ranked at <span id="your-score-text"></span>%</div>
-				<div class="results-comparison">
-					<table>
-						<tr><td>You</td><td><div id="your-score-width" class="score-bar"></div></td></tr>
-						<tr><td>Industry</td><td><div id="industry-score" class="score-bar"></div></td></tr>
-					</table>
-				</div>
-
-				<div id="recommendations-section">
-				</div>
-			</div>
-		</div>
 	</section>
+	-->
+
 
 
 
