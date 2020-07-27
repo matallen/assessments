@@ -26,6 +26,7 @@ public class EloquaPlugin implements Plugin{
 	private String url;
 	private Map<String,String> mapping;
 	private Map<String,String> values;
+	boolean disabled=false;
 	
 	
 	@SuppressWarnings({"unchecked"})
@@ -35,6 +36,7 @@ public class EloquaPlugin implements Plugin{
 		Map<String,Object> config=(Map<String,Object>)cfg.get("config");
 		mapping=(Map<String,String>)config.get("mapping");
 		values=(Map<String,String>)config.get("values");
+		disabled=config.containsKey("disabled")?"true".equalsIgnoreCase((String)config.get("disabled")):false;
 		
 		if (null==url || null==mapping)
 			throw new RuntimeException(String.format("Config not set correctly. Url is %s, and config==null is %s", url, (config==null)));
@@ -97,7 +99,7 @@ public class EloquaPlugin implements Plugin{
 				
 				//TODO: handle other answer structures, such as lists or sub-maps of answers
 			}else{
-				System.err.println("configured/mapped field '"+e.getKey()+"' was not found in survey results. Check your config");
+				System.err.println("Eloqua mapped field '"+e.getKey()+"' was not found in survey results. Check your config");
 			}
 		}
 		
@@ -121,12 +123,11 @@ public class EloquaPlugin implements Plugin{
 //		url="https://s1795.t.eloqua.com/e/f2?elqSiteID=8091&elqFormName=consulting-assessment-integration-sandbox";
 //		url="https://s1795.t.eloqua.com/e/f2";
 		
-		boolean dummy=true;
-		if (!dummy){
+		if (!disabled){
 			Response response=rs.post(url).andReturn();
-			System.out.println(response.statusCode());
+			log.debug("Eloqua response statusCode="+response.statusCode());
 		}else{
-			System.out.println("Dummy call, not sent to Eloqua");
+			log.info("Plugin disabled - dummy call, not sent to Eloqua");
 		}
 		
 		

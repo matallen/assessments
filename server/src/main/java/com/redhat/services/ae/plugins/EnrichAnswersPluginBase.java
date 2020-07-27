@@ -66,6 +66,18 @@ public abstract class EnrichAnswersPluginBase implements Plugin{
 	public abstract Map<String, Object> OnMultipleStringAnswers(String questionId, List<String> answers, mjson.Json question);
 	
 	
+	// ==== TODO: this creates a map of questionId to questionJson, it should be a util class
+	protected Map<String, mjson.Json> buildQuestionMap(String surveyId) throws FileNotFoundException, IOException{
+		Map<String, mjson.Json> questionsMapping=new HashMap<>();
+		Survey s=Survey.findById(surveyId);
+		List<mjson.Json> pages=mjson.Json.read(s.getQuestions()).at("pages").asJsonList();
+		for(mjson.Json page:pages){
+			for(mjson.Json question:page.at("elements").asJsonList()){
+				findInQuestions(question, questionsMapping);
+			}
+		}
+		return questionsMapping;
+	}
 	private void findInQuestions(mjson.Json question, Map<String, mjson.Json> questionsToTitleMapping){
 		if (question.has("elements")){
 			// panel or other embedded control?
@@ -78,12 +90,11 @@ public abstract class EnrichAnswersPluginBase implements Plugin{
 	}
 	private void findInQuestion(mjson.Json question, Map<String, mjson.Json> questionsMapping){
 		if ("html".contains(question.at("type").asString())) return; // shortcut these controls since we dont want to know about them
-//		String title=question.at("name").asString();
-//		if (question.has("title"))
-//			title=question.at("title").isString()?question.at("title").asString():question.at("title").at("default").asString();
-//			System.out.println("Adding question json to mapping: "+question.at("name").asString()+" -> ");
-			questionsMapping.put(question.at("name").asString(), question);
+		questionsMapping.put(question.at("name").asString(), question);
 	}
+	// ====
+	
+	
 	private Map<String, Object> flattenAndEnrichResults(String surveyId, Map<String,Object> surveyResults) throws FileNotFoundException, IOException{
 		Map<String, Object> result=new HashMap<>();
 		
@@ -100,7 +111,7 @@ public abstract class EnrichAnswersPluginBase implements Plugin{
 		// Now go through answers and enrich with titles
 		for (Entry<String, Object> e:surveyResults.entrySet()){
 			String questionId=e.getKey();
-			System.out.println("looking up page for question: "+questionId +"("+e.getValue().getClass().getSimpleName()+")");
+//			System.out.println("looking up page for question: "+questionId +"("+e.getValue().getClass().getSimpleName()+")");
 			
 			if ("language".equalsIgnoreCase(questionId)){
 				continue;

@@ -1,11 +1,11 @@
-package com.redhat.services.ae.model;
+package com.redhat.services.ae.plugins.droolsscore;
 
 
-public class Recommendation{
+public class DroolsRecommendation{
 	protected String text;
 	protected String section;
-	public Recommendation(){}
-	public Recommendation(String section, String text){
+	public DroolsRecommendation(){}
+	public DroolsRecommendation(String section, String text){
 		this.section=section;
 		this.text=text;
 	}
@@ -18,9 +18,9 @@ public class Recommendation{
 	public static RecommendationBuilder builder(){
 		return new RecommendationBuilder();
 	}
-	public static class RecommendationBuilder extends Recommendation{
-		public Recommendation build(){
-			return new Recommendation(section, text);
+	public static class RecommendationBuilder extends DroolsRecommendation{
+		public DroolsRecommendation build(){
+			return new DroolsRecommendation(section, text);
 		}
 		public RecommendationBuilder text(String value){
 			this.text=value; return this;

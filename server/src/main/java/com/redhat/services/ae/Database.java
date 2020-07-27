@@ -89,10 +89,13 @@ public class Database{
   }
   
   public static synchronized Database load(){
+  	return load(new File(STORAGE));
+  }
+  public static synchronized Database load(File storage){
     try{
-      log.info("Database loading (size="+new File(STORAGE).length()+", location="+new File(STORAGE).getAbsolutePath()+")");
+      log.info("Database loading (size="+storage.length()+", location="+storage.getAbsolutePath()+")");
 //      Database db=Json.newObjectMapper(true).readValue(IOUtils2.toStringAndClose(new FileInputStream(new File(STORAGE))), Database.class);
-      Database db=Json.toObject(IOUtils.toString(new FileInputStream(new File(STORAGE)), "UTF-8"), Database.class);
+      Database db=Json.toObject(IOUtils.toString(new FileInputStream(storage), "UTF-8"), Database.class);
       return db;
     }catch (FileNotFoundException e){
       e.printStackTrace();
@@ -109,11 +112,11 @@ public class Database{
   }
   public static synchronized Database get(File storage){
     if (instance!=null) return instance;
-    if (!new File(STORAGE).exists()){
-    	log.warning("No database file found, creating new/blank/default one... "+new File(STORAGE).getAbsolutePath());
+    if (!storage.exists()){
+    	log.warning("No database file found, creating new/blank/default one... "+storage.getAbsolutePath());
     	new Database().save();
     }
-    instance=Database.load();
+    instance=Database.load(storage);
     log.info("Loading/Replaced 'instance' of database in memory (loaded ok?="+(null==instance?"NO! it's NULL!!":"Yes")+")");
     
     return instance;

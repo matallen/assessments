@@ -1,10 +1,14 @@
-package com.redhat.services.ae.model;
+package com.redhat.services.ae.plugins.droolsscore;
 
-public class AnswerSurvey{
+public class DroolsSurveyScore{
 	private int score;
 	private String language;
 
-	public AnswerSurvey(int score, String language){
+	public String toString(){
+		return String.format(DroolsSurveyScore.class.getSimpleName()+": score=%s, lang=%s", score, language);
+	}
+	
+	public DroolsSurveyScore(int score, String language){
 		this.score=score;
 		this.language=language;
 	}

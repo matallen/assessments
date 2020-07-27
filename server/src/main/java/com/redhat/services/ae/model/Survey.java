@@ -6,11 +6,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
@@ -49,7 +49,7 @@ public class Survey{
 	
 	private Map<String,Map<String,Object>> plugins;
 	public Map<String,Map<String,Object>> getPlugins(){
-		if (null==plugins) plugins=new TreeMap<String, Map<String,Object>>();
+		if (null==plugins) plugins=new LinkedHashMap<String, Map<String,Object>>();
 		return plugins;
 	}
 	
@@ -133,7 +133,7 @@ public class Survey{
 	
 	@JsonIgnore
 	public Map<String,Map<String,Object>> getActivePlugins() throws IOException{
-		Map<String,Map<String,Object>> result=new HashMap<>();
+		Map<String,Map<String,Object>> result=new LinkedHashMap<>();
 		for(Entry<String, Map<String, Object>> e:getPlugins().entrySet()){
 			if (e.getValue().containsKey("active") && (Boolean)e.getValue().get("active")){
 				result.put(e.getKey(), e.getValue());

@@ -39,6 +39,11 @@ Survey
 
 Survey.requiredText = "AA";
 
+Survey.defaultStandardCss.navigation.complete = "sv_complete_btn sv_rh_complete_btn";
+Survey.defaultStandardCss.navigation.prev =     "sv_prev_btn     sv_rh_prev_btn";
+Survey.defaultStandardCss.navigation.next =     "sv_next_btn     sv_rh_next_btn";
+
+
 
 Survey.ChoicesRestfull.onBeforeSendRequest = function(sender, options) {
         //options.request.setRequestHeader("Content-Type", "application/json");
@@ -72,6 +77,8 @@ if (undefined==geoInfo){
 survey.startTimer();
 survey.showTimerPanel = 'none'; //bottom
 //survey.completeText = 'View Results';
+
+
 survey
       .onAfterRenderPage
       .add(function(result, options){

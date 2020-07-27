@@ -18,8 +18,8 @@ import com.redhat.services.ae.model.Survey;
 import com.redhat.services.ae.utils.CacheHelper;
 import com.redhat.services.ae.utils.Json;
 
-public class RTIResultsPlugin implements Plugin{
-	public static final Logger log=LoggerFactory.getLogger(RTIResultsPlugin.class);
+public class DELETERTIResultsPlugin implements Plugin{
+	public static final Logger log=LoggerFactory.getLogger(DELETERTIResultsPlugin.class);
 	
 	@Override
 	public void setConfig(Map<String, Object> config){
@@ -27,39 +27,39 @@ public class RTIResultsPlugin implements Plugin{
 	}
 	
 	
-	private Map<String, Map<String,String>> flattenAndEnrichResults(String surveyId, Map<String,Object> surveyResults) throws FileNotFoundException, IOException{
-		Map<String, Map<String,String>> result=new HashMap<String, Map<String,String>>();
-		
-		Map<String, String> questionsToTitleMapping=new HashMap<>();
-		
-		Survey s=Survey.findById(surveyId);
-		List<mjson.Json> pages=mjson.Json.read(s.getQuestions()).at("pages").asJsonList();
-		for(mjson.Json page:pages){
-			for(mjson.Json question:page.at("elements").asJsonList()){
-				String title=question.at("name").asString();
-				if (question.has("title"))
-					title=question.at("title").isString()?question.at("title").asString():question.at("title").at("default").asString();
-				questionsToTitleMapping.put(question.at("name").asString(), title);
-				
-			}
-		}
-		
-		new AnswerProcessor(){
-			@Override public void onStringAnswer(String questionId, String answerId, Integer score){
-				String title=questionsToTitleMapping.get(questionId);
-				result.put(questionId, new MapBuilder<String,String>().put("title",title).put("answer",answerId).put("score", String.valueOf(score)).build());
-			}
-			@Override public void onArrayListAnswer(String questionId, List<Answer> answerList, Integer averageScore){
-//				result.add(averageScore);
-			}
-			@Override public void onMapAnswer(String question, Answer answer){
-//				log.warn("Due to not expecting mapped answers, not logging score for: "+question);
-//				result.add(0);
-			}
-		}.process(surveyResults);
-		
-		return result;
-	}
+//	private Map<String, Map<String,String>> flattenAndEnrichResults(String surveyId, Map<String,Object> surveyResults) throws FileNotFoundException, IOException{
+//		Map<String, Map<String,String>> result=new HashMap<String, Map<String,String>>();
+//		
+//		Map<String, String> questionsToTitleMapping=new HashMap<>();
+//		
+//		Survey s=Survey.findById(surveyId);
+//		List<mjson.Json> pages=mjson.Json.read(s.getQuestions()).at("pages").asJsonList();
+//		for(mjson.Json page:pages){
+//			for(mjson.Json question:page.at("elements").asJsonList()){
+//				String title=question.at("name").asString();
+//				if (question.has("title"))
+//					title=question.at("title").isString()?question.at("title").asString():question.at("title").at("default").asString();
+//				questionsToTitleMapping.put(question.at("name").asString(), title);
+//				
+//			}
+//		}
+//		
+//		new AnswerProcessor(){
+//			@Override public void onStringAnswer(String questionId, String answerId, Integer score){
+//				String title=questionsToTitleMapping.get(questionId);
+//				result.put(questionId, new MapBuilder<String,String>().put("title",title).put("answer",answerId).put("score", String.valueOf(score)).build());
+//			}
+//			@Override public void onArrayListAnswer(String questionId, List<Answer> answerList, Integer averageScore){
+////				result.add(averageScore);
+//			}
+//			@Override public void onMapAnswer(String question, Answer answer){
+////				log.warn("Due to not expecting mapped answers, not logging score for: "+question);
+////				result.add(0);
+//			}
+//		}.process(surveyResults);
+//		
+//		return result;
+//	}
 
 	@Override
 	public Map<String, Object> execute(String surveyId, String visitorId, Map<String, Object> surveyResults) throws Exception{
