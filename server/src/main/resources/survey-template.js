@@ -11,8 +11,8 @@ var defaultThemeColors = Survey
     .StylesManager
     .ThemeColors["default"];
 
-defaultThemeColors["$main-color"] = "#06C";
-defaultThemeColors["$main-hover-color"] = "#0057ad";
+defaultThemeColors["$main-color"] = "#a30000";
+defaultThemeColors["$main-hover-color"] = "#820000";
 defaultThemeColors["$text-color"] = "#4a4a4a";
 defaultThemeColors["$header-color"] = "#ffffff";
 defaultThemeColors["$header-background-color"] = "#cc0000";
@@ -284,11 +284,11 @@ var navTitlesUniqueSet=[];
 var liEls = {};
 for (var i = 0; i < survey.PageCount; i++) {
     var liEl = document.createElement("li");
-//    if (survey.currentPageNo == i) {
-//        liEl
-//            .classList
-//            .add("current");
-//    }
+   if (survey.currentPageNo == i) {
+       liEl
+           .classList
+           .add("current");
+   }
 
     var pageTitle = document.createElement("div");
     pageTitle.innerText=!survey.pages[i].navigationTitle?
