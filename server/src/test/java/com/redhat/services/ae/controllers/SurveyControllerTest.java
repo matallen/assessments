@@ -6,6 +6,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.text.MatchesPattern.matchesPattern;
 import static org.hamcrest.core.IsEqual.equalTo;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -13,6 +14,7 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -121,5 +123,20 @@ public class SurveyControllerTest {
 			.statusCode(500);
   	
   }
+  
+  
+  @Test
+  public void testPluginsRetainOrder() throws IOException{
+  	Database.reset();
+  	Database db=Database.get(new File("/home/mallen/Work/assessments/server/target/persistence/database.json"));
+  	Survey survey=db.getSurveys().get("DMZZIW");
+  	Map<String, Map<String, Object>> activePlugins=survey.getActivePlugins();
+  	for(Entry<String, Map<String, Object>> e:activePlugins.entrySet()){
+  		System.out.println(e.getKey());
+  	}
+  	
+  	
+  }
+  
 
 }

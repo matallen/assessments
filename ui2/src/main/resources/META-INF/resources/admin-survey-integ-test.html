@@ -1,0 +1,85 @@
+			<div class="stage">
+				<div id="ex-120-point" class="snap-point">
+			    <div>&#8600;<div>Point</div></div>
+			  </div>
+			  <div id="ex-120-draggable" class="draggable">Drag This</div>
+			</div>
+			<script>
+			
+			<script>
+			window.addEventListener('load', function() {
+			  'use strict';
+
+			  new PlainDraggable(document.getElementById('ex-120-draggable'), {
+			    snap: [
+			      {x: 160, y: 64},
+			      {x: 360},
+			      {x: 520, y: 60, width: 164, height: 54}
+			    ]
+			  });
+
+			});
+			</script>
+			
+			</script>
+			<style>
+			
+/* line 272, ex.scss */
+#ex-120-stage {
+  position: relative;
+}
+
+/* line 276, ex.scss */
+#ex-120-point {
+  left: 160px;
+  top: 64px;
+}
+/* line 280, ex.scss */
+#ex-120-point div {
+  position: absolute;
+}
+/* line 282, ex.scss */
+#ex-120-point > div {
+  right: 0;
+  bottom: 100%;
+  line-height: 1;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+/* line 289, ex.scss */
+#ex-120-point > div > div {
+  right: 0;
+  bottom: 100%;
+}
+
+/* line 296, ex.scss */
+#ex-120-line {
+  left: 360px;
+}
+/* line 299, ex.scss */
+#ex-120-line div {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  white-space: nowrap;
+}
+
+/* line 307, ex.scss */
+#ex-120-rect {
+  position: absolute;
+  left: 520px;
+  top: 60px;
+  width: 164px;
+  height: 54px;
+}
+/* line 314, ex.scss */
+#ex-120-rect div {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  bottom: -1px;
+  left: -1px;
+  border: 2px solid #24c4f1;
+}
+			
+			</style>

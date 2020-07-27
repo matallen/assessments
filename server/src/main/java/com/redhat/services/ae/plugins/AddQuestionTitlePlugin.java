@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import com.redhat.services.ae.Database;
 import com.redhat.services.ae.MapBuilder;
 import com.redhat.services.ae.controllers.AnswerProcessor;
@@ -55,6 +57,7 @@ public class AddQuestionTitlePlugin implements Plugin{
 	 * 
 	 */
 	
+	private List<String> excludedQuestionTypes=Lists.newArrayList("html");
 	
 	@Override
 	public void setConfig(Map<String, Object> config){
@@ -72,14 +75,17 @@ public class AddQuestionTitlePlugin implements Plugin{
 			findTitleInQuestion(question, questionsToTitleMapping);
 		}
 	}
+	
 	private void findTitleInQuestion(mjson.Json question, Map<String, String> questionsToTitleMapping){
-		if ("html".contains(question.at("type").asString())) return; // shortcut these controls since we dont want to know about them
+		if (excludedQuestionTypes.contains(question.at("type").asString())) return; // shortcut these controls since we dont want to know about them
+		
 		String title=question.at("name").asString();
 		if (question.has("title"))
 			title=question.at("title").isString()?question.at("title").asString():question.at("title").at("default").asString();
-			System.out.println("Adding title mapping: "+question.at("name").asString()+" -> "+title);
-			questionsToTitleMapping.put(question.at("name").asString(), title);
+		System.out.println("Adding title mapping: "+question.at("name").asString()+" -> "+title);
+		questionsToTitleMapping.put(question.at("name").asString(), title);
 	}
+	
 	private Map<String, Object> flattenAndEnrichResults(String surveyId, Map<String,Object> surveyResults) throws FileNotFoundException, IOException{
 		Map<String, Object> result=new HashMap<>();
 		

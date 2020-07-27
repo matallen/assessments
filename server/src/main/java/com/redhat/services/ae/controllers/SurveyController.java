@@ -32,6 +32,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.redhat.services.ae.Database;
+import com.redhat.services.ae.Results;
 import com.redhat.services.ae.model.Survey;
 import com.redhat.services.ae.plugins.Plugin;
 import com.redhat.services.ae.utils.CacheHelper;
@@ -80,7 +81,8 @@ public class SurveyController{
 			) throws IOException{
 		
 		System.out.println("/results/::");
-		String xxx=CacheHelper.cache.get(surveyId+"_"+rId);
+//		String xxx=CacheHelper.cache.get(surveyId+"_"+rId);
+		String xxx=Results.get().getResults().get(surveyId+"_"+rId);
 		
 		
 //		Cache<String, String> cache=new CacheHelper<String>().getCache("resultDataTransfer", 10, 100, 300);
@@ -176,21 +178,11 @@ public class SurveyController{
 	}
 
 	
-	@DELETE
-	@Path("/{surveyId}/metrics/reset")
-	public Response metricsReset(@PathParam("surveyId") String surveyId) throws JsonParseException, JsonMappingException, IOException{
-		Survey o=Survey.findById(surveyId);
-		o.clearMetrics();
-		o.persist();
-		return Response.ok().build();
-	}
-	
 	
 	@POST
 	@Path("/{surveyId}/metrics/onResults")
 	public Response onResults(@PathParam("surveyId") String surveyId, @QueryParam("visitorId") String visitorId, String payload) throws JsonParseException, JsonMappingException, IOException{
 		log.info("onResults::");
-
 
 		Survey o=Survey.findById(surveyId);
 		if (null==o) throw new RuntimeException("Survey ID doesn't exist! :"+surveyId);
@@ -247,7 +239,10 @@ public class SurveyController{
 		// store the enriched/processed results for the results page to use
 		log.debug("putting answers into cache, ready for the results page to render it");
 		log.debug("cache.put("+(surveyId+"_"+visitorId)+") = "+Json.toJson(data));
-		CacheHelper.cache.put(surveyId+"_"+visitorId, Json.toJson(data));
+//		CacheHelper.cache.put(surveyId+"_"+visitorId, Json.toJson(data));
+		Results results=Results.get();
+		results.getResults().put(surveyId+"_"+visitorId, Json.toJson(data));
+		results.save();
 		
 		// Build report?
 		
@@ -257,5 +252,16 @@ public class SurveyController{
 		
 		
 		return Response.ok(Survey.findById(o.id)).build();
+	}
+	
+
+	
+	@DELETE
+	@Path("/{surveyId}/metrics/reset")
+	public Response metricsReset(@PathParam("surveyId") String surveyId) throws JsonParseException, JsonMappingException, IOException{
+		Survey o=Survey.findById(surveyId);
+		o.clearMetrics();
+		o.persist();
+		return Response.ok().build();
 	}
 }

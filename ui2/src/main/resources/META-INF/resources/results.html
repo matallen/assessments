@@ -108,7 +108,12 @@
 					if (200==status){
 						clearInterval(timerId);
 						LocalStorage.clearState(); // remove answers from localstorage once the report page has been received successfully
-						$("#results").html(JSON.stringify(response));
+						//$("#results").html(JSON.stringify(response));
+						
+						
+						displayResults($("#results"), response);
+						
+						
 					}
 				}, function(status){
 					// on error - sink it and wait
@@ -118,7 +123,63 @@
 			}, intervalInSeconds*1000);
 			
 		});
-
+		
+		function displayResults(element, jsonResponse){
+//			for (var key in jsonResponse) {
+//				var questionInfo=jsonResponse[key];
+//				var questionTitle=questionInfo["title"];
+//				
+//			}
+			var html="";
+			var report=jsonResponse["report"];
+			for(var key in report){
+				html+=`<div class="rec elevate"><div class="rec-title">`+key+`</div>`;
+				var listOfRecomendations=report[key];
+				for(var i=0;i<listOfRecomendations.length;i++){
+					html+=`<li>`+listOfRecomendations[i]+`</li>`;
+				}
+				html+=`</div>`;
+			}
+			$("#results").html(html);
+			
+			$("#you-score").css("width", jsonResponse["averageScore"]);
+			
+//			{
+//				  "platforms_q3" : {
+//				    "score" : 20,
+//				    "answers" : [ "Waterfall", "Agile" ],
+//				    "title" : "Which of the following practices/methodologies are implemented in your organization?",
+//				    "pageId" : "p_platforms_1"
+//				  },
+//				  "platforms_q2" : {
+//				    "score" : 10,
+//				    "answer" : "1-20",
+//				    "title" : "What is the size of your department?",
+//				    "pageId" : "p_platforms_1"
+//				  },
+//				  "FirstName" : {
+//				    "answer" : "Mat",
+//				    "title" : "First Name",
+//				    "pageId" : "Contact Form"
+//				  },
+//				  "report" : {
+//				    "Introduction" : [ "Low maturity" ],
+//				    "Modernize Platforms" : [ "Hi Mat, because your responsibility within the organization is mostly Software, I'd recommend X, Y and Z", "Hmm, may need some modermizing perhaps?" ]
+//				  },
+//				  "interests" : {
+//				    "answers" : [ "platforms" ],
+//				    "pageId" : "Select Interests"
+//				  },
+//				  "platforms_q1" : {
+//				    "score" : 10,
+//				    "answer" : "infra",
+//				    "title" : "What is your department / organizations main responsability?",
+//				    "pageId" : "p_platforms_1"
+//				  },
+//				  "totalScore" : 40,
+//				  "averageScore" : 13
+//				}
+		}
 		
 	</script>
 	
