@@ -71,57 +71,118 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
     return ksession;
 	}
 	
+	
+		private List<String> drls=null;
+		
+		public KieSession newKieSession(String sheetId) throws IOException, InterruptedException{
+			
+			if (null==drls){
+				GoogleDrive3.initialise("/home/%s/google_drive", GoogleDrive3.DriverType.gdrive, "v2.1.1PreRelease");
+				GoogleDrive3 drive=new GoogleDrive3(3000);
+				File sheet=drive.downloadFile(sheetId);
+				SimpleDateFormat dateFormatter=null;
+				
+				List<String> sheets=Lists.newArrayList("Survey Recommendations", "Question Recommendations");
+				drls=Lists.newArrayList();
+				for(String sheetName:sheets){
+					
+					// Load the excel sheet with a retry loop?
+					List<Map<String, String>> parseExcelDocument=null;
+					parseExcelDocument=drive.parseExcelDocument(sheet, sheetName, new GoogleDrive3.HeaderRowFinder(){ public int getHeaderRow(XSSFSheet s){
+						return GoogleDrive3.SheetSearch.get(s).find(0, "Description").getRowIndex();
+					}}, dateFormatter);
+					
+					
+					List<Map<String,Object>> dataTableConfigList2 = new ArrayList<>();
+					for(Map<String, String> rows:parseExcelDocument){
+						dataTableConfigList2.add(
+								new MapBuilder<String,Object>()
+								.put("salience", 65534-Integer.parseInt(rows.get("ROW_#")))
+								.put("language", rows.get("Language"))
+								.put("description", rows.get("Description"))
+								.put("overallScoreLow", rows.get("Overall Score >="))
+								.put("overallScoreHigh", rows.get("Overall Score <="))
+								.put("pageId", rows.get("Category / Page"))
+								.put("questionId", rows.get("QuestionId"))
+								.put("scoreLow", rows.get("Question Score >=")!=null?(int)Double.parseDouble(rows.get("Question Score >=")):null)
+								.put("scoreHigh", rows.get("Question Score <=")!=null?(int)Double.parseDouble(rows.get("Question Score <=")):null)
+								.put("section", rows.get("Section"))
+								.put("recommendation", rows.get("Recommedation"))
+								.build()
+								);
+					}
+					
+					String templateName="scorePlugin_"+sheetName.replaceAll(" ", "")+".drt";
+					InputStream template = DroolsScoreRecommendationsPlugin.class.getClassLoader().getResourceAsStream(templateName);
+					ObjectDataCompiler compiler = new ObjectDataCompiler();
+					String drl = compiler.compile(dataTableConfigList2, template);
+					System.out.println(drl);
+					drls.add(drl);
+				}
+			}
+			
+			return newKieSession(drls.toArray(new String[drls.size()]));
+			
+		}
+		
+		public void invalidateRules(){
+			drls=null;
+		}
+		
+	
+	
 	@Override
 	public Map<String, Object> execute(String surveyId, String visitorId, Map<String, Object> surveyResults) throws Exception{
 		try{
 			
-			GoogleDrive3.initialise("/home/%s/google_drive", GoogleDrive3.DriverType.gdrive, "v2.1.1PreRelease");
-			GoogleDrive3 drive=new GoogleDrive3(3000);
-			File sheet=drive.downloadFile("19d03Qi0mr-9mcfYp9__sjNkFJcGCx2zT4D26NYH1US4");
-			SimpleDateFormat dateFormatter=null;
 			
-			KieSession kSession;
+//			GoogleDrive3.initialise("/home/%s/google_drive", GoogleDrive3.DriverType.gdrive, "v2.1.1PreRelease");
+//			GoogleDrive3 drive=new GoogleDrive3(3000);
+//			File sheet=drive.downloadFile("19d03Qi0mr-9mcfYp9__sjNkFJcGCx2zT4D26NYH1US4");
+//			SimpleDateFormat dateFormatter=null;
+//			
+//			KieSession kSession;
+//			
+//			List<String> sheets=Lists.newArrayList("Survey Recommendations", "Question Recommendations");
+//			List<String> drls=Lists.newArrayList();
+//			for(String sheetName:sheets){
+//				
+//				// Load the excel sheet with a retry loop?
+//				List<Map<String, String>> parseExcelDocument=null;
+//				parseExcelDocument=drive.parseExcelDocument(sheet, sheetName, new GoogleDrive3.HeaderRowFinder(){ public int getHeaderRow(XSSFSheet s){
+//					return GoogleDrive3.SheetSearch.get(s).find(0, "Description").getRowIndex();
+//				}}, dateFormatter);
+//				
+//				
+//				List<Map<String,Object>> dataTableConfigList2 = new ArrayList<>();
+//				for(Map<String, String> rows:parseExcelDocument){
+//					dataTableConfigList2.add(
+//						new MapBuilder<String,Object>()
+//						.put("salience", 65534-Integer.parseInt(rows.get("ROW_#")))
+//						.put("language", rows.get("Language"))
+//						.put("description", rows.get("Description"))
+//						.put("overallScoreLow", rows.get("Overall Score >="))
+//						.put("overallScoreHigh", rows.get("Overall Score <="))
+//						.put("pageId", rows.get("Category / Page"))
+//						.put("questionId", rows.get("QuestionId"))
+//						.put("scoreLow", rows.get("Question Score >=")!=null?(int)Double.parseDouble(rows.get("Question Score >=")):null)
+//						.put("scoreHigh", rows.get("Question Score <=")!=null?(int)Double.parseDouble(rows.get("Question Score <=")):null)
+//						.put("section", rows.get("Section"))
+//						.put("recommendation", rows.get("Recommedation"))
+//						.build()
+//					);
+//				}
+//				
+//				String templateName="scorePlugin_"+sheetName.replaceAll(" ", "")+".drt";
+//				InputStream template = DroolsScoreRecommendationsPlugin.class.getClassLoader().getResourceAsStream(templateName);
+//				ObjectDataCompiler compiler = new ObjectDataCompiler();
+//				String drl = compiler.compile(dataTableConfigList2, template);
+//				System.out.println(drl);
+//				drls.add(drl);
+//			}
+//			kSession = newKieSession(drls.toArray(new String[drls.size()]));
 			
-			List<String> sheets=Lists.newArrayList("Survey Recommendations", "Question Recommendations");
-			List<String> drls=Lists.newArrayList();
-			for(String sheetName:sheets){
-				
-				// Load the excel sheet with a retry loop?
-				List<Map<String, String>> parseExcelDocument=null;
-				parseExcelDocument=drive.parseExcelDocument(sheet, sheetName, new GoogleDrive3.HeaderRowFinder(){ public int getHeaderRow(XSSFSheet s){
-					return GoogleDrive3.SheetSearch.get(s).find(0, "Description").getRowIndex();
-				}}, dateFormatter);
-				
-				
-				List<Map<String,Object>> dataTableConfigList2 = new ArrayList<>();
-				for(Map<String, String> rows:parseExcelDocument){
-					dataTableConfigList2.add(
-						new MapBuilder<String,Object>()
-						.put("salience", 65534-Integer.parseInt(rows.get("ROW_#")))
-						.put("language", rows.get("Language"))
-						.put("description", rows.get("Description"))
-						.put("overallScoreLow", rows.get("Overall Score >="))
-						.put("overallScoreHigh", rows.get("Overall Score <="))
-						.put("pageId", rows.get("Category / Page"))
-						.put("questionId", rows.get("QuestionId"))
-						.put("scoreLow", rows.get("Question Score >=")!=null?(int)Double.parseDouble(rows.get("Question Score >=")):null)
-						.put("scoreHigh", rows.get("Question Score <=")!=null?(int)Double.parseDouble(rows.get("Question Score <=")):null)
-						.put("section", rows.get("Section"))
-						.put("recommendation", rows.get("Recommedation"))
-						.build()
-					);
-				}
-				
-				String templateName="scorePlugin_"+sheetName.replaceAll(" ", "")+".drt";
-				InputStream template = DroolsScoreRecommendationsPlugin.class.getClassLoader().getResourceAsStream(templateName);
-				ObjectDataCompiler compiler = new ObjectDataCompiler();
-				String drl = compiler.compile(dataTableConfigList2, template);
-				System.out.println(drl);
-				drls.add(drl);
-				
-			}
-			kSession = newKieSession(drls.toArray(new String[drls.size()]));
-			
+			KieSession kSession=newKieSession("19d03Qi0mr-9mcfYp9__sjNkFJcGCx2zT4D26NYH1US4");
 			
 			// DEBUG ONLY - make sure we have some rule packages to execute
 			log.debug("Rule Packages/Rules:");
