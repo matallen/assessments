@@ -18,8 +18,20 @@ table tbody tr td:first-child{
 body{
 	/*
 	background-color: #f9f9f9;
-	*/
+	
+	/* part of making the footer sticky */
+	/*
+  */
+	display: flex;
+  flex-direction: column;
+	
 }
+.py-0{
+	margin-bottom: auto;
+/*
+*/
+}
+
 .btn:disabled { opacity: 0.35; }
 .py-1{
 	/*

@@ -31,9 +31,11 @@ public class EmbeddedScoreTotalPlugin implements Plugin{
 		}
 		
 		double averageScore=totalScore / scoreCount;
+		long lAverageScore=Math.round(averageScore);
+		int iAverageScore=(int)lAverageScore;
 		
 		surveyResults.put("totalScore", totalScore);
-		surveyResults.put("averageScore", averageScore);
+		surveyResults.put("averageScore", iAverageScore);
 		return surveyResults;
 	}
 

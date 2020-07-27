@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.redhat.services.ae.MapBuilder;
-import com.redhat.services.ae.plugins.ExtractScoreFromValuePlugin.Answer;
 
 import mjson.Json;
 
@@ -75,26 +74,19 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 		List<String> newAnswers=new ArrayList<>();
 		for (String answerString:answers){
 			Answer answerSplit=splitThis((String)answerString);
-//			Map<String,Object> answerMap=new MapBuilder<String, Object>().put("answer", answerSplit.text).build();
 			if (answerSplit.score>0){
-//				answerMap.put("score", answerSplit.score);
 				highestScore=Math.max(answerSplit.score, highestScore);
-
 			}
-			
 			newAnswers.add(answerSplit.text);
 		}
 		
 		Map<String,Object> answerData=new MapBuilder<String,Object>().put("answers", newAnswers).build();
 		if (question.has("title")) answerData.put("title", question.at("title").asString());
 		if (highestScore>0){
-//			scoreQuestionsCount+=1;
-//			totalScore+=highestScore;
 			answerData.put("score", highestScore);
 		}
 		
 		answerData.put("pageId", getPage(question));
-//		answer.put(questionId, answerData);
 
 		return answerData;
 	}

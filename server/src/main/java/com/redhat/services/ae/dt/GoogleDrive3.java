@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 //import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -280,7 +281,7 @@ public class GoogleDrive3 {
   			XSSFCell cell=sheet.getRow(iRow).getCell(col);
   			
   			//if (cell.getCellType()==CellType.STRING){
-  			if (cell.getCellType()==Cell.CELL_TYPE_STRING){
+  			if (cell.getCellType()==CellType.STRING){//Cell.CELL_TYPE_STRING){
 //  				if (text.equals(cell.getStringCellValue())){
 					if (cell.getStringCellValue().matches(text)){
   					return cell;
@@ -330,8 +331,7 @@ public class GoogleDrive3 {
           
             try{
             	switch(cell.getCellType()){
-//            	case NUMERIC:
-            	case Cell.CELL_TYPE_NUMERIC: 
+            	case NUMERIC://Cell.CELL_TYPE_NUMERIC: 
             		if (HSSFDateUtil.isCellDateFormatted(cell)){
             			e2.put(header, null!=dateFormatter?dateFormatter.format(cell.getDateCellValue()):cell.getDateCellValue().toString());
 //            			System.out.println("parseExcepDocument():: formatting date to -> "+e2.get(header));
@@ -339,8 +339,8 @@ public class GoogleDrive3 {
             		}else{
             			e2.put(header, String.valueOf(cell.getNumericCellValue())); break;
             		}
-            	case Cell.CELL_TYPE_BOOLEAN: e2.put(header, String.valueOf(cell.getBooleanCellValue())); break;
-            	case Cell.CELL_TYPE_FORMULA: 
+            	case BOOLEAN://Cell.CELL_TYPE_BOOLEAN: e2.put(header, String.valueOf(cell.getBooleanCellValue())); break;
+            	case FORMULA://Cell.CELL_TYPE_FORMULA: 
             		// detect URL's, else fall back to string value
             		if (cell.getCellFormula().contains("HYPERLINK")){
             			Pattern p=Pattern.compile("\"(.+?)\".*\"(.+?)\"");
@@ -366,7 +366,9 @@ public class GoogleDrive3 {
             	}
             	
             	allRowCellsEmpty=allRowCellsEmpty && (e2.get(header)==null || "".equals(e2.get(header)));
-            }catch(Exception ex){}
+            }catch(Exception ex){
+            	ex.printStackTrace();
+            }
             if (!e2.containsKey(header))
               try{
                 e2.put(header, cell.getDateCellValue().toString());

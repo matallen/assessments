@@ -1,0 +1,34 @@
+template header
+salience
+language
+description
+overallScoreLow
+overallScoreHigh
+pageId
+questionId
+scoreLow
+scoreHigh
+section
+recommendation
+
+package com.redhat.services.ae;
+
+import com.redhat.services.ae.plugins.droolsscore.DroolsRecommendation;
+import com.redhat.services.ae.plugins.droolsscore.DroolsSurveyScore;
+
+template "survey recommendations"
+
+rule "SurveyRule-@{row.rowNumber}: @{description}"
+salience @{salience}
+when
+	$surv : DroolsSurveyScore(true==true
+		,language == "@{language}"
+		,score >= @{overallScoreLow}
+		,score <= @{overallScoreHigh}
+	)
+then
+	insert(new DroolsRecommendation("@{section}", "@{recommendation}"));
+end
+
+
+end template
