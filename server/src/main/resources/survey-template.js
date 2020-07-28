@@ -1,4 +1,49 @@
 
+// ######################### REPLACING IMAGEPICKER VISUALS #######################
+var imgpicker_template = `
+  <fieldset data-bind="css: question.koCss().root">
+      <legend data-bind="attr: { 'aria-label': question.locTitle.renderedHtml }"></legend>
+      <!-- ko foreach: { data: question.visibleChoices, as: 'item', afterRender: question.koAfterRender}  -->
+      <div data-bind="css: question.getItemClass(item)">
+          <label data-bind="css: question.koCss().label">
+              <input style="display: none;" data-bind="attr: {type: question.multiSelect ? 'checkbox' : 'radio', name: question.name + '_' + question.id, value: item.value, id: ($index() == 0) ? question.inputId : '', 'aria-required': question.isRequired, 'aria-label': question.locTitle.renderedHtml}, checked: question.koValue, enable: !question.isReadOnly && item.isEnabled, css: question.koCss().itemControl"
+              />
+              <div class="sv_imgpicker_outer">
+	              <div class="sv_imgpicker_inner">
+	                  <!-- ko if: question.contentMode === "image" -->
+	                  <img data-bind="css: question.koCss().image, attr: { src: $data.imageLink, width: question.imageWidth ? question.imageWidth + 'px' : undefined, height: question.imageHeight ? question.imageHeight + 'px' : undefined }, style: { objectFit: question.imageFit }"/>
+	                  <!-- /ko -->
+	                  <!-- ko if: question.contentMode === "video" -->
+	                  <embed data-bind="css: question.koCss().image, attr: { src: $data.imageLink, width: question.imageWidth ? question.imageWidth + 'px' : undefined, height: question.imageHeight ? question.imageHeight + 'px' : undefined }, style: { objectFit: question.imageFit }"/>
+	                  <!-- /ko -->
+	                  <!-- ko if: question.showLabel -->
+	                  <div data-bind="text: text || value, attr: { title: text || value }, css: question.koCss().itemText"></div>
+	                  <!-- /ko -->
+
+	                  <!-- ko if: description -->
+	                  <div style="font-size:10pt" data-bind="text: description, attr: { title: description }, css: question.koCss().itemText"></div>
+	                  <!-- /ko -->
+
+	              </div>     
+              </div>
+          </label>
+      </div>
+      <!-- /ko -->
+  </fieldset>
+`;
+new Survey
+	.SurveyTemplateText()
+	.replaceText(imgpicker_template, "question", "imagepicker");
+Survey
+	.Serializer
+	.addProperty("imagepicker", "description:string");
+Survey
+	.Serializer
+	.addProperty("imageitemvalue", "description");
+// ###############################################################################
+
+
+
 
 var config=SURVEY_CONFIG;
 
@@ -11,13 +56,13 @@ var defaultThemeColors = Survey
     .StylesManager
     .ThemeColors["default"];
 
-defaultThemeColors["$main-color"] = "#a30000";
+defaultThemeColors["$main-color"] = "#ee0000";//"#a30000";
 defaultThemeColors["$main-hover-color"] = "#820000";
 defaultThemeColors["$text-color"] = "#4a4a4a";
 defaultThemeColors["$header-color"] = "#ffffff";
 defaultThemeColors["$header-background-color"] = "#cc0000";
 defaultThemeColors["$body-container-background-color"] = "#f8f8f8";
-defaultThemeColors["$error-color"]="#a30000";
+defaultThemeColors["$error-color"]="#ee0000";//"#a30000";
 //defaultThemeColors["$border-color"]="#cc0000";
 
 Survey
@@ -99,7 +144,17 @@ survey
 		
 		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onPageChange?visitorId="+Cookie.get("rhae-visitorId"), buildPageChangePayload(page));
 	});
-		
+
+survey
+	.onUpdatePageCssClasses
+	.add(function(sender, options){
+		//options.page
+		//options.cssClasses["pageTitle"]=options.page.name;
+		options.cssClasses.page.root="sv_p_root sv_page_"+options.page.name.replace(/ /g,"_").toLowerCase();
+		//options.cssClasses.root = "xxxxxxxxxxxxxxxxxxx";
+		//options.cssClasses.pageTitle = "yyyyyyyyyyyyyyyyyyy";
+	});
+
 survey
     .onComplete
     .add(function (result) {
@@ -328,6 +383,13 @@ for (var i = 0; i < survey.PageCount; i++) {
 survey
     .onCurrentPageChanged
     .add(function (sender, options) {
+    	// This is a horrible hack, but I need to change a class on a parent html element so this adds the classname to an ancestor div
+    	var classList=document.getElementById('survey-wrapper').className;//.split(/\s+/);
+    	if (undefined==document.getElementById('survey-wrapper').dataset["classList"])
+    		document.getElementById('survey-wrapper').dataset["classList"]=classList;
+    	document.getElementById('survey-wrapper').className=document.getElementById('survey-wrapper').dataset["classList"]+" sv_wrapper_"+options.newCurrentPage.name.replace(/ /g,"_").toLowerCase();
+    	
+    	
     	var oldIndex = options.oldCurrentPage.navigationTitle;
         var newIndex = options.newCurrentPage.navigationTitle;
         var oldIndexI = options.oldCurrentPage.visibleIndex;
@@ -337,7 +399,6 @@ survey
         var oldIndex = options.oldCurrentPage.navigationTitle!=undefined?options.oldCurrentPage.navigationTitle:options.oldCurrentPage.name;
         var newIndex = options.newCurrentPage.navigationTitle!=undefined?options.newCurrentPage.navigationTitle:options.newCurrentPage.name;
         if (oldIndex==newIndex) return;
-        
         
         if (undefined!=liEls[oldIndex])
 	        liEls[oldIndex].classList.remove("current");
@@ -354,6 +415,9 @@ survey
         // highlight current
         if (undefined!=liEls[newIndex])
 	        liEls[newIndex].classList.add("current");
+        
+        
+        
     });
     
 /*
