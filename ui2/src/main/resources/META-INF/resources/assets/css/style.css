@@ -37,6 +37,7 @@ body{
 	/*
 	background-color: #f9f9f9;
 	*/
+	margin-top: 30px;
 }
 .elevate{
   box-shadow: 0px 5px 5px -3px rgba(0,0,0,0.2), 0px 8px 10px 1px rgba(0,0,0,0.14), 0px 3px 14px 2px rgba(0,0,0,0.12);
@@ -182,7 +183,7 @@ div.elevate li.noColor{
     color: #737373;
 }
 
-.sv_p_root, .sv_row, .sv_nav, .survey-wrapper{
+.sv_p_root, .sv_row, .sv_nav, #survey-wrapper{
 	background-color: #f0f0f0;
 }
 .sv_main.sv_default_css{
@@ -272,8 +273,10 @@ div.elevate li.noColor{
 }
 .sv_q_imgsel_text{
 	font-size: 18pt;
+	/*
 	position: relative;
   top: -140px;
+	*/
 }
 .sv_qstn .sv_q_imgsel label > div{
 	padding: 1px !important;
@@ -284,6 +287,39 @@ div.elevate li.noColor{
 	display: grid;
   grid-gap: 15px;
   grid-template-columns: repeat(2,1fr);
+}
+
+/*
+.sv_page_select_interests sv_qstn->div{
+	background-color: initial;
+}
+*/
+
+
+
+
+.sv_imgpicker_outer{
+	width: 300px;
+    height: 300px;
+}
+.sv_imgpicker_inner{
+	width: 294px;
+    height: 294px;
+    background-color: white;
+    margin: 1px;
+}
+.sv_imgpicker_inner img{
+		display: block;
+    margin: 0 auto;
+		position: relative;
+    top: 30px;
+		opacity: 0.5;
+    filter: alpha(opacity=40);
+}
+.sv_imgpicker_inner div{
+		position: relative;
+    top: 40px;
+    white-space: normal;
 }
 
 

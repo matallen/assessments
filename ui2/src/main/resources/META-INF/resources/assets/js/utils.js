@@ -30,7 +30,9 @@ LocalStorage = {
 		storageName:"RHAssessmentPlatform_State",
 		saveState: function(survey) {
 			console.log("LocalStorage:: Saving state... (page "+survey.currentPageNo+")");
-		    window.localStorage.setItem(LocalStorage.storageName+"_"+surveyId, JSON.stringify({ currentPageNo: survey.currentPageNo, data: survey.data }));
+			var toStore=JSON.stringify({ currentPageNo: survey.currentPageNo, data: survey.data });
+		    //console.log("saveState: "+toStore);
+			window.localStorage.setItem(LocalStorage.storageName+"_"+surveyId, toStore);
 		},
 		clearState: function(){
 			console.log("LocalStorage:: Clearing state")
@@ -38,6 +40,7 @@ LocalStorage = {
 		},
 		loadState: function(survey) {
 			var storageSt = window.localStorage.getItem(LocalStorage.storageName+"_"+surveyId) || "";
+			console.log("loadState: "+storageSt);
 			var loaded=storageSt?JSON.parse(storageSt):{ currentPageNo: 1, data: {} };
 			if (loaded.data) 
 			    survey.data=loaded.data;

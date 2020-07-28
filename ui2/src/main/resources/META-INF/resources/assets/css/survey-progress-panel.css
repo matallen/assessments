@@ -50,7 +50,7 @@
     height: 19px;
     content: '';
     line-height: 35px;
-    border: 3px solid rgb(223,223,223);
+    border: 1px solid rgb(223,223,223);
     display: block;
     margin: 0 auto 12px auto;
     border-radius: 50%;
@@ -80,8 +80,8 @@
     background-color: white;
 }
 .navigationProgressbar li.current:before {
-    border-color: #c10000;
-    background-color: #c10000;
+    border-color: #ee0000;
+    background-color: #ee0000;
 }
 .surveyStyle{
 
