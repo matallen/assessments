@@ -51,7 +51,7 @@ var config=SURVEY_CONFIG;
 if (undefined!=config.theme && ""!=config.theme)
 	loadCSS("assets/themes/"+config.theme+"/css/style.css");
 
-
+console.log("Config theme" +config.theme);
 var defaultThemeColors = Survey
     .StylesManager
     .ThemeColors["default"];
