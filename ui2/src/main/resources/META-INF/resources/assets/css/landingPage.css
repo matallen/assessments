@@ -1,0 +1,38 @@
+.imageHeader{
+    padding: 80px 0 80px 0;
+    background-size: cover;
+    color: #fff;
+}
+.descriptionHeader{
+    padding: 80px 0 50px 0;
+}
+.screenshotHeader{
+    padding: 80px 0 50px 0;
+    border: 5px solid red;
+    height: 400px;
+}
+.textHeader{
+    padding: 50px 0 20px 0;
+}
+.btnClass{
+    margin: 20px 0 80px 0;
+    background-color: #E00;
+    border-color: #E00;
+    color: #FFF;
+}
+@media only screen and (max-width: 600px) {
+    .centerText{
+        text-align: center;
+    }
+    .btnClass{
+        margin: 20px 0 80px 0;
+        background-color: #E00;
+        border-color: #E00;
+        color: #FFF;
+
+    }
+}
+.btnClass:hover{
+    background-color: #D40000;
+    color: #FFF;
+}
