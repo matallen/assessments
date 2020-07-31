@@ -130,13 +130,13 @@ $(function(){
 				SurveyCreator
 			    .StylesManager
 			    .applyTheme("bootstrap");
-				//Add a new property
-				Survey
-			    .Serializer
-			    .addProperty("question", {
-		        name: "weighting",
-		        category: "general"
-			    });
+				//Add a new question-level property
+				//Survey
+			  //  .Serializer
+			  //  .addProperty("question", {
+		    //    name: "weighting",
+		    //    category: "general"
+			  //  });
 				Survey
 				.Serializer
 				.addProperty("page", {
@@ -151,6 +151,13 @@ $(function(){
 		        name: "eloqua",
 		        category: "general"
 			    });
+
+				Survey
+					.Serializer
+					.addProperty("imagepicker", "description:string");
+				Survey
+					.Serializer
+					.addProperty("imageitemvalue", "description");
 
 				
 				//Survey
