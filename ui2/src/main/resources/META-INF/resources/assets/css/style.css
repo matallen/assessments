@@ -335,7 +335,7 @@ div.elevate li.noColor{
 /* spacing out each question with margins and borders on a white background */
 .sv_qstn>div:nth-child(1){
 	padding: 10px;
-  border: 1px solid #ccc;
+    border: 1px solid #ccc;
 	background-color: white !important;
 	border-top-left-radius: 3px;
 	border-top-right-radius: 3px;

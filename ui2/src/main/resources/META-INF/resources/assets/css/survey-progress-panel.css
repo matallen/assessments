@@ -100,7 +100,12 @@
         overflow-x: hidden;
     }
     .navigationContainer{
-        display: none;
+        margin-right: 10px;
+    }
+}
+@media only screen and (device-width: 768px) {
+    .navigationContainer{
+        margin: 100px 10px auto auto;
     }
 }
 
