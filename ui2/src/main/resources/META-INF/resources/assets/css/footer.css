@@ -11,9 +11,20 @@ footer.footerStyle nav a{
      color: #aaa;
      padding-top: 10px;
      font-size: 15px;
+     padding-left: 0px;
+     text-decoration: underline;
  }
+footer.footerStyle nav a:hover{
+    color: #aaa;
+    padding-top: 10px;
+    font-size: 15px;
+    padding-left: 0px;
+    text-decoration: underline;
+    color: #ffffff;
+}
 .rightBorder{
     border-right: 1px solid #6c6c6c;
     height: 20px;
     margin-top: 10px;
+    margin-right: 15px;
 }
