@@ -224,13 +224,10 @@ div.elevate li.noColor{
 	text-align: center; /* center the prev/next buttons */
 	padding: 30px;
 }
-.sv_prev_btn, .sv_next_btn, .sv_preview_btn, .sv_complete_btn {
-  padding: 13px 23px 10px 23px;
-
-  /* taken from: https://www.redhat.com/forms/css/jquery.gatedform.min.css */
-
-  /* TODO: bug - the default.main_sv from the survey is overwriting these colors */
-    color: #fff;
+/*.sv_rh_prev_btn, .sv_rh_next_btn, .sv_rh_preview_btn, .sv_rh_complete_btn {
+    padding: 13px 23px 10px 23px;
+    color: #fff !important;
+    background-color: #06C !important;
     display: inline-block;
     font-family: var(--pfe-theme--font-family,RedHatText, Helvetica, Arial, sans-serif);
     border: 1px solid #06C;
@@ -243,15 +240,15 @@ div.elevate li.noColor{
     margin-top: 10px;
     transition: background .2s ease-in 0s;
     cursor: pointer;
-}
+}*/
 
-.sv_prev_btn:hover, .sv_next_btn:hover, .sv_preview_btn:hover, .sv_complete_btn:hover {
-    background-color:#0057ad;
+/*.sv_rh_prev_btn:hover, .sv_rh_next_btn:hover, .sv_rh_preview_btn:hover, .sv_rh_complete_btn:hover {
+    background-color:#0057ad !important;
     color: #fff;
     text-decoration: none;
     cursor: pointer;
     border-color: #0057ad;
-}
+}*/
 
 /*
 .sv_main, .sv_default_css, .sv_p_root, .sv_row{
@@ -338,7 +335,7 @@ div.elevate li.noColor{
 /* spacing out each question with margins and borders on a white background */
 .sv_qstn>div:nth-child(1){
 	padding: 10px;
-  border: 1px solid #ccc;
+    border: 1px solid #ccc;
 	background-color: white !important;
 	border-top-left-radius: 3px;
 	border-top-right-radius: 3px;
@@ -356,4 +353,3 @@ div.elevate li.noColor{
     width: 50%;
    padding-left: 375px;
 }
-

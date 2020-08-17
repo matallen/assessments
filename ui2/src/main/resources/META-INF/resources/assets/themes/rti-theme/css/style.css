@@ -22,7 +22,7 @@
 
 
 .sv_page_contact_form .sv_qstn>div:nth-child(1) {
-    padding: 0 10 0 10;
+    padding: 0 10px 0 10px;
     border: 0px solid #ccc;
     background-color: white !important;
     border-top-left-radius: 3px;
@@ -30,7 +30,7 @@
 }
 
 .sv_page_contact_form .sv_qstn>div:nth-child(2) {
-    padding: 0 10 0 10;
+    padding: 0 10px 0 10px;
     border: 0px solid #ccc;
     border-top: 0px;
     background-color: white !important;
@@ -45,15 +45,16 @@
 .sv_wrapper_contact_form .sv_nav {
     background-color: white !important;
     border: 0px;
-    margin: 10 0 10 0;
+    margin: 10px 0 10px 0;
 }
 
+@media only screen and (device-width: 768px) {
 
-
+}
 
 /* Buttons */
 .sv_rh_btn{
-		background-color: #06C !important;
+    background-color: #06C !important;
     color: #fff !important;
     display: inline-block;
     font-family: var(--pfe-theme--font-family,RedHatText,Helvetica,Arial,sans-serif);
@@ -74,4 +75,12 @@
     text-decoration: none;
     cursor: pointer;
     border-color: #0057ad;
+}
+
+@media only screen and (max-width: 600px) {
+    .sv_p_container>div:nth-of-type(3) {
+        display: grid;
+        grid-gap: 15px;
+        grid-template-columns: repeat(1,1fr);
+    }
 }
