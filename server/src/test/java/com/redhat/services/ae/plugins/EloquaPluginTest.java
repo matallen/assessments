@@ -29,7 +29,7 @@ public class EloquaPluginTest{
 	
 	@Test
 	public void testEloquaWithFields() throws ParseException, IOException{
-		EloquaPlugin p=new EloquaPlugin();
+		XEloquaPlugin p=new XEloquaPlugin();
 		p.setConfig(getConfig());
 		p.execute("SURVEY_ID", "VISITOR_ID", getSurveyResults1());
 		

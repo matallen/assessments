@@ -18,8 +18,8 @@ import com.redhat.services.ae.model.Survey;
 import com.redhat.services.ae.utils.CacheHelper;
 import com.redhat.services.ae.utils.Json;
 
-public class DELETERTIResultsPlugin implements Plugin{
-	public static final Logger log=LoggerFactory.getLogger(DELETERTIResultsPlugin.class);
+public class XRTIResultsPlugin implements Plugin{
+	public static final Logger log=LoggerFactory.getLogger(XRTIResultsPlugin.class);
 	
 	@Override
 	public void setConfig(Map<String, Object> config){
@@ -70,7 +70,7 @@ public class DELETERTIResultsPlugin implements Plugin{
 			
 			// calculate the score and add to the data structure
 			List<Integer> scores=new LinkedList<>();
-			new AnswerProcessor(){
+			new AnswerProcessor(true){
 				@Override public void onStringAnswer(String questionId, String answerId, Integer score){
 					log.debug("Incrementing score by "+score+" for "+questionId);
 					scores.add(score);

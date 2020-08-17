@@ -41,7 +41,7 @@ LocalStorage = {
 		loadState: function(survey) {
 			var storageSt = window.localStorage.getItem(LocalStorage.storageName+"_"+surveyId) || "";
 			console.log("loadState: "+storageSt);
-			var loaded=storageSt?JSON.parse(storageSt):{ currentPageNo: 1, data: {} };
+			var loaded=storageSt?JSON.parse(storageSt):{ currentPageNo: 0, data: {} };
 			if (loaded.data) 
 			    survey.data=loaded.data;
 			if (loaded.currentPageNo){

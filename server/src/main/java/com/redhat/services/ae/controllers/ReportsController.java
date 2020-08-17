@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -91,7 +92,7 @@ public class ReportsController{
 		DataSet ds=c.addNewDataSet();
 		ds.setLabel("Total Pages Completed");
 //		// get absolute list of pages, then build the chart data from those
-		Set<String> pages=new TreeSet<>();
+		Set<String> pages=new LinkedHashSet<>(); // retain the page order or else this graph means nothing!
 		
 		boolean pagesFromQuestions=true;
 		if (!pagesFromQuestions) // then they come from metrics history 
@@ -169,6 +170,9 @@ public class ReportsController{
 				for (mjson.Json question:page.at("elements").asJsonList()){
 					ChartJson c=new ChartJson();
 					String questionId=question.at("name").asString();
+					
+					// TODO: lookup the questionId into the question.title from the question config
+					
 					c.setName(questionId);
 //					c.getLabels().add(questionName);
 					
@@ -189,9 +193,6 @@ public class ReportsController{
 								}else{ // is a regular radio or checkbox control
 									answerText=option.at("text").isString()?option.at("text").asString():option.at("text").at("default").asString(); // non, or multilingual answer format
 									
-									// todo: may be a better/safer implementation than assuming there's a "default" language text
-//							if (option.has("text") && option.at("text").isString()) answerText=option.at("text").asString();
-//							if (null==answerText && option.has("text") && option.at("text").has("default") && option.at("text").at("default").isString()) answerText=option.at("text").at("default").asString();
 								}
 							}
 							
@@ -200,10 +201,6 @@ public class ReportsController{
 						}catch(NullPointerException npe){
 							if (answerId==null) answerId="Unknown";
 							if (answerText==null) answerText="Unknown";
-//							System.err.println("NPE in ReportsController. question="+question);
-//							System.err.println("NPE in ReportsController. option="+option);
-//							System.err.println("NPE in ReportsController. option.at(\"text\")="+option.at("text"));
-//							System.err.println("option.at(\"text\").at(\"default\")="+option.at("text").at("default"));
 						}
 						
 						c.getLabels().add(answerText);

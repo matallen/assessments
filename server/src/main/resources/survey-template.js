@@ -34,13 +34,70 @@ var imgpicker_template = `
 new Survey
 	.SurveyTemplateText()
 	.replaceText(imgpicker_template, "question", "imagepicker");
+//Survey
+//	.Serializer
+//	.addProperty("imagepicker", "description:string");
 Survey
 	.Serializer
-	.addProperty("imagepicker", "description:string");
-Survey
-	.Serializer
-	.addProperty("imageitemvalue", "description");
+	.addProperty("imageitemvalue", "description"); // adds a description to each imagepicker item/option
 // ###############################################################################
+
+
+// ##### REPLACING RADIOGROUP #############
+//var radiogroup_template = `
+//  <fieldset data-bind="css: question.koCss().root">
+//      <legend data-bind="attr: { 'aria-label': question.locTitle.renderedHtml }"></legend>
+//      <!-- ko ifnot: question.hasColumns  -->
+//        <!-- ko foreach: { data: question.visibleChoices, as: 'item', afterRender: question.koAfterRender }  -->
+//            <!-- ko template: 'survey-radiogroup-item' -->
+//            <!-- /ko -->
+//        <!-- /ko -->
+//      <!-- /ko -->
+//      <!-- ko if: question.hasColumns  -->
+//        <!-- ko foreach: question.columns -->
+//        <div data-bind="css: question.getColumnClass()">
+//            <!-- ko foreach: { data: $data, as: 'item', afterRender: question.koAfterRender }  -->
+//                <!-- ko template: 'survey-radiogroup-item' -->
+//                <!-- /ko -->
+//            <!-- /ko -->
+//            </div>
+//        <!-- /ko -->
+//      <!-- /ko -->
+//      <!-- ko if: question.canShowClearButton -->
+//      <div>
+//          <input type="button" data-bind="click:question.clearValue, css: question.koCss().clearButton, value: question.clearButtonCaption"/>
+//      </div>
+//      <!-- /ko -->
+//  </fieldset>
+//`;
+//var radiogroupitem_template = `
+//  <div data-bind="css: question.getItemClass(item)">
+//      <label data-bind="css: question.getLabelClass(item)">
+//          <input type="radio" data-bind="attr: { name: question.name + '_' + question.id, id: question.inputId + '_' + question.getItemIndex(item), 'aria-required': question.isRequired, 'aria-label': item.locText.renderedHtml, role: 'radio', 'aria-invalid': question.errors.length > 0, 'aria-describedby': question.errors.length > 0 ? question.id + '_errors' : null}, checkedValue: item.value, checked: question.renderedValue, enable: !question.isReadOnly && item.isEnabled, css: question.koCss().itemControl"
+//          />
+//          <span data-bind="css: question.koCss().materialDecorator">
+//            <svg data-bind="css:question.koCss().itemDecorator" viewBox="-12 -12 24 24">
+//                <circle r="6" cx="0" cy="0">
+//            </svg>
+//          </span>
+//          <span class="check"></span>
+//          <span data-bind="visible: !item.hideCaption, css: question.getControlLabelClass(item), attr: { title: item.locText.koRenderedHtml }">
+//              <!-- ko template: { name: 'survey-string', data: item.locText } -->
+//              <!-- /ko -->
+//          </span>
+//      </label>
+//      <!-- ko if: question.hasOther && (item.value == question.otherItem.value) -->
+//      <div class="form-group" data-bind="template: { name: 'survey-comment', data: {'question': question, 'visible': question.isOtherSelected}}"></div>
+//      <!-- /ko -->
+//  </div>
+//`;
+//new Survey
+//.SurveyTemplateText()
+//.replaceText(radiogroup_template, "question", "radiogroup");
+//new Survey
+//.SurveyTemplateText()
+//.replaceText(radiogroupitem_template, "radiogroup", "item");
+// ##### END REPLACING RADIOGROUP ###############
 
 
 
@@ -67,7 +124,7 @@ defaultThemeColors["$error-color"]="#ee0000";//"#a30000";
 
 Survey
     .StylesManager
-    .applyTheme();
+    .applyTheme("default");
 
 Survey
 	.Serializer
@@ -148,11 +205,8 @@ survey
 survey
 	.onUpdatePageCssClasses
 	.add(function(sender, options){
-		//options.page
-		//options.cssClasses["pageTitle"]=options.page.name;
+		// set the css class to the page name allowing us to style some pages different from others
 		options.cssClasses.page.root="sv_p_root sv_page_"+options.page.name.replace(/ /g,"_").toLowerCase();
-		//options.cssClasses.root = "xxxxxxxxxxxxxxxxxxx";
-		//options.cssClasses.pageTitle = "yyyyyyyyyyyyyyyyyyy";
 	});
 
 survey
@@ -176,8 +230,6 @@ survey
     	
 		// TODO: Remove this double posting, but find a way to make the multi-depth object easier to parse on the java side
 		
-		//survey.data["language"]=languageCode;
-		
 		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onComplete?visitorId="+Cookie.get("rhae-visitorId"), buildPageChangePayload(page, false), function(response){
 			if (response.status==200){
 				// navigate to a results page
@@ -197,7 +249,7 @@ survey
 				
 				console.log("Completed posting results to server");
 				
-				window.location.assign("/results.html?surveyId="+surveyId+"&visitorId="+visitorId);
+				window.location.assign("/results3.html?surveyId="+surveyId+"&visitorId="+visitorId);
 				
 			}else{
 				// Handle the error scenario
@@ -369,6 +421,13 @@ for (var i = 0; i < survey.PageCount; i++) {
     pageTitle.className = "pageTitle";
 	navProgBar.appendChild(pageTitle);
 	navProgBar.appendChild(liEl);
+	
+//	var wr=document.createElement("div");
+	pageTitle.className="pageTitle _"+survey.pages[i].name.replace(/ /g,"_").toLowerCase();
+//	wr.appendChild(pageTitle);
+	//wr.appendChild(liEl);
+	//liEl.appendChild(pageTitle);
+//	navProgBar.appendChild(wr);
     // var br = document.createElement("br");
     // liEl.appendChild(br);
     // var pageDescription = document.createElement("span");
@@ -381,9 +440,28 @@ for (var i = 0; i < survey.PageCount; i++) {
 
 }
 survey
+	.onPageVisibleChanged
+	.add(function (sender, options) {
+		console.log("onPageVisibleChanged");
+		var pageName=options.page.name;
+		var visible=options.visible;
+		var navTitle=options.page.navigationTitle?options.page.navigationTitle:options.page.name;
+		
+		var pageTitle=$("._"+pageName.replace(/ /g,"_").toLowerCase()).get()[0];
+		if (undefined==pageTitle) return;
+		if (visible){
+			liEls[navTitle].classList.add("pageVisible");
+			pageTitle.classList.add("pageVisible");
+		}else{
+			liEls[navTitle].classList.remove("pageVisible");
+			pageTitle.classList.remove("pageVisible");
+		}
+		
+	});
+survey
     .onCurrentPageChanged
     .add(function (sender, options) {
-    	// This is a horrible hack, but I need to change a class on a parent html element so this adds the classname to an ancestor div
+    	// This is a horrible hack, but I need to change a class on a parent html element allowing us to style pages separately, so this adds the page name as a classname to an ancestor div
     	var classList=document.getElementById('survey-wrapper').className;//.split(/\s+/);
     	if (undefined==document.getElementById('survey-wrapper').dataset["classList"])
     		document.getElementById('survey-wrapper').dataset["classList"]=classList;

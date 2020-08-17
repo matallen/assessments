@@ -357,3 +357,19 @@ div.elevate li.noColor{
    padding-left: 375px;
 }
 
+
+.navigationProgressbar div.pageVisible{
+	color: #ddd;
+}
+/*
+.navigationProgressbar li:has(+ next) {
+	color: pink;
+}
+.navigationProgressbar li.visible{
+	color:blue;
+}
+*/
+.sv-boolean{
+	display: inline-block !important;
+	padding-top: 10px;
+}

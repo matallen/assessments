@@ -1,0 +1,45 @@
+template header
+salience
+language
+description
+section
+subSection
+scoreLow
+scoreHigh
+resultLevel1
+resultLevel2
+resultText
+
+package com.redhat.services.ae;
+
+import com.redhat.services.ae.plugins.droolsscore.DroolsRecommendation;
+import com.redhat.services.ae.plugins.droolsscore.DroolsSurveySection;
+
+global java.util.ArrayList list
+
+template "question recommendations"
+
+
+rule "SectionRule-@{row.rowNumber}: @{description}"
+salience @{salience}
+when
+	$ans : DroolsSurveySection(
+		 language == "@{language}"
+		,section == "@{section}"
+		,subSection == "@{subSection}"
+		,score >= @{scoreLow}
+		,score <= @{scoreHigh}
+	)
+then
+//	insert(
+  list.add(
+		new DroolsRecommendation(
+			 "@{section}"
+			,"@{resultLevel1}" 
+			,"@{resultLevel2}"
+			,"@{resultText}")
+			);
+end
+
+
+end template

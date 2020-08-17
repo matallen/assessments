@@ -49,7 +49,6 @@ $(function(){
 			<li class="menu_needsId"><a href="admin-survey-questions-embedded.html?id=">Questions (experimental)</a></li>
 			<li class="menu_needsId"><a href="admin-survey-eloqua.html?id=">Eloqua</a></li>
 			<li class="menu_needsId"><a href="admin-survey-plugins.html?id=">Plugins</a></li>
-			<li class="menu_needsId"><a href="admin-survey-resources.html?id=">Resources</a></li>
 		</ul>
 		<ul style="float:right" class="menu menu_horizontal">
 			<li><a id="logout" href="/logout">Logout</a></li>
@@ -72,12 +71,7 @@ $(function(){
 		<table class="elevate">
 			<tbody id="content">
 				<tr>
-					<td>
-						<a href="https://surveyjs.io/Examples/Survey-Creator" target="_new">SurveyJS Editor</a> - copy/paste the content into the SurveyJS Editor to configure the survey questions
-					</td>
-				</tr>
-				<tr>
-					<td><textarea id="_questions" style="width: 100%; height: 800px;"></textarea></td>
+					<td><textarea id="_plugins" style="width: 100%; height: 800px;"></textarea></td>
 				</tr>
 				<tr>
 					<td colspan="2">
@@ -96,13 +90,13 @@ var surveyId;
 $(document).ready(function() {
 	$("#feedback-alert").hide();
 	surveyId=Utils.getParameterByName("id");
-	setMenu("Questions");
+	setMenu("Plugins");
 	
 	if (undefined!=surveyId){
 		
-		Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/questions", function(status, survey){
+		Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/plugins", function(status, survey){
 			// on success
-			$("#_questions").text(JSON.stringify(survey, null, 2));
+			$("#_plugins").text(JSON.stringify(survey, null, 2));
 		}, function(status){
 			// on error
 			alert("Error: response code was "+status);
@@ -116,9 +110,9 @@ $(document).ready(function() {
 
 function nullToEmpty(v){ if (undefined!=v) return v; else return "";}
 function save(){
-	var data=$("#_questions").val();
-	Http.send((undefined==surveyId?"POST":"PUT"), env.server+"/api/surveys"+(undefined==surveyId?"/?????":"/"+surveyId)+"/questions", JSON.parse(data), function(resp, status){
-		$("#_questions").text(prettyPrint(resp.response));
+	var data=$("#_plugins").val();
+	Http.send((undefined==surveyId?"POST":"PUT"), env.server+"/api/surveys"+(undefined==surveyId?"/?????":"/"+surveyId)+"/plugins", JSON.parse(data), function(resp, status){
+		$("#_plugins").text(prettyPrint(resp.response));
 		showSuccess(200==status?"Saved Ok":"Save Error (Status: "+status+")");
 		//alert(200==status?"Saved Ok":"Save Error (Status: "+status+")");
 	});

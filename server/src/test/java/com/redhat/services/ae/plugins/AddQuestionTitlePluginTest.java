@@ -52,7 +52,7 @@ public class AddQuestionTitlePluginTest{
 		
 		Map<String,Object> answers=Json.toObject(answersJson, new TypeReference<HashMap<String,Object>>(){});
 		System.out.println("from:"+Json.toJson(answers));
-		Map<String, Object> newData=new AddQuestionTitlePlugin().execute("test1", "TEST_VISITOR_ID", answers);
+		Map<String, Object> newData=new XAddQuestionTitlePlugin().execute("test1", "TEST_VISITOR_ID", answers);
 		
 		System.out.println("to:"+Json.toJson(newData));
 		

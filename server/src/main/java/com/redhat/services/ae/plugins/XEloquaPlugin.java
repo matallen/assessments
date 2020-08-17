@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Joiner;
 import com.redhat.services.ae.controllers.AnswerProcessor;
-import com.redhat.services.ae.model.Survey;
 
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -21,8 +20,8 @@ import io.restassured.specification.RequestSpecification;
 
 // https://integrate.com/static/Home2/1.6.78.2/documents/marketing/Integrate_Eloqua_Implementation_Guide.pdf
 
-public class EloquaPlugin implements Plugin{
-	public static final Logger log=LoggerFactory.getLogger(EloquaPlugin.class);
+public class XEloquaPlugin implements Plugin{
+	public static final Logger log=LoggerFactory.getLogger(XEloquaPlugin.class);
 	private String url;
 	private Map<String,String> mapping;
 	private Map<String,String> values;
@@ -64,7 +63,7 @@ public class EloquaPlugin implements Plugin{
 		}
 		
 		// Flatten the answers so they can be parsed more easily to send to Eloqua
-		new AnswerProcessor(){
+		new AnswerProcessor(true){
 			@Override public void onStringAnswer(String questionId, String answerId, Integer score){
 				System.out.println("Eloqua:: flattening single-string answers for question '"+questionId+"'");
 				flattenedSurveyResults.put(questionId, answerId);

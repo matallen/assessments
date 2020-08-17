@@ -1,1 +1,11 @@
-{"interests":["platforms"],"platforms_q1":"10#infra","platforms_q2":"10#1-20","platforms_q3":["10#Waterfall","20#Agile"],"FirstName":"Mat","LastName":"Allen","Company":"Red Hat Inc","language":"en"}
+{
+  "platforms_q4" : "20#We have some basic automation (e.g: scripts)",
+  "platforms_q3" : [ "20#Agile" ],
+  "platforms_q2" : "10#1-20",
+  "question7" : "item3",
+  "FirstName" : "qwerty",
+  "appdev1" : "item4",
+  "language" : "en",
+  "platforms_q1" : "20#software",
+  "interests" : [ "platforms", "apps" ]
+}

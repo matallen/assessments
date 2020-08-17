@@ -6,9 +6,12 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.drools.template.ObjectDataCompiler;
@@ -72,62 +75,82 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 	}
 	
 	
-		private List<String> drls=null;
+	private List<String> drls=null;
+	
+	public KieSession newKieSession(String sheetId) throws IOException, InterruptedException{
 		
-		public KieSession newKieSession(String sheetId) throws IOException, InterruptedException{
+		if (null==drls){
+			GoogleDrive3.initialise("/home/%s/google_drive", GoogleDrive3.DriverType.gdrive, "v2.1.1PreRelease");
+			GoogleDrive3 drive=new GoogleDrive3(3000);
+			File sheet=drive.downloadFile(sheetId);
+			SimpleDateFormat dateFormatter=null;
 			
-			if (null==drls){
-				GoogleDrive3.initialise("/home/%s/google_drive", GoogleDrive3.DriverType.gdrive, "v2.1.1PreRelease");
-				GoogleDrive3 drive=new GoogleDrive3(3000);
-				File sheet=drive.downloadFile(sheetId);
-				SimpleDateFormat dateFormatter=null;
+			List<String> sheets=Lists.newArrayList("Section Recommendations");//, "Question Recommendations");
+			drls=Lists.newArrayList();
+			for(String sheetName:sheets){
 				
-				List<String> sheets=Lists.newArrayList("Survey Recommendations", "Question Recommendations");
-				drls=Lists.newArrayList();
-				for(String sheetName:sheets){
-					
-					// Load the excel sheet with a retry loop?
-					List<Map<String, String>> parseExcelDocument=null;
-					parseExcelDocument=drive.parseExcelDocument(sheet, sheetName, new GoogleDrive3.HeaderRowFinder(){ public int getHeaderRow(XSSFSheet s){
-						return GoogleDrive3.SheetSearch.get(s).find(0, "Description").getRowIndex();
-					}}, dateFormatter);
-					
-					
-					List<Map<String,Object>> dataTableConfigList2 = new ArrayList<>();
-					for(Map<String, String> rows:parseExcelDocument){
-						dataTableConfigList2.add(
-								new MapBuilder<String,Object>()
-								.put("salience", 65534-Integer.parseInt(rows.get("ROW_#")))
-								.put("language", rows.get("Language"))
-								.put("description", rows.get("Description"))
-								.put("overallScoreLow", rows.get("Overall Score >="))
-								.put("overallScoreHigh", rows.get("Overall Score <="))
-								.put("pageId", rows.get("Category / Page"))
-								.put("questionId", rows.get("QuestionId"))
-								.put("scoreLow", rows.get("Question Score >=")!=null?(int)Double.parseDouble(rows.get("Question Score >=")):null)
-								.put("scoreHigh", rows.get("Question Score <=")!=null?(int)Double.parseDouble(rows.get("Question Score <=")):null)
-								.put("section", rows.get("Section"))
-								.put("recommendation", rows.get("Recommedation"))
-								.build()
-								);
-					}
-					
-					String templateName="scorePlugin_"+sheetName.replaceAll(" ", "")+".drt";
-					InputStream template = DroolsScoreRecommendationsPlugin.class.getClassLoader().getResourceAsStream(templateName);
-					ObjectDataCompiler compiler = new ObjectDataCompiler();
-					String drl = compiler.compile(dataTableConfigList2, template);
-					System.out.println(drl);
-					drls.add(drl);
+				// Load the excel sheet with a retry loop?
+				List<Map<String, String>> parseExcelDocument=null;
+				parseExcelDocument=drive.parseExcelDocument(sheet, sheetName, new GoogleDrive3.HeaderRowFinder(){ public int getHeaderRow(XSSFSheet s){
+					return GoogleDrive3.SheetSearch.get(s).find(0, "Description").getRowIndex();
+				}}, dateFormatter);
+				
+				
+				List<Map<String,Object>> dataTableConfigList2 = new ArrayList<>();
+				for(Map<String, String> rows:parseExcelDocument){
+					dataTableConfigList2.add(
+							new MapBuilder<String,Object>()
+							.put("salience", 65534-Integer.parseInt(rows.get("ROW_#")))
+							.put("language", rows.get("Language"))
+							.put("description", rows.get("Description"))
+							
+							.put("section", rows.get("Section"))
+							.put("subSection", rows.get("Sub-section"))
+							.put("scoreLow", rows.get("Score >=")!=null?(int)Double.parseDouble(rows.get("Score >=")):null)
+							.put("scoreHigh", rows.get("Score <=")!=null?(int)Double.parseDouble(rows.get("Score <=")):null)
+							
+							.put("resultLevel1", rows.get("Result Level 1"))
+							.put("resultLevel2", rows.get("Result Level 2"))
+							.put("resultText", rows.get("Text").replaceAll("\"", "\\\""))
+							
+							
+							
+//							.put("overallScoreLow", rows.get("Overall Score >="))
+//							.put("overallScoreHigh", rows.get("Overall Score <="))
+							
+//							.put("section", rows.get("Section Name"))
+							
+							
+							
+//							.put("pageId", rows.get("Category / Page"))
+//							.put("questionId", rows.get("QuestionId"))
+//								.put("scoreLow", rows.get("Question Score >=")!=null?(int)Double.parseDouble(rows.get("Question Score >=")):null)
+//								.put("scoreHigh", rows.get("Question Score <=")!=null?(int)Double.parseDouble(rows.get("Question Score <=")):null)
+							
+
+//							.put("resultSection", rows.get("Section"))
+//							.put("resultSubSection", rows.get("Sub-section"))
+//							.put("resultRecommendation", rows.get("Text").replaceAll("\"", "\\\""))
+							.build()
+							);
 				}
+				
+				String templateName="scorePlugin_"+sheetName.replaceAll(" ", "")+".drt";
+				InputStream template = DroolsScoreRecommendationsPlugin.class.getClassLoader().getResourceAsStream(templateName);
+				ObjectDataCompiler compiler = new ObjectDataCompiler();
+				String drl = compiler.compile(dataTableConfigList2, template);
+				System.out.println(drl);
+				drls.add(drl);
 			}
-			
-			return newKieSession(drls.toArray(new String[drls.size()]));
-			
 		}
 		
-		public void invalidateRules(){
-			drls=null;
-		}
+		return newKieSession(drls.toArray(new String[drls.size()]));
+		
+	}
+	
+	public void invalidateRules(){
+		drls=null;
+	}
 		
 	
 	
@@ -200,62 +223,117 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 			
 			// Insert the question/answer facts into the drools session
 			for(Entry<String, Object> e:surveyResults.entrySet()){
+				String key=e.getKey();
 				Object val=e.getValue();
 				
-				if (Map.class.isAssignableFrom(val.getClass())){
-					Map<String, Object> value=(Map<String, Object>)val;
-					if (value.containsKey("score")){
-						DroolsSurveyAnswer a=new DroolsSurveyAnswer(e.getKey(), (String)value.get("pageId"), language, (Integer)value.get("score"), (String)value.get("title"));
-						System.out.println("Inserting fact: "+a);//(String.format("Answer: id=%s, page=%s, lang=%s, score=%s, text=%s", e.getKey(), language, (Integer)value.get("score"), (String)value.get("title") )));
+				
+				if (key.startsWith("_")){
+					if (key.equalsIgnoreCase("_sectionScore")){
+						Map<String, Integer> values=(Map<String, Integer>)val;
+						for(Entry<String, Integer> e2:values.entrySet()){
+							DroolsSurveySection a=new DroolsSurveySection(e2.getKey(), "this will be a subsection one day", language, e2.getValue());
+							System.out.println("Inserting fact: "+a);
+							kSession.insert(a);
+						}
+					}
+					
+					if ("_averageScore".equals(e.getKey()) && Integer.class.isAssignableFrom(val.getClass())){
+						DroolsSurveyScore a=new DroolsSurveyScore((Integer)val, language);
+						System.out.println("Inserting fact: "+a);
 						kSession.insert(a);
 					}
-					if (value.containsKey("answer") && String.class.isAssignableFrom(value.get("answer").getClass()))
-						kvReplacement.put(e.getKey(), (String)value.get("answer"));
 					
-					if (value.containsKey("answers") && List.class.isAssignableFrom(value.get("answers").getClass()))
-						kvReplacement.put(e.getKey(), Joiner.on(",").join((List)value.get("answers")));
+				}else{
 					
-				}else{// if (Integer.class.isAssignableFrom(val.getClass())){
-					if ("averageScore".equals(e.getKey()) && Integer.class.isAssignableFrom(val.getClass())){
-						kSession.insert(new DroolsSurveyScore((Integer)val, language));
+					if (Map.class.isAssignableFrom(val.getClass())){
+						Map<String, Object> value=(Map<String, Object>)val;
+						if (value.containsKey("score")){
+							DroolsSurveyAnswer a=new DroolsSurveyAnswer(e.getKey(), (String)value.get("pageId"), language, (Integer)value.get("score"), (String)value.get("title"));
+							System.out.println("Inserting fact: "+a);//(String.format("Answer: id=%s, page=%s, lang=%s, score=%s, text=%s", e.getKey(), language, (Integer)value.get("score"), (String)value.get("title") )));
+							kSession.insert(a);
+						}
+						if (value.containsKey("answer") && String.class.isAssignableFrom(value.get("answer").getClass()))
+							kvReplacement.put(e.getKey(), (String)value.get("answer"));
+						
+						if (value.containsKey("answers") && List.class.isAssignableFrom(value.get("answers").getClass()))
+							kvReplacement.put(e.getKey(), Joiner.on(",").join((List)value.get("answers")));
+						
+					}else{// if (Integer.class.isAssignableFrom(val.getClass())){
+						
 					}
+					
 				}
 				
 			}
+			
+			kSession.setGlobal("list", new ArrayList<>());
 			
 			kSession.fireAllRules();
 			
-			Map<String,List<String>> sections=new MapBuilder<String,List<String>>().build();
+//			Map<String,List<String>> sections=new MapBuilder<String,List<String>>().build();
+//			
+//			// extract the recommendations from the drools session
+//			List<DroolsRecommendation> recommendations=Lists.newArrayList();
+//			for(FactHandle fh : kSession.getFactHandles(new ObjectFilter(){
+//				public boolean accept(Object object){
+//					return object instanceof DroolsRecommendation;
+//			}}).stream().toArray(FactHandle[]::new)){
+//				System.out.println(
+//						kSession.getObject(fh)
+//				);
+//				DroolsRecommendation recommendation=(DroolsRecommendation)kSession.getObject(fh);
+//				
+//				// replace any key/values from the answers in the recommendation strings
+//				for (Entry<String, String> e:kvReplacement.entrySet()){
+//					if (recommendation.getText().contains("$"+e.getKey())){
+//						recommendation=DroolsRecommendation.builder().section(recommendation.getSection()).text(recommendation.getText().replaceFirst("\\$"+e.getKey(), e.getValue())).build();
+//					}
+//				}
+//				
+//				if (!sections.containsKey(recommendation.getSection()))
+//					sections.put(recommendation.getSection(), Lists.newArrayList());
+//				
+//				sections.get(recommendation.getSection()).add(recommendation.getText());
+//				
+//				recommendations.add(recommendation);
+//			}
 			
-			// extract the recommendations from the drools session
-			List<DroolsRecommendation> recommendations=Lists.newArrayList();
-			for(FactHandle fh : kSession.getFactHandles(new ObjectFilter(){
-				public boolean accept(Object object){
-					return object instanceof DroolsRecommendation;
-			}}).stream().toArray(FactHandle[]::new)){
-				System.out.println(
-						kSession.getObject(fh)
-				);
-				DroolsRecommendation recommendation=(DroolsRecommendation)kSession.getObject(fh);
+			
+			Map<String,Map<String,Map<String,List<String>>>> sections2=new TreeMap<String,Map<String,Map<String,List<String>>>>();
+			
+			// A global list was used to retain the order of the DroolsRecommendation objects. fact insertions and extractions through geFactHandles does not retain order
+			List<DroolsRecommendation> recommendations=(ArrayList<DroolsRecommendation>)kSession.getGlobal("list");
+			for (DroolsRecommendation r:recommendations){
+			
+			// extract recommendations version 2 (with sub-sections)
+//			for(FactHandle fh : kSession.getFactHandles(new ObjectFilter(){
+//				public boolean accept(Object object){
+//					return object instanceof DroolsRecommendation;
+//			}}).stream().toArray(FactHandle[]::new)){
+//				
+//				DroolsRecommendation r=(DroolsRecommendation)kSession.getObject(fh);
 				
 				// replace any key/values from the answers in the recommendation strings
 				for (Entry<String, String> e:kvReplacement.entrySet()){
-					if (recommendation.getText().contains("$"+e.getKey())){
-						recommendation=DroolsRecommendation.builder().section(recommendation.getSection()).text(recommendation.getText().replaceFirst("\\$"+e.getKey(), e.getValue())).build();
-					}
+					if (r.getText().contains("$"+e.getKey()))
+						r.text=r.text.replaceFirst("\\$"+e.getKey(), e.getValue());
 				}
 				
-				if (!sections.containsKey(recommendation.getSection()))
-					sections.put(recommendation.getSection(), Lists.newArrayList());
+				System.out.println("Adding Result Text: "+r);
 				
-				sections.get(recommendation.getSection()).add(recommendation.getText());
+				if (!sections2.containsKey(r.getSection())) sections2.put(r.getSection(), new LinkedHashMap<>());
+				if (!sections2.get(r.getSection()).containsKey(r.getLevel1())) sections2.get(r.getSection()).put(r.getLevel1(), new LinkedHashMap<>());
+				if (!sections2.get(r.getSection()).get(r.getLevel1()).containsKey(r.getLevel2())) sections2.get(r.getSection()).get(r.getLevel1()).put(r.getLevel2(), new LinkedList<>());
 				
-				recommendations.add(recommendation);
+//				if (!sections2.get(r.getSection()).containsKey(r.getSubSection())) sections2.get(r.getSection()).put(r.getSubSection(), new LinkedList<>());
+				sections2.get(r.getSection()).get(r.getLevel1()).get(r.getLevel2()).add(r.getText());
+				
 			}
 			
 			
+			
 			// add recommendations to the results
-			surveyResults.put("report", sections);
+			surveyResults.put("_report", sections2);
 			
 			return surveyResults;
 			

@@ -1,5 +1,6 @@
 package com.redhat.services.ae.plugins;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -12,10 +13,12 @@ public class EmbeddedScoreTotalPlugin implements Plugin{
 
 	private int totalScore=0;
 	private int scoreCount=0;
+	private Map<String,Integer> sectionScores=new HashMap<String, Integer>();
 	
 	
 	@Override
 	public Map<String, Object> execute(String surveyId, String visitorId, Map<String, Object> surveyResults) throws Exception{
+		
 		
 		for (Entry<String, Object> e:surveyResults.entrySet()){
 			String questionId=e.getKey();
@@ -28,14 +31,25 @@ public class EmbeddedScoreTotalPlugin implements Plugin{
 				totalScore+=score;
 			}
 			
+			if (value.containsKey("score") && value.containsKey("navigationTitle")){ // ie, if the question has a score set & belongs to a section/page
+				String navTitle=(String)value.get("navigationTitle");
+				Integer questionScore=(Integer)value.get("score");
+				
+				sectionScores.put(navTitle, sectionScores.containsKey(navTitle)?sectionScores.get(navTitle)+questionScore:questionScore);
+				
+			}
+			
+			
 		}
 		
 		double averageScore=totalScore / scoreCount;
 		long lAverageScore=Math.round(averageScore);
 		int iAverageScore=(int)lAverageScore;
 		
-		surveyResults.put("totalScore", totalScore);
-		surveyResults.put("averageScore", iAverageScore);
+//		surveyResults.put("totalScore", totalScore);
+		surveyResults.put("_averageScore", iAverageScore);
+		surveyResults.put("_sectionScore", sectionScores);
+		
 		return surveyResults;
 	}
 

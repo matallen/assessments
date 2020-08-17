@@ -142,8 +142,8 @@
       ],
       "visibleIf": "{interests} contains ['platforms']",
       "title": "Modernizing Platforms",
-      "description": "Page 1/3: Environment (culture, process, collaboration, vision & leadership)",
-      "navigationTitle": "Questionnaire"
+      "description": "Page 1/3: Environment",
+      "navigationTitle": "Modernizing Platforms"
     },
     {
       "name": "p_platforms_2",
@@ -198,7 +198,7 @@
       "visibleIf": "{interests} contains ['platforms']",
       "title": "Modernizing Platforms",
       "description": "Page 2/3: Development",
-      "navigationTitle": "Questionnaire"
+      "navigationTitle": "Modernizing Platforms"
     },
     {
       "name": "p_apps_1",
@@ -260,7 +260,7 @@
       ],
       "visibleIf": "{interests} contains ['apps']",
       "title": "Modernizing Applications",
-      "description": "Page 1/3: Environment (culture, process, collaboration, vision & leadership)",
+      "description": "Page 1/3: Environment",
       "navigationTitle": "Questionnaire"
     },
     {
@@ -390,7 +390,7 @@
       ],
       "visibleIf": "{interests} contains ['automation']",
       "title": "Automation",
-      "description": "Page 1/3: Environment (culture, process, collaboration, vision & leadership)",
+      "description": "Page 1/3: Environment",
       "navigationTitle": "Questionnaire"
     },
     {
@@ -480,8 +480,8 @@
       ],
       "visibleIf": "{interests} contains ['automation']",
       "title": "Automation",
-      "description": "Page 2/3: Application Development\n",
-      "navigationTitle": "Questionnaire"
+      "description": "Page 2/3: Development",
+      "navigationTitle": "Modernizing Platforms"
     },
     {
       "name": "Contact Form",

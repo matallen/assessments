@@ -192,16 +192,16 @@ public class SurveyController{
 		log.debug("onResults:: data="+Json.toJson(data));
 		
 		// Metrics: log how many times a specific answer was provided to a question, for reporting % of answers per question
-		new AnswerProcessor(){
+		new AnswerProcessor(false){
 			@Override public void onStringAnswer(String questionId, String answerId, Integer score){ // radiobuttons
-				log.debug("Adding answers for question '"+questionId+"' to metrics");
+				log.debug("Reports: Adding answers for question '"+questionId+"' to metrics");
 				Map<String, Map<String,Integer>> answers=o.getMetrics().getAnswersByMonth("answers", YYMMM);
 				if (!answers.containsKey(questionId)) answers.put(questionId, new HashMap<>());
 				answers.get(questionId).put(answerId, answers.get(questionId).containsKey(answerId)?answers.get(questionId).get(answerId)+1:1);
 			}
 			@Override
 			public void onArrayListAnswer(String questionId, List<Answer> answerList, Integer averageScore){ // multi-checkboxes
-				log.debug("Adding answers for question '"+questionId+"' to metrics");
+				log.debug("Reports: Adding answers for question '"+questionId+"' to metrics");
 				for (Answer answer:answerList){
 					// Increment the metrics for each item selected
 					Map<String, Map<String,Integer>> answers=o.getMetrics().getAnswersByMonth("answers", YYMMM);

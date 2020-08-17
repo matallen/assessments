@@ -67,9 +67,9 @@ public class DroolsScoreRecommendationsPluginTest{
 //		System.out.println("To:\n"+Json.toJson(answers));
 		
 		
-		Assert.assertEquals(true, answers.containsKey("report"));
-		Assert.assertEquals(true, Map.class.isAssignableFrom(answers.get("report").getClass()));
-		Assert.assertEquals(true, ((Map)answers.get("report")).size()>0);
+		Assert.assertEquals(true, answers.containsKey("_report"));
+		Assert.assertEquals(true, Map.class.isAssignableFrom(answers.get("_report").getClass()));
+		Assert.assertEquals(true, ((Map)answers.get("_report")).size()>0);
 		
 	}
 }

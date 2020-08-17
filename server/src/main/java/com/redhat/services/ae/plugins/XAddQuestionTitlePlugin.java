@@ -24,8 +24,8 @@ import com.redhat.services.ae.model.Survey;
 import com.redhat.services.ae.utils.CacheHelper;
 import com.redhat.services.ae.utils.Json;
 
-public class AddQuestionTitlePlugin implements Plugin{
-	public static final Logger log=LoggerFactory.getLogger(AddQuestionTitlePlugin.class);
+public class XAddQuestionTitlePlugin implements Plugin{
+	public static final Logger log=LoggerFactory.getLogger(XAddQuestionTitlePlugin.class);
 	
 	/**
 	 * 
