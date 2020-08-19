@@ -39,6 +39,10 @@ import com.redhat.services.ae.plugins.Plugin;
 public class DroolsScoreRecommendationsPlugin implements Plugin{
 	public static final Logger log=LoggerFactory.getLogger(DroolsScoreRecommendationsPlugin.class);
 	
+	private static final int CACHE_EXPIRY_IN_MS=3000;
+	private static final GoogleDrive3 drive=new GoogleDrive3(CACHE_EXPIRY_IN_MS);
+	private List<String> drls=null;
+	
 //	@Inject
 //  private KieRuntimeBuilder runtimeBuilder;
 	
@@ -75,13 +79,9 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 	}
 	
 	
-	private List<String> drls=null;
-	
 	public KieSession newKieSession(String sheetId) throws IOException, InterruptedException{
 		
 		if (null==drls){
-			GoogleDrive3.initialise("/home/%s/google_drive", GoogleDrive3.DriverType.gdrive, "v2.1.1PreRelease");
-			GoogleDrive3 drive=new GoogleDrive3(3000);
 			File sheet=drive.downloadFile(sheetId);
 			SimpleDateFormat dateFormatter=null;
 			
@@ -114,12 +114,10 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 							.put("resultText", rows.get("Text").replaceAll("\"", "\\\""))
 							
 							
-							
 //							.put("overallScoreLow", rows.get("Overall Score >="))
 //							.put("overallScoreHigh", rows.get("Overall Score <="))
 							
 //							.put("section", rows.get("Section Name"))
-							
 							
 							
 //							.put("pageId", rows.get("Category / Page"))
@@ -158,54 +156,7 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 	public Map<String, Object> execute(String surveyId, String visitorId, Map<String, Object> surveyResults) throws Exception{
 		try{
 			
-			
-//			GoogleDrive3.initialise("/home/%s/google_drive", GoogleDrive3.DriverType.gdrive, "v2.1.1PreRelease");
-//			GoogleDrive3 drive=new GoogleDrive3(3000);
-//			File sheet=drive.downloadFile("19d03Qi0mr-9mcfYp9__sjNkFJcGCx2zT4D26NYH1US4");
-//			SimpleDateFormat dateFormatter=null;
-//			
-//			KieSession kSession;
-//			
-//			List<String> sheets=Lists.newArrayList("Survey Recommendations", "Question Recommendations");
-//			List<String> drls=Lists.newArrayList();
-//			for(String sheetName:sheets){
-//				
-//				// Load the excel sheet with a retry loop?
-//				List<Map<String, String>> parseExcelDocument=null;
-//				parseExcelDocument=drive.parseExcelDocument(sheet, sheetName, new GoogleDrive3.HeaderRowFinder(){ public int getHeaderRow(XSSFSheet s){
-//					return GoogleDrive3.SheetSearch.get(s).find(0, "Description").getRowIndex();
-//				}}, dateFormatter);
-//				
-//				
-//				List<Map<String,Object>> dataTableConfigList2 = new ArrayList<>();
-//				for(Map<String, String> rows:parseExcelDocument){
-//					dataTableConfigList2.add(
-//						new MapBuilder<String,Object>()
-//						.put("salience", 65534-Integer.parseInt(rows.get("ROW_#")))
-//						.put("language", rows.get("Language"))
-//						.put("description", rows.get("Description"))
-//						.put("overallScoreLow", rows.get("Overall Score >="))
-//						.put("overallScoreHigh", rows.get("Overall Score <="))
-//						.put("pageId", rows.get("Category / Page"))
-//						.put("questionId", rows.get("QuestionId"))
-//						.put("scoreLow", rows.get("Question Score >=")!=null?(int)Double.parseDouble(rows.get("Question Score >=")):null)
-//						.put("scoreHigh", rows.get("Question Score <=")!=null?(int)Double.parseDouble(rows.get("Question Score <=")):null)
-//						.put("section", rows.get("Section"))
-//						.put("recommendation", rows.get("Recommedation"))
-//						.build()
-//					);
-//				}
-//				
-//				String templateName="scorePlugin_"+sheetName.replaceAll(" ", "")+".drt";
-//				InputStream template = DroolsScoreRecommendationsPlugin.class.getClassLoader().getResourceAsStream(templateName);
-//				ObjectDataCompiler compiler = new ObjectDataCompiler();
-//				String drl = compiler.compile(dataTableConfigList2, template);
-//				System.out.println(drl);
-//				drls.add(drl);
-//			}
-//			kSession = newKieSession(drls.toArray(new String[drls.size()]));
-			
-			KieSession kSession=newKieSession("19d03Qi0mr-9mcfYp9__sjNkFJcGCx2zT4D26NYH1US4");
+			KieSession kSession=newKieSession(decisionTableId);
 			
 			// DEBUG ONLY - make sure we have some rule packages to execute
 			log.debug("Rule Packages/Rules:");
@@ -232,14 +183,15 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 						Map<String, Integer> values=(Map<String, Integer>)val;
 						for(Entry<String, Integer> e2:values.entrySet()){
 							DroolsSurveySection a=new DroolsSurveySection(e2.getKey(), "this will be a subsection one day", language, e2.getValue());
-							System.out.println("Inserting fact: "+a);
+							log.debug("Inserting fact: "+a);
+							kvReplacement.put("score_"+e2.getKey().replaceAll(" ", "_"), String.valueOf(e2.getValue()));
 							kSession.insert(a);
 						}
 					}
 					
 					if ("_averageScore".equals(e.getKey()) && Integer.class.isAssignableFrom(val.getClass())){
 						DroolsSurveyScore a=new DroolsSurveyScore((Integer)val, language);
-						System.out.println("Inserting fact: "+a);
+						log.debug("Inserting fact: "+a);
 						kSession.insert(a);
 					}
 					
@@ -249,7 +201,7 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 						Map<String, Object> value=(Map<String, Object>)val;
 						if (value.containsKey("score")){
 							DroolsSurveyAnswer a=new DroolsSurveyAnswer(e.getKey(), (String)value.get("pageId"), language, (Integer)value.get("score"), (String)value.get("title"));
-							System.out.println("Inserting fact: "+a);//(String.format("Answer: id=%s, page=%s, lang=%s, score=%s, text=%s", e.getKey(), language, (Integer)value.get("score"), (String)value.get("title") )));
+							log.debug("Inserting fact: "+a);//(String.format("Answer: id=%s, page=%s, lang=%s, score=%s, text=%s", e.getKey(), language, (Integer)value.get("score"), (String)value.get("title") )));
 							kSession.insert(a);
 						}
 						if (value.containsKey("answer") && String.class.isAssignableFrom(value.get("answer").getClass()))

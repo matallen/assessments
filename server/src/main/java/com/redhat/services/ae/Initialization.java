@@ -6,6 +6,8 @@ import javax.enterprise.event.Observes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.redhat.services.ae.dt.GoogleDrive3;
+
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.StartupEvent;
 
@@ -15,6 +17,7 @@ public class Initialization {
 	
 	void onStartup(@Observes StartupEvent e) {
 		log.info("Starting up...");
+		GoogleDrive3.initialise("/home/%s/google_drive", GoogleDrive3.DriverType.gdrive, "v2.1.1PreRelease");
 	}
 	
 	void onShutdown(@Observes ShutdownEvent e) {

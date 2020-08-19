@@ -44,32 +44,37 @@ Survey
 
 
 // ##### REPLACING RADIOGROUP #############
-//var radiogroup_template = `
-//  <fieldset data-bind="css: question.koCss().root">
-//      <legend data-bind="attr: { 'aria-label': question.locTitle.renderedHtml }"></legend>
-//      <!-- ko ifnot: question.hasColumns  -->
-//        <!-- ko foreach: { data: question.visibleChoices, as: 'item', afterRender: question.koAfterRender }  -->
-//            <!-- ko template: 'survey-radiogroup-item' -->
-//            <!-- /ko -->
-//        <!-- /ko -->
-//      <!-- /ko -->
-//      <!-- ko if: question.hasColumns  -->
-//        <!-- ko foreach: question.columns -->
-//        <div data-bind="css: question.getColumnClass()">
-//            <!-- ko foreach: { data: $data, as: 'item', afterRender: question.koAfterRender }  -->
-//                <!-- ko template: 'survey-radiogroup-item' -->
-//                <!-- /ko -->
-//            <!-- /ko -->
-//            </div>
-//        <!-- /ko -->
-//      <!-- /ko -->
-//      <!-- ko if: question.canShowClearButton -->
-//      <div>
-//          <input type="button" data-bind="click:question.clearValue, css: question.koCss().clearButton, value: question.clearButtonCaption"/>
-//      </div>
-//      <!-- /ko -->
-//  </fieldset>
-//`;
+ var radiogroup_template = `
+ <fieldset data-bind="css: question.koCss().root">
+     <legend data-bind="attr: { 'aria-label': question.locTitle.renderedHtml }"></legend>
+     <!-- ko ifnot: question.hasColumns  -->
+       <!-- ko foreach: { data: question.visibleChoices, as: 'item', afterRender: question.koAfterRender }  -->
+           <!-- ko template: 'survey-radiogroup-item' -->
+           <!-- /ko -->
+       <!-- /ko -->
+     <!-- /ko -->
+     <!-- ko if: question.hasColumns  -->
+       <!-- ko foreach: question.columns -->
+       <div data-bind="css: question.getColumnClass()">
+           <!-- ko foreach: { data: $data, as: 'item', afterRender: question.koAfterRender }  -->
+               <!-- ko template: 'survey-radiogroup-item' -->
+               <!-- /ko -->
+           <!-- /ko -->
+           </div>
+       <!-- /ko -->
+     <!-- /ko -->
+     <!-- ko if: question.canShowClearButton -->
+     <div>
+         <input type="button" data-bind="click:question.clearValue, css: question.koCss().clearButton, value: question.clearButtonCaption"/>
+     </div>
+     <!-- /ko -->
+ </fieldset>
+`;
+new Survey
+.SurveyTemplateText()
+.replaceText(radiogroup_template, "question", "radiogroup");
+
+
 //var radiogroupitem_template = `
 //  <div data-bind="css: question.getItemClass(item)">
 //      <label data-bind="css: question.getLabelClass(item)">
