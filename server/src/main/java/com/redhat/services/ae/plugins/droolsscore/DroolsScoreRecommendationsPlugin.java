@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import com.redhat.services.ae.Initialization;
 import com.redhat.services.ae.MapBuilder;
 import com.redhat.services.ae.dt.GoogleDrive3;
 import com.redhat.services.ae.plugins.Plugin;
@@ -49,6 +50,11 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 	String decisionTableId;
 	String decisionTableLocation;
 	private KieServices kieServices = KieServices.Factory.get();
+	
+	public DroolsScoreRecommendationsPlugin(){
+		if (!drive.isInitialised())
+			new Initialization().onStartup(null);
+	}
 	
 	@Override
 	public void setConfig(Map<String, Object> config){
@@ -283,7 +289,7 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 						r.text=r.text.replaceFirst("\\$"+e.getKey(), e.getValue());
 				}
 				
-				System.out.println("Adding Result Text: "+r);
+//				System.out.println("Adding Result Text: "+r);
 				
 				if (!sections2.containsKey(r.getSection())) sections2.put(r.getSection(), new LinkedHashMap<>());
 				if (!sections2.get(r.getSection()).containsKey(r.getLevel1())) sections2.get(r.getSection()).put(r.getLevel1(), new LinkedHashMap<>());

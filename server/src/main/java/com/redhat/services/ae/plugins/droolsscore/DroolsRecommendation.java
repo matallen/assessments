@@ -4,8 +4,8 @@ package com.redhat.services.ae.plugins.droolsscore;
 public class DroolsRecommendation{
 	protected String text;
 	protected String section;
-	protected String level1;
-	protected String level2;
+	protected String level1="";
+	protected String level2="";
 	public DroolsRecommendation(){}
 	public DroolsRecommendation(String section, String level1, String text){
 		this.section=section;
@@ -48,5 +48,15 @@ public class DroolsRecommendation{
 	}
 	public String toString(){
 		return "Recommendation: "+section+"->"+level1+"->"+level2+"->"+text+"";
+	}
+	
+	public static class Builder extends DroolsRecommendation{
+		public Builder text(String value)   { this.text   =value; return this; }
+		public Builder section(String value){ this.section=value; return this; }
+		public Builder level1(String value){ this.level1=value; return this; }
+		public Builder level2(String value){ this.level2=value; return this; }
+		public DroolsRecommendation build(){
+			return new DroolsRecommendation(section, level1, level2, text);
+		}
 	}
 }

@@ -15,7 +15,7 @@ import io.quarkus.runtime.StartupEvent;
 public class Initialization {
 	private static Logger log=LoggerFactory.getLogger(Initialization.class);
 	
-	void onStartup(@Observes StartupEvent e) {
+	public void onStartup(@Observes StartupEvent e) {
 		log.info("Starting up...");
 		GoogleDrive3.initialise("/home/%s/google_drive", GoogleDrive3.DriverType.gdrive, "v2.1.1PreRelease");
 	}

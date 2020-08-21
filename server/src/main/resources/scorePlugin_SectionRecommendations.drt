@@ -31,14 +31,12 @@ when
 		,score <= @{scoreHigh}
 	)
 then
-//	insert(
-  list.add(
-		new DroolsRecommendation(
-			 "@{section}"
-			,"@{resultLevel1}" 
-			,"@{resultLevel2}"
-			,"@{resultText}")
-			);
+	list.add(new DroolsRecommendation.Builder()
+			.section("@{section}")
+			.level1("@{resultLevel1}")
+			.level2("@{resultLevel2}")
+			.text("@{resultText}")
+	.build());
 end
 
 

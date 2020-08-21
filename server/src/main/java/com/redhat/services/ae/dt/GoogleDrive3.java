@@ -75,6 +75,10 @@ public class GoogleDrive3 {
   }
   
   public enum DriverType{drive,gdrive}
+
+  public boolean isInitialised(){
+  	return null!=gdriveType;
+  }
   
 //  public static void main(String[] args) throws Exception{
 //  	String PortfolioDatabase="1aPR0_uNRJCVLT9c8mqfEpNvQ2FZBdcD9pL0u6mksu2U";
@@ -157,10 +161,9 @@ public class GoogleDrive3 {
   	}
   }
   
-  
   public synchronized File downloadFile(String fileId) throws IOException, InterruptedException {
     
-  	if (null==gdriveType) throw new RuntimeException("Not yet Initialized");
+  	if (!isInitialised()) throw new RuntimeException("Not yet Initialized");
   	
   	if (cacheExpiryInMs>0){
   		if (cache.containsKey(fileId) && cacheExpiry.get(fileId)>System.currentTimeMillis()){
