@@ -79,6 +79,18 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 	}
 	
 	
+	private String makeTextSafeForCompilation(String text){
+		return text
+				.replaceAll(System.getProperty("line.separator"), "<br/>")
+				.replaceAll("\r\n", "<br/>")
+				.replaceAll("\\r\\n", "<br/>")
+				.replaceAll("(\n|\r)", "<br/>")
+				.replaceAll("(\\n|\\r)", "<br/>")
+				.replaceAll("\"", "\\\\\"")
+				;
+		
+	}
+	
 	public KieSession newKieSession(String sheetId) throws IOException, InterruptedException{
 		
 		if (null==drls){
@@ -102,7 +114,7 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 							new MapBuilder<String,Object>()
 							.put("salience", 65534-Integer.parseInt(rows.get("ROW_#")))
 							.put("language", rows.get("Language"))
-							.put("description", rows.get("Description"))
+							.put("description", makeTextSafeForCompilation(rows.get("Description")))
 							
 							.put("section", rows.get("Section"))
 							.put("subSection", rows.get("Sub-section"))
@@ -111,7 +123,7 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 							
 							.put("resultLevel1", rows.get("Result Level 1"))
 							.put("resultLevel2", rows.get("Result Level 2"))
-							.put("resultText", rows.get("Text").replaceAll("\"", "\\\""))
+							.put("resultText", makeTextSafeForCompilation(rows.get("Text")))
 							
 							
 //							.put("overallScoreLow", rows.get("Overall Score >="))
