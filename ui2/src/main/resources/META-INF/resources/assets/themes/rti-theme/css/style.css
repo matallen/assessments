@@ -84,3 +84,9 @@
         grid-template-columns: repeat(1,1fr);
     }
 }
+
+/* Applying even spacing for the image selection boxes (interest areas) */
+.sv_q_imgsel {
+    margin-bottom: 15px;
+    width: 46% !important;
+}
