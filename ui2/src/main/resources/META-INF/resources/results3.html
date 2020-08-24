@@ -64,149 +64,102 @@
 		</div>
 	</div>
 </div>
+
+
+	<!-- css for result page tab structure -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"></link>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+	<style>
+	    .nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover { border: 0; }
+	    .nav-tabs>li.active>a { color: black; }
+	    .nav-tabs>li>a { color: gray; }
+	    .nav-tabs>li.active>a, .nav-tabs>li.active>a:focus { color: black; border-bottom: 3px solid red; }
+	</style>
 	
+	<!-- tab content such as charts, scores etc.. -->
+	<style>
+		.flex-wrapper { display: flex; flex-flow: row nowrap; }
+		.single-chart { width: 100%; justify-content: space-around; }
+		.circular-chart {
+		  display: block;
+		  margin: 10px  auto;
+		  max-width: 80%;
+		  max-height: 250px;
+		}
+		.circle-bg {
+		  fill: none;
+		  stroke: #eee;
+		  stroke-width: 3.8;
+		}
+		.circle {
+		  fill: none;
+		  stroke-width: 4;
+		  animation: progress 1s ease-out forwards;
+		}
+		@keyframes progress { 0% { stroke-dasharray: 0 100; } }
+		.score{
+		  fill: #e10000;
+		  font-family: sans-serif;
+		  font-size: 0.4em;
+		  text-anchor: middle;
+		}
+		.outof{
+		  fill: #000000;
+		  font-family: sans-serif;
+		  font-size: 0.3em;
+		  text-anchor: middle;
+		}
+		.circular-chart.orange .circle { stroke: #e10000; }
+		.separator{ border-bottom: 1px solid #ddd; }
+
+
+.print-panel-container{
+	background-color: #eee;
+}
+.print-panel{
+	width: 60%;
+}
+.print-panel>h2,.print-panel>p{
+	text-align: center;
+}
+.center{
+	text-align: center;
+	margin: auto;
+}
+	</style>
+
+	<script src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
+	<div class="print-panel-container">
+		<div class="container">
+			<div class="row">
+				<div class="container print-panel">
+					<h2>Results introduction copy</h2>
+					<p>
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+					</p>
+					<p>
+						<button type="button" class="btn btn-primary" id="create_pdf">Download results as a PDF</button>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<section id="xsurvey" class="py-0">
 		<div class="container">
 			<div class="row">
+				
 				<div class="col-md-10 py-4 py-md-6">
 					<div id="page">
-						
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-<style>
-    .nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover {
-        border: 0;
-    }
-    .nav-tabs>li.active>a {
-        color: black;
-    }
-    .nav-tabs>li>a {
-        color: gray;
-    }
-    .nav-tabs>li.active>a, .nav-tabs>li.active>a:focus {
-        color: black;
-        border-bottom: 3px solid red;
-    }
-
-</style>
 
 						<div class="container">
 
 							<ul id="tabs" class="nav nav-tabs">
-								<!--
-								<li class="active"><a data-toggle="tab" href="#home">Modernize Platforms</a></li>
-								<li><a data-toggle="tab" href="#menu1">Modernize Applications</a></li>
-								<li><a data-toggle="tab" href="#menu2">Automation</a></li>
-								<li><a data-toggle="tab" href="#menu3">Transformation</a></li>
-								-->
 								<li><a data-toggle="tab" href="#menu4">Raw</a></li>
 							</ul>
 
 							<div id="tabsContent" class="tab-content">
-											<!--
-								<div id="home" class="tab-pane fade in active">
-									<div class="row">
-										<div class="col-md-2">
-											score image
-											-->
-												  <!--
-												  stroke-linecap: round;
-												  -->
-								<!--
-											<div class="flex-wrapper">
-												<div class="single-chart">
-													<svg viewBox="0 0 36 44" class="circular-chart orange">
-											      <path class="circle-bg" d="M18 2.0845
-											          a 15.9155 15.9155 0 0 1 0 31.831
-											          a 15.9155 15.9155 0 0 1 0 -31.831" />
-											      <path class="circle" stroke-dasharray="30, 100" d="M18 2.0845
-											          a 15.9155 15.9155 0 0 1 0 31.831
-											          a 15.9155 15.9155 0 0 1 0 -31.831" />
-											      <image xlink:href="developer.mozilla.png" x="50%" y="50%" style="height:20px;width:10px;" transform="translate(-5,-14)" />
-											      <text class="score" x="50%" y="50%" transform="translate(-4,20)">30</text>
-											      <text class="outof" x="50%" y="50%" transform="translate(6,20)">/100</text>
-											    </svg>
-												</div>
-											</div>
-											<style>
-												.flex-wrapper { display: flex; flex-flow: row nowrap; }
-												.single-chart { width: 100%; justify-content: space-around; }
-												.circular-chart {
-												  display: block;
-												  margin: 10px auto;
-												  max-width: 80%;
-												  max-height: 250px;
-												}
-												.circle-bg {
-												  fill: none;
-												  stroke: #eee;
-												  stroke-width: 3.8;
-												}
-												.circle {
-												  fill: none;
-												  stroke-width: 4;
-												  animation: progress 1s ease-out forwards;
-												}
-												@keyframes progress { 0% { stroke-dasharray: 0 100; } }
-												.score{
-												  fill: #e10000;
-												  font-family: sans-serif;
-												  font-size: 0.4em;
-												  text-anchor: middle;
-												}
-												.outof{
-												  fill: #000000;
-												  font-family: sans-serif;
-												  font-size: 0.3em;
-												  text-anchor: middle;
-												}
-												.circular-chart.orange .circle { stroke: #e10000; }
-												.separator{ border-bottom: 1px solid #ddd; }
-	
-											</style>
-	
-										</div>
-										<div class="col-md-6">
-											<h3>Modernize Platforms</h3>
-											<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-										</div>
-										
-										<div class="col-md-10">
-											<h3>Environment</h3>
-											<h4>Findings</h4>
-											<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-											<h4>Recommendations</h4>
-											<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-										</div>
-										<div class="col-md-10 separator"></div>
-
-										<div class="col-md-10">
-											<h3>Development</h3>
-											<h4>Findings</h4>
-											<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-											<h4>Recommendations</h4>
-											<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-										</div>
-										<div class="col-md-10 separator"></div>
-										
-									</div>
-								</div>
-								
-								<div id="menu1" class="tab-pane fade">
-									<h3>Modernize Applications</h3>
-									<p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-								</div>
-								<div id="menu2" class="tab-pane fade">
-									<h3>Automation</h3>
-									<p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
-								</div>
-								<div id="menu3" class="tab-pane fade">
-									<h3>Transformation</h3>
-									<p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
-								</div>
-								
-								-->
 								<div id="menu4" class="tab-pane fade">
 									<h3>Raw</h3>
 									<p id="raw"></p>
@@ -215,51 +168,39 @@
 							</div>
 						</div>
 
-
-
 					</div>
 				</div>
 			</div>
 		</div>
 	</section>
-
-<style>
-	.flex-wrapper { display: flex; flex-flow: row nowrap; }
-	.single-chart { width: 100%; justify-content: space-around; }
-	.circular-chart {
-	  display: block;
-	  margin: 10px auto;
-	  max-width: 80%;
-	  max-height: 250px;
-	}
-	.circle-bg {
-	  fill: none;
-	  stroke: #eee;
-	  stroke-width: 3.8;
-	}
-	.circle {
-	  fill: none;
-	  stroke-width: 4;
-	  animation: progress 1s ease-out forwards;
-	}
-	@keyframes progress { 0% { stroke-dasharray: 0 100; } }
-	.score{
-	  fill: #e10000;
-	  font-family: sans-serif;
-	  font-size: 0.4em;
-	  text-anchor: middle;
-	}
-	.outof{
-	  fill: #000000;
-	  font-family: sans-serif;
-	  font-size: 0.3em;
-	  text-anchor: middle;
-	}
-	.circular-chart.orange .circle { stroke: #e10000; }
-	.separator{ border-bottom: 1px solid #ddd; }
-
-</style>
-
+	
+	<style>
+		.btn-redhat-primary, .btn-redhat-primary:visited{
+			color: #fff;
+	    background-color: #e10000;
+	    border-color: #e10000;
+		}
+		.btn-redhat-primary:hover, .btn-redhat-primary:active{
+			color: #fff;
+	    background-color: #c10000;
+	    border-color: #c10000;
+		}
+	</style>
+	<div class="print-panel-container">
+		<div class="container">
+			<div class="row">
+				<div class="container print-panel">
+					<h2>Get started with a Discovery Session</h2>
+					<p>
+						Discovery Session explanation lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+					</p>
+					<p>
+						<button type="button" class="btn btn-redhat-primary">Talk to a Red Hat consultant</button>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<script>
 		var surveyId=Utils.getParameterByName("surveyId");
@@ -343,7 +284,7 @@
 				for(var l1 in report[section]){ // l1 is Environment, Development & Operations or Introduction
 					
 					html+=`
-						<div class="col-md-10">
+						<div class="col-md-8">
 							<h3>`+l1+`</h3>
 					`;
 					
@@ -368,99 +309,10 @@
 			}
 			
 			
-//			  "_report" : {
-//				    "Modernize Platforms" : {
-//				      "Environment" : {
-//				        "Findings" : [ "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." ],
-//				        "Recommendations" : [ "rec2" ],
-//				        "Learn More" : [ "<a href='http://www.google.com'>google.com</a><br/>That was a google recommendation" ]
-//				      },
-//				      "Development" : {
-//				        "Recommendations" : [ "rec5" ],
-//				        "Findings" : [ "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." ],
-//				        "Learn More" : [ "link to asset 3" ]
-//				      },
-//				      "Operations" : {
-//				        "Recommendations" : [ "y" ],
-//				        "Findings" : [ "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." ],
-//				        "Learn More" : [ "z" ]
-//				      },
-//				      "Introduction" : {
-//				        "Introduction" : [ "Your overall rating of $score means..." ]
-//				      }
-//				    }
-//				  }			
-			
-			
-			
-			
-//			var html="";
-//			var report=jsonResponse["_report"];
-//			for(var key in report){
-//				html+=`<div class="rec elevate"><div class="rec-title">`+key+`</div>`;
-//				var listOfRecomendations=report[key];
-//				for(var i=0;i<listOfRecomendations.length;i++){
-//					html+=`<li>`+listOfRecomendations[i]+`</li>`;
-//				}
-//				html+=`</div>`;
-//			}
-//			$("#results").html(html);
-//
-//			$("#your-score-width").css("width", jsonResponse["_averageScore"]+"%");
-//			$("#your-score-text").html(jsonResponse["_averageScore"]);
-
-//			{
-//				  "platforms_q3" : {
-//				    "score" : 20,
-//				    "answers" : [ "Waterfall", "Agile" ],
-//				    "title" : "Which of the following practices/methodologies are implemented in your organization?",
-//				    "pageId" : "p_platforms_1"
-//				  },
-//				  "platforms_q2" : {
-//				    "score" : 10,
-//				    "answer" : "1-20",
-//				    "title" : "What is the size of your department?",
-//				    "pageId" : "p_platforms_1"
-//				  },
-//				  "FirstName" : {
-//				    "answer" : "Mat",
-//				    "title" : "First Name",
-//				    "pageId" : "Contact Form"
-//				  },
-//				  "report" : {
-//				    "Introduction" : [ "Low maturity" ],
-//				    "Modernize Platforms" : [ "Hi Mat, because your responsibility within the organization is mostly Software, I'd recommend X, Y and Z", "Hmm, may need some modermizing perhaps?" ]
-//				  },
-//				  "interests" : {
-//				    "answers" : [ "platforms" ],
-//				    "pageId" : "Select Interests"
-//				  },
-//				  "platforms_q1" : {
-//				    "score" : 10,
-//				    "answer" : "infra",
-//				    "title" : "What is your department / organizations main responsability?",
-//				    "pageId" : "p_platforms_1"
-//				  },
-//				  "totalScore" : 40,
-//				  "averageScore" : 13
-//				}
 		}
 		
 	</script>
-	
-	<style>
-		#wrapper{text-align: center;}
-		#page,.rec{display: inline-block; text-align: left; width: 100%; margin-top: 20px; margin-bottom: 20px;}
-		#you-score{width: 55%; background-color: #999;}
-		#industry-score{width: 70%}
-		.rec-title{font-size: 23px; background-color: #eee; padding: 5px;}
-		.score-bar{
-			background-color: #ccc;
-			height:10px;
-		}
-		td{padding: 0px !important}
-		table tr td:nth-child(1){width:20%;}
-	</style>
+
 	
 
 
@@ -490,9 +342,10 @@
 
 
 
-
+<!--
 <script src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
 <button type="button" class="btn btn-primary" id="create_pdf">Create PDF</button>
+-->
 <script>
     (function() {
         var container = $('#tabsContent'),
