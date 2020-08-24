@@ -131,22 +131,6 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 							.put("resultLevel2", rows.get("Result Level 2"))
 							.put("resultText", makeTextSafeForCompilation(rows.get("Text")))
 							
-							
-//							.put("overallScoreLow", rows.get("Overall Score >="))
-//							.put("overallScoreHigh", rows.get("Overall Score <="))
-							
-//							.put("section", rows.get("Section Name"))
-							
-							
-//							.put("pageId", rows.get("Category / Page"))
-//							.put("questionId", rows.get("QuestionId"))
-//								.put("scoreLow", rows.get("Question Score >=")!=null?(int)Double.parseDouble(rows.get("Question Score >=")):null)
-//								.put("scoreHigh", rows.get("Question Score <=")!=null?(int)Double.parseDouble(rows.get("Question Score <=")):null)
-							
-
-//							.put("resultSection", rows.get("Section"))
-//							.put("resultSubSection", rows.get("Sub-section"))
-//							.put("resultRecommendation", rows.get("Text").replaceAll("\"", "\\\""))
 							.build()
 							);
 				}
