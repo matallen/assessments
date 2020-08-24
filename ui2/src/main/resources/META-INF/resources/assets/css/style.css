@@ -355,6 +355,10 @@ div.elevate li.noColor{
 }
 
 
+.navigationProgressbar div.pageNotVisible{
+	color: #ddd;
+}
+
 .navigationProgressbar div.pageVisible{
 	color: #ddd;
 }

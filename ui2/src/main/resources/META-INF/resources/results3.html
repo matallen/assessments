@@ -154,7 +154,9 @@
 					<div id="page">
 
 						<div class="container">
-
+							
+							<button type="button" class="btn btn-primary" id="retake_assessment">ReTake assessment</button>
+							
 							<ul id="tabs" class="nav nav-tabs">
 								<li><a data-toggle="tab" href="#menu4">Raw</a></li>
 							</ul>
@@ -222,7 +224,8 @@
 				Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/results/"+visitorId, function(status, response){
 					if (200==status){
 						clearInterval(timerId);
-						LocalStorage.clearState(); // remove answers from localstorage once the report page has been received successfully
+						//LocalStorage.clearState(); // remove answers from localstorage once the report page has been received successfully
+						LocalStorage.saveFlag("lastAssessmentCompleted", "true");
 						
 						// raw output
 						$("#raw").html("<pre>"+JSON.stringify(response, undefined, 2)+"</pre>");
@@ -347,6 +350,11 @@
 <button type="button" class="btn btn-primary" id="create_pdf">Create PDF</button>
 -->
 <script>
+
+$('#retake_assessment').on('click', function() {
+    window.location.href="/index.html?surveyId="+surveyId;
+});
+
     (function() {
         var container = $('#tabsContent'),
             cache_width = container.width(),

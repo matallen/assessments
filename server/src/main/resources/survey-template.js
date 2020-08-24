@@ -226,6 +226,9 @@ survey
 		var match=expr.exec(timeTaken);
 		timeInfo[page.name]=match[1];
 		console.log("Metrics:: sending page message: page "+ page.name+" - "+timeInfo[page.name]);
+		
+		// Hide the survey Navigation pane
+		$("#surveyNavigation").hide();
 
 		//window.localStorage.removeItem("data");
 		
@@ -416,6 +419,7 @@ for (var i = 0; i < survey.PageCount; i++) {
     
     
     
+    
     // logic to group question pages in progress panel
     if (navTitlesUniqueSet.includes(pageTitle.innerText)) continue;
     navTitlesUniqueSet.push(pageTitle.innerText);
@@ -424,11 +428,15 @@ for (var i = 0; i < survey.PageCount; i++) {
     
     
     pageTitle.className = "pageTitle";
+    
+    if (survey.pages[i].isVisible!=true)
+    	pageTitle.classList.toggle("pageNotVisible");
+    
 	navProgBar.appendChild(pageTitle);
 	navProgBar.appendChild(liEl);
 	
 //	var wr=document.createElement("div");
-	pageTitle.className="pageTitle _"+survey.pages[i].name.replace(/ /g,"_").toLowerCase();
+	pageTitle.classList.add("_"+survey.pages[i].name.replace(/ /g,"_").toLowerCase());
 //	wr.appendChild(pageTitle);
 	//wr.appendChild(liEl);
 	//liEl.appendChild(pageTitle);
@@ -444,6 +452,14 @@ for (var i = 0; i < survey.PageCount; i++) {
     liEls[undefined!=survey.pages[i].navigationTitle?survey.pages[i].navigationTitle:survey.pages[i].name]=liEl;
 
 }
+
+survey
+	.onValueChanged
+	.add(function (sender, options) {
+		//console.log("XXXXX:: answer changed");
+		LocalStorage.saveState(survey);
+});
+
 survey
 	.onPageVisibleChanged
 	.add(function (sender, options) {
@@ -455,11 +471,11 @@ survey
 		var pageTitle=$("._"+pageName.replace(/ /g,"_").toLowerCase()).get()[0];
 		if (undefined==pageTitle) return;
 		if (visible){
-			liEls[navTitle].classList.add("pageVisible");
-			pageTitle.classList.add("pageVisible");
+			liEls[navTitle].classList.remove("pageNotVisible");
+			pageTitle.classList.remove("pageNotVisible");
 		}else{
-			liEls[navTitle].classList.remove("pageVisible");
-			pageTitle.classList.remove("pageVisible");
+			liEls[navTitle].classList.add("pageNotVisible");
+			pageTitle.classList.add("pageNotVisible");
 		}
 		
 	});
@@ -543,37 +559,15 @@ var timerId=0;
 var saveIntervalInSeconds=20;
 
 
-//LocalStorage = {
-//		storageName:"RHAssessmentPlatform_State",
-//		saveState: function(survey) {
-//			console.log("LocalStorage:: Saving state... (page "+survey.currentPageNo+")");
-//		    window.localStorage.setItem(LocalStorage.storageName, JSON.stringify({ currentPageNo: survey.currentPageNo, data: survey.data }));
-//		},
-//		clearState: function(){
-//			console.log("LocalStorage:: Clearing state")
-//			window.localStorage.removeItem(LocalStorage.storageName);
-//		},
-//		loadState: function(survey) {
-//			var storageSt = window.localStorage.getItem(LocalStorage.storageName) || "";
-//			var loaded=storageSt?JSON.parse(storageSt):{ currentPageNo: 1, data: {} };
-//			if (loaded.data) 
-//			    survey.data=loaded.data;
-//			if (loaded.currentPageNo){
-//				//console.log("set page to "+loaded.currentPageNo);
-//				survey.currentPageNo=loaded.currentPageNo;
-//			}
-//		}
-//}
-//if (undefined!=Utils.getParameterByName("dev_reset")){
-//	console.log("Clearing localstorage of previously answered questions");
-//	LocalStorage.clearState();
-//}
-
 //save data every x seconds
-timerId = window.setInterval(function () {
-    LocalStorage.saveState(survey);
-}, saveIntervalInSeconds*1000);
+//timerId = window.setInterval(function () {
+//    LocalStorage.saveState(survey);
+//}, saveIntervalInSeconds*1000);
 
+if (LocalStorage.getFlag("lastAssessmentCompleted")=="true"){ // This means the report page has been displayed so we can remove the prior answers
+	LocalStorage.clearState(); // remove answers from localstorage. We cant do this on the results page just in case they want to retake the assessment
+	LocalStorage.removeFlag("lastAssessmentCompleted");
+}
 LocalStorage.loadState(survey);
 // /State saving feature
 

@@ -32,24 +32,14 @@ public class EmbeddedScoreTotalPlugin implements Plugin{
 			String questionId=e.getKey();
 			Map<String,Object> value=(Map<String,Object>)e.getValue();
 			
-//			if (value.containsKey("score")){ // ie, if the question has a score set
-//				scoreCount+=1;
-//				int score=Integer.class.isAssignableFrom(value.get("score").getClass())?(Integer)value.get("score"):0; // it must be an integer score, I dont want to deal with string conversions
-//				log.debug("EmbeddedScoreTotalPlugin:: question: "+questionId+" has score of: "+score);
-//				totalScore+=score;
-//			}
-			
 			if (value.containsKey("score") && value.containsKey("navigationTitle")){ // ie, if the question has a score set & belongs to a section/page
 				String navTitle=(String)value.get("navigationTitle");
 				int score=Integer.class.isAssignableFrom(value.get("score").getClass())?(Integer)value.get("score"):0; // it must be an integer score, I dont want to deal with string conversions
-//				Integer questionScore=(Integer)value.get("score");
 				
 				log.debug(EmbeddedScoreTotalPlugin.class.getSimpleName()+"::"+questionId+"::Adding score "+score+" to section ["+navTitle+"]");
 				
-//				scoreCount+=1;
-//				totalScore+=score;
 				sectionTotals.put(navTitle, sectionTotals.containsKey(navTitle)?sectionTotals.get(navTitle)+score:score);
-				sectionCounts.put(navTitle, sectionScores.containsKey(navTitle)?sectionScores.get(navTitle)+1:1);
+				sectionCounts.put(navTitle, sectionCounts.containsKey(navTitle)?sectionCounts.get(navTitle)+1:1);
 				sectionScores.put(navTitle, sectionTotals.get(navTitle)/sectionCounts.get(navTitle));
 			}
 			
