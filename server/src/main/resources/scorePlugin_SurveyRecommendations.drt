@@ -2,14 +2,13 @@ template header
 salience
 language
 description
-overallScoreLow
-overallScoreHigh
 pageId
 questionId
 scoreLow
 scoreHigh
-section
-recommendation
+resultSection
+resultSubSection
+resultRecommendation
 
 package com.redhat.services.ae;
 
@@ -23,11 +22,16 @@ salience @{salience}
 when
 	$surv : DroolsSurveyScore(true==true
 		,language == "@{language}"
-		,score >= @{overallScoreLow}
-		,score <= @{overallScoreHigh}
+		,score >= @{scoreLow}
+		,score <= @{scoreHigh}
 	)
 then
-	insert(new DroolsRecommendation("@{section}", "@{recommendation}"));
+	insert(new DroolsRecommendation(
+			""
+			, "@{resultSection}" 
+			,"@{resultSubSection}"
+			, "@{resultRecommendation}")
+			);
 end
 
 

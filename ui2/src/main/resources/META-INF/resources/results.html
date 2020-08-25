@@ -128,7 +128,7 @@
 
 		function displayResults(element, jsonResponse){
 			var html="";
-			var report=jsonResponse["report"];
+			var report=jsonResponse["_report"];
 			for(var key in report){
 				html+=`<div class="rec elevate"><div class="rec-title">`+key+`</div>`;
 				var listOfRecomendations=report[key];
@@ -139,8 +139,8 @@
 			}
 			$("#results").html(html);
 
-			$("#your-score-width").css("width", jsonResponse["averageScore"]+"%");
-			$("#your-score-text").html(jsonResponse["averageScore"]);
+			$("#your-score-width").css("width", jsonResponse["_averageScore"]+"%");
+			$("#your-score-text").html(jsonResponse["_averageScore"]);
 
 //			{
 //				  "platforms_q3" : {

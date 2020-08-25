@@ -8,8 +8,9 @@ pageId
 questionId
 scoreLow
 scoreHigh
-section
-recommendation
+resultSection
+resultSubSection
+resultRecommendation
 
 package com.redhat.services.ae;
 
@@ -29,7 +30,7 @@ when
 		,score <= @{scoreHigh}
 	)
 then
-	insert(new DroolsRecommendation("@{section}", "@{recommendation}"));
+	insert(new DroolsRecommendation("", "@{resultSection}", "@{resultSubSection}", "@{resultRecommendation}"));
 end
 
 

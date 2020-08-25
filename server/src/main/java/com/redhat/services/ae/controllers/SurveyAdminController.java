@@ -122,6 +122,35 @@ public class SurveyAdminController{
 		
 	}	
 	
+	
+	/** #### PLUGIN HANDLERS #### */
+	
+	@PUT
+	@Path("/{surveyId}/plugins")
+	public Response savePlugins(@PathParam("surveyId") String surveyId, String json) throws FileNotFoundException, IOException{
+		Survey survey=Survey.findById(surveyId);
+		log.debug("Saving Plugins: "+json);
+		Map<String, Map<String, Object>> oJson=Json.newObjectMapper(true).readValue(json, new TypeReference<Map<String,Map<String,Object>>>(){});
+		
+		
+		survey.getPlugins().clear();
+		survey.getPlugins().putAll(oJson);
+		survey.persist();
+		
+		return Response.ok(Json.toJson(survey.getPlugins())).build();
+	}
+	
+	@GET
+	@PermitAll
+	@Path("/{surveyId}/plugins")
+	public Response getPlugins(@PathParam("surveyId") String surveyId) throws FileNotFoundException, IOException{
+		String surveyName=surveyId+".json";
+		Survey survey=Survey.findById(surveyId);
+		log.debug("Loading plugins for: "+surveyName);
+		return Response.ok(Json.toJson(survey.getPlugins())).build();
+	}
+	
+	
 	/** #### QUESTION HANDLERS #### */
 	
 	@PUT

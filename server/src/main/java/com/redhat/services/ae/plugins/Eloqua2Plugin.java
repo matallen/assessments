@@ -2,8 +2,7 @@ package com.redhat.services.ae.plugins;
 
 import static io.restassured.RestAssured.given;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -14,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Joiner;
-import com.redhat.services.ae.model.Survey;
 
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -36,7 +34,8 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 		Map<String,Object> config=(Map<String,Object>)cfg.get("config");
 		mapping=(Map<String,String>)config.get("mapping");
 		values=(Map<String,String>)config.get("values");
-		disabled=cfg.containsKey("disabled")?"true".equalsIgnoreCase((String)cfg.get("disabled")):false;
+//		disabled=cfg.containsKey("disabled")?"true".equalsIgnoreCase((String)cfg.get("disabled")):false;
+		disabled=cfg.containsKey("disabled")?(Boolean)cfg.get("disabled"):false;
 		
 		if (null==url || null==mapping)
 			throw new RuntimeException(String.format("Config not set correctly. Url is %s, and config==null is %s", url, (config==null)));
@@ -62,12 +61,16 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 		// Extract the question config
 		Map<String, mjson.Json> questionsMapping=buildQuestionMap(surveyId);
 		
-		for (Entry<String, Object> e:surveyResults.entrySet()){
+		Map<String,Object> results=new LinkedHashMap<>();
+		results.putAll(surveyResults);
+		results.put("visitorId", visitorId);
+		
+		for (Entry<String, Object> e:results.entrySet()){
 			String questionId=e.getKey();
 			
 			mjson.Json questionConfig=questionsMapping.get(questionId);
 			if (null!=questionConfig){
-				System.out.println("found questionConfig for: "+questionId);
+//				System.out.println("found questionConfig for: "+questionId);
 				
 				if (null!=questionConfig){
 					if (Map.class.isAssignableFrom(e.getValue().getClass())){
@@ -84,7 +87,9 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 			}
 			
 		}
-
+		
+		List<String> errorExpectedFieldsNotFoundInSurveyResults=new ArrayList<String>();
+		
 		for(Entry<String, String> e:mapping.entrySet()){
 			if (extractedAnswers.containsKey(e.getKey())){
 				
@@ -96,8 +101,14 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 				}
 				
 			}else{
-				System.err.println("Eloqua mapped field '"+e.getKey()+"' was not found in survey results. Check your config");
+				errorExpectedFieldsNotFoundInSurveyResults.add(e.getKey());
+//				System.err.println("Eloqua mapped field '"+e.getKey()+"' was not found in survey results. Check your config");
 			}
+		}
+		if (errorExpectedFieldsNotFoundInSurveyResults.size()>0){
+			log.error("EloquaPlugin:: Following fields were configured to send to Eloqua, but were not found in the survey results:");
+			for(String field:errorExpectedFieldsNotFoundInSurveyResults)
+				log.error("   - "+field);
 		}
 		
 		for(Entry<String, String> e:values.entrySet()){
@@ -114,26 +125,24 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 				.contentType(ContentType.JSON)
 				.header("Accept", ContentType.JSON.getAcceptHeader())
 				;
-			
-			for (Entry<String, String> e:eloquaFields.entrySet()){
-				log.debug(String.format("Sending Eloqua as querystring:: field=%s, value=%s", e.getKey(), e.getValue()));
-				System.out.println(String.format("->Eloqua:: field=%-20s ,value=%s", e.getKey(), e.getValue()));
-				rs.queryParam(e.getKey(), e.getValue());
-			}
+		for (Entry<String, String> e:eloquaFields.entrySet()){
+			log.debug(String.format("Sending to Eloqua:: %s = %s", e.getKey(), e.getValue()));
+			rs.queryParam(e.getKey(), e.getValue());
+		}
 
-			
-			if (!disabled){
-				Response response=rs.post(url).andReturn();
-				log.debug("Eloqua response statusCode="+response.statusCode());
-			}else{
-				log.info("Plugin disabled - dummy call, not sent to Eloqua");
-			}
+		
+		if (!disabled){
+			Response response=rs.post(url).andReturn();
+			log.debug("Eloqua response statusCode="+response.statusCode());
+		}else{
+			log.info("Plugin disabled - dummy call, not sent to Eloqua");
+		}
 	}
 	
 	@Override
 	public Map<String, Object> OnSingleStringAnswer(String questionId, String answer, Json question){
 		
-		if (questionId.toLowerCase().contains("email")){
+		if (questionId.toLowerCase().contains("@redhat.com")){
 			log.info("Skipping Eloqua plugin because email is an @redhat.com email");
 			disabled=true;
 		}

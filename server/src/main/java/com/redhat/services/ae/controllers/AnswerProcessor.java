@@ -8,6 +8,10 @@ import java.util.Map.Entry;
 
 public abstract class AnswerProcessor{
 	
+	boolean includeUnderscoreQuestions;
+	public AnswerProcessor(boolean includeUnderscoreQuestions){
+		this.includeUnderscoreQuestions=includeUnderscoreQuestions;
+	}
 	public abstract void onStringAnswer(String question, String answer, Integer score);
 	public abstract void onArrayListAnswer(String question, List<Answer> answers, Integer averageScore);
 	public abstract void onMapAnswer(String question, Answer answer);
@@ -31,6 +35,8 @@ public abstract class AnswerProcessor{
 	public void process(Map<String,Object> data){
 		for (Entry<String, Object> e:data.entrySet()){
 			String questionId=e.getKey();
+			
+			if (!includeUnderscoreQuestions && questionId.startsWith("_")) continue;
 			
 			// TODO: What do we do if the answer has no score, split evenly from the number of available options? but that means we need to parse the questions configuration too
 			

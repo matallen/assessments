@@ -9,6 +9,11 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
 
+/**
+ * This class was created because Drools STILL has the bug where it cannot compile google sheets exported as xlsx. for some reason merged cells are not parsed correctly
+ * and therefore we had to go down the dule templates route which is more maintenance/brittle. this class was a quick attempt to fix the xlsx format to make it parsable
+ * 
+ */
 public class XlsxToXLs{
 //
 //	private File path=new File("c:/Integration-TestCases.xls");

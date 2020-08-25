@@ -28,6 +28,19 @@ HtmlUtils = {
 
 LocalStorage = {
 		storageName:"RHAssessmentPlatform_State",
+		saveFlag: function(key, value) {
+			console.log("LocalStorage:: Saving flag (k="+key+",v="+value+")...");
+			window.localStorage.setItem(LocalStorage.storageName+"_"+surveyId+"_"+key, value);
+		},
+		getFlag: function(key) {
+			var result=window.localStorage.getItem(LocalStorage.storageName+"_"+surveyId+"_"+key);
+			console.log("LocalStorage:: Get flag (k="+key+") = "+result);
+			return result;
+		},
+		removeFlag: function(key) {
+			console.log("LocalStorage:: Remove flag (k="+key+")");
+			window.localStorage.removeItem(LocalStorage.storageName+"_"+surveyId+"_"+key);
+		},
 		saveState: function(survey) {
 			console.log("LocalStorage:: Saving state... (page "+survey.currentPageNo+")");
 			var toStore=JSON.stringify({ currentPageNo: survey.currentPageNo, data: survey.data });
@@ -41,7 +54,7 @@ LocalStorage = {
 		loadState: function(survey) {
 			var storageSt = window.localStorage.getItem(LocalStorage.storageName+"_"+surveyId) || "";
 			console.log("loadState: "+storageSt);
-			var loaded=storageSt?JSON.parse(storageSt):{ currentPageNo: 1, data: {} };
+			var loaded=storageSt?JSON.parse(storageSt):{ currentPageNo: 0, data: {} };
 			if (loaded.data) 
 			    survey.data=loaded.data;
 			if (loaded.currentPageNo){

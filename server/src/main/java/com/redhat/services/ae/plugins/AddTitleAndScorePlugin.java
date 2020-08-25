@@ -19,7 +19,13 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 	 * 
 	 */
 	
-	private String getPage(Json question){
+	private String getPageName(Json question){
+		Json page=getPageJson(question);
+		if (null!=page) return page.at("name").asString();
+		return null;
+	}
+	
+	private Json getPageJson(Json question){
 		int i=0;
 		List<Json> l=new ArrayList<>();
 		Json p=question;
@@ -34,7 +40,7 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 			p=p.up();
 		}
 		if (null!=page && page.has("name")){
-			return page.at("name").asString();
+			return page;
 		}
 		return null;
 	}
@@ -57,10 +63,16 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 		}
 		if (question.has("title")) answerData.put("title", question.at("title").asString());
 		
-		answerData.put("pageId", question.up().up().at("name").asString());
+//		answerData.put("pageId", question.up().up().at("name").asString());
 		
+		Json pageJson=getPageJson(question);
+		if (null!=pageJson){
+			answerData.put("pageId", pageJson.at("name").asString());
+			if (pageJson.has("navigationTitle")) answerData.put("navigationTitle", pageJson.at("navigationTitle").asString());
+//			if (pageJson.has("description"))     answerData.put("pageDescription", pageJson.at("description").asString());
+		}
 		
-		answerData.put("pageId", getPage(question));
+//		answerData.put("pageId", getPageName(question));
 		
 		return answerData;
 	}
@@ -86,7 +98,7 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 			answerData.put("score", highestScore);
 		}
 		
-		answerData.put("pageId", getPage(question));
+		answerData.put("pageId", getPageName(question));
 
 		return answerData;
 	}

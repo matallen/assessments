@@ -1,0 +1,395 @@
+<html class="JFEScope" lang="EN">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Online Assessments | Red Hat Inc</title>
+	
+	<meta name="description" content="Red Hat Assessment platform.">
+	<meta name="robots" content="noindex">
+	<meta id="meta-viewport" name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=2.5">
+	<meta property="og:title" content="Online Assessment | Red Hat Inc">
+	<meta property="og:description" content="">
+	
+  <link rel="icon" href="https://www.redhat.com/profiles/rh/themes/redhatdotcom/favicon.ico">
+	  
+	<style id="customStyles">
+	@import "https://go.redhat.com/hubfs/css/styles.min.css";
+	</style>
+	<style>
+	.background{background-color: #000;}
+	</style>
+		
+	<script src="assets/js/http.js"></script>
+	<script src="assets/js/utils.js"></script>
+	<script src="assets/js/cookies.js"></script>
+	<script src="assets/js/env.js"></script>
+	
+	<script src="https://unpkg.com/jquery"></script>
+	<script src="https://surveyjs.azureedge.net/1.7.12/survey.jquery.js"></script>
+	<link href="https://surveyjs.azureedge.net/1.7.12/modern.css" type="text/css" rel="stylesheet"/>
+	
+	<link href="assets/css/survey-progress-panel.css" type="text/css" rel="stylesheet"/>
+	<link href="assets/css/header.css" type="text/css" rel="stylesheet"/>
+	<link href="assets/css/style.css" type="text/css" rel="stylesheet"/>
+	<link href="assets/css/footer.css" type="text/css" rel="stylesheet"/>
+</head>
+
+<body id="SurveyEngineBody" style="direction: inherit;">
+<div id="header">
+	<div class="navbar-container">
+		<div class="container">
+			<div class="row" style="padding: 20px 0 20px;">
+				<div class="col-md-3" >
+					<a class="navbar-brand" href="//www.redhat.com/" title="Red Hat"><img alt="Red Hat" class="img-fluid navbar-logo" data-alt-text="Red Hat" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg?t=1537976200708" title="Red Hat" data-image-state="ready"> </a>
+				</div>
+				<!--
+				<div class="col-md ">
+					<div class="LanguageSelectorContainer float-right">
+						<select aria-label="Language" name="Q_lang" id="Q_lang" class="Q_lang" data-runtime-value="runtime.Selected">
+							<option value="DE" lang="DE" data-runtime-text="runtime.Language | property 'DE' | property 'DisplayName'">Deutsch</option>
+							<option value="EN" lang="EN" selected data-runtime-text="runtime.Language | property 'EN' | property 'DisplayName'">English</option>
+							<option value="ES-ES" lang="ES-ES" data-runtime-text="runtime.Language | property 'ES-ES' | property 'DisplayName'">Español</option>
+							<option value="FR" lang="FR" data-runtime-text="runtime.Language | property 'FR' | property 'DisplayName'">Français</option>
+							<option value="IT" lang="IT" data-runtime-text="runtime.Language | property 'IT' | property 'DisplayName'">Italiano</option>
+							<option value="PT" lang="PT" data-runtime-text="runtime.Language | property 'PT' | property 'DisplayName'">Português</option>
+							<option value="KO" lang="KO" data-runtime-text="runtime.Language | property 'KO' | property 'DisplayName'">한국어</option>
+							<option value="JA" lang="JA" data-runtime-text="runtime.Language | property 'JA' | property 'DisplayName'">日本語</option>
+							<option value="ZH-S" lang="ZH-S" data-runtime-text="runtime.Language | property 'ZH-S' | property 'DisplayName'">简体中文</option>
+						</select>
+						<a class="btn btn-outline-white btn-color-white btnStyle" href="admin.html" onclick="fade('.background')">ADMIN</a>
+					</div>
+				</div>
+				-->
+			</div>
+		</div>
+	</div>
+</div>
+
+
+	<!-- css for result page tab structure -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"></link>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+	<style>
+	    .nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover { border: 0; }
+	    .nav-tabs>li.active>a { color: black; }
+	    .nav-tabs>li>a { color: gray; }
+	    .nav-tabs>li.active>a, .nav-tabs>li.active>a:focus { color: black; border-bottom: 3px solid red; }
+	</style>
+	
+	<!-- tab content such as charts, scores etc.. -->
+	<style>
+		.flex-wrapper { display: flex; flex-flow: row nowrap; }
+		.single-chart { width: 100%; justify-content: space-around; }
+		.circular-chart {
+		  display: block;
+		  margin: 10px  auto;
+		  max-width: 80%;
+		  max-height: 250px;
+		}
+		.circle-bg {
+		  fill: none;
+		  stroke: #eee;
+		  stroke-width: 3.8;
+		}
+		.circle {
+		  fill: none;
+		  stroke-width: 4;
+		  animation: progress 1s ease-out forwards;
+		}
+		@keyframes progress { 0% { stroke-dasharray: 0 100; } }
+		.score{
+		  fill: #e10000;
+		  font-family: sans-serif;
+		  font-size: 0.4em;
+		  text-anchor: middle;
+		}
+		.outof{
+		  fill: #000000;
+		  font-family: sans-serif;
+		  font-size: 0.3em;
+		  text-anchor: middle;
+		}
+		.circular-chart.orange .circle { stroke: #e10000; }
+		.separator{ border-bottom: 1px solid #ddd; }
+
+
+.print-panel-container{
+	background-color: #eee;
+}
+.print-panel{
+	width: 60%;
+}
+.print-panel>h2,.print-panel>p{
+	text-align: center;
+}
+.center{
+	text-align: center;
+	margin: auto;
+}
+	</style>
+
+	<script src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
+	<div class="print-panel-container">
+		<div class="container">
+			<div class="row">
+				<div class="container print-panel">
+					<h2>Results introduction copy</h2>
+					<p>
+						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+					</p>
+					<p>
+						<button type="button" class="btn btn-primary" id="create_pdf">Download results as a PDF</button>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<section id="xsurvey" class="py-0">
+		<div class="container">
+			<div class="row">
+				
+				<div class="col-md-10 py-4 py-md-6">
+					<div id="page">
+
+						<div class="container">
+							
+							<button type="button" class="btn btn-primary" id="retake_assessment">ReTake assessment</button>
+							
+							<ul id="tabs" class="nav nav-tabs">
+								<li><a data-toggle="tab" href="#menu4">Raw</a></li>
+							</ul>
+
+							<div id="tabsContent" class="tab-content">
+								<div id="menu4" class="tab-pane fade">
+									<h3>Raw</h3>
+									<p id="raw"></p>
+								</div>
+								
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	
+	<style>
+		.btn-redhat-primary, .btn-redhat-primary:visited{
+			color: #fff;
+	    background-color: #e10000;
+	    border-color: #e10000;
+		}
+		.btn-redhat-primary:hover, .btn-redhat-primary:active{
+			color: #fff;
+	    background-color: #c10000;
+	    border-color: #c10000;
+		}
+	</style>
+	<div class="print-panel-container">
+		<div class="container">
+			<div class="row">
+				<div class="container print-panel">
+					<h2>Get started with a Discovery Session</h2>
+					<p>
+						Discovery Session explanation lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+					</p>
+					<p>
+						<button type="button" class="btn btn-redhat-primary" onclick="window.location.href='https://www.redhat.com/en/services/consulting#GatedFormContainer';">Talk to a Red Hat expert</button>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		var surveyId=Utils.getParameterByName("surveyId");
+		var visitorId=Utils.getParameterByName("visitorId");
+		
+		var timerId;
+		var intervalInSeconds=1;
+		var retries=0;
+		var maxRetries=20;
+		$(document).ready(function() {
+			
+			timerId = window.setInterval(function () {
+				
+				if (retries>=maxRetries){
+					$("#raw").html("Uh oh, something went wrong generating the results");					
+					clearInterval(timerId);
+				}
+				
+				Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/results/"+visitorId, function(status, response){
+					if (200==status){
+						clearInterval(timerId);
+						//LocalStorage.clearState(); // remove answers from localstorage once the report page has been received successfully
+						LocalStorage.saveFlag("lastAssessmentCompleted", "true");
+						
+						// raw output
+						$("#raw").html("<pre>"+JSON.stringify(response, undefined, 2)+"</pre>");
+
+						displayResults(response);
+
+					}
+				}, function(status){
+					// on error - sink it and wait
+					retries+=1;
+				});
+				
+			}, intervalInSeconds*1000);
+			
+		});
+
+		function displayResults(jsonResponse){
+			
+			var tabCount=10;
+			var report=jsonResponse["_report"];
+			var scores=jsonResponse["_sectionScore"];
+			var c=0,max=0;
+			for(var section in report){
+				max=max+1;
+			}
+			for(var section in report){ // section is Modernize Platforms etc...
+				
+				var score=scores[section];
+				
+				// Add Tab/Menu Item
+				var tabName="menu"+tabCount++;
+				$("#tabs").prepend(`<li><a data-toggle="tab" href="#`+tabName+`">`+section+`</a></li>`);
+				
+				var html=`
+					<div id="`+tabName+`" class="tab-pane fade in `+(c==max-1?`active`:``)+`">
+						<div class="row">
+							<div class="col-md-2">
+								
+								<div class="flex-wrapper">
+									<div class="single-chart">
+										<svg viewBox="0 0 36 44" class="circular-chart orange">
+								      <path class="circle-bg" d="M18 2.0845
+								          a 15.9155 15.9155 0 0 1 0 31.831
+								          a 15.9155 15.9155 0 0 1 0 -31.831" />
+								      <path class="circle" stroke-dasharray="`+score+`, 100" d="M18 2.0845
+								          a 15.9155 15.9155 0 0 1 0 31.83h1
+								          a 15.9155 15.9155 0 0 1 0 -31.831" />
+								      <image xlink:href="assets/images/`+section.replace(/ /g,"_").toLowerCase()+`_red.png" x="50%" y="50%" style="height:20px;width:20px;" transform="translate(-10,-14)" />
+								      <text class="score" x="50%" y="50%" transform="translate(-4,20)">`+score+`</text>
+								      <text class="outof" x="50%" y="50%" transform="translate(6,20)">/100</text>
+								    </svg>
+									</div>
+								</div>
+								
+							</div>
+				`;
+				
+				
+				for(var l1 in report[section]){ // l1 is Environment, Development & Operations or Introduction
+					
+					html+=`
+						<div class="col-md-8">
+							<h3>`+l1+`</h3>
+					`;
+					
+					
+					for(var l2 in report[section][l1]){ // l2 is Findings, Recommendations & Learn More
+						var text=report[section][l1][l2];
+						html+=`<h4>`+l2+`</h4><p>`+text+`</p>`;
+					}
+					html+=`
+						</div>
+						<div class="col-md-10 separator"></div>
+					`;
+				}
+				html+=`
+							</div>
+						</div>
+					</div>
+				`;
+				
+				$("#tabsContent").append(html);
+				c=c+1;
+			}
+			
+			
+		}
+		
+	</script>
+
+	
+
+
+	<div id="footer">
+		<footer class="footerStyle">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-3"><a href="//www.redhat.com/" target="_blank" ><img alt="Red Hat" class="img-fluid" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg" style="height: 40px !important;" href="//www.redhat.com/"></a></div>
+	
+					<div class="col-md-3 copyrightStyle">
+						<p>Copyright © 2020&nbsp;<span class="text-nowrap">Red Hat, Inc.</span></p>
+					</div>
+	
+					<div class="col-md">
+						<nav class="nav">
+							<a class="nav-link"  target="_blank" href="https://www.redhat.com/en/about/privacy-policy" >Privacy statement</a>
+							<span class ="rightBorder"></span>
+							<a class="nav-link" target="_blank" href="https://www.redhat.com/en/about/terms-use">Terms of use</a>
+							<span class ="rightBorder"></span>
+							<a class="nav-link" target="_blank" href="https://www.redhat.com/en/about/all-policies-guidelines">All policies and guidelines</a>
+						</nav>
+					</div>
+				</div>
+			</div>
+		</footer>
+	</div>
+
+
+
+<!--
+<script src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
+<button type="button" class="btn btn-primary" id="create_pdf">Create PDF</button>
+-->
+<script>
+
+$('#retake_assessment').on('click', function() {
+    window.location.href="/index.html?surveyId="+surveyId;
+});
+
+    (function() {
+        var container = $('#tabsContent'),
+            cache_width = container.width(),
+            a4 = [595.28, 841.89]; // for a4 size paper width and height
+
+        $('#create_pdf').on('click', function() {
+            $('body').scrollTop(0);
+            createPDF();
+        });
+        //create pdf
+        function createPDF() {
+            getCanvas().then(function(canvas) {
+                var img = canvas.toDataURL('image/png'),
+                    doc = new jsPDF({
+                        unit: 'px',
+                        format: 'a4',
+                    });
+                doc.addImage(img, 'JPEG', 20, 20);
+                doc.save('Your_Results');
+                container.width(cache_width);
+            });
+        }
+
+        // create canvas object
+        function getCanvas() {
+            container.width(a4[0] * 1.33333 - 80).css('max-width', 'none');
+            return html2canvas(container, {
+                imageTimeout: 2000,
+                removeContainer: true,
+                scale: 2,
+                dpi: 144
+            });
+        }
+    })();
+</script>
+
+</body>
+</html>
