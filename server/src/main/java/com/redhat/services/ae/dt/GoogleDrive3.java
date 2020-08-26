@@ -244,9 +244,10 @@ public class GoogleDrive3 {
   }
   
   private static String getOS(){
-  	if (System.getProperty("os.name").indexOf("win")>0) return "windows";
-  	if (System.getProperty("os.name").indexOf("mac")>0) return "mac";
-  	if (System.getProperty("os.name").indexOf("nux")>0 || System.getProperty("os.name").indexOf("nix")>0) return "linux";
+  	String os=System.getProperty("os.name").toLowerCase();
+  	if (os.indexOf("win")>=0) return "windows";
+  	if (os.indexOf("mac")>=0) return "mac";
+  	if (os.indexOf("nux")>=0 || os.indexOf("nix")>=0) return "linux";
   	return null;
   }
   
