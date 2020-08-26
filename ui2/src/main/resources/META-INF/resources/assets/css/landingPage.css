@@ -4,9 +4,6 @@
     color: #fff;
 }
 .p{
-    font: var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-18)/var(--unnamed-line-spacing-27) var(--unnamed-font-family-red-hat-text);
-    letter-spacing: var(--unnamed-character-spacing-0);
-    color: var(---151515-black-900);
     text-align: left;
     font: normal normal normal 18px/27px Red Hat Text;
     letter-spacing: 0px;
@@ -14,9 +11,6 @@
     opacity: 1;
 }
 .headerText{
-    font: var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-40)/var(--unnamed-line-spacing-58) var(--unnamed-font-family-red-hat-display);
-    letter-spacing: var(--unnamed-character-spacing-0);
-    color: var(---151515-black-900);
     text-align: left;
     font: normal normal normal 40px/58px Red Hat Display;
     letter-spacing: 0px;
@@ -37,24 +31,25 @@
     padding: 50px 0px 20px 0px;
 
 }
+
 .btnClass{
     margin: 20px 0 80px 0;
-    background-color: #E00;
-    border-color: #E00;
-    color: #FFF;
+    background: #EE0000 0% 0% no-repeat padding-box;
     border-radius: 3px;
+    opacity: 1;
+    text-align: left;
+    font: normal normal bold 16px/24px Red Hat Display;
+    letter-spacing: 0px;
+    color: #FFFFFF;
+    width: 130px;
+    height: 56px;
 }
 
 @media only screen and (max-width: 600px) {
     .centerText{
         text-align: center;
     }
-    .btnClass{
-        margin: 20px 0 80px 0;
-        background-color: #E00;
-        border-color: #E00;
-        color: #FFF;
-    }
+
 }
 
 @media (min-width: 1200px) {
@@ -65,12 +60,6 @@
     .screenshotHeader{
         width: 450px;
     }
-
-    /*.headerText{
-        font-size: 40px;
-        font-weight: 500;
-        padding-left: 50px;
-    }*/
 
     .textHeader{
         padding: 40px 120px 0px;
