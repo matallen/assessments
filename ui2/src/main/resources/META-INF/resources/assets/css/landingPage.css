@@ -3,6 +3,28 @@
     background-size: cover;
     color: #fff;
 }
+.p{
+    font: var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-18)/var(--unnamed-line-spacing-27) var(--unnamed-font-family-red-hat-text);
+    letter-spacing: var(--unnamed-character-spacing-0);
+    color: var(---151515-black-900);
+    text-align: left;
+    font: normal normal normal 18px/27px Red Hat Text;
+    letter-spacing: 0px;
+    color: #151515;
+    opacity: 1;
+}
+.headerText{
+    font: var(--unnamed-font-style-normal) normal var(--unnamed-font-weight-normal) var(--unnamed-font-size-40)/var(--unnamed-line-spacing-58) var(--unnamed-font-family-red-hat-display);
+    letter-spacing: var(--unnamed-character-spacing-0);
+    color: var(---151515-black-900);
+    text-align: left;
+    font: normal normal normal 40px/58px Red Hat Display;
+    letter-spacing: 0px;
+    color: #151515;
+    opacity: 1;
+    padding-left: 50px;
+    font-weight: 500;
+}
 .descriptionHeader{
     padding: 80px 0px 50px;
 }
@@ -20,6 +42,7 @@
     background-color: #E00;
     border-color: #E00;
     color: #FFF;
+    border-radius: 3px;
 }
 
 @media only screen and (max-width: 600px) {
@@ -32,11 +55,6 @@
         border-color: #E00;
         color: #FFF;
     }
-
-    .headerText{
-        font-size: 25px;
-        font-weight: 500;
-    }
 }
 
 @media (min-width: 1200px) {
@@ -48,11 +66,11 @@
         width: 450px;
     }
 
-    .headerText{
+    /*.headerText{
         font-size: 40px;
         font-weight: 500;
         padding-left: 50px;
-    }
+    }*/
 
     .textHeader{
         padding: 40px 120px 0px;
@@ -68,5 +86,5 @@
 }
 
 .grayBG{
-    background-color: lightgray;
+    background-color: #D2D2D2;
 }
