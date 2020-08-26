@@ -4,15 +4,16 @@
     color: #fff;
 }
 .descriptionHeader{
-    padding: 80px 0 50px 0;
+    padding: 80px 0px 50px;
 }
 .screenshotHeader{
-    padding: 80px 0 50px 0;
+    padding: 80px 0px 50px;
     border: 5px solid red;
     height: 400px;
 }
 .textHeader{
-    padding: 50px 0 20px 0;
+    padding: 50px 0px 20px 0px;
+
 }
 .btnClass{
     margin: 20px 0 80px 0;
@@ -20,6 +21,7 @@
     border-color: #E00;
     color: #FFF;
 }
+
 @media only screen and (max-width: 600px) {
     .centerText{
         text-align: center;
@@ -29,10 +31,42 @@
         background-color: #E00;
         border-color: #E00;
         color: #FFF;
+    }
 
+    .headerText{
+        font-size: 25px;
+        font-weight: 500;
+    }
+}
+
+@media (min-width: 1200px) {
+    .descriptionHeader{
+        padding: 80px 120px 50px;
+    }
+
+    .screenshotHeader{
+        width: 450px;
+    }
+
+    .headerText{
+        font-size: 40px;
+        font-weight: 500;
+        padding-left: 50px;
+    }
+
+    .textHeader{
+        padding: 40px 120px 0px;
+    }
+
+    .formStyle{
+        padding: 20px 120px 0px;
     }
 }
 .btnClass:hover{
     background-color: #D40000;
     color: #FFF;
+}
+
+.grayBG{
+    background-color: lightgray;
 }
