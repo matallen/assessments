@@ -36,9 +36,9 @@
 }
 
 .navigationProgressbar .pageTitle {
-    color: black;
     position: absolute;
     padding-left: 30px;
+    color: #151515;
 }
 
 .navigationProgressbar .pageDescription {
@@ -116,7 +116,7 @@
 /* progress bar (x of 3 question complete) bar, not the page nav bar*/
 .sv_progress_bar{
     float: left;
-    background-color: rgb(193, 0, 0);
+    background-color: #EE0000;
     height: 6px;
     /*
     height: 20px;
@@ -140,4 +140,12 @@
 }
 */
 .sv_progress_bar>span:nth-child(2){
+}
+.textProgress{
+    text-align: left;
+    font: normal normal normal 16px/24px Red Hat Text;
+    letter-spacing: 0px;
+    color: #151515;
+    text-transform: uppercase;
+    opacity: 1;
 }

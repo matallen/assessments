@@ -92,11 +92,10 @@ div.elevate li.noColor{
 	text-align: center;
 }
 
-
-
 .navbar-container .navbar-logo {
-    max-width: 155px;
-    max-height: 37px;
+    width: 162px;
+    height: 38px;
+    opacity: 1;
 }
 .navbar-brand {
     margin-right: 0 !important;
