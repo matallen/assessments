@@ -159,7 +159,7 @@
 							<button type="button" class="btn btn-primary" id="review_assessment">Review/Edit assessment</button>
 							
 							<ul id="tabs" class="nav nav-tabs">
-								<li><a data-toggle="tab" href="#menu4">Raw</a></li>
+								<!--li><a data-toggle="tab" href="#menu4">Raw</a></li-->
 							</ul>
 
 							<div id="tabsContent" class="tab-content">
@@ -266,7 +266,7 @@
 				
 				// Add Tab/Menu Item
 				var tabName="menu"+tabCount++;
-				$("#tabs").prepend(`<li><a data-toggle="tab" href="#`+tabName+`">`+section+`</a></li>`);
+				$("#tabs").append(`<li><a data-toggle="tab" href="#`+tabName+`">`+section+`</a></li>`);
 					
 				var html=`
 					<div id="`+tabName+`" class="tab-pane fade in `+(c==max-1 && undefined==overviews?`active`:``)+`">
@@ -358,6 +358,9 @@
 				$("#tabsContent").append(html+`</div>`); // end overview tab
 			}
 			
+			
+			// Raw (debug)
+			$("#tabs").append(`<li><a data-toggle="tab" href="#raw">Raw</a></li>`);
 			
 		}
 		

@@ -10,10 +10,10 @@ public class ResultsBuilderTabs{
 
 	
 	public Map<String,Map<String,Map<String,List<String>>>> build(List<DroolsRecommendation> recommendations, Map<String, Integer> sectionScores){
-		Map<String,Map<String,Map<String,List<String>>>> resultSections=new TreeMap<String,Map<String,Map<String,List<String>>>>();
+		Map<String,Map<String,Map<String,List<String>>>> resultSections=new LinkedHashMap<String,Map<String,Map<String,List<String>>>>();
 		
 		for (DroolsRecommendation r:recommendations){
-			
+			System.out.println("XXXRecommendation - "+r);
 			if (null==r.getSection()) throw new RuntimeException("Please check the rules, there is a null section");
 			
 			if (!resultSections.containsKey(r.getSection())) resultSections.put(r.getSection(), new LinkedHashMap<>());

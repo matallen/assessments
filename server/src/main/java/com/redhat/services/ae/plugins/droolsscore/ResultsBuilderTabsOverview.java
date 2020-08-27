@@ -1,18 +1,18 @@
 package com.redhat.services.ae.plugins.droolsscore;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TreeMap;
+//import java.util.TreeMap;
 
-import com.redhat.services.ae.MapBuilder;
 
 public class ResultsBuilderTabsOverview{
 
 	
 	public Object build(List<DroolsRecommendation> recommendations, Map<String, Integer> sectionScores){
 //		Map<String,Map<String,Map<String,List<String>>>> tabs=new TreeMap<String,Map<String,Map<String,List<String>>>>();
-		Map<String, Map<String,Object>> overviews=new TreeMap<>();
+		Map<String, Map<String,Object>> overviews=new LinkedHashMap<>();
 		
 // Example output for overviews:
 //		"overviews":{
@@ -41,7 +41,7 @@ public class ResultsBuilderTabsOverview{
 //			Map<String,Map<String,Object>> anOverview=new TreeMap<>();
 //			anOverview.put(section, new TreeMap<>());
 //			anOverview.get(section).put(title, texts);
-			overviews.put(section, new TreeMap<>());
+			overviews.put(section, new LinkedHashMap<>());
 			overviews.get(section).put(title, texts);
 //			anOverview.put(title, new MapBuilder<String,Object>()
 //					.put("title","")
@@ -84,7 +84,7 @@ public class ResultsBuilderTabsOverview{
 //		}
 		
 		
-		Map<Object,Object> result=new TreeMap<>();
+		Map<Object,Object> result=new LinkedHashMap<>();
 		result.put("overviews", overviews);
 		result.put("tabs", tabs);
 		return result;

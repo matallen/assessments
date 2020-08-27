@@ -224,7 +224,7 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 			}
 			
 			//kSession.insert(new DroolsSurveySection("Overview", "", language, 100));
-			kSession.setGlobal("list", new ArrayList<>());
+			kSession.setGlobal("list", new LinkedList<>());
 			
 			kSession.fireAllRules();
 			
@@ -260,7 +260,7 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 //			Map<String,Map<String,Map<String,List<String>>>> resultSections=new TreeMap<String,Map<String,Map<String,List<String>>>>();
 			
 			// A global list was used to retain the order of the DroolsRecommendation objects. fact insertions and extractions through geFactHandles does not retain order
-			List<DroolsRecommendation> recommendations=(ArrayList<DroolsRecommendation>)kSession.getGlobal("list");
+			List<DroolsRecommendation> recommendations=(LinkedList<DroolsRecommendation>)kSession.getGlobal("list");
 
 			// key/values replacements
 			for (DroolsRecommendation r:recommendations){
