@@ -126,7 +126,6 @@ public class GoogleDrive3 {
   		DEFAULT_EXECUTABLE=new File(new File(getDefaultWorkingFolder(), gdriveType).getAbsolutePath(), exe).getAbsolutePath();
   		DEFAULT_PULL_COMMAND=cfg.get("commandTemplate");
   		
-  		
 	    if (!new File(GoogleDrive3.getDefaultExecutable()).exists()){
 	    	File credsFile=null;
 	    	try{
@@ -184,7 +183,7 @@ public class GoogleDrive3 {
   	}
   	
   	
-  	String command = String.format(DEFAULT_PULL_COMMAND, fileId);
+  	String command = String.format(DEFAULT_PULL_COMMAND, DEFAULT_EXECUTABLE, fileId);
   	
     String googleDrivePath=getDefaultWorkingFolder();
     File workingFolder=new File(googleDrivePath, fileId);
