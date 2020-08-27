@@ -60,7 +60,13 @@ LocalStorage = {
 			if (loaded.currentPageNo){
 				survey.currentPageNo=loaded.currentPageNo;
 			}
-		}
+			return loaded;
+		},
+		save: function(surveyId, toStore) {
+			console.log("LocalStorage:: Saving...");
+			//var toStore=JSON.stringify({ currentPageNo: pageNo, data: surveyData });
+			window.localStorage.setItem(LocalStorage.storageName+"_"+surveyId, toStore);
+		},
 }
 
 if (!String.prototype.format) {

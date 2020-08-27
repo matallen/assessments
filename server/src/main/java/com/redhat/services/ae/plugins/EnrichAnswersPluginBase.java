@@ -117,6 +117,9 @@ public abstract class EnrichAnswersPluginBase implements Plugin{
 				continue;
 			}
 			
+			if (!questionsMapping.containsKey(questionId)) throw new RuntimeException("Found answers for questions ("+questionId+") that dont exist - config issue?");
+				
+			
 			if (String.class.isAssignableFrom(e.getValue().getClass())){
 				String answer=(String)e.getValue();
 				

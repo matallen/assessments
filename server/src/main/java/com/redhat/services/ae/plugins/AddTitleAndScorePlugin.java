@@ -56,7 +56,7 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 		
 		if (null==question) return answerData;
 
-		if (answerSplit.score>0){
+		if (answerSplit.score>=0){
 //			scoreQuestionsCount+=1;
 //			totalScore+=answerSplit.score;
 			answerData.put("score", answerSplit.score);
@@ -86,7 +86,7 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 		List<String> newAnswers=new ArrayList<>();
 		for (String answerString:answers){
 			Answer answerSplit=splitThis((String)answerString);
-			if (answerSplit.score>0){
+			if (answerSplit.score>=0){
 				highestScore=Math.max(answerSplit.score, highestScore);
 			}
 			newAnswers.add(answerSplit.text);
@@ -94,7 +94,7 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 		
 		Map<String,Object> answerData=new MapBuilder<String,Object>().put("answers", newAnswers).build();
 		if (question.has("title")) answerData.put("title", question.at("title").asString());
-		if (highestScore>0){
+		if (highestScore>=0){
 			answerData.put("score", highestScore);
 		}
 		
@@ -112,7 +112,7 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 	
 	public Answer splitThis(String answer){
 		Answer result=new Answer();
-		result.score=0; // default score is 1 point for everything
+		result.score=-1; // default score is X point for everything
 		result.text=answer;
 		if (answer.contains("#")){
 			result.text=answer.split("#")[1];
