@@ -265,8 +265,9 @@
 			for(var section in report){ // section is Modernize Platforms etc...
 				
 				// Add Tab/Menu Item
-				var tabName="menu"+tabCount++;
-				$("#tabs").append(`<li><a data-toggle="tab" href="#`+tabName+`">`+section+`</a></li>`);
+				//var tabName="menu"+tabCount++;
+				tabName="menu_"+section.replace(/ /g,"_").toLowerCase();
+				$("#tabs").append(`<li><a data-toggle="tab" id="tab_`+section.replace(/ /g,"_").toLowerCase()+`" href="#`+tabName+`">`+section+`</a></li>`);
 					
 				var html=`
 					<div id="`+tabName+`" class="tab-pane fade in `+(c==max-1 && undefined==overviews?`active`:``)+`">
@@ -322,7 +323,7 @@
 			
 			// if "overview" content exists, display it
 			if (undefined!=overviews){
-				$("#tabs").prepend(`<li><a data-toggle="tab" href="#overview">Overview</a></li>`);
+				$("#tabs").prepend(`<li class="active"><a data-toggle="tab" href="#overview">Overview</a></li>`);
 				var html=`<div id="overview" class="tab-pane fade in active">`;
 				for (var section in overviews){
 					for (var title in overviews[section]){
@@ -352,6 +353,7 @@
 						for (var text in overviews[section][title]){
 							html+=`<p>`+overviews[section][title][text]+`</p>`;
 						}
+						html+=`<a onclick="document.getElementById('tab_`+section.replace(/ /g,"_").toLowerCase()+`').click();return false;" href="#">See details &rarr;</a>`;
 						html+=`</div></div>`; // end row
 					}
 				}
