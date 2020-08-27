@@ -156,9 +156,10 @@
 						<div class="container">
 							
 							<button type="button" class="btn btn-primary" id="retake_assessment">ReTake assessment</button>
+							<button type="button" class="btn btn-primary" id="review_assessment">Review/Edit assessment</button>
 							
 							<ul id="tabs" class="nav nav-tabs">
-								<li><a data-toggle="tab" href="#menu4">Raw</a></li>
+								<!--li><a data-toggle="tab" href="#menu4">Raw</a></li-->
 							</ul>
 
 							<div id="tabsContent" class="tab-content">
@@ -246,21 +247,30 @@
 			
 			var tabCount=10;
 			var report=jsonResponse["_report"];
+			
+			// if it contains overviews for an overviews tab, then drill in for the content, and extract the overviews
+			if (report["overviews"]){
+				var overviews=report["overviews"];
+				report=report["tabs"];
+			}
 			var scores=jsonResponse["_sectionScore"];
 			var c=0,max=0;
+			
+			
+			
+			
 			for(var section in report){
 				max=max+1;
 			}
 			for(var section in report){ // section is Modernize Platforms etc...
 				
-				var score=scores[section];
-				
 				// Add Tab/Menu Item
-				var tabName="menu"+tabCount++;
-				$("#tabs").prepend(`<li><a data-toggle="tab" href="#`+tabName+`">`+section+`</a></li>`);
-				
+				//var tabName="menu"+tabCount++;
+				tabName="menu_"+section.replace(/ /g,"_").toLowerCase();
+				$("#tabs").append(`<li><a data-toggle="tab" id="tab_`+section.replace(/ /g,"_").toLowerCase()+`" href="#`+tabName+`">`+section+`</a></li>`);
+					
 				var html=`
-					<div id="`+tabName+`" class="tab-pane fade in `+(c==max-1?`active`:``)+`">
+					<div id="`+tabName+`" class="tab-pane fade in `+(c==max-1 && undefined==overviews?`active`:``)+`">
 						<div class="row">
 							<div class="col-md-2">
 								
@@ -270,11 +280,11 @@
 								      <path class="circle-bg" d="M18 2.0845
 								          a 15.9155 15.9155 0 0 1 0 31.831
 								          a 15.9155 15.9155 0 0 1 0 -31.831" />
-								      <path class="circle" stroke-dasharray="`+score+`, 100" d="M18 2.0845
+								      <path class="circle" stroke-dasharray="`+scores[section]+`, 100" d="M18 2.0845
 								          a 15.9155 15.9155 0 0 1 0 31.83h1
 								          a 15.9155 15.9155 0 0 1 0 -31.831" />
 								      <image xlink:href="assets/images/`+section.replace(/ /g,"_").toLowerCase()+`_red.png" x="50%" y="50%" style="height:20px;width:20px;" transform="translate(-10,-14)" />
-								      <text class="score" x="50%" y="50%" transform="translate(-4,20)">`+score+`</text>
+								      <text class="score" x="50%" y="50%" transform="translate(-4,20)">`+scores[section]+`</text>
 								      <text class="outof" x="50%" y="50%" transform="translate(6,20)">/100</text>
 								    </svg>
 									</div>
@@ -283,14 +293,12 @@
 							</div>
 				`;
 				
-				
 				for(var l1 in report[section]){ // l1 is Environment, Development & Operations or Introduction
 					
 					html+=`
 						<div class="col-md-8">
 							<h3>`+l1+`</h3>
 					`;
-					
 					
 					for(var l2 in report[section][l1]){ // l2 is Findings, Recommendations & Learn More
 						var text=report[section][l1][l2];
@@ -301,6 +309,7 @@
 						<div class="col-md-10 separator"></div>
 					`;
 				}
+				
 				html+=`
 							</div>
 						</div>
@@ -311,6 +320,49 @@
 				c=c+1;
 			}
 			
+			
+			// if "overview" content exists, display it
+			if (undefined!=overviews){
+				$("#tabs").prepend(`<li class="active"><a data-toggle="tab" href="#overview">Overview</a></li>`);
+				var html=`<div id="overview" class="tab-pane fade in active">`;
+				for (var section in overviews){
+					for (var title in overviews[section]){
+						html+=`
+						<div class="row">
+							<div class="col-md-2">
+								<div class="flex-wrapper">
+									<div class="single-chart">
+										<svg viewBox="0 0 36 44" class="circular-chart orange">
+								      <path class="circle-bg" d="M18 2.0845
+								          a 15.9155 15.9155 0 0 1 0 31.831
+								          a 15.9155 15.9155 0 0 1 0 -31.831" />
+								      <path class="circle" stroke-dasharray="`+scores[section]+`, 100" d="M18 2.0845
+								          a 15.9155 15.9155 0 0 1 0 31.83h1
+								          a 15.9155 15.9155 0 0 1 0 -31.831" />
+								      <image xlink:href="assets/images/`+section.replace(/ /g,"_").toLowerCase()+`_red.png" x="50%" y="50%" style="height:20px;width:20px;" transform="translate(-10,-14)" />
+								      <text class="score" x="50%" y="50%" transform="translate(-4,20)">`+scores[section]+`</text>
+								      <text class="outof" x="50%" y="50%" transform="translate(6,20)">/100</text>
+								    </svg>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-8">
+								<h3>`+section+`</h3>
+								`;
+							
+						for (var text in overviews[section][title]){
+							html+=`<p>`+overviews[section][title][text]+`</p>`;
+						}
+						html+=`<a onclick="document.getElementById('tab_`+section.replace(/ /g,"_").toLowerCase()+`').click();return false;" href="#">See details &rarr;</a>`;
+						html+=`</div></div>`; // end row
+					}
+				}
+				$("#tabsContent").append(html+`</div>`); // end overview tab
+			}
+			
+			
+			// Raw (debug)
+			$("#tabs").append(`<li><a data-toggle="tab" href="#raw">Raw</a></li>`);
 			
 		}
 		
@@ -352,8 +404,19 @@
 <script>
 
 $('#retake_assessment').on('click', function() {
-    window.location.href="/index.html?surveyId="+surveyId;
+	window.location.href="/index.html?surveyId="+surveyId;
 });
+$('#review_assessment').on('click', function() {
+	LocalStorage.removeFlag("lastAssessmentCompleted");
+	var surveyData=LocalStorage.loadState(surveyId);
+	surveyData.currentPageNo=0;
+	var toStore=JSON.stringify(surveyData);
+	LocalStorage.save(surveyId, toStore);
+	window.location.href="/index.html?surveyId="+surveyId;
+});
+
+
+
 
     (function() {
         var container = $('#tabsContent'),

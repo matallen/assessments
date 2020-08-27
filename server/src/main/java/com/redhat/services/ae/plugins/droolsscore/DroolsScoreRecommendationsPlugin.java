@@ -174,6 +174,8 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 			
 			String language=surveyResults.containsKey("language")?(String)surveyResults.get("language"):"en";
 			
+			Map<String,Integer> sectionScores=new HashMap<>();
+			
 			// Insert the question/answer facts into the drools session
 			for(Entry<String, Object> e:surveyResults.entrySet()){
 				String key=e.getKey();
@@ -187,15 +189,16 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 							DroolsSurveySection a=new DroolsSurveySection(e2.getKey(), "this will be a subsection one day", language, e2.getValue());
 							log.debug("Inserting fact: "+a);
 							kvReplacement.put("score_"+e2.getKey().replaceAll(" ", "_"), String.valueOf(e2.getValue()));
+							sectionScores.put(e2.getKey(), e2.getValue());
 							kSession.insert(a);
 						}
 					}
 					
-					if ("_averageScore".equals(e.getKey()) && Integer.class.isAssignableFrom(val.getClass())){
-						DroolsSurveyScore a=new DroolsSurveyScore((Integer)val, language);
-						log.debug("Inserting fact: "+a);
-						kSession.insert(a);
-					}
+//					if ("_averageScore".equals(e.getKey()) && Integer.class.isAssignableFrom(val.getClass())){
+//						DroolsSurveyScore a=new DroolsSurveyScore((Integer)val, language);
+//						log.debug("Inserting fact: "+a);
+//						kSession.insert(a);
+//					}
 					
 				}else{
 					
@@ -220,7 +223,8 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 				
 			}
 			
-			kSession.setGlobal("list", new ArrayList<>());
+			//kSession.insert(new DroolsSurveySection("Overview", "", language, 100));
+			kSession.setGlobal("list", new LinkedList<>());
 			
 			kSession.fireAllRules();
 			
@@ -253,41 +257,55 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 //			}
 			
 			
-			Map<String,Map<String,Map<String,List<String>>>> sections2=new TreeMap<String,Map<String,Map<String,List<String>>>>();
+//			Map<String,Map<String,Map<String,List<String>>>> resultSections=new TreeMap<String,Map<String,Map<String,List<String>>>>();
 			
 			// A global list was used to retain the order of the DroolsRecommendation objects. fact insertions and extractions through geFactHandles does not retain order
-			List<DroolsRecommendation> recommendations=(ArrayList<DroolsRecommendation>)kSession.getGlobal("list");
+			List<DroolsRecommendation> recommendations=(LinkedList<DroolsRecommendation>)kSession.getGlobal("list");
+
+			// key/values replacements
 			for (DroolsRecommendation r:recommendations){
-			
-			// extract recommendations version 2 (with sub-sections)
-//			for(FactHandle fh : kSession.getFactHandles(new ObjectFilter(){
-//				public boolean accept(Object object){
-//					return object instanceof DroolsRecommendation;
-//			}}).stream().toArray(FactHandle[]::new)){
-//				
-//				DroolsRecommendation r=(DroolsRecommendation)kSession.getObject(fh);
-				
 				// replace any key/values from the answers in the recommendation strings
 				for (Entry<String, String> e:kvReplacement.entrySet()){
 					if (r.getText().contains("$"+e.getKey()))
 						r.text=r.text.replaceFirst("\\$"+e.getKey(), e.getValue());
 				}
-				
-//				System.out.println("Adding Result Text: "+r);
-				
-				if (!sections2.containsKey(r.getSection())) sections2.put(r.getSection(), new LinkedHashMap<>());
-				if (!sections2.get(r.getSection()).containsKey(r.getLevel1())) sections2.get(r.getSection()).put(r.getLevel1(), new LinkedHashMap<>());
-				if (!sections2.get(r.getSection()).get(r.getLevel1()).containsKey(r.getLevel2())) sections2.get(r.getSection()).get(r.getLevel1()).put(r.getLevel2(), new LinkedList<>());
-				
-//				if (!sections2.get(r.getSection()).containsKey(r.getSubSection())) sections2.get(r.getSection()).put(r.getSubSection(), new LinkedList<>());
-				sections2.get(r.getSection()).get(r.getLevel1()).get(r.getLevel2()).add(r.getText());
-				
 			}
+			
+			Object resultSections=new ResultsBuilderTabsOverview().build(recommendations, sectionScores);
+			
+//			for (DroolsRecommendation r:recommendations){
+//			
+//			// extract recommendations version 2 (with sub-sections)
+////			for(FactHandle fh : kSession.getFactHandles(new ObjectFilter(){
+////				public boolean accept(Object object){
+////					return object instanceof DroolsRecommendation;
+////			}}).stream().toArray(FactHandle[]::new)){
+////				
+////				DroolsRecommendation r=(DroolsRecommendation)kSession.getObject(fh);
+//				
+//				// replace any key/values from the answers in the recommendation strings
+//				for (Entry<String, String> e:kvReplacement.entrySet()){
+//					if (r.getText().contains("$"+e.getKey()))
+//						r.text=r.text.replaceFirst("\\$"+e.getKey(), e.getValue());
+//				}
+//				
+////				System.out.println("Adding Result Text: "+r);
+//				
+//				if (null==r.getSection()) throw new RuntimeException("Please check the rules, there is a null section");
+//				
+//				if (!resultSections.containsKey(r.getSection())) resultSections.put(r.getSection(), new LinkedHashMap<>());
+//				if (!resultSections.get(r.getSection()).containsKey(r.getLevel1())) resultSections.get(r.getSection()).put(r.getLevel1(), new LinkedHashMap<>());
+//				if (!resultSections.get(r.getSection()).get(r.getLevel1()).containsKey(r.getLevel2())) resultSections.get(r.getSection()).get(r.getLevel1()).put(r.getLevel2(), new LinkedList<>());
+//				
+////				if (!sections2.get(r.getSection()).containsKey(r.getSubSection())) sections2.get(r.getSection()).put(r.getSubSection(), new LinkedList<>());
+//				resultSections.get(r.getSection()).get(r.getLevel1()).get(r.getLevel2()).add(r.getText());
+//				
+//			}
 			
 			
 			
 			// add recommendations to the results
-			surveyResults.put("_report", sections2);
+			surveyResults.put("_report", resultSections);
 			
 			return surveyResults;
 			

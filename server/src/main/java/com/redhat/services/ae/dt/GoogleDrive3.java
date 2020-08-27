@@ -50,17 +50,20 @@ import com.redhat.services.ae.utils.Json;
 public class GoogleDrive3 {
 	public static final Logger log=LoggerFactory.getLogger(GoogleDrive3.class);
   
-  public static String DEFAULT_EXECUTABLE="/home/%s/drive_linux";
+  public static String DEFAULT_EXECUTABLE="/%s/%s/drive_linux";
 //  public static final String DEFAULT_PULL_COMMAND=DEFAULT_EXECUTABLE+" pull -export xls -quiet=true --id %s"; //worked with 0.3.1
-  public static String DEFAULT_PULL_COMMAND=DEFAULT_EXECUTABLE+" pull -export xls -no-prompt --id %s"; // 0.3.7+ changed its output that we parse
-  public static String DEFAULT_WORKING_FOLDER="/home/%s/google_drive";
+  public static String DEFAULT_PULL_COMMAND=getDefaultExecutable()+" pull -export xls -no-prompt --id %s"; // 0.3.7+ changed its output that we parse
+  private static String DEFAULT_WORKING_FOLDER="/%s/%s/google_drive";
   private static String gdriveType;
   private long cacheExpiryInMs;
   private static Map<String,File> cache=new HashMap<String, File>();
   private static Map<String,Long> cacheExpiry=new HashMap<String, Long>();
   
   public static String getDefaultExecutable(){
-    return String.format(DEFAULT_EXECUTABLE, System.getProperty("user.name"));
+    return String.format(DEFAULT_EXECUTABLE, ("linux".equals(getOS())?"home":"Users"), System.getProperty("user.name"));
+  }
+  public static String getDefaultWorkingFolder() {
+	  return String.format(DEFAULT_WORKING_FOLDER, ("linux".equals(getOS())?"home":"Users"), System.getProperty("user.name"));
   }
   
   public GoogleDrive3(){
@@ -102,11 +105,16 @@ public class GoogleDrive3 {
 //  	System.out.println(test);
 //  }
   
+  public static void initialise(DriverType type, String version) {
+	  String workingFolder=("linux".equals(getOS())?"/home/":"/Users/")+"%s/google_drive";
+	  initialise(workingFolder, type, version);
+  }
+  
   public static void initialise(String workingFolder, DriverType type, String version) {
   	try{
   		
   		// load the config
-  		String cfgString=IOUtils.toString(GoogleDrive3.class.getClassLoader().getResourceAsStream("GoogleDrive3_initialize.json"));
+  		String cfgString=IOUtils.toString(GoogleDrive3.class.getClassLoader().getResourceAsStream("GoogleDrive3_initialize.json"), "UTF-8");
   		Map<String,Map<String,String>> cfgs=Json.newObjectMapper(true).readValue(cfgString, new TypeReference<Map<String, Map<String,String>>>(){});
   		Map<String,String> cfg=cfgs.get(type+"/"+version+"/"+getOS());
   		
@@ -114,10 +122,9 @@ public class GoogleDrive3 {
   		
   		String exe=RegExHelper.extract(cfg.get("url"), ".+/(.+)$");
   		gdriveType=type.name();
-  		DEFAULT_WORKING_FOLDER=String.format(workingFolder, System.getProperty("user.name"));
-  		DEFAULT_EXECUTABLE=new File(new File(DEFAULT_WORKING_FOLDER, gdriveType).getAbsolutePath(), exe).getAbsolutePath();
+  		//DEFAULT_WORKING_FOLDER=String.format(workingFolder, System.getProperty("user.name"));
+  		DEFAULT_EXECUTABLE=new File(new File(getDefaultWorkingFolder(), gdriveType).getAbsolutePath(), exe).getAbsolutePath();
   		DEFAULT_PULL_COMMAND=cfg.get("commandTemplate");
-  		
   		
 	    if (!new File(GoogleDrive3.getDefaultExecutable()).exists()){
 	    	File credsFile=null;
@@ -125,10 +132,10 @@ public class GoogleDrive3 {
 		    	
 	    		// attempt to download the binary
 	    		log.info("Downloading '"+type+"/"+version+"' from: "+cfg.get("url"));
-	    		new DownloadFile().get(cfg.get("url"), new File(DEFAULT_WORKING_FOLDER, gdriveType), PosixFilePermission.OTHERS_EXECUTE);
+	    		new DownloadFile().get(cfg.get("url"), new File(getDefaultWorkingFolder(), gdriveType), PosixFilePermission.OTHERS_EXECUTE);
 	    		
 	    		// set the creds file location
-	    		credsFile=new File(String.format(cfg.get("credentialsLocation"), System.getProperty("user.name")));
+	    		credsFile=new File(String.format(cfg.get("credentialsLocation"), ("linux".equals(getOS())?"home":"Users"), System.getProperty("user.name")));
 	    		
 	    		log.info("Deploying credentials.json in: "+credsFile);
 	    		credsFile.getParentFile().mkdirs();
@@ -148,7 +155,7 @@ public class GoogleDrive3 {
 	    	}catch(IOException e){
 	        System.err.println("Failed to initialise gdrive and/or credentials, cleaning up exe and creds");
 	        if (null!=credsFile) credsFile.delete();
-	        new File(GoogleDrive3.getDefaultExecutable()).delete();
+	        //new File(GoogleDrive3.getDefaultExecutable()).delete();
 	        e.printStackTrace();
 	    	}
 	    }else{
@@ -178,7 +185,7 @@ public class GoogleDrive3 {
   	
   	String command = String.format(DEFAULT_PULL_COMMAND, DEFAULT_EXECUTABLE, fileId);
   	
-    String googleDrivePath=String.format(DEFAULT_WORKING_FOLDER, System.getProperty("user.name"));
+    String googleDrivePath=getDefaultWorkingFolder();
     File workingFolder=new File(googleDrivePath, fileId);
     System.out.println(this.getClass().getName()+"::downloadFile() - Downloading google file: "+fileId + " [workingFolder="+workingFolder.getAbsolutePath()+"]");
     workingFolder.mkdirs(); // just in case it's not there
@@ -188,7 +195,7 @@ public class GoogleDrive3 {
     
     if (googleDrivePath.contains("google")){
 //    	FileUtils.deleteDirectory(workingFolder);
-      recursivelyDelete(workingFolder, new File(DEFAULT_EXECUTABLE).getName());
+      recursivelyDelete(workingFolder, new File(getDefaultExecutable()).getName());
     }else
       System.out.println(this.getClass().getName()+"::downloadFile() - Not cleaning working folder unless it contains the name 'google' - for safety reasons");
     
@@ -244,9 +251,10 @@ public class GoogleDrive3 {
   }
   
   private static String getOS(){
-  	if (System.getProperty("os.name").indexOf("win")>0) return "windows";
-  	if (System.getProperty("os.name").indexOf("mac")>0) return "mac";
-  	if (System.getProperty("os.name").indexOf("nux")>0 || System.getProperty("os.name").indexOf("nix")>0) return "linux";
+  	String os=System.getProperty("os.name").toLowerCase();
+  	//if (os.indexOf("win")>=0) return "windows";
+  	if (os.indexOf("mac")>=0) return "mac";
+  	if (os.indexOf("nux")>=0 || os.indexOf("nix")>=0) return "linux";
   	return null;
   }
   

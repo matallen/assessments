@@ -15,7 +15,7 @@ package com.redhat.services.ae;
 import com.redhat.services.ae.plugins.droolsscore.DroolsRecommendation;
 import com.redhat.services.ae.plugins.droolsscore.DroolsSurveySection;
 
-global java.util.ArrayList list
+global java.util.LinkedList list
 
 template "question recommendations"
 

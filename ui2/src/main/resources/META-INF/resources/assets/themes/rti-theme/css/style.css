@@ -89,5 +89,9 @@
 .sv_q_imgsel {
     margin-bottom: 15px;
     width: 46% !important;
+    opacity: 0.6;
+}
+.sv_q_imgsel.sv-q-col-2.checked{
+    opacity: 1;
 }
 

@@ -17,7 +17,8 @@ public class Initialization {
 	
 	public void onStartup(@Observes StartupEvent e) {
 		log.info("Starting up...");
-		GoogleDrive3.initialise("/home/%s/google_drive", GoogleDrive3.DriverType.gdrive, "v2.1.1PreRelease");
+		
+		GoogleDrive3.initialise(GoogleDrive3.DriverType.gdrive, "v2.1.1PreRelease");
 	}
 	
 	void onShutdown(@Observes ShutdownEvent e) {
