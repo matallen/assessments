@@ -283,7 +283,7 @@ div.elevate li.noColor{
 
 /* contact form panel elements need to be side-by-side. There's no class associated so i chose a class associated with panels and moved that to a grid structure */
 .sv_p_container>div:nth-of-type(3){
-	display: grid;
+    display: grid;
   grid-gap: 15px;
   grid-template-columns: repeat(2,1fr);
 }
@@ -293,8 +293,6 @@ div.elevate li.noColor{
 	background-color: initial;
 }
 */
-
-
 
 
 .sv_imgpicker_outer{
@@ -308,20 +306,30 @@ div.elevate li.noColor{
     margin: 1px;
 }
 .sv_imgpicker_inner img{
-		display: block;
+    display: block;
     margin: 0 auto;
-		position: relative;
+    position: relative;
     top: 30px;
-		opacity: 0.5;
+    opacity: 0.5;
     filter: alpha(opacity=40);
 }
 .sv_imgpicker_inner div{
-		position: relative;
+    position: relative;
     top: 40px;
     white-space: normal;
 }
 
+@media only screen and (max-width: 600px) {
+    sv_imgpicker_inner img{
+        display: block;
+        margin: 0 auto;
+        position: relative;
+        top: 30px;
+        opacity: 0.5;
+        filter: alpha(opacity=40);
+    }
 
+}
 .sv_row{
     border: 1px solid #ccc;
     margin: 30px;

@@ -5,6 +5,7 @@
 }
 .p{
     text-align: left;
+    font-family: var(--pfe-theme--font-family--heading, "RedHatDisplay", "RedHatText" "Overpass", Overpass, Helvetica, Arial, sans-serif);
     font: normal normal normal 18px/27px Red Hat Text;
     letter-spacing: 0px;
     color: #151515;
@@ -12,6 +13,7 @@
 }
 .headerText{
     text-align: left;
+    font-family: var(--pfe-theme--font-family--heading, "RedHatDisplay", "RedHatText" "Overpass", Overpass, Helvetica, Arial, sans-serif);
     font: normal normal normal 40px/58px Red Hat Display;
     letter-spacing: 0px;
     color: #151515;
@@ -38,6 +40,7 @@
     border-radius: 3px;
     opacity: 1;
     text-align: left;
+    font-family: var(--pfe-theme--font-family--heading, "RedHatDisplay", "RedHatText" "Overpass", Overpass, Helvetica, Arial, sans-serif);
     font: normal normal bold 16px/24px Red Hat Display;
     letter-spacing: 0px;
     color: #FFFFFF;

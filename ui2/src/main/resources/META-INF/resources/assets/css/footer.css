@@ -10,6 +10,7 @@ footer.footerStyle p{
 footer.footerStyle nav a{
     text-align: left;
     text-decoration: underline;
+    font-family: var(--pfe-theme--font-family--heading, "RedHatDisplay", "RedHatText" "Overpass", Overpass, Helvetica, Arial, sans-serif);
     font: normal normal normal 12px/18px Red Hat Text;
     letter-spacing: 0px;
     color: #D2D2D2;
@@ -19,6 +20,7 @@ footer.footerStyle nav a{
 footer.footerStyle nav a:hover{
     text-align: left;
     text-decoration: underline;
+    font-family: var(--pfe-theme--font-family--heading, "RedHatDisplay", "RedHatText" "Overpass", Overpass, Helvetica, Arial, sans-serif);
     font: normal normal normal 12px/18px Red Hat Text;
     letter-spacing: 0px;
     color: #ffffff;
@@ -31,6 +33,7 @@ footer.footerStyle nav a:hover{
 }
 footer.footerStyle p{
     text-align: left;
+    font-family: var(--pfe-theme--font-family--heading, "RedHatDisplay", "RedHatText" "Overpass", Overpass, Helvetica, Arial, sans-serif);
     font: normal normal normal 12px/18px Red Hat Text;
     letter-spacing: 0px;
     color: #D2D2D2;
