@@ -7,6 +7,7 @@
 .sv_page_select_interests .sv_qstn>div:nth-child(2) {
     background-color: #f0f0f0 !important;
     border: 0px;
+    overflow: hidden;
 }
 
 .sv_page_select_interests .sv_row{
@@ -87,10 +88,25 @@
 
 /* Applying even spacing for the image selection boxes (interest areas) */
 .sv_q_imgsel {
+    /*
     margin-bottom: 15px;
     width: 46% !important;
+    */
     opacity: 0.6;
 }
-.sv_q_imgsel.sv-q-col-2.checked{
+.sv_q_imgsel.checked label>div{
+    box-shadow: 1px 2px #ccc;
+}
+.sv_q_imgsel.checked{
     opacity: 1;
+}
+.sv_imgsel_grid{
+	display: grid;
+	grid-gap: 30px;
+	grid-template-columns: repeat(2,1fr);
+}
+.sv-q-col-2{
+  padding-right: 0em !important;
+  height: 294px;
+  width: 100% !important;
 }

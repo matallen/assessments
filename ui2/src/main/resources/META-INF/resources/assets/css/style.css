@@ -280,6 +280,7 @@ div.elevate li.noColor{
 }
 .sv_qstn .sv_q_imgsel label > div{
 	padding: 1px !important;
+	border-radius: 5px !important;
 }
 
 /* contact form panel elements need to be side-by-side. There's no class associated so i chose a class associated with panels and moved that to a grid structure */
@@ -299,14 +300,20 @@ div.elevate li.noColor{
 
 
 .sv_imgpicker_outer{
+	/*
 	width: 300px;
     height: 300px;
+	*/
 }
 .sv_imgpicker_inner{
+	/*
 	width: 294px;
+	*/
     height: 294px;
     background-color: white;
     margin: 1px;
+    padding: 0 20 0 20;
+    border-radius: 4px;
 }
 .sv_imgpicker_inner img{
 		display: block;

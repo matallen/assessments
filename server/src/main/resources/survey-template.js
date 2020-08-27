@@ -3,6 +3,7 @@
 var imgpicker_template = `
   <fieldset data-bind="css: question.koCss().root">
       <legend data-bind="attr: { 'aria-label': question.locTitle.renderedHtml }"></legend>
+	<div class="sv_imgsel_grid">
       <!-- ko foreach: { data: question.visibleChoices, as: 'item', afterRender: question.koAfterRender}  -->
       <div data-bind="css: question.getItemClass(item)">
           <label data-bind="css: question.koCss().label">
@@ -29,6 +30,7 @@ var imgpicker_template = `
           </label>
       </div>
       <!-- /ko -->
+	</div>
   </fieldset>
 `;
 new Survey
