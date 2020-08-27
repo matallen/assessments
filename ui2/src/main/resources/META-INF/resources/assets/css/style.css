@@ -381,3 +381,9 @@ div.elevate li.noColor{
 	display: inline-block !important;
 	padding-top: 10px;
 }
+
+input[type=radio], input[type=checkbox] {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 10px !important;
+}
