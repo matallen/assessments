@@ -381,3 +381,9 @@ div.elevate li.noColor{
 	display: inline-block !important;
 	padding-top: 10px;
 }
+
+
+/* Mat - this should be in the theme, but is used on the results page which doesnt have theme specific css yet */
+.row-asset-links{
+	border-bottom: 1px solid #eee;
+}

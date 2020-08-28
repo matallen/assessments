@@ -198,7 +198,7 @@
 						Discovery Session explanation lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
 					</p>
 					<p>
-						<button type="button" class="btn btn-redhat-primary" onclick="window.location.href='https://www.redhat.com/en/services/consulting#GatedFormContainer';">Talk to a Red Hat expert</button>
+						<button type="button" class="btn btn-redhat-primary" onclick="window.location.href='https://www.redhat.com/de/services/consulting#GatedFormContainer';">Talk to a Red Hat expert</button>
 					</p>
 				</div>
 			</div>
@@ -292,21 +292,29 @@
 								
 							</div>
 				`;
+				// no graphic
+				//var html=`
+				//		<div id="`+tabName+`" class="tab-pane fade in `+(c==max-1 && undefined==overviews?`active`:``)+`">
+				//			<div class="row">
+				//				<div class="col-md-10">
+				//	`;
 				
 				for(var l1 in report[section]){ // l1 is Environment, Development & Operations or Introduction
 					
-					html+=`
-						<div class="col-md-8">
-							<h3>`+l1+`</h3>
-					`;
+					html+=`<div class=" l1">`;
+					if (l1!="") html+=`<h3>`+l1+`</h3>`;
 					
 					for(var l2 in report[section][l1]){ // l2 is Findings, Recommendations & Learn More
-						var text=report[section][l1][l2];
-						html+=`<h4>`+l2+`</h4><p>`+text+`</p>`;
+						html+=`<div class=" txt">`;
+						if (l2!="") html+=`<h4>`+l2+`</h4>`;
+						for (var i in report[section][l1][l2]){
+							html+=`<p>`+report[section][l1][l2][i]+`</p>`;
+						}
+						html+=`</div> <!--txt  -->`;
 					}
 					html+=`
 						</div>
-						<div class="col-md-10 separator"></div>
+						<div class=" separator"></div>
 					`;
 				}
 				
