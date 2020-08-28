@@ -419,7 +419,7 @@
 						for (var text in overviews[section][title]){
 							html+=`<p>`+overviews[section][title][text]+`</p>`;
 						}
-						//html+=`<a onclick="document.getElementById('tab_`+section.replace(/ /g,"_").toLowerCase()+`').click();return false;" href="#">See details &rarr;</a>`;
+						html+=`<a onclick="document.getElementById('tab_`+section.replace(/ /g,"_").toLowerCase()+`').click();return false;" href="#">See details &rarr;</a>`;
 						html+=`</div><div class="col-md-10"><hr/></div></div>`; // end row
 					}
 				}
