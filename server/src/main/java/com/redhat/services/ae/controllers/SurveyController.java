@@ -80,15 +80,15 @@ public class SurveyController{
 			@PathParam("rId") String rId
 			) throws IOException{
 		
-		System.out.println("/results/::");
+//		System.out.println("/results/::");
 //		String xxx=CacheHelper.cache.get(surveyId+"_"+rId);
 		String xxx=Results.get().getResults().get(surveyId+"_"+rId);
 		
 		
 //		Cache<String, String> cache=new CacheHelper<String>().getCache("resultDataTransfer", 10, 100, 300);
 //		String xxx=cache.getIfPresent(surveyId+"_"+rId);
-		System.out.println("cache(resultDataTransfer).size="+CacheHelper.cache.size());
-		System.out.println("cache(resultDataTransfer).get("+(surveyId+"_"+rId)+") = "+xxx);
+//		System.out.println("cache(resultDataTransfer).size="+CacheHelper.cache.size());
+//		System.out.println("cache(resultDataTransfer).get("+(surveyId+"_"+rId)+") = "+xxx);
 		
 		return Response.ok().entity(xxx).build();
 	}
@@ -110,13 +110,13 @@ public class SurveyController{
 		String YYMMM=FluentCalendar.get(new Date()).getString("yy-MMM");
 		
 		// TODO: i don't like separating the data and info as it makes parsing less clean, but data may not be necessary anyway
-		System.out.println("onPageChange: payload= "+payload);
+//		System.out.println("onPageChange: payload= "+payload);
 		Map<String,String> info=Json.toObject(payload, new TypeReference<HashMap<String,String>>(){});
 //		Map<String,String> data=(Map<String,String>)pageData.get("data");
 //		Map<String,String> info=(Map<String,String>)pageData.get("info");
 		
 		
-		System.out.println("onPageChange:: info="+Json.toJson(info));
+//		System.out.println("onPageChange:: info="+Json.toJson(info));
 		
 		
 //		System.out.println("onPageChange:: data="+Json.toJson(data));

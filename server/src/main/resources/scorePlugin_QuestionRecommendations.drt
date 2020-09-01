@@ -2,36 +2,40 @@ template header
 salience
 language
 description
-overallScoreLow
-overallScoreHigh
-pageId
+section
 questionId
 scoreLow
 scoreHigh
-resultSection
-resultSubSection
-resultRecommendation
+resultLevel1
+resultLevel2
+resultText
 
 package com.redhat.services.ae;
 
 import com.redhat.services.ae.plugins.droolsscore.DroolsRecommendation;
 import com.redhat.services.ae.plugins.droolsscore.DroolsSurveyAnswer;
 
+
+global java.util.LinkedList list
+
 template "question recommendations"
 
 rule "QuestionRule-@{row.rowNumber}: @{description}"
 salience @{salience}
 when
-	$ans : DroolsSurveyAnswer(true==true
-		,language == "@{language}"
+	$ans : DroolsSurveyAnswer(
+		 language == "@{language}"
 		,questionId == "@{questionId}"
-		,pageId == "@{pageId}"
 		,score >= @{scoreLow}
 		,score <= @{scoreHigh}
 	)
 then
-	insert(new DroolsRecommendation("", "@{resultSection}", "@{resultSubSection}", "@{resultRecommendation}"));
+	list.add(new DroolsRecommendation.Builder()
+			.section("@{section}")
+			.level1("@{resultLevel1}")
+			.level2("@{resultLevel2}")
+			.text("@{resultText}")
+	.build());
 end
-
 
 end template

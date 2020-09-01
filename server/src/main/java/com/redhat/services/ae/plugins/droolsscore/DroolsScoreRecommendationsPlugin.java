@@ -43,6 +43,7 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 	private static final int CACHE_EXPIRY_IN_MS=3000;
 	private static final GoogleDrive3 drive=new GoogleDrive3(CACHE_EXPIRY_IN_MS);
 	private List<String> drls=null;
+	boolean heavyDebug=false;
 	
 //	@Inject
 //  private KieRuntimeBuilder runtimeBuilder;
@@ -103,7 +104,7 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 			File sheet=drive.downloadFile(sheetId);
 			SimpleDateFormat dateFormatter=null;
 			
-			List<String> sheets=Lists.newArrayList("Section Recommendations");//, "Question Recommendations");
+			List<String> sheets=Lists.newArrayList("Section Recommendations", "Question Recommendations");
 			drls=Lists.newArrayList();
 			for(String sheetName:sheets){
 				
@@ -127,6 +128,9 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 							.put("scoreLow", rows.get("Score >=")!=null?(int)Double.parseDouble(rows.get("Score >=")):null)
 							.put("scoreHigh", rows.get("Score <=")!=null?(int)Double.parseDouble(rows.get("Score <=")):null)
 							
+							.put("questionId", rows.get("Question ID"))
+							
+							
 							.put("resultLevel1", rows.get("Result Level 1"))
 							.put("resultLevel2", rows.get("Result Level 2"))
 							.put("resultText", makeTextSafeForCompilation(rows.get("Text")))
@@ -139,7 +143,9 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 				InputStream template = DroolsScoreRecommendationsPlugin.class.getClassLoader().getResourceAsStream(templateName);
 				ObjectDataCompiler compiler = new ObjectDataCompiler();
 				String drl = compiler.compile(dataTableConfigList2, template);
-				System.out.println(drl);
+				if (heavyDebug){
+					System.out.println(drl);
+				}
 				drls.add(drl);
 			}
 		}
@@ -153,7 +159,6 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 	}
 		
 	
-	
 	@Override
 	public Map<String, Object> execute(String surveyId, String visitorId, Map<String, Object> surveyResults) throws Exception{
 		try{
@@ -161,10 +166,12 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 			KieSession kSession=newKieSession(decisionTableId);
 			
 			// DEBUG ONLY - make sure we have some rule packages to execute
-			log.debug("Rule Packages/Rules:");
-			for(KiePackage pkg:kSession.getKieBase().getKiePackages()){
-				for (Rule r:pkg.getRules()){
-					log.debug(" - "+pkg.getName()+"."+r.getName());
+			if (heavyDebug){
+				log.debug("Rule Packages/Rules:");
+				for(KiePackage pkg:kSession.getKieBase().getKiePackages()){
+					for (Rule r:pkg.getRules()){
+						log.debug(" - "+pkg.getName()+"."+r.getName());
+					}
 				}
 			}
 			
@@ -194,12 +201,6 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 						}
 					}
 					
-//					if ("_averageScore".equals(e.getKey()) && Integer.class.isAssignableFrom(val.getClass())){
-//						DroolsSurveyScore a=new DroolsSurveyScore((Integer)val, language);
-//						log.debug("Inserting fact: "+a);
-//						kSession.insert(a);
-//					}
-					
 				}else{
 					
 					if (Map.class.isAssignableFrom(val.getClass())){
@@ -223,7 +224,6 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 				
 			}
 			
-			//kSession.insert(new DroolsSurveySection("Overview", "", language, 100));
 			kSession.setGlobal("list", new LinkedList<>());
 			
 			kSession.fireAllRules();
@@ -264,6 +264,8 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 
 			// key/values replacements
 			for (DroolsRecommendation r:recommendations){
+				System.out.println("Found Recommendation: "+r);
+				
 				// replace any key/values from the answers in the recommendation strings
 				for (Entry<String, String> e:kvReplacement.entrySet()){
 					if (r.getText().contains("$"+e.getKey()))

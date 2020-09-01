@@ -259,7 +259,7 @@ survey
 				
 				console.log("Completed posting results to server");
 				
-				window.location.assign("/results3.html?surveyId="+surveyId+"&visitorId="+visitorId);
+				window.location.assign("/results.html?surveyId="+surveyId+"&visitorId="+visitorId);
 				
 			}else{
 				// Handle the error scenario
