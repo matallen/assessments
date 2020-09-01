@@ -140,9 +140,9 @@
 			  <rect x="5" y="7.982" width="`+(rating*0.974)+`%" height="8" style="fill: rgb(225, 0, 0);"/>
 			  <text style="fill: rgb(208, 208, 208); font-family: Overpass; font-size: 8px; white-space: pre;" x="2.512"   y="51.189">0</text>
 			  <text style="fill: rgb(208, 208, 208); font-family: Overpass; font-size: 8px; white-space: pre;" x="478.013" y="51.19">100</text>
-			  <text style="fill: rgb(138, 138, 138); font-family: Overpass; font-size: 9px; white-space: pre;" x="46.945"  y="29.876">FOUNDATIONAL</text>
-			  <text style="fill: rgb(138, 138, 138); font-family: Overpass; font-size: 9px; white-space: pre;" x="208.945" y="29.876">INTERMEDIATE</text>
-			  <text style="fill: rgb(138, 138, 138); font-family: Overpass; font-size: 9px; white-space: pre;" x="379.469" y="29.495">ADVANCED</text>
+			  <text class="fontForThree" style="fill: rgb(138, 138, 138); font-family: Overpass; font-size: 9px; white-space: pre;" x="46.945"  y="29.876">FOUNDATIONAL</text>
+			  <text class="fontForThree" style="fill: rgb(138, 138, 138); font-family: Overpass; font-size: 9px; white-space: pre;" x="208.945" y="29.876">INTERMEDIATE</text>
+			  <text class="fontForThree" style="fill: rgb(138, 138, 138); font-family: Overpass; font-size: 9px; white-space: pre;" x="379.469" y="29.495">ADVANCED</text>
 			  </image>
 			</svg>
 		`;
@@ -164,9 +164,9 @@
 		  <rect x="5" y="38.982" width="`+(rating*0.974)+`%" height="8" style="fill: rgb(225, 0, 0);"/>
 		  <text style="fill: rgb(208, 208, 208); font-family: Overpass; font-size: 8px; white-space: pre;" x="2.512" y="82.189">0</text>
 		  <text style="fill: rgb(208, 208, 208); font-family: Overpass; font-size: 8px; white-space: pre;" x="478.013" y="82.19">100</text>
-		  <text style="fill: rgb(138, 138, 138); font-family: Overpass; font-size: 9px; white-space: pre;" x="46.945" y="60.876">FOUNDATIONAL</text>
-		  <text style="fill: rgb(138, 138, 138); font-family: Overpass; font-size: 9px; white-space: pre;" x="208.945" y="60.876">INTERMEDIATE</text>
-		  <text style="fill: rgb(138, 138, 138); font-family: Overpass; font-size: 9px; white-space: pre;" x="379.469" y="60.495">ADVANCED</text>
+		  <text class="fontForThree" style="fill: rgb(138, 138, 138);  font-size: 9px; white-space: pre;" x="46.945" y="60.876">FOUNDATIONAL</text>
+		  <text class="fontForThree" style="fill: rgb(138, 138, 138); font-family: Overpass; font-size: 9px; white-space: pre;" x="208.945" y="60.876">INTERMEDIATE</text>
+		  <text class="fontForThree" style="fill: rgb(138, 138, 138); font-family: Overpass; font-size: 9px; white-space: pre;" x="379.469" y="60.495">ADVANCED</text>
 		  <text style="fill: rgb(70, 70, 70); font-family: Overpass; font-size: 14px; white-space: pre;" x="51.549" y="13.159">`+title+`</text>
 		  <text style="fill: rgb(70, 70, 70); font-family: Overpass; font-size: 14px; white-space: pre;" x="-6"><tspan x="51.549" y="26.159" style="fill: rgb(225, 0, 0); font-size: 12px; word-spacing: 0px;">Rating: `+rating+`</tspan><tspan style="font-size: 12px; word-spacing: 0px;">/100</tspan></text>
 		  <image xlink:href="assets/images/`+title.replace(/ /g,"_").toLowerCase()+`_red.png" width="80" height="80" x="180" y="0" style="" transform="matrix(0.52, 0, 0, 0.52, -90, -6)" />
@@ -192,9 +192,9 @@
 					<tr><td colspan="3" class="ovg_lgrey_bg ovg_bar"></td></tr>
 					<tr><td colspan="3" class="ovg_dgrey_bg ovg_bar"><div class="ovg_bar rhred-bg" style="width:`+rating+`%;"></div></td></tr>
 					<tr class="maturityboxes">
-						<td>FOUNDATIONAL</td>
-						<td>INTERMEDIATE</td>
-						<td>ADVANCED</td>
+						<td class="class="fontForThree"">FOUNDATIONAL</td>
+						<td class="fontForThree">INTERMEDIATE</td>
+						<td class="fontForThree">ADVANCED</td>
 					</tr>
 					<tr>
 						<td class="white-bg" style="border-left: 1px solid #d0d0d0;"></td>
@@ -492,7 +492,7 @@
 				for(var l1 in report[section]){ // l1 is Environment, Development & Operations or Introduction
 					
 					html+=`<div class=" l1">`;
-					if (l1!="") html+=`<h3>`+l1+`</h3>`;
+					if (l1!="") html+=`<p>`+l1+`</p>`;
 					
 					for(var l2 in report[section][l1]){ // l2 is Findings, Recommendations & Learn More
 						html+=`<div class=" txt">`;
@@ -532,7 +532,7 @@
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-md-10">
+							<div class="col-md-10 fontForText">
 						`;
 							
 						for (var text in overviews[section][title]){

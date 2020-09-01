@@ -34,6 +34,7 @@
     stroke-width: 3.8;
 }
 .circle {
+    padding-bottom: 15px;
     fill: none;
     stroke-width: 4;
     animation: progress 1s ease-out forwards;
@@ -41,12 +42,16 @@
 @keyframes progress { 0% { stroke-dasharray: 0 100; } }
 .score{
     fill: #e10000;
-    font-family: sans-serif;
-    font-size: 0.4em;
+    font-family: var(--pfe-theme--font-family--heading, "RedHatDisplay", "RedHatText" "Overpass", Overpass, Helvetica, Arial, sans-serif);
+    font: normal normal normal 8px/26px Red Hat Text;
+    font-size: 0.6em;
+    font-weight: 400;
     text-anchor: middle;
 }
 .outof{
     fill: #000000;
+    ont-family: var(--pfe-theme--font-family--heading, "RedHatDisplay", "RedHatText" "Overpass", Overpass, Helvetica, Arial, sans-serif);
+    font: normal normal normal 8px/26px Red Hat Text;
     font-family: sans-serif;
     font-size: 0.3em;
     text-anchor: middle;
@@ -140,4 +145,73 @@
 .btnClass:hover{
     background-color: #D40000;
     color: #FFF;
+}
+.tab-content{
+    padding-top: 50px;
+    padding-left: 50px;
+}
+.l1>p{
+    font-family: var(--pfe-theme--font-family--heading, "RedHatDisplay", "RedHatText" "Overpass", Overpass, Helvetica, Arial, sans-serif);
+    text-align: left;
+    font: normal normal normal 28px/47px Red Hat Display;
+    letter-spacing: 0px;
+    font-weight: 500;
+    color: #151515;
+    opacity: 1;
+}
+.txt>p{
+    font-family: var(--pfe-theme--font-family--heading, "RedHatDisplay", "RedHatText" "Overpass", Overpass, Helvetica, Arial, sans-serif);
+    text-align: left;
+    font: normal normal normal 20px/30px Red Hat Text;
+    letter-spacing: 0px;
+    color: #151515;
+    opacity: 1;
+}
+.txt>ul>li{
+    font-family: var(--pfe-theme--font-family--heading, "RedHatDisplay", "RedHatText" "Overpass", Overpass, Helvetica, Arial, sans-serif);
+    text-align: left;
+    font: normal normal normal 16px/30px Red Hat Text;
+    letter-spacing: 0px;
+    color: #151515;
+    opacity: 1;
+}
+.row-asset-links{
+    font-family: var(--pfe-theme--font-family--heading, "RedHatDisplay", "RedHatText" "Overpass", Overpass, Helvetica, Arial, sans-serif);
+    text-align: left;
+    font: normal normal normal 16px/30px Red Hat Text;
+    letter-spacing: 0px;
+    color: #151515;
+    opacity: 1;
+}
+.ovg_hdr{
+    font-family: var(--pfe-theme--font-family--heading, "RedHatDisplay", "RedHatText" "Overpass", Overpass, Helvetica, Arial, sans-serif);
+    text-align: left;
+    font: normal normal normal 28px/47px Red Hat Display;
+    letter-spacing: 0px;
+    font-weight: 500;
+    color: #151515;
+    opacity: 1;
+}
+.fontForThree{
+    font-family: var(--pfe-theme--font-family--heading, "RedHatDisplay", "RedHatText" "Overpass", Overpass, Helvetica, Arial, sans-serif);
+    font: normal normal normal 9px/18px Red Hat Display;
+    letter-spacing: 0px;
+    opacity: 1;
+}
+
+.fontForText>p{
+    font-family: var(--pfe-theme--font-family--heading, "RedHatDisplay", "RedHatText" "Overpass", Overpass, Helvetica, Arial, sans-serif);
+    text-align: left;
+    font: normal normal normal 16px/30px Red Hat Text;
+    letter-spacing: 0px;
+    color: #151515;
+    opacity: 1;
+
+}.fontForText{
+    font-family: var(--pfe-theme--font-family--heading, "RedHatDisplay", "RedHatText" "Overpass", Overpass, Helvetica, Arial, sans-serif);
+    text-align: left;
+    font: normal normal normal 16px/30px Red Hat Text;
+    letter-spacing: 0px;
+    color: #151515;
+    opacity: 1;
 }
