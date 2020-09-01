@@ -580,7 +580,7 @@ LocalStorage.loadState(survey);
 //survey.showCompletedPage=false;
 //survey.navigateToUrl="/results.html?surveyId="+surveyId+"&visitorId="+visitorId;
 
-survey.completedHtml=" ";
+survey.completedHtml="<h2>Generating report... please wait</h2>";
 
 //survey.locale = languageCode;
 survey.render();
