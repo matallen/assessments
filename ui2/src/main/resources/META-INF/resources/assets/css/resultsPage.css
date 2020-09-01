@@ -1,0 +1,143 @@
+.nav-tabs{
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.nav-tabs>li{
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover { border: 0; }
+.nav-tabs>li.active>a { color: black; }
+.nav-tabs>li>a
+{
+    color: gray;
+    font-family: var(--pfe-theme--font-family--heading, "RedHatDisplay", "RedHatText" "Overpass", Overpass, Helvetica, Arial, sans-serif);
+    font: normal normal normal 16px/23px Red Hat Text;
+    letter-spacing: 0px;
+    color: #6A6E73;
+    opacity: 1;
+}
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus { color: black; border-bottom: 3px solid red; }
+
+
+.flex-wrapper { display: flex; flex-flow: row nowrap; }
+.single-chart { width: 100%; justify-content: space-around; }
+.circular-chart {
+    display: block;
+    margin: 10px  auto;
+    max-width: 80%;
+    max-height: 250px;
+}
+.circle-bg {
+    fill: none;
+    stroke: #eee;
+    stroke-width: 3.8;
+}
+.circle {
+    fill: none;
+    stroke-width: 4;
+    animation: progress 1s ease-out forwards;
+}
+@keyframes progress { 0% { stroke-dasharray: 0 100; } }
+.score{
+    fill: #e10000;
+    font-family: sans-serif;
+    font-size: 0.4em;
+    text-anchor: middle;
+}
+.outof{
+    fill: #000000;
+    font-family: sans-serif;
+    font-size: 0.3em;
+    text-anchor: middle;
+}
+.circular-chart.orange .circle { stroke: #e10000; }
+.separator{ border-bottom: 1px solid #ddd; }
+
+
+.print-panel-container{
+    background-color: #eee;
+}
+.print-panel{
+    width: 60%;
+    padding-top: 80px;
+    padding-bottom: 50px;
+}
+.heading1{
+    font-family: var(--pfe-theme--font-family--heading, "RedHatDisplay", "RedHatText" "Overpass", Overpass, Helvetica, Arial, sans-serif);
+    font: normal normal normal 36px/47px Red Hat Display;
+    font-weight: 500;
+    letter-spacing: 0px;
+    color: #151515;
+    opacity: 1;
+    text-align: center;
+}
+.heading2{
+    font-family: var(--pfe-theme--font-family--heading, "RedHatDisplay", "RedHatText" "Overpass", Overpass, Helvetica, Arial, sans-serif);
+    font: normal normal normal 18px/28px Red Hat Text;
+    letter-spacing: 0px;
+    color: #151515;
+    opacity: 1;
+    text-align: center;
+}
+.heading3{
+    font-family: var(--pfe-theme--font-family--heading, "RedHatDisplay", "RedHatText" "Overpass", Overpass, Helvetica, Arial, sans-serif);
+    font: normal normal normal 36px/47px Red Hat Display;
+    font-weight: 500;
+    letter-spacing: 0px;
+    color: #151515;
+    opacity: 1;
+    text-align: justify;
+}
+.heading4{
+    font-family: var(--pfe-theme--font-family--heading, "RedHatDisplay", "RedHatText" "Overpass", Overpass, Helvetica, Arial, sans-serif);
+    font: normal normal normal 16px/28px Red Hat Text;
+    letter-spacing: 0px;
+    color: #151515;
+    opacity: 1;
+    text-align: justify;
+    line-height: normal;
+}
+.print-panel>p{
+
+}
+.center{
+    text-align: center;
+    margin: auto;
+}
+.rhbtn-primary{
+    background: #0066CC 0% 0% no-repeat padding-box;
+    border-radius: 3px;
+    opacity: 1;
+    font-family: var(--pfe-theme--font-family--heading, "RedHatDisplay", "RedHatText" "Overpass", Overpass, Helvetica, Arial, sans-serif);
+    text-align: left;
+    font: normal normal normal 16px/24px Red Hat Text;
+    letter-spacing: 0px;
+    color: #FFFFFF;
+}
+.rhbtn-secondary{
+    border-radius: 3px;
+    opacity: 1;
+    font-family: var(--pfe-theme--font-family--heading, "RedHatDisplay", "RedHatText" "Overpass", Overpass, Helvetica, Arial, sans-serif);
+    text-align: left;
+    font: normal normal normal 16px/24px Red Hat Text;
+    letter-spacing: 0px;
+    color: #FFFFFF;
+}
+.btnClass{
+    margin: 20px 0 80px 0;
+    background: #EE0000 0% 0% no-repeat padding-box;
+    border-radius: 3px;
+    opacity: 1;
+    text-align: left;
+    font-family: var(--pfe-theme--font-family--heading, "RedHatDisplay", "RedHatText" "Overpass", Overpass, Helvetica, Arial, sans-serif);
+    font: normal normal bold 16px/24px Red Hat Display;
+    letter-spacing: 0px;
+    color: #FFFFFF;
+    width: 230px;
+    height: 56px;
+}
+.btnClass:hover{
+    background-color: #D40000;
+    color: #FFF;
+}
