@@ -6,13 +6,12 @@
     <title>SurveyName</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-    <script src="https://surveyjs.azureedge.net/1.7.12/survey.jquery.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <link rel="icon" href="https://www.redhat.com/profiles/rh/themes/redhatdotcom/favicon.ico">
     <link href="assets/css/header.css" type="text/css" rel="stylesheet"/>
     <link href="assets/css/style.css" type="text/css" rel="stylesheet"/>
@@ -20,105 +19,96 @@
     <link href="assets/css/footer.css" type="text/css" rel="stylesheet"/>
 </head>
 <body>
-    <div id="header">
-        <div class="navbar-container">
-            <div class="container">
-                <div class="row" style="padding: 10px 0 10px;">
-                    <div class="col-md-3" >
-                        <a class="navbar-brand" href="//www.redhat.com/" title="Red Hat"><img alt="Red Hat" style="width: 150px; height: 150px;" class="navbar-logo" data-alt-text="Red Hat" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg?t=1537976200708" title="Red Hat" data-image-state="ready" > </a>
-                    </div>
-                    <div class="col-md ">
-                        <!-- Language Selector (top right) -->
-                        <div class="LanguageSelectorContainer float-right">
-                            <select aria-label="Language" name="Q_lang" id="Q_lang" class="Q_lang" data-runtime-value="runtime.Selected">
-                                <option value="DE" lang="DE" data-runtime-text="runtime.Language | property 'DE' | property 'DisplayName'">Deutsch</option>
-                                <option value="EN" lang="EN" selected data-runtime-text="runtime.Language | property 'EN' | property 'DisplayName'">English</option>
-                                <option value="ES-ES" lang="ES-ES" data-runtime-text="runtime.Language | property 'ES-ES' | property 'DisplayName'">Español</option>
-                                <option value="FR" lang="FR" data-runtime-text="runtime.Language | property 'FR' | property 'DisplayName'">Français</option>
-                                <option value="IT" lang="IT" data-runtime-text="runtime.Language | property 'IT' | property 'DisplayName'">Italiano</option>
-                                <option value="PT" lang="PT" data-runtime-text="runtime.Language | property 'PT' | property 'DisplayName'">Português</option>
-                                <option value="KO" lang="KO" data-runtime-text="runtime.Language | property 'KO' | property 'DisplayName'">한국어</option>
-                                <option value="JA" lang="JA" data-runtime-text="runtime.Language | property 'JA' | property 'DisplayName'">日本語</option>
-                                <option value="ZH-S" lang="ZH-S" data-runtime-text="runtime.Language | property 'ZH-S' | property 'DisplayName'">简体中文</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
+<div id="header">
+    <div class="navbar-container">
+        <div class="container">
+            <div class="row" >
+                <div class="col-md-3" >
+                    <a class="navbar-brand" href="//www.redhat.com/" title="Red Hat"><img alt="Red Hat" class="img-fluid navbar-logo" data-alt-text="Red Hat" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg?t=1537976200708" title="Red Hat" data-image-state="ready"> </a>                </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="imageHeader" style="background-image: url(&quot;https://www.redhat.com/cms/managed-files/bg_summit-site-and-red-converse.jpg&quot;); ">
-        <div class="container ">
-            <div class="row">
-                <div class="col-md-8 col-lg-7 col-xl-6 text-center text-md-left">
-                    <h1>Ready to Innovate Assessment</h1>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                        incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                        ullamco laboris nisi ut aliquip ex ea commodo consequat..</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="container">
+<div class="imageHeader" style="background-image: url(&quot;https://www.redhat.com/cms/managed-files/bg_summit-site-and-red-converse.jpg&quot;); ">
+    <div class="container ">
         <div class="row">
-            <div class="">
+            <div class="col-md-8 col-lg-7 col-xl-6 text-center text-md-left">
+                <h1>Ready to Innovate Assessment</h1>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                    incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+                    ullamco laboris nisi ut aliquip ex ea commodo consequat..</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md">
+            <div class="grayBG">
                 <div class="container descriptionHeader">
-                    <h3> Is your organization ready to innovate?</h3>
+                    <p class="headerText"> Are you on track to keep up with industry changes and meet your customers' needs? </p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
+                        voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
+                        non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.<p>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
                         labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
                         laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
                         voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
                         non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
                 </div>
                 <div class="container screenshotHeader">
                 </div>
+            </div>
 
-                <div class="container textHeader">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat.</p>
-                </div>
-                <script>
-                    function enableBtn(){
-                        document.getElementById("submit_details").disabled = false;
-                    }
-                </script>
+            <div class="container textHeader">
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                    labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                    laboris nisi ut aliquip ex ea commodo consequat.</p>
+            </div>
+            <script>
+                function enableBtn(){
+                    document.getElementById("submit_details").disabled = false;
+                }
+            </script>
+            <div class="formStyle">
                 <form id="captcha_form" action="./login.html" class="centerText">
                     <div class="g-recaptcha" data-sitekey="6LdOLLYZAAAAABCN2D004aaAi-zmzBGlzXbug6iv" data-callback="enableBtn"></div>
                     <button type="submit" class="btn btn-lg btnClass" id="submit_details" disabled>Get Started</button>
                 </form>
-
-
             </div>
+
         </div>
     </div>
+</div>
 
 
+<div id="footer">
+    <footer class="footerStyle">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3"><a href="//www.redhat.com/" target="_blank" ><img alt="Red Hat" class="img-fluid" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg" style="height: 38px; width: 162px; opacity: 1;" href="//www.redhat.com/"></a></div>
 
-    <div id="footer">
-        <footer class="footerStyle">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-3"><a href="//www.redhat.com/" target="_blank" ><img alt="Red Hat" class="img-fluid" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg" style="height: 40px !important;" href="//www.redhat.com/"></a></div>
+                <div class="col-md-3 copyrightStyle">
+                    <p>Copyright © 2020&nbsp;<span class="text-nowrap">Red Hat, Inc.</span></p>
+                </div>
 
-                    <div class="col-md-3 copyrightStyle">
-                        <p>Copyright © 2020&nbsp;<span class="text-nowrap">Red Hat, Inc.</span></p>
-                    </div>
-
-                    <div class="col-md">
-                        <nav class="nav">
-                            <a class="nav-link"  target="_blank" href="https://www.redhat.com/en/about/privacy-policy" >Privacy statement</a>
-                            <span class ="rightBorder"></span>
-                            <a class="nav-link" target="_blank" href="https://www.redhat.com/en/about/terms-use">Terms of use</a>
-                            <span class ="rightBorder"></span>
-                            <a class="nav-link" target="_blank" href="https://www.redhat.com/en/about/all-policies-guidelines">All policies and guidelines</a>
-                        </nav>
-                    </div>
+                <div class="col-md">
+                    <nav class="nav">
+                        <a class="nav-link"  target="_blank" href="https://www.redhat.com/en/about/privacy-policy" >Privacy statement</a>
+                        <span class ="rightBorder"></span>
+                        <a class="nav-link" target="_blank" href="https://www.redhat.com/en/about/terms-use">Terms of use</a>
+                        <span class ="rightBorder"></span>
+                        <a class="nav-link" target="_blank" href="https://www.redhat.com/en/about/all-policies-guidelines">All policies and guidelines</a>
+                    </nav>
                 </div>
             </div>
-        </footer>
-    </div>
+        </div>
+    </footer>
+</div>
 </body>
 </html>

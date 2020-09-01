@@ -1,6 +1,7 @@
 .navbar-container {
-	background-color: #050505;
-
+	background: #151515 0% 0% no-repeat padding-box;
+	opacity: 1;
+	height: 72px;
 }
 /*
 .btnStyle{
