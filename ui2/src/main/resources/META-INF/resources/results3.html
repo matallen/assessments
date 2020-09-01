@@ -145,6 +145,150 @@
 			</div>
 		</div>
 	</div>
+	
+	<!-- Style for the Overview graphic/icon-->
+	<style>
+	.ovg_hdr tr td{padding: 0px !important;}
+	.ovg_hdr{font-size:20pt; padding:4px !important; white-space: nowrap;}
+	.ovg_lgrey_bg{background-color: #ededed; border: 1px solid #ededed;}
+	.ovg_dgrey_bg{background-color: #d0d0d0; border: 1px solid #d0d0d0; padding:0px !important;}
+	.ovg_bar{height: 16px;}
+	.maturityboxes td{height: 40px; width:33.33%; background-color: #ededed; text-align: center}
+	.maturityboxes td{border-left: 1px solid #d0d0d0}
+	.maturityboxes td{border-right: 1px solid #d0d0d0}
+	.rhred-text{color: e10000;}
+	.rhred-bg{background-color: e10000;}
+	.white-bg{background-color: white;}
+	</style>
+	<script>
+	
+	function buildOverviewGraphic(title, rating){
+		return overviewGraphicHeader_tabular(title, rating) + overviewGraphicProgress_svg(title, rating);
+	}
+	
+	
+	function overviewGraphicHeader_tabular(title, rating){
+		return `
+			<table><tr>
+					<td rowspan="2" style="width:110px;"><image src="assets/images/`+title.replace(/ /g,"_").toLowerCase()+`_red.png" width="80" height="80" x="180" y="0" style=""></td>
+					<td><span class="ovg_hdr">`+title+`</span></td>
+				</tr><tr>
+					<td><span class="ovg_hdr"><span style="color: #e10000;">Rating: `+rating+`</span><span style="color: #000;">/100</span></span></td>
+				</tr></table>
+		`;
+	}
+	
+	function overviewGraphicHeader_div(title, rating){
+		return `
+			<div class='row'>
+				<div class='col-md-2'>
+					<div class='col-md-2'>
+						<image src="assets/images/`+title.replace(/ /g,"_").toLowerCase()+`_red.png" width="80" height="80" x="180" y="0" style="">
+					</div>
+				</div>
+				<div class='col-md-8'>
+					<div class="row">
+						<div class='col-md-10'>
+							<span class="ovg_hdr">Modernizing Platforms</span>
+						</div>
+						<div class='col-md-10'>
+							<span class="ovg_hdr">Rating: `+rating+`/100</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		`;
+	}
+	
+	function overviewGraphicProgress_svg(title, rating){
+		return `
+			<svg viewBox="0 0 493 54" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:bx="https://boxy-svg.com">
+			  <defs>
+			    <style bx:fonts="Overpass">@font-face { font-family: Overpass; font-style: normal; font-weight: 100; font-stretch: normal; font-variant: normal; font-feature-settings: normal;</style>
+			  </defs>
+			  <rect x="5.02" width="479.974" height="8" style="fill: rgb(238, 238, 238);" y="0"/>
+			  <rect x="5.02" width="479.974" height="8" style="fill: rgb(238, 238, 238);" y="31"/>
+			  <rect x="5.026" y="8" width="479.974" height="8" style="stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209);"/>
+			  <rect width="479.974" height="20" style="fill: rgb(238, 238, 238);" y="16" x="5"/>
+			  <line style="paint-order: stroke; stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209); stroke-opacity: 0.5;" x1="5"   y1="8"  x2="5"   y2="44"/>
+			  <line style="paint-order: stroke; stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209); stroke-opacity: 0.5;" x1="485" y1="8"  x2="485" y2="44"/>
+			  <line style="paint-order: stroke; stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209); stroke-opacity: 0.5;" x1="165" y1="16" x2="165" y2="36"/>
+			  <line style="paint-order: stroke; stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209); stroke-opacity: 0.5;" x1="325" y1="16" x2="325" y2="36"/>
+			  <rect x="5" y="7.982" width="`+(rating*0.974)+`%" height="8" style="fill: rgb(225, 0, 0);"/>
+			  <text style="fill: rgb(208, 208, 208); font-family: Overpass; font-size: 8px; white-space: pre;" x="2.512"   y="51.189">0</text>
+			  <text style="fill: rgb(208, 208, 208); font-family: Overpass; font-size: 8px; white-space: pre;" x="478.013" y="51.19">100</text>
+			  <text style="fill: rgb(138, 138, 138); font-family: Overpass; font-size: 9px; white-space: pre;" x="46.945"  y="29.876">FOUNDATIONAL</text>
+			  <text style="fill: rgb(138, 138, 138); font-family: Overpass; font-size: 9px; white-space: pre;" x="208.945" y="29.876">INTERMEDIATE</text>
+			  <text style="fill: rgb(138, 138, 138); font-family: Overpass; font-size: 9px; white-space: pre;" x="379.469" y="29.495">ADVANCED</text>
+			  </image>
+			</svg>
+		`;
+	}
+	
+	function buildOverviewGraphic_obsolete_allSvg(title, rating){
+		return `
+		<svg viewBox="0 0 493 84" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:bx="https://boxy-svg.com">
+		  <defs>
+		    <style bx:fonts="Overpass">@font-face { font-family: Overpass; font-style: normal; font-weight: 100; font-stretch: normal; font-variant: normal; font-feature-settings: normal;</style>
+		  </defs>
+		  <rect x="5.02" width="479.974" height="8" style="fill: rgb(238, 238, 238);" y="31"/>
+		  <rect x="5.026" y="39" width="479.974" height="8" style="stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209);"/>
+		  <rect width="479.974" height="20" style="fill: rgb(238, 238, 238);" y="47" x="5"/>
+		  <line style="paint-order: stroke; stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209); stroke-opacity: 0.5;" x1="5" y1="31" x2="5" y2="75"/>
+		  <line style="paint-order: stroke; stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209); stroke-opacity: 0.5;" x1="485" y1="31" x2="485" y2="75"/>
+		  <line style="paint-order: stroke; stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209); stroke-opacity: 0.5;" x1="165" y1="47" x2="165" y2="67"/>
+		  <line style="paint-order: stroke; stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209); stroke-opacity: 0.5;" x1="325" y1="47" x2="325" y2="67"/>
+		  <rect x="5" y="38.982" width="`+(rating*0.974)+`%" height="8" style="fill: rgb(225, 0, 0);"/>
+		  <text style="fill: rgb(208, 208, 208); font-family: Overpass; font-size: 8px; white-space: pre;" x="2.512" y="82.189">0</text>
+		  <text style="fill: rgb(208, 208, 208); font-family: Overpass; font-size: 8px; white-space: pre;" x="478.013" y="82.19">100</text>
+		  <text style="fill: rgb(138, 138, 138); font-family: Overpass; font-size: 9px; white-space: pre;" x="46.945" y="60.876">FOUNDATIONAL</text>
+		  <text style="fill: rgb(138, 138, 138); font-family: Overpass; font-size: 9px; white-space: pre;" x="208.945" y="60.876">INTERMEDIATE</text>
+		  <text style="fill: rgb(138, 138, 138); font-family: Overpass; font-size: 9px; white-space: pre;" x="379.469" y="60.495">ADVANCED</text>
+		  <text style="fill: rgb(70, 70, 70); font-family: Overpass; font-size: 14px; white-space: pre;" x="51.549" y="13.159">`+title+`</text>
+		  <text style="fill: rgb(70, 70, 70); font-family: Overpass; font-size: 14px; white-space: pre;" x="-6"><tspan x="51.549" y="26.159" style="fill: rgb(225, 0, 0); font-size: 12px; word-spacing: 0px;">Rating: `+rating+`</tspan><tspan style="font-size: 12px; word-spacing: 0px;">/100</tspan></text>
+		  <image xlink:href="assets/images/`+title.replace(/ /g,"_").toLowerCase()+`_red.png" width="80" height="80" x="180" y="0" style="" transform="matrix(0.52, 0, 0, 0.52, -90, -6)" />
+		  </image>
+		</svg>
+		`;
+	}
+	
+	function buildOverviewGraphic_obsolete_tabular(title, rating){
+		return `
+				<table class="ovg_hdr">
+					<tr>
+						<td rowspan="2" style="width:1%; padding-right: 30px !important;">
+							<image src="assets/images/`+title.replace(/ /g,"_").toLowerCase()+`_red.png" x="50%" y="50%" style="height:80px;width:80px;" transform="translate(-10,-14)"></image>
+						</td>
+						<td class="ovg_hdr">`+title+`</td>
+					</tr>
+					<tr>
+						<td class="ovg_hdr"><span class="rhred-text">Rating: `+rating+`</span>/100</td>
+					</tr>
+				</table>
+				<table>
+					<tr><td colspan="3" class="ovg_lgrey_bg ovg_bar"></td></tr>
+					<tr><td colspan="3" class="ovg_dgrey_bg ovg_bar"><div class="ovg_bar rhred-bg" style="width:`+rating+`%;"></div></td></tr>
+					<tr class="maturityboxes">
+						<td>FOUNDATIONAL</td>
+						<td>INTERMEDIATE</td>
+						<td>ADVANCED</td>
+					</tr>
+					<tr>
+						<td class="white-bg" style="border-left: 1px solid #d0d0d0;"></td>
+						<td class="white-bg ovg_bar"></td>
+						<td class="white-bg" style="border-right: 1px solid #d0d0d0;"></td>
+					</tr>
+					<tr>
+					<td class="white-bg" style="color: #d0d0d0; float:left; position:relative; left:-4px;">0</td>
+					<td class="white-bg"></td>
+					<td class="white-bg" style="color: #d0d0d0; float:right; position:relative; left:15px;">100</td>
+				</tr>
+				</table>
+		`;
+	}
+	</script>
+
+	
 
 	<section id="xsurvey" class="py-0">
 		<div class="container">
@@ -163,7 +307,7 @@
 							</ul>
 
 							<div id="tabsContent" class="tab-content">
-								<div id="menu4" class="tab-pane fade">
+								<div id="raw" class="tab-pane fade">
 									<h3>Raw</h3>
 									<p id="raw"></p>
 								</div>
@@ -198,7 +342,7 @@
 						Discovery Session explanation lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
 					</p>
 					<p>
-						<button type="button" class="btn btn-redhat-primary" onclick="window.location.href='https://www.redhat.com/en/services/consulting#GatedFormContainer';">Talk to a Red Hat expert</button>
+						<button type="button" class="btn btn-redhat-primary" onclick="window.location.href='https://www.redhat.com/de/services/consulting#GatedFormContainer';">Talk to a Red Hat expert</button>
 					</p>
 				</div>
 			</div>
@@ -292,21 +436,29 @@
 								
 							</div>
 				`;
+				// no graphic
+				//var html=`
+				//		<div id="`+tabName+`" class="tab-pane fade in `+(c==max-1 && undefined==overviews?`active`:``)+`">
+				//			<div class="row">
+				//				<div class="col-md-10">
+				//	`;
 				
 				for(var l1 in report[section]){ // l1 is Environment, Development & Operations or Introduction
 					
-					html+=`
-						<div class="col-md-8">
-							<h3>`+l1+`</h3>
-					`;
+					html+=`<div class=" l1">`;
+					if (l1!="") html+=`<h3>`+l1+`</h3>`;
 					
 					for(var l2 in report[section][l1]){ // l2 is Findings, Recommendations & Learn More
-						var text=report[section][l1][l2];
-						html+=`<h4>`+l2+`</h4><p>`+text+`</p>`;
+						html+=`<div class=" txt">`;
+						if (l2!="") html+=`<h4>`+l2+`</h4>`;
+						for (var i in report[section][l1][l2]){
+							html+=`<p>`+report[section][l1][l2][i]+`</p>`;
+						}
+						html+=`</div> <!--txt  -->`;
 					}
 					html+=`
 						</div>
-						<div class="col-md-10 separator"></div>
+						<div class=" separator"></div>
 					`;
 				}
 				
@@ -329,32 +481,19 @@
 					for (var title in overviews[section]){
 						html+=`
 						<div class="row">
-							<div class="col-md-2">
-								<div class="flex-wrapper">
-									<div class="single-chart">
-										<svg viewBox="0 0 36 44" class="circular-chart orange">
-								      <path class="circle-bg" d="M18 2.0845
-								          a 15.9155 15.9155 0 0 1 0 31.831
-								          a 15.9155 15.9155 0 0 1 0 -31.831" />
-								      <path class="circle" stroke-dasharray="`+scores[section]+`, 100" d="M18 2.0845
-								          a 15.9155 15.9155 0 0 1 0 31.83h1
-								          a 15.9155 15.9155 0 0 1 0 -31.831" />
-								      <image xlink:href="assets/images/`+section.replace(/ /g,"_").toLowerCase()+`_red.png" x="50%" y="50%" style="height:20px;width:20px;" transform="translate(-10,-14)" />
-								      <text class="score" x="50%" y="50%" transform="translate(-4,20)">`+scores[section]+`</text>
-								      <text class="outof" x="50%" y="50%" transform="translate(6,20)">/100</text>
-								    </svg>
-									</div>
-								</div>
+							<div class="col-md-10">
+							`+buildOverviewGraphic(section, scores[section])+`
 							</div>
-							<div class="col-md-8">
-								<h3>`+section+`</h3>
-								`;
+						</div>
+						<div class="row">
+							<div class="col-md-10">
+						`;
 							
 						for (var text in overviews[section][title]){
 							html+=`<p>`+overviews[section][title][text]+`</p>`;
 						}
 						html+=`<a onclick="document.getElementById('tab_`+section.replace(/ /g,"_").toLowerCase()+`').click();return false;" href="#">See details &rarr;</a>`;
-						html+=`</div></div>`; // end row
+						html+=`</div><div class="col-md-10"><hr/></div></div>`; // end row
 					}
 				}
 				$("#tabsContent").append(html+`</div>`); // end overview tab

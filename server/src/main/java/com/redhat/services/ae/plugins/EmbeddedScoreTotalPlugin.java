@@ -14,11 +14,8 @@ public class EmbeddedScoreTotalPlugin implements Plugin{
 
 	@Override
 	public void setConfig(Map<String, Object> config){
-		
 	}
 
-//	private int totalScore=0;
-//	private int scoreCount=0;
 	private Map<String,Integer> sectionScores=new HashMap<String, Integer>();
 	private Map<String,Integer> sectionTotals=new HashMap<String, Integer>();
 	private Map<String,Integer> sectionCounts=new HashMap<String, Integer>();
@@ -27,34 +24,33 @@ public class EmbeddedScoreTotalPlugin implements Plugin{
 	@Override
 	public Map<String, Object> execute(String surveyId, String visitorId, Map<String, Object> surveyResults) throws Exception{
 		
-		
 		for (Entry<String, Object> e:surveyResults.entrySet()){
 			String questionId=e.getKey();
+			System.out.println("XXX: questionId="+questionId);
+			
 			Map<String,Object> value=(Map<String,Object>)e.getValue();
+			
+			
+			System.out.println("XXX: value.contains('score')=="+value.containsKey("score") +"  AND value.contains('navigationTitle')=="+value.containsKey("navigationTitle"));
 			
 			if (value.containsKey("score") && value.containsKey("navigationTitle")){ // ie, if the question has a score set & belongs to a section/page
 				String navTitle=(String)value.get("navigationTitle");
 				int score=Integer.class.isAssignableFrom(value.get("score").getClass())?(Integer)value.get("score"):0; // it must be an integer score, I dont want to deal with string conversions
 				
-				log.debug(EmbeddedScoreTotalPlugin.class.getSimpleName()+"::"+questionId+"::Adding score "+score+" to section ["+navTitle+"]");
+				log.debug(questionId+"::Adding score "+score+" to section ["+navTitle+"]");
 				
 				sectionTotals.put(navTitle, sectionTotals.containsKey(navTitle)?sectionTotals.get(navTitle)+score:score);
 				sectionCounts.put(navTitle, sectionCounts.containsKey(navTitle)?sectionCounts.get(navTitle)+1:1);
 				sectionScores.put(navTitle, sectionTotals.get(navTitle)/sectionCounts.get(navTitle));
 			}
 			
-			
 		}
 		
-//		double averageScore=totalScore / scoreCount;
-//		long lAverageScore=Math.round(averageScore);
-//		int iAverageScore=(int)lAverageScore;
-		
-//		surveyResults.put("totalScore", totalScore);
-//		surveyResults.put("_averageScore", iAverageScore);
 		surveyResults.put("_sectionScore", sectionScores);
 		
-		log.debug(EmbeddedScoreTotalPlugin.class.getSimpleName()+":: SectionScores = "+Json.toJson(sectionScores));
+		if (sectionScores.size()<=0) log.error(this.getClass().getSimpleName()+":: Likely error -> no scores detected therefore no section average scores!");
+		
+		log.debug("SectionScores = "+Json.toJson(sectionScores));
 		return surveyResults;
 	}
 

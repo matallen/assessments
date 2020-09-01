@@ -1,20 +1,22 @@
 table{width: 100%;}
+ /*TRBL*/
+/*
 table thead tr td, table tbody tr td{
-  padding: 10px 15px 10px 15px; /*TRBL*/
+  padding: 10px 15px 10px 15px;
   font-size: 11pt;
-  /*
-  vertical-align: top;
-  */
 }
 table thead tr td{
   color: grey;
   font-size: 10pt;
 }
+*/
+  /*padding: 10px 0px 10px 15px;*/ /*TRBL*/
+/*
 table thead tr td:first-child,
 table tbody tr td:first-child{
-  /*padding: 10px 0px 10px 15px;*/ /*TRBL*/
-  padding: 10px 10px 10px 10px; /*TRBL*/
+  padding: 10px 10px 10px 10px;
 }
+*/
 body{
 	/*
 	background-color: #f9f9f9;
@@ -394,3 +396,10 @@ input[type=radio], input[type=checkbox] {
     box-sizing: border-box;
     padding: 10px !important;
 }
+
+
+/* Mat - this should be in the theme, but is used on the results page which doesnt have theme specific css yet */
+.row-asset-links{
+	border-bottom: 1px solid #eee;
+}
+

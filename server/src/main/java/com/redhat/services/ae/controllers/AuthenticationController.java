@@ -1,66 +1,35 @@
 package com.redhat.services.ae.controllers;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
-import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
-import java.security.Principal;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.commons.io.Charsets;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.CharSet;
 import org.eclipse.microprofile.config.ConfigProvider;
-import org.eclipse.microprofile.jwt.JsonWebToken;
-//import org.apache.commons.lang3.StringUtils;
-//import org.bson.types.ObjectId;
-import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.base.Splitter;
-import com.redhat.services.ae.Database;
 import com.redhat.services.ae.MapBuilder;
-import com.redhat.services.ae.Utils;
-import com.redhat.services.ae.model.Survey;
 import com.redhat.services.ae.model.User;
-import com.redhat.services.ae.modules.login.DefaultLoginModule.Role;
 import com.redhat.services.ae.modules.login.LoginModule;
-import com.redhat.services.ae.utils.Json;
 import com.redhat.services.ae.utils.Jwt;
-import com.redhat.services.ae.utils.StringUtils;
 
 @Path("/")
 @RequestScoped
@@ -70,11 +39,21 @@ public class AuthenticationController{
 	@Context
 	UriInfo uri;
 
+	private static final String IPV4_REGEX =
+			"^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
+			"(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
+			"(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
+			"(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
+	private static final Pattern IPv4_PATTERN = Pattern.compile(IPV4_REGEX);
+
 	public static String getDomainName(String url, boolean stripSubdomain) throws URISyntaxException {
     URI uri = new URI(url);
     String domain = uri.getHost();
+    boolean isIp=IPv4_PATTERN.matcher(domain).matches();
+    if (isIp) return domain;
+    
     domain=domain.startsWith("www.") ? domain.substring(4) : domain;
-    domain=domain.substring(domain.indexOf(".")+1);
+    if (!isIp && stripSubdomain) domain=domain.substring(domain.indexOf(".")+1);
     return domain;
 	}
 	
@@ -99,6 +78,7 @@ public class AuthenticationController{
 				
 				String jwtToken=Jwt.createJWT(jwtClaims, ttlMins*60);
 				String domainName=getDomainName(uri.getBaseUri().toString(), true);
+				System.out.println("domain name="+domainName);
 //				log.info("returning jwt token in cookie rhae-jwt: "+jwtToken);
 //				log.info("uri.baseUri = "+uri.getBaseUri());
 //				log.info("uri.getPath= "+uri.getPath(true));

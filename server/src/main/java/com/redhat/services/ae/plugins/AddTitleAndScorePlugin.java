@@ -48,38 +48,23 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 	@Override
 	public Map<String, Object> OnSingleStringAnswer(String questionId, String answer, Json question){
 		
-//		if (null==question) return new MapBuilder<String,Object>().put("answer", answer).build();;
-		
 		Answer answerSplit=splitThis((String)answer);
 		
 		Map<String,Object> answerData=new MapBuilder<String,Object>().put("answer", answerSplit.text).build();
 		
 		if (null==question) return answerData;
 
-		if (answerSplit.score>=0){
-//			scoreQuestionsCount+=1;
-//			totalScore+=answerSplit.score;
-			answerData.put("score", answerSplit.score);
-		}
-		if (question.has("title")) answerData.put("title", question.at("title").asString());
+//		if (answerSplit.score>=0){
+//			answerData.put("score", answerSplit.score);
+//		}
 		
-//		answerData.put("pageId", question.up().up().at("name").asString());
-		
-		Json pageJson=getPageJson(question);
-		if (null!=pageJson){
-			answerData.put("pageId", pageJson.at("name").asString());
-			if (pageJson.has("navigationTitle")) answerData.put("navigationTitle", pageJson.at("navigationTitle").asString());
-//			if (pageJson.has("description"))     answerData.put("pageDescription", pageJson.at("description").asString());
-		}
-		
-//		answerData.put("pageId", getPageName(question));
+		common(answerSplit.score, question, answerData);
 		
 		return answerData;
 	}
 
 	@Override
 	public Map<String, Object> OnMultipleStringAnswers(String questionId, List<String> answers, Json question){
-//		Map<String,Object> answer=new MapBuilder<String,Object>().build();
 		
 		int highestScore=0; /// for RTI v2 we are going to take the highest score vs average or any other complex calc
 		
@@ -93,14 +78,24 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 		}
 		
 		Map<String,Object> answerData=new MapBuilder<String,Object>().put("answers", newAnswers).build();
-		if (question.has("title")) answerData.put("title", question.at("title").asString());
-		if (highestScore>=0){
-			answerData.put("score", highestScore);
-		}
 		
-		answerData.put("pageId", getPageName(question));
-
+//		if (highestScore>=0){
+//			answerData.put("score", highestScore);
+//		}
+		
+		common(highestScore, question, answerData);
+		
 		return answerData;
+	}
+	
+	private void common(int score, Json question, Map<String,Object> answerData){
+		if (score>=0) answerData.put("score", score);
+		if (question.has("title")) answerData.put("title", question.at("title").asString());
+		Json pageJson=getPageJson(question);
+		if (null!=pageJson){
+			answerData.put("pageId", pageJson.at("name").asString());
+			if (pageJson.has("navigationTitle")) answerData.put("navigationTitle", pageJson.at("navigationTitle").asString());
+		}
 	}
 
 	
