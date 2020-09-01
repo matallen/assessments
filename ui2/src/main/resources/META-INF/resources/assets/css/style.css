@@ -1,22 +1,17 @@
 table{width: 100%;}
  /*TRBL*/
-/*
-table thead tr td, table tbody tr td{
+.admin table thead tr td, table tbody tr td{
   padding: 10px 15px 10px 15px;
   font-size: 11pt;
 }
-table thead tr td{
+.admin table thead tr td{
   color: grey;
   font-size: 10pt;
 }
-*/
-  /*padding: 10px 0px 10px 15px;*/ /*TRBL*/
-/*
-table thead tr td:first-child,
-table tbody tr td:first-child{
+.admin table thead tr td:first-child,
+.admin table tbody tr td:first-child{
   padding: 10px 10px 10px 10px;
 }
-*/
 body{
 	/*
 	background-color: #f9f9f9;
@@ -94,10 +89,11 @@ div.elevate li.noColor{
 	text-align: center;
 }
 
+
+
 .navbar-container .navbar-logo {
-    width: 162px;
-    height: 38px;
-    opacity: 1;
+    max-width: 155px;
+    max-height: 37px;
 }
 .navbar-brand {
     margin-right: 0 !important;
@@ -286,7 +282,7 @@ div.elevate li.noColor{
 
 /* contact form panel elements need to be side-by-side. There's no class associated so i chose a class associated with panels and moved that to a grid structure */
 .sv_p_container>div:nth-of-type(3){
-    display: grid;
+	display: grid;
   grid-gap: 15px;
   grid-template-columns: repeat(2,1fr);
 }
@@ -296,6 +292,8 @@ div.elevate li.noColor{
 	background-color: initial;
 }
 */
+
+
 
 
 .sv_imgpicker_outer{
@@ -315,30 +313,20 @@ div.elevate li.noColor{
     border-radius: 4px;
 }
 .sv_imgpicker_inner img{
-    display: block;
+		display: block;
     margin: 0 auto;
-    position: relative;
+		position: relative;
     top: 30px;
-    opacity: 0.5;
+		opacity: 0.5;
     filter: alpha(opacity=40);
 }
 .sv_imgpicker_inner div{
-    position: relative;
+		position: relative;
     top: 40px;
     white-space: normal;
 }
 
-@media only screen and (max-width: 600px) {
-    sv_imgpicker_inner img{
-        display: block;
-        margin: 0 auto;
-        position: relative;
-        top: 30px;
-        opacity: 0.5;
-        filter: alpha(opacity=40);
-    }
 
-}
 .sv_row{
     border: 1px solid #ccc;
     margin: 30px;
@@ -391,15 +379,79 @@ div.elevate li.noColor{
 	padding-top: 10px;
 }
 
-input[type=radio], input[type=checkbox] {
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    padding: 10px !important;
-}
-
 
 /* Mat - this should be in the theme, but is used on the results page which doesnt have theme specific css yet */
 .row-asset-links{
 	border-bottom: 1px solid #eee;
 }
 
+
+.rhbtn-primary:hover {
+    background-color: #0057ad !important;
+    color: #fff !important;
+    text-decoration: none;
+    cursor: pointer;
+    border-color: #0057ad;
+}
+.rhbtn-primary{
+  background-color: #06C !important;
+  color: #fff !important;
+  display: inline-block;
+  font-family: var(--pfe-theme--font-family,RedHatText,Helvetica,Arial,sans-serif);
+  border: 1px solid #06C;
+  border-radius: 3px;
+  font-size: 16px;
+  padding: 6px 16px;
+  font-weight: 400;
+  text-decoration: none;
+  text-transform: none;
+  margin-top: 10px;
+  transition: background .2s ease-in 0s;
+  cursor: pointer;
+}
+.rhbtn-secondary:hover {
+    background-color: #0057ad !important;
+    color: #fff !important;
+    text-decoration: none;
+    cursor: pointer;
+    border-color: #0057ad;
+}
+.rhbtn-secondary{
+  border: 1px solid #0066CC;
+  border-radius: 3px;
+  background-color: Transparent !important;
+  opacity: 1;
+  color: #0066CC !important;
+  display: inline-block;
+  font-family: var(--pfe-theme--font-family,RedHatText,Helvetica,Arial,sans-serif);
+  font-size: 16px;
+  padding: 6px 16px;
+  font-weight: 400;
+  text-decoration: none;
+  text-transform: none;
+  margin-top: 10px;
+  transition: background .2s ease-in 0s;
+  cursor: pointer;
+}
+
+.sv_q_radiogroup>label {
+display: block;
+padding-left: 25px;
+text-indent: -23px;
+}
+.sv_q_radiogroup_label > [type=radio] {
+vertical-align: middle;
+position: relative;
+top: -2px;
+margin-right:5px;
+}
+.sv_q_checkbox>label{
+display: block;
+padding-left: 20px;
+text-indent: -20px;
+}
+.sv_q_checkbox_label> [type=checkbox] {
+vertical-align: middle;
+position: relative;
+top: -2px;
+}
