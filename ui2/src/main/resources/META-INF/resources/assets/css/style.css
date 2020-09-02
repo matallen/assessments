@@ -273,7 +273,7 @@ div.elevate li.noColor{
     height: 294px;
     background-color: white;
     margin: 1px;
-    padding: 0 20 0 20;
+    padding: 0 20px 0 20px;
     border-radius: 4px;
 }
 .sv_imgpicker_inner img{
@@ -352,18 +352,18 @@ div.elevate li.noColor{
 
 /* Red Hat Buttons */
 .rhbtn{
-  display: inline-block;
-  border: 1px solid #06C;
-  border-radius: 3px;
-  font-size: 16px;
-  font-weight: 400;
-  padding: 4px 16px 0px 16px;
-  opacity: 1;
-  text-decoration: none;
-  text-transform: none;
-  transition: background .2s ease-in 0s;
-  cursor: pointer;
-  margin: 0 8px;
+    display: inline-block;
+    border: 1px solid #06C;
+    border-radius: 3px;
+    font-size: 16px;
+    font-weight: 400;
+    padding: 2px 20px 2px 20px;
+    opacity: 1;
+    text-decoration: none;
+    text-transform: none;
+    transition: background .2s ease-in 0s;
+    cursor: pointer;
+    margin: 0 8px;
 }
 
 .rhbtn-primary:hover,

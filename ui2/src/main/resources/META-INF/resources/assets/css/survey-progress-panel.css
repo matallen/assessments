@@ -37,10 +37,10 @@
 }
 
 .navigationProgressbar .pageTitle {
+    margin-top: -5px;
     position: absolute;
     padding-left: 30px;
     color: #151515;
-    margin-top: -5px;
 }
 
 .navigationProgressbar .pageDescription {
