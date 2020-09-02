@@ -152,11 +152,19 @@ Survey.defaultStandardCss.navigation.complete = "sv_rh_btn sv_rh_complete_btn rh
 Survey.defaultStandardCss.navigation.prev =     "sv_rh_btn sv_rh_prev_btn rhbtn rhbtn-secondary";
 Survey.defaultStandardCss.navigation.next =     "sv_rh_btn sv_rh_next_btn rhbtn rhbtn-primary";
 
-
+Survey.settings.webserviceEncodeParameters = true;
 
 Survey.ChoicesRestfull.onBeforeSendRequest = function(sender, options) {
         //options.request.setRequestHeader("Content-Type", "application/json");
         //options.request.setRequestHeader("Authorization", "Bearer "+jwtToken);
+        //sender.processedUrl=sender.processedUrl.replace("localhost","testing");
+        
+        // Do a replace on variables in the URL prior to executing
+        options.request.open("GET", sender.processedUrl
+        		.replace("$surveyId",surveyId)
+        		.replace("$server", env.server)
+        	);
+        
 };
 
 var json = SURVEY_CONTENT;
