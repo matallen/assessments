@@ -18,149 +18,56 @@
 	<style>
 	.background{background-color: #000;}
 	</style>
-		
+	
 	<script src="assets/js/http.js"></script>
 	<script src="assets/js/utils.js"></script>
 	<script src="assets/js/cookies.js"></script>
 	<script src="assets/js/env.js"></script>
 	
 	<script src="https://unpkg.com/jquery"></script>
+	<script src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
 	<script src="https://surveyjs.azureedge.net/1.7.12/survey.jquery.js"></script>
 	<link href="https://surveyjs.azureedge.net/1.7.12/modern.css" type="text/css" rel="stylesheet"/>
 	
 	<link href="assets/css/survey-progress-panel.css" type="text/css" rel="stylesheet"/>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"></link>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 	<link href="assets/css/header.css" type="text/css" rel="stylesheet"/>
 	<link href="assets/css/style.css" type="text/css" rel="stylesheet"/>
 	<link href="assets/css/footer.css" type="text/css" rel="stylesheet"/>
+	<link href="assets/themes/rti-theme/css/results.css" type="text/css" rel="stylesheet"/>
 </head>
 
-<body id="SurveyEngineBody" style="direction: inherit;">
+<body>
 <div id="header">
 	<div class="navbar-container">
 		<div class="container">
 			<div class="row">
 				<div class="col-md-3" >
-					<a class="navbar-brand" href="//www.redhat.com/" title="Red Hat"><img alt="Red Hat" class="img-fluid navbar-logo" data-alt-text="Red Hat" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg?t=1537976200708" title="Red Hat" data-image-state="ready"> </a>
-				</div>
-				<!--
-				<div class="col-md ">
-					<div class="LanguageSelectorContainer float-right">
-						<select aria-label="Language" name="Q_lang" id="Q_lang" class="Q_lang" data-runtime-value="runtime.Selected">
-							<option value="DE" lang="DE" data-runtime-text="runtime.Language | property 'DE' | property 'DisplayName'">Deutsch</option>
-							<option value="EN" lang="EN" selected data-runtime-text="runtime.Language | property 'EN' | property 'DisplayName'">English</option>
-							<option value="ES-ES" lang="ES-ES" data-runtime-text="runtime.Language | property 'ES-ES' | property 'DisplayName'">Español</option>
-							<option value="FR" lang="FR" data-runtime-text="runtime.Language | property 'FR' | property 'DisplayName'">Français</option>
-							<option value="IT" lang="IT" data-runtime-text="runtime.Language | property 'IT' | property 'DisplayName'">Italiano</option>
-							<option value="PT" lang="PT" data-runtime-text="runtime.Language | property 'PT' | property 'DisplayName'">Português</option>
-							<option value="KO" lang="KO" data-runtime-text="runtime.Language | property 'KO' | property 'DisplayName'">한국어</option>
-							<option value="JA" lang="JA" data-runtime-text="runtime.Language | property 'JA' | property 'DisplayName'">日本語</option>
-							<option value="ZH-S" lang="ZH-S" data-runtime-text="runtime.Language | property 'ZH-S' | property 'DisplayName'">简体中文</option>
-						</select>
-						<a class="btn btn-outline-white btn-color-white btnStyle" href="admin.html" onclick="fade('.background')">ADMIN</a>
-					</div>
-				</div>
-				-->
+					<a href="//www.redhat.com/" title="Red Hat"><img alt="Red Hat" data-alt-text="Red Hat" class="navbar-logo" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg?t=1537976200708" title="Red Hat" > </a></div>
 			</div>
 		</div>
 	</div>
 </div>
 
-
-	<!-- css for result page tab structure -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"></link>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-	<style>
-	    .nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover { border: 0; }
-	    .nav-tabs>li.active>a { color: black; }
-	    .nav-tabs>li>a { color: gray; }
-	    .nav-tabs>li.active>a, .nav-tabs>li.active>a:focus { color: black; border-bottom: 3px solid red; }
-	</style>
-	
-	<!-- tab content such as charts, scores etc.. -->
-	<style>
-		.flex-wrapper { display: flex; flex-flow: row nowrap; }
-		.single-chart { width: 100%; justify-content: space-around; }
-		.circular-chart {
-		  display: block;
-		  margin: 10px  auto;
-		  max-width: 80%;
-		  max-height: 250px;
-		}
-		.circle-bg {
-		  fill: none;
-		  stroke: #eee;
-		  stroke-width: 3.8;
-		}
-		.circle {
-		  fill: none;
-		  stroke-width: 4;
-		  animation: progress 1s ease-out forwards;
-		}
-		@keyframes progress { 0% { stroke-dasharray: 0 100; } }
-		.score{
-		  fill: #e10000;
-		  font-family: sans-serif;
-		  font-size: 0.4em;
-		  text-anchor: middle;
-		}
-		.outof{
-		  fill: #000000;
-		  font-family: sans-serif;
-		  font-size: 0.3em;
-		  text-anchor: middle;
-		}
-		.circular-chart.orange .circle { stroke: #e10000; }
-		.separator{ border-bottom: 1px solid #ddd; }
-
-
-.print-panel-container{
-	background-color: #eee;
-}
-.print-panel{
-	width: 60%;
-}
-.print-panel>h2,.print-panel>p{
-	text-align: center;
-}
-.center{
-	text-align: center;
-	margin: auto;
-}
-	</style>
-
-	<script src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
-	<div class="print-panel-container">
-		<div class="container">
-			<div class="row">
-				<div class="container print-panel">
-					<h2>Results introduction copy</h2>
-					<p>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-					</p>
-					<p>
-						<button type="button" class="rhbtn rhbtn-secondary" id="review_assessment">Edit my answers</button>
-						<button type="button" class="rhbtn rhbtn-primary" id="create_pdf">Download results as a PDF</button>
-					</p>
-				</div>
+<div class="print-panel-container">
+	<div class="container">
+		<div class="row">
+			<div class="container print-panel">
+				<h1>Results introduction copy</h1>
+				<p>
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+				</p>
+				<p >
+					<button type="button" class="rhbtn rhbtn-secondary" id="review_assessment">Edit my answers</button>
+					<button type="button" class="rhbtn rhbtn-primary" id="create_pdf">Download results as a PDF</button>
+				</p>
 			</div>
 		</div>
 	</div>
+</div>
 	
-	<!-- Style for the Overview graphic/icon-->
-	<style>
-	.ovg_hdr tr td{padding: 0px !important;}
-	.ovg_hdr{font-size:20pt; padding:4px !important; white-space: nowrap;}
-	.ovg_lgrey_bg{background-color: #ededed; border: 1px solid #ededed;}
-	.ovg_dgrey_bg{background-color: #d0d0d0; border: 1px solid #d0d0d0; padding:0px !important;}
-	.ovg_bar{height: 16px;}
-	.maturityboxes td{height: 40px; width:33.33%; background-color: #ededed; text-align: center}
-	.maturityboxes td{border-left: 1px solid #d0d0d0}
-	.maturityboxes td{border-right: 1px solid #d0d0d0}
-	.rhred-text{color: e10000;}
-	.rhred-bg{background-color: e10000;}
-	.white-bg{background-color: white;}
-	</style>
 	<script>
 	
 	function buildOverviewGraphic(title, rating){
@@ -170,11 +77,11 @@
 	
 	function overviewGraphicHeader_tabular(title, rating){
 		return `
-			<table><tr>
+			<table class="maturity"><tr>
 					<td rowspan="2" style="width:110px;"><image src="assets/images/`+title.replace(/ /g,"_").toLowerCase()+`_red.png" width="80" height="80" x="180" y="0" style=""></td>
-					<td><span class="ovg_hdr">`+title+`</span></td>
+					<td><h2>`+title+`</h2></td>
 				</tr><tr>
-					<td><span class="ovg_hdr"><span style="color: #e10000;">Rating: `+rating+`</span><span style="color: #000;">/100</span></span></td>
+					<td><h2><span style="color: #e10000;">Rating: `+rating+`</span><span style="color: #000;">/100</span></h2></td>
 				</tr></table>
 		`;
 	}
@@ -190,10 +97,10 @@
 				<div class='col-md-8'>
 					<div class="row">
 						<div class='col-md-10'>
-							<span class="ovg_hdr">Modernizing Platforms</span>
+							<h2>Modernizing Platforms</h2>
 						</div>
 						<div class='col-md-10'>
-							<span class="ovg_hdr">Rating: `+rating+`/100</span>
+							<h2>Rating: `+rating+`/100</h2>
 						</div>
 					</div>
 				</div>
@@ -204,9 +111,6 @@
 	function overviewGraphicProgress_svg(title, rating){
 		return `
 			<svg viewBox="0 0 493 54" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:bx="https://boxy-svg.com">
-			  <defs>
-			    <style bx:fonts="Overpass">@font-face { font-family: Overpass; font-style: normal; font-weight: 100; font-stretch: normal; font-variant: normal; font-feature-settings: normal;</style>
-			  </defs>
 			  <rect x="5.02" width="479.974" height="8" style="fill: rgb(238, 238, 238);" y="0"/>
 			  <rect x="5.02" width="479.974" height="8" style="fill: rgb(238, 238, 238);" y="31"/>
 			  <rect x="5.026" y="8" width="479.974" height="8" style="stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209);"/>
@@ -216,11 +120,11 @@
 			  <line style="paint-order: stroke; stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209); stroke-opacity: 0.5;" x1="165" y1="16" x2="165" y2="36"/>
 			  <line style="paint-order: stroke; stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209); stroke-opacity: 0.5;" x1="325" y1="16" x2="325" y2="36"/>
 			  <rect x="5" y="7.982" width="`+(rating*0.974)+`%" height="8" style="fill: rgb(225, 0, 0);"/>
-			  <text style="fill: rgb(208, 208, 208); font-family: Overpass; font-size: 8px; white-space: pre;" x="2.512"   y="51.189">0</text>
-			  <text style="fill: rgb(208, 208, 208); font-family: Overpass; font-size: 8px; white-space: pre;" x="478.013" y="51.19">100</text>
-			  <text style="fill: rgb(138, 138, 138); font-family: Overpass; font-size: 9px; white-space: pre;" x="46.945"  y="29.876">FOUNDATIONAL</text>
-			  <text style="fill: rgb(138, 138, 138); font-family: Overpass; font-size: 9px; white-space: pre;" x="208.945" y="29.876">INTERMEDIATE</text>
-			  <text style="fill: rgb(138, 138, 138); font-family: Overpass; font-size: 9px; white-space: pre;" x="379.469" y="29.495">ADVANCED</text>
+			  <text style="fill: rgb(208, 208, 208); font-size: 8px; white-space: pre;" x="2.512"   y="51.189">0</text>
+			  <text style="fill: rgb(208, 208, 208); font-size: 8px; white-space: pre;" x="478.013" y="51.19">100</text>
+			  <text style="fill: rgb(138, 138, 138); font-size: 9px; white-space: pre;" x="46.945"  y="29.876">FOUNDATIONAL</text>
+			  <text style="fill: rgb(138, 138, 138); font-size: 9px; white-space: pre;" x="208.945" y="29.876">INTERMEDIATE</text>
+			  <text style="fill: rgb(138, 138, 138); font-size: 9px; white-space: pre;" x="379.469" y="29.495">ADVANCED</text>
 			  </image>
 			</svg>
 		`;
@@ -291,64 +195,47 @@
 
 	
 
-	<section id="xsurvey" class="py-0">
-		<div class="container">
-			<div class="row">
-				
-				<div class="col-md-10 py-4 py-md-6">
-					<div id="page">
-
-						<div class="container">
-							<!--
-							<button type="button" class="btn btn-primary" id="retake_assessment">ReTake assessment</button>
-							<button type="button" class="btn btn-primary" id="review_assessment">Review/Edit assessment</button>
-							-->
-							<ul id="tabs" class="nav nav-tabs">
-								<!--li><a data-toggle="tab" href="#menu4">Raw</a></li-->
-							</ul>
-
-							<div id="tabsContent" class="tab-content">
-								<div id="raw" class="tab-pane fade">
-									<h3>Raw</h3>
-									<p id="raw"></p>
-								</div>
-								
+<section id="xsurvey" class="py-0">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-10 py-4 py-md-6">
+				<div id="page">
+					<div class="container">
+						<!--
+						<button type="button" class="btn btn-primary" id="retake_assessment">ReTake assessment</button>
+						<button type="button" class="btn btn-primary" id="review_assessment">Review/Edit assessment</button>
+						-->
+						<ul id="tabs" class="nav nav-tabs">
+						</ul>
+						<div id="tabsContent" class="tab-content">
+							<div id="raw" class="tab-pane fade">
+								<h3>Raw</h3>
+								<p id="raw"></p>
 							</div>
 						</div>
-
 					</div>
 				</div>
 			</div>
 		</div>
-	</section>
-	
-	<style>
-		.btn-redhat-primary, .btn-redhat-primary:visited{
-			color: #fff;
-	    background-color: #e10000;
-	    border-color: #e10000;
-		}
-		.btn-redhat-primary:hover, .btn-redhat-primary:active{
-			color: #fff;
-	    background-color: #c10000;
-	    border-color: #c10000;
-		}
-	</style>
-	<div class="print-panel-container">
-		<div class="container">
-			<div class="row">
-				<div class="container print-panel">
-					<h2>Get started with a Discovery Session</h2>
-					<p>
-						Discovery Session explanation lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-					</p>
-					<p>
-						<button type="button" class="btn btn-redhat-primary" onclick="window.location.href='https://www.redhat.com/de/services/consulting#GatedFormContainer';">Talk to a Red Hat expert</button>
-					</p>
-				</div>
+	</div>
+</section>
+
+<div class="print-panel-container">
+	<div class="container">
+		<div class="row">
+			<div class="container print-panel">
+				<h1>Get started with a discovery session</h1>
+				<p>
+					lorem ipsum (Discovery Session explanation) dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+				</p>
+				<!--
+				btn btn-lg btnClass
+				-->
+				<button type="button" class="rhbtn btn-lg rhbtn-red" id="talk_to_expert" onclick="window.location.href='https://www.redhat.com/de/services/consulting#GatedFormContainer';">Talk to a Red Hat expert</button>
 			</div>
 		</div>
 	</div>
+</div>
 
 	<script>
 		var surveyId=Utils.getParameterByName("surveyId");
@@ -375,9 +262,7 @@
 						
 						// raw output
 						$("#raw").html("<pre>"+JSON.stringify(response, undefined, 2)+"</pre>");
-
 						displayResults(response);
-
 					}
 				}, function(status){
 					// on error - sink it and wait
@@ -447,7 +332,7 @@
 				for(var l1 in report[section]){ // l1 is Environment, Development & Operations or Introduction
 					
 					html+=`<div class=" l1">`;
-					if (l1!="") html+=`<h3>`+l1+`</h3>`;
+					if (l1!="") html+=`<h2>`+l1+`</h2>`;
 					
 					for(var l2 in report[section][l1]){ // l2 is Findings, Recommendations & Learn More
 						html+=`<div class=" txt">`;
@@ -589,5 +474,5 @@ $('#review_assessment').on('click', function() {
     })();
 </script>
 
-</body>
+</body id="SurveyEngineBody" style="direction: inherit;">
 </html>

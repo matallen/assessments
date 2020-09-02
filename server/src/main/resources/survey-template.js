@@ -148,9 +148,9 @@ Survey
 
 Survey.requiredText = "AA";
 
-Survey.defaultStandardCss.navigation.complete = "sv_rh_btn sv_rh_complete_btn";
-Survey.defaultStandardCss.navigation.prev =     "sv_rh_btn sv_rh_prev_btn";
-Survey.defaultStandardCss.navigation.next =     "sv_rh_btn sv_rh_next_btn";
+Survey.defaultStandardCss.navigation.complete = "sv_rh_btn sv_rh_complete_btn rhbtn rhbtn-primary";
+Survey.defaultStandardCss.navigation.prev =     "sv_rh_btn sv_rh_prev_btn rhbtn rhbtn-secondary";
+Survey.defaultStandardCss.navigation.next =     "sv_rh_btn sv_rh_next_btn rhbtn rhbtn-primary";
 
 
 

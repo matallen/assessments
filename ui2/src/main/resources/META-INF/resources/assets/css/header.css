@@ -1,27 +1,9 @@
 .navbar-container {
 	background: #151515 0% 0% no-repeat padding-box;
-	opacity: 1;
 	height: 72px;
 }
-/*
-.btnStyle{
-	margin-left: 10px;
-	cursor: pointer;
-	border-radius: 0;
-	background-color: #050505;
-	border: 1px solid #FFFFFF;
-	padding: 6px 18px 6px 12px;
-	color: #FFFFFF;
-	background-size: 6px 6px, 6px 6px, 1px 1.5em;
+.navbar-logo{
+	width: 162px;
+	height: 55px;
+	padding-top: 17px;
 }
-
-.btnStyle1{
-	float: right;
-	cursor: pointer;
-	border-radius: 0;
-	background-color: #050505;
-	border: 1px solid #FFFFFF !important;
-	padding: 6px 18px 6px 12px;
-	color: #FFFFFF;
-	background-size: 6px 6px, 6px 6px, 1px 1.5em;
-}*/
