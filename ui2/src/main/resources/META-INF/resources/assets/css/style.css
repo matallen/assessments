@@ -1,6 +1,8 @@
 table{width: 100%;}
  /*TRBL*/
-.admin table thead tr td, table tbody tr td{
+.admin table thead tr td,
+.admin table tbody tr td,
+.elevate tbody tr td{
   padding: 10px 15px 10px 15px;
   font-size: 11pt;
 }
@@ -13,27 +15,36 @@ table{width: 100%;}
   padding: 10px 10px 10px 10px;
 }
 body{
-	/*
-	background-color: #f9f9f9;
-	
-	/* part of making the footer sticky */
-	/*
-  */
 	display: flex;
   flex-direction: column;
-	
 }
+body, p{
+  font: normal normal normal 16px/30px Red Hat Text, Overpass;
+  text-align: left;
+  letter-spacing: 0px;
+  color: #151515;
+  opacity: 1;
+}
+h1{
+  font: normal normal normal 36px/47px Red Hat Display, Overpass;
+}
+h2{
+  font: normal normal normal 28px/47px Red Hat Display, Overpass;
+}
+h3{
+  font: normal normal normal 20px/30px Red Hat Display, Overpass;
+}
+h4{
+  font: normal normal normal 20px/30px Red Hat Display, Overpass;
+  font-weight: 600;
+}
+
 .py-0{
 	margin-bottom: auto;
-/*
-*/
 }
 
 .btn:disabled { opacity: 0.35; }
 .py-1{
-	/*
-	background-color: #f9f9f9;
-	*/
 	margin-top: 30px;
 }
 .elevate{
@@ -203,37 +214,8 @@ div.elevate li.noColor{
 	text-align: center; /* center the prev/next buttons */
 	padding: 30px;
 }
-/*.sv_rh_prev_btn, .sv_rh_next_btn, .sv_rh_preview_btn, .sv_rh_complete_btn {
-    padding: 13px 23px 10px 23px;
-    color: #fff !important;
-    background-color: #06C !important;
-    display: inline-block;
-    font-family: var(--pfe-theme--font-family,RedHatText, Helvetica, Arial, sans-serif);
-    border: 1px solid #06C;
-    border-radius: 3px;
-    font-size: 16px;
-    padding: 6px 16px;
-    font-weight: 400;
-    text-decoration: none;
-    text-transform: none;
-    margin-top: 10px;
-    transition: background .2s ease-in 0s;
-    cursor: pointer;
-}*/
 
-/*.sv_rh_prev_btn:hover, .sv_rh_next_btn:hover, .sv_rh_preview_btn:hover, .sv_rh_complete_btn:hover {
-    background-color:#0057ad !important;
-    color: #fff;
-    text-decoration: none;
-    cursor: pointer;
-    border-color: #0057ad;
-}*/
 
-/*
-.sv_main, .sv_default_css, .sv_p_root, .sv_row{
-	background-color: #fff !important;
-}
-*/
 .sv_q_title{
 	margin-bottom: 0;
 }
@@ -368,53 +350,51 @@ div.elevate li.noColor{
 }
 
 
-.rhbtn-primary:hover {
-    background-color: #0057ad !important;
-    color: #fff !important;
-    text-decoration: none;
-    cursor: pointer;
-    border-color: #0057ad;
-}
-.rhbtn-primary{
-  background-color: #06C !important;
-  color: #fff !important;
+/* Red Hat Buttons */
+.rhbtn{
   display: inline-block;
-  font-family: var(--pfe-theme--font-family,RedHatText,Helvetica,Arial,sans-serif);
   border: 1px solid #06C;
   border-radius: 3px;
   font-size: 16px;
-  padding: 6px 16px;
   font-weight: 400;
+  padding: 4px 16px 0px 16px;
+  opacity: 1;
   text-decoration: none;
   text-transform: none;
-  margin-top: 10px;
   transition: background .2s ease-in 0s;
   cursor: pointer;
+  margin: 0 8px;
 }
+
+.rhbtn-primary:hover,
 .rhbtn-secondary:hover {
-    background-color: #0057ad !important;
-    color: #fff !important;
-    text-decoration: none;
-    cursor: pointer;
-    border-color: #0057ad;
+  background-color: #0057ad !important;
+  color: #fff !important;
+  text-decoration: none;
+  cursor: pointer;
+  border-color: #0057ad;
+}
+.rhbtn-primary{
+  background: #06C 0% 0% no-repeat padding-box !important;
+  color: #FFF;
 }
 .rhbtn-secondary{
-  border: 1px solid #0066CC;
-  border-radius: 3px;
   background-color: Transparent !important;
-  opacity: 1;
   color: #0066CC !important;
-  display: inline-block;
-  font-family: var(--pfe-theme--font-family,RedHatText,Helvetica,Arial,sans-serif);
-  font-size: 16px;
-  padding: 6px 16px;
-  font-weight: 400;
-  text-decoration: none;
-  text-transform: none;
-  margin-top: 10px;
-  transition: background .2s ease-in 0s;
-  cursor: pointer;
 }
+.rhbtn-red{
+  margin: 20px 0 20px 0;
+  background: #EE0000 0% 0% no-repeat padding-box;
+  border: 1px solid #EE0000;
+  color: #FFFFFF;
+  width: 230px;
+  height: 56px;
+}
+.rhbtn-red:hover{
+  background-color: #D40000;
+  color: #FFF;
+}
+
 
 .sv_q_radiogroup>label {
 display: block;

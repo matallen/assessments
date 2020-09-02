@@ -1,5 +1,4 @@
 
-
 /*  HIDE THE BACKGROUND QUESTION CONTAINER IN THE SELECT INTERESTS PAGE ONLY */
 .sv_page_select_interests .sv_qstn>div:nth-child(1) {
 		display: none;
@@ -52,6 +51,7 @@
 @media only screen and (device-width: 768px) {
 
 }
+/*
 .sv_rh_btn.sv_rh_prev_btn{
     border: 1px solid #0066CC;
     border-radius: 3px;
@@ -69,8 +69,6 @@
     transition: background .2s ease-in 0s;
     cursor: pointer;
 }
-
-/* Buttons */
 .sv_rh_btn{
     background-color: #06C !important;
     color: #fff !important;
@@ -95,6 +93,7 @@
     cursor: pointer;
     border-color: #0057ad;
 }
+*/
 
 /* Applying even spacing for the image selection boxes (interest areas) */
 .sv_q_imgsel {
