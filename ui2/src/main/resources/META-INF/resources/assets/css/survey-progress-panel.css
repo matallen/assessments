@@ -33,9 +33,11 @@
     width: 100%;
     font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
     position: relative;
+
 }
 
 .navigationProgressbar .pageTitle {
+    margin-top: -5px;
     position: absolute;
     padding-left: 30px;
     color: #151515;
