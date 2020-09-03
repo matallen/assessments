@@ -23,6 +23,9 @@
 
 .flex-wrapper { display: flex; flex-flow: row nowrap; }
 .single-chart { width: 100%; justify-content: space-around; }
+
+
+/* Circular Chart */
 .circular-chart {
     display: block;
     margin: 10px  auto;
@@ -38,10 +41,37 @@
     padding-bottom: 15px;
     fill: none;
     stroke-width: 4;
-    animation: progress 1s ease-out forwards;
+    animation: circ 1s ease-out forwards;
 }
-@keyframes progress { 0% { stroke-dasharray: 0 100; } }
+@keyframes circ { 0% { stroke-dasharray: 0 100; } }
+.circular-chart.orange .circle { stroke: #e10000; }
 
+
+/* Horizontal Chart */
+.progress-chart .bar { stroke: #e10000; }
+.progress-chart {
+    display: block;
+    margin: 10px  auto;
+    max-width: 100%;
+    max-height: 250px;
+}
+.circle-bg {
+    fill: none;
+    stroke: #eee;
+    stroke-width: 3.8;
+}
+.bar {
+    padding-bottom: 15px;
+    fill: rgb(255,0,0);
+    stroke-width: 8;
+    fill:none;
+		stroke:#000000;
+		stroke-miterlimit:10;
+    animation: draw1 1s forwards;
+}
+@keyframes draw1 { 
+	to {stroke-dashoffset: 0;} 
+}
 
 
 
@@ -60,7 +90,6 @@
   font-size: 0.3em;
   text-anchor: middle;
 }
-.circular-chart.orange .circle { stroke: #e10000; }
 .separator{ border-bottom: 1px solid #ddd; }
 
 

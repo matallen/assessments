@@ -9,6 +9,13 @@
 	<meta id="meta-viewport" name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=2.5">
 	<meta property="og:title" content="Online Assessment | Red Hat Inc">
 	<meta property="og:description" content="">
+  <link rel="preload" href="https://static.redhat.com/libs/redhat/redhat-font/2/webfonts/RedHatText/RedHatText-Regular.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="https://static.redhat.com/libs/redhat/redhat-font/2/webfonts/RedHatText/RedHatText-Medium.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="https://static.redhat.com/libs/redhat/redhat-font/2/webfonts/RedHatDisplay/RedHatDisplay-Regular.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="https://static.redhat.com/libs/redhat/redhat-font/2/webfonts/RedHatDisplay/RedHatDisplay-Medium.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="https://static.redhat.com/libs/redhat/redhat-font/2/webfonts/RedHatDisplay/RedHatDisplay-Bold.woff" as="font" type="font/woff" crossorigin>
+  <link type="text/css" rel="stylesheet" href="https://static.redhat.com/libs/redhat/redhat-font/2/webfonts/red-hat-font.css" media="all" />
+
 	
   <link rel="icon" href="https://www.redhat.com/profiles/rh/themes/redhatdotcom/favicon.ico">
 	  
@@ -74,7 +81,6 @@
 		return overviewGraphicHeader_tabular(title, rating) + overviewGraphicProgress_svg(title, rating);
 	}
 	
-	
 	function overviewGraphicHeader_tabular(title, rating){
 		return `
 			<table class="maturity"><tr>
@@ -86,31 +92,11 @@
 		`;
 	}
 	
-	function overviewGraphicHeader_div(title, rating){
-		return `
-			<div class='row'>
-				<div class='col-md-2'>
-					<div class='col-md-2'>
-						<image src="assets/images/`+title.replace(/ /g,"_").toLowerCase()+`_red.png" width="80" height="80" x="180" y="0" style="">
-					</div>
-				</div>
-				<div class='col-md-8'>
-					<div class="row">
-						<div class='col-md-10'>
-							<h2>Modernizing Platforms</h2>
-						</div>
-						<div class='col-md-10'>
-							<h2>Rating: `+rating+`/100</h2>
-						</div>
-					</div>
-				</div>
-			</div>
-		`;
-	}
-	
 	function overviewGraphicProgress_svg(title, rating){
+		var max=485;
+		var len=(max/100)*rating;
 		return `
-			<svg viewBox="0 0 493 54" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:bx="https://boxy-svg.com">
+			<svg class="progress-chart" viewBox="0 0 493 54" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:bx="https://boxy-svg.com">
 			  <rect x="5.02" width="479.974" height="8" style="fill: rgb(238, 238, 238);" y="0"/>
 			  <rect x="5.02" width="479.974" height="8" style="fill: rgb(238, 238, 238);" y="31"/>
 			  <rect x="5.026" y="8" width="479.974" height="8" style="stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209);"/>
@@ -119,7 +105,22 @@
 			  <line style="paint-order: stroke; stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209); stroke-opacity: 0.5;" x1="485" y1="8"  x2="485" y2="44"/>
 			  <line style="paint-order: stroke; stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209); stroke-opacity: 0.5;" x1="165" y1="16" x2="165" y2="36"/>
 			  <line style="paint-order: stroke; stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209); stroke-opacity: 0.5;" x1="325" y1="16" x2="325" y2="36"/>
-			  <rect x="5" y="7.982" width="`+(rating*0.974)+`%" height="8" style="fill: rgb(225, 0, 0);"/>
+			  <!--
+			  <rect x="5" y="7.982" width="`+(rating*0.974)+`%" height="8" style="fill: rgb(225, 0, 0); animation: progress 1s ease-out forwards;"/>
+			  -->
+			  <!--
+				<path class="xbar" stroke-dasharray="60, 100" d="M 5 7.982 H 101.35 V 15.982 H 5 V 7.982 Z" style="xfill: rgb(225, 0, 0);"/>
+			  -->
+				<line class="bar" x1="5" y1="12" x2="`+len+`" y2="12" style="stroke-dasharray: `+len+`; stroke-dashoffset: `+len+`; "/>
+				<!--
+					<path class="circle-bg" d="M18 2.0845
+				          a 15.9155 15.9155 0 0 1 0 31.831
+				          a 15.9155 15.9155 0 0 1 0 -31.831" />
+				<path class="circle" stroke-dasharray="`+rating+`, 100" d="M18 2.0845
+				          a 15.9155 15.9155 0 0 1 0 31.83h1
+				          a 15.9155 15.9155 0 0 1 0 -31.831" />
+				-->
+					
 			  <text style="fill: rgb(208, 208, 208); font-size: 8px; white-space: pre;" x="2.512"   y="51.189">0</text>
 			  <text style="fill: rgb(208, 208, 208); font-size: 8px; white-space: pre;" x="478.013" y="51.19">100</text>
 			  <text style="fill: rgb(138, 138, 138); font-size: 9px; white-space: pre;" x="46.945"  y="29.876">FOUNDATIONAL</text>
@@ -127,68 +128,6 @@
 			  <text style="fill: rgb(138, 138, 138); font-size: 9px; white-space: pre;" x="379.469" y="29.495">ADVANCED</text>
 			  </image>
 			</svg>
-		`;
-	}
-	
-	function buildOverviewGraphic_obsolete_allSvg(title, rating){
-		return `
-		<svg viewBox="0 0 493 84" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:bx="https://boxy-svg.com">
-		  <defs>
-		    <style bx:fonts="Overpass">@font-face { font-family: Overpass; font-style: normal; font-weight: 100; font-stretch: normal; font-variant: normal; font-feature-settings: normal;</style>
-		  </defs>
-		  <rect x="5.02" width="479.974" height="8" style="fill: rgb(238, 238, 238);" y="31"/>
-		  <rect x="5.026" y="39" width="479.974" height="8" style="stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209);"/>
-		  <rect width="479.974" height="20" style="fill: rgb(238, 238, 238);" y="47" x="5"/>
-		  <line style="paint-order: stroke; stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209); stroke-opacity: 0.5;" x1="5" y1="31" x2="5" y2="75"/>
-		  <line style="paint-order: stroke; stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209); stroke-opacity: 0.5;" x1="485" y1="31" x2="485" y2="75"/>
-		  <line style="paint-order: stroke; stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209); stroke-opacity: 0.5;" x1="165" y1="47" x2="165" y2="67"/>
-		  <line style="paint-order: stroke; stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209); stroke-opacity: 0.5;" x1="325" y1="47" x2="325" y2="67"/>
-		  <rect x="5" y="38.982" width="`+(rating*0.974)+`%" height="8" style="fill: rgb(225, 0, 0);"/>
-		  <text style="fill: rgb(208, 208, 208); font-family: Overpass; font-size: 8px; white-space: pre;" x="2.512" y="82.189">0</text>
-		  <text style="fill: rgb(208, 208, 208); font-family: Overpass; font-size: 8px; white-space: pre;" x="478.013" y="82.19">100</text>
-		  <text style="fill: rgb(138, 138, 138); font-family: Overpass; font-size: 9px; white-space: pre;" x="46.945" y="60.876">FOUNDATIONAL</text>
-		  <text style="fill: rgb(138, 138, 138); font-family: Overpass; font-size: 9px; white-space: pre;" x="208.945" y="60.876">INTERMEDIATE</text>
-		  <text style="fill: rgb(138, 138, 138); font-family: Overpass; font-size: 9px; white-space: pre;" x="379.469" y="60.495">ADVANCED</text>
-		  <text style="fill: rgb(70, 70, 70); font-family: Overpass; font-size: 14px; white-space: pre;" x="51.549" y="13.159">`+title+`</text>
-		  <text style="fill: rgb(70, 70, 70); font-family: Overpass; font-size: 14px; white-space: pre;" x="-6"><tspan x="51.549" y="26.159" style="fill: rgb(225, 0, 0); font-size: 12px; word-spacing: 0px;">Rating: `+rating+`</tspan><tspan style="font-size: 12px; word-spacing: 0px;">/100</tspan></text>
-		  <image xlink:href="assets/images/`+title.replace(/ /g,"_").toLowerCase()+`_red.png" width="80" height="80" x="180" y="0" style="" transform="matrix(0.52, 0, 0, 0.52, -90, -6)" />
-		  </image>
-		</svg>
-		`;
-	}
-	
-	function buildOverviewGraphic_obsolete_tabular(title, rating){
-		return `
-				<table class="ovg_hdr">
-					<tr>
-						<td rowspan="2" style="width:1%; padding-right: 30px !important;">
-							<image src="assets/images/`+title.replace(/ /g,"_").toLowerCase()+`_red.png" x="50%" y="50%" style="height:80px;width:80px;" transform="translate(-10,-14)"></image>
-						</td>
-						<td class="ovg_hdr">`+title+`</td>
-					</tr>
-					<tr>
-						<td class="ovg_hdr"><span class="rhred-text">Rating: `+rating+`</span>/100</td>
-					</tr>
-				</table>
-				<table>
-					<tr><td colspan="3" class="ovg_lgrey_bg ovg_bar"></td></tr>
-					<tr><td colspan="3" class="ovg_dgrey_bg ovg_bar"><div class="ovg_bar rhred-bg" style="width:`+rating+`%;"></div></td></tr>
-					<tr class="maturityboxes">
-						<td>FOUNDATIONAL</td>
-						<td>INTERMEDIATE</td>
-						<td>ADVANCED</td>
-					</tr>
-					<tr>
-						<td class="white-bg" style="border-left: 1px solid #d0d0d0;"></td>
-						<td class="white-bg ovg_bar"></td>
-						<td class="white-bg" style="border-right: 1px solid #d0d0d0;"></td>
-					</tr>
-					<tr>
-					<td class="white-bg" style="color: #d0d0d0; float:left; position:relative; left:-4px;">0</td>
-					<td class="white-bg"></td>
-					<td class="white-bg" style="color: #d0d0d0; float:right; position:relative; left:15px;">100</td>
-				</tr>
-				</table>
 		`;
 	}
 	</script>

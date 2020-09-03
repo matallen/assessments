@@ -18,13 +18,11 @@ var imgpicker_template = `
 	                  <embed data-bind="css: question.koCss().image, attr: { src: $data.imageLink, width: question.imageWidth ? question.imageWidth + 'px' : undefined, height: question.imageHeight ? question.imageHeight + 'px' : undefined }, style: { objectFit: question.imageFit }"/>
 	                  <!-- /ko -->
 	                  <!-- ko if: question.showLabel -->
-	                  <div data-bind="text: text || value, attr: { title: text || value }, css: question.koCss().itemText"></div>
+	                  <div class="sv_q_imgsel_title" data-bind="text: text || value, attr: { title: text || value }, css: question.koCss().itemText"></div>
 	                  <!-- /ko -->
-
 	                  <!-- ko if: description -->
-	                  <div style="font-size:10pt" data-bind="text: description, attr: { title: description }, css: question.koCss().itemText"></div>
+	                  <div class="sv_q_imgsel_description" data-bind="text: description, attr: { title: description }, css: question.koCss().itemText"></div>
 	                  <!-- /ko -->
-
 	              </div>     
               </div>
           </label>

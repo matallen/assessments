@@ -19,25 +19,17 @@ body{
   flex-direction: column;
 }
 body, p{
-  font: normal normal normal 16px/30px Red Hat Text, Overpass;
+  font: normal normal normal 16px/30px Red Hat Text, RedHatText, Overpass,"Helvetica Neue",Arial,sans-serif;
   text-align: left;
   letter-spacing: 0px;
   color: #151515;
   opacity: 1;
 }
-h1{
-  font: normal normal normal 36px/47px Red Hat Display, Overpass;
-}
-h2{
-  font: normal normal normal 28px/47px Red Hat Display, Overpass;
-}
-h3{
-  font: normal normal normal 20px/30px Red Hat Display, Overpass;
-}
-h4{
-  font: normal normal normal 20px/30px Red Hat Display, Overpass;
-  font-weight: 600;
-}
+h1{ font: normal normal normal 36px/47px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
+h2{ font: normal normal normal 28px/47px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
+h3{ font: normal normal normal 26px/30px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
+h4{ font: normal normal normal 20px/30px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
+h5{ font: normal normal normal 11px/20px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
 
 .py-0{
 	margin-bottom: auto;
@@ -102,8 +94,6 @@ div.elevate li.noColor{
 
 
 /* Language Selector */
-.Skin .LanguageSelectorContainer {
-}
 @media (min-width: 1200px)
 .LanguageSelectorContainer {
     max-width: 1170px;
@@ -155,23 +145,6 @@ div.elevate li.noColor{
     */
 }
 
-.Skin .TE textarea, .Skin input.TextEntryBox, .Skin input[type=password], .Skin input[type=search], .Skin input[type=text], .Skin select, .Skin textarea {
-    border: 2px solid #d2d2d6;
-    -webkit-border-radius: 2px;
-    -moz-border-radius: 2px;
-    -ms-border-radius: 2px;
-    -o-border-radius: 2px;
-    border-radius: 2px;
-    padding: 2px;
-}
-.Skin select {
-    min-width: 3em;
-}
-.Skin button, .Skin input, .Skin select, .Skin textarea {
-    font-family: "Helvetica Neue",Arial,sans-serif;
-    font-size: 18px;
-    color: #737373;
-}
 
 .sv_p_root, .sv_row, .sv_nav, #survey-wrapper{
 	background-color: #f0f0f0;
@@ -180,8 +153,8 @@ div.elevate li.noColor{
     background-color: #f0f0f0;
 }
 .sv_page_title{
-	font-size: 26pt;
-  margin-bottom: 0px;
+	font-size: 32px;
+  margin-bottom: 7px;
   text-align: center;
 }
 .sv_p_root>div:first-of-type{ /* page description */
@@ -189,10 +162,6 @@ div.elevate li.noColor{
 	font-weight: normal;
   margin-bottom: 20px;
   text-align: center;
-}
-.sv_q_title span{
-	font-size: 14pt;
-	font-weight: bold; /* questions in bold */
 }
 .sv_qstn {
 /*
@@ -220,6 +189,7 @@ div.elevate li.noColor{
 	margin-bottom: 0;
 }
 .sv_q_title span{
+	font-weight: bold; /* questions in bold */
 	font-size: 11pt;
 }
 .sv_q_dropdown_control, .sv_q_text_root{
@@ -232,8 +202,14 @@ div.elevate li.noColor{
 .sv_q_imgsel_label{
 	text-align: center;
 }
-.sv_q_imgsel_text{
+.sv_q_imgsel_title{
 	font-size: 18pt;
+}
+.sv_q_imgsel_description{
+	font-size: 12pt;
+}
+
+.sv_q_imgsel_text{
 	/*
 	position: relative;
   top: -140px;
@@ -309,7 +285,7 @@ div.elevate li.noColor{
 	border-top-right-radius: 3px;
 }
 .sv_qstn>div:nth-child(2){
-	padding: 10px;
+	padding: 13px;
   border: 1px solid #ccc;
   border-top: 0px;
   background-color: white !important;
@@ -394,7 +370,9 @@ div.elevate li.noColor{
   background-color: #D40000;
   color: #FFF;
 }
-
+fieldset div label {
+    margin-bottom: 0rem !important;
+}
 
 .sv_q_radiogroup>label {
 display: block;
