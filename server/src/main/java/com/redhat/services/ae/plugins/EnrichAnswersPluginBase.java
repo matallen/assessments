@@ -22,7 +22,7 @@ import com.redhat.services.ae.model.Survey;
 import com.redhat.services.ae.utils.CacheHelper;
 import com.redhat.services.ae.utils.Json;
 
-public abstract class EnrichAnswersPluginBase implements Plugin{
+public abstract class EnrichAnswersPluginBase extends Plugin{
 	public static final Logger log=LoggerFactory.getLogger(EnrichAnswersPluginBase.class);
 	
 	/**

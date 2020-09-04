@@ -41,35 +41,31 @@
     padding-bottom: 15px;
     fill: none;
     stroke-width: 4;
-    animation: circ 1s ease-out forwards;
+    animation: animate-circle 1s ease-out forwards;
 }
-@keyframes circ { 0% { stroke-dasharray: 0 100; } }
+@keyframes animate-circle { 0% { stroke-dasharray: 0 100; } }
 .circular-chart.orange .circle { stroke: #e10000; }
 
 
 /* Horizontal Chart */
-.progress-chart .bar { stroke: #e10000; }
+.progress-chart.red .bar {
+	stroke: #e10000;
+}
+.progress-chart .bar {
+	stroke: #000;
+  padding-bottom: 15px;
+  stroke-width: 8;
+  fill:none;
+stroke-miterlimit:1;
+  animation: animate-bar 1s ease-out forwards;
+}
 .progress-chart {
     display: block;
     margin: 10px  auto;
     max-width: 100%;
     max-height: 250px;
 }
-.circle-bg {
-    fill: none;
-    stroke: #eee;
-    stroke-width: 3.8;
-}
-.bar {
-    padding-bottom: 15px;
-    fill: rgb(255,0,0);
-    stroke-width: 8;
-    fill:none;
-		stroke:#000000;
-		stroke-miterlimit:10;
-    animation: draw1 1s forwards;
-}
-@keyframes draw1 { 
+@keyframes animate-bar { 
 	to {stroke-dashoffset: 0;} 
 }
 

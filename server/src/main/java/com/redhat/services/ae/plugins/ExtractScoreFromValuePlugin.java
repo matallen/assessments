@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.redhat.services.ae.MapBuilder;
 import com.redhat.services.ae.utils.Pair;
 
-public class ExtractScoreFromValuePlugin implements Plugin{
+public class ExtractScoreFromValuePlugin extends Plugin{
 	public static final Logger log=LoggerFactory.getLogger(ExtractScoreFromValuePlugin.class);
 	
 	/**

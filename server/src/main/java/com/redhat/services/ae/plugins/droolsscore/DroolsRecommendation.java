@@ -59,4 +59,7 @@ public class DroolsRecommendation{
 			return new DroolsRecommendation(section, level1, level2, text);
 		}
 	}
+	public void doKeyValueReplacement(String key, String value){
+		text=text.replaceFirst("\\$"+key, value);		
+	}
 }

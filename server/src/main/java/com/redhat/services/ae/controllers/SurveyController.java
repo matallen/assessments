@@ -6,9 +6,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.UUID;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
@@ -23,6 +26,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.IOUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,10 +35,15 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.github.benmanes.caffeine.cache.Cache;
+import com.google.api.client.util.Lists;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.redhat.services.ae.Database;
+import com.redhat.services.ae.MapBuilder;
 import com.redhat.services.ae.Results;
 import com.redhat.services.ae.model.Survey;
 import com.redhat.services.ae.plugins.Plugin;
+import com.redhat.services.ae.plugins.RemovePIIAnswersPlugin;
 import com.redhat.services.ae.utils.CacheHelper;
 import com.redhat.services.ae.utils.FluentCalendar;
 import com.redhat.services.ae.utils.Json;
@@ -52,7 +61,7 @@ public class SurveyController{
 			@DefaultValue("false") @QueryParam("questionsOnly") String questionsOnly) throws IOException{
 		String surveyName=surveyId+".json";
 		
-		System.out.println("Loading questions: "+surveyName);
+		log.debug("Loading questions: "+surveyName);
 		
 		String templateName="survey-template.js";
 		String template=IOUtils.toString(new File("target/classes", templateName).exists()?new FileInputStream(new File("target/classes", templateName).getAbsolutePath()):getClass().getClassLoader().getResourceAsStream(templateName), "UTF-8");
@@ -74,24 +83,36 @@ public class SurveyController{
 	
 	@GET
 	@PermitAll
-	@Path("/{surveyId}/results/{rId}")
-	public Response getSurveyResults(
+	@Path("/{surveyId}/results/{resultId}")
+	public Response getSurveyResults2(
 			@PathParam("surveyId") String surveyId,
-			@PathParam("rId") String rId
+			@PathParam("resultId") String resultId
 			) throws IOException{
-		
-//		System.out.println("/results/::");
-//		String xxx=CacheHelper.cache.get(surveyId+"_"+rId);
-		String xxx=Results.get().getResults().get(surveyId+"_"+rId);
-		
-		
-//		Cache<String, String> cache=new CacheHelper<String>().getCache("resultDataTransfer", 10, 100, 300);
-//		String xxx=cache.getIfPresent(surveyId+"_"+rId);
-//		System.out.println("cache(resultDataTransfer).size="+CacheHelper.cache.size());
-//		System.out.println("cache(resultDataTransfer).get("+(surveyId+"_"+rId)+") = "+xxx);
-		
-		return Response.ok().entity(xxx).build();
+		log.debug("results page loading from storage: "+resultId);
+		return Response.ok().entity(Results.get().getResults().get(resultId)).build();
 	}
+	
+	
+//	@GET
+//	@PermitAll
+//	@Path("/{surveyId}/results/{rId}")
+//	public Response getSurveyResults(
+//			@PathParam("surveyId") String surveyId,
+//			@PathParam("rId") String rId
+//			) throws IOException{
+//		
+////		System.out.println("/results/::");
+////		String xxx=CacheHelper.cache.get(surveyId+"_"+rId);
+//		String xxx=Results.get().getResults().get(surveyId+"_"+rId);
+//		
+//		
+////		Cache<String, String> cache=new CacheHelper<String>().getCache("resultDataTransfer", 10, 100, 300);
+////		String xxx=cache.getIfPresent(surveyId+"_"+rId);
+////		System.out.println("cache(resultDataTransfer).size="+CacheHelper.cache.size());
+////		System.out.println("cache(resultDataTransfer).get("+(surveyId+"_"+rId)+") = "+xxx);
+//		
+//		return Response.ok().entity(xxx).build();
+//	}
 	
 	private String findReplace(String allContent, String find, String replace){
 		int i=allContent.indexOf(find);
@@ -111,15 +132,11 @@ public class SurveyController{
 		
 		// TODO: i don't like separating the data and info as it makes parsing less clean, but data may not be necessary anyway
 //		System.out.println("onPageChange: payload= "+payload);
-		Map<String,String> info=Json.toObject(payload, new TypeReference<HashMap<String,String>>(){});
+		Map<String,Map<String,Object>> payloadObj=Json.toObject(payload, new TypeReference<HashMap<String,Map<String,Object>>>(){});
+		Map<String, Object> info=payloadObj.get("_page");
 //		Map<String,String> data=(Map<String,String>)pageData.get("data");
 //		Map<String,String> info=(Map<String,String>)pageData.get("info");
 		
-		
-//		System.out.println("onPageChange:: info="+Json.toJson(info));
-		
-		
-//		System.out.println("onPageChange:: data="+Json.toJson(data));
 		
 		// TODO: log the time window spent on page
 		
@@ -130,25 +147,15 @@ public class SurveyController{
 		if (!Database.get().getVisitors(YYMMM).contains(visitorId+pageId)){
 			log.debug("onPageChange:: incrementing monthly page counter for [visitorId="+visitorId+", pageId="+pageId+"]");
 			o.getMetrics().getByMonth("page", YYMMM).put(pageId, o.getMetrics().getByMonth("page", YYMMM).containsKey(pageId)?o.getMetrics().getByMonth("page", YYMMM).get(pageId)+1:1);
-			
 		}
 
 		o.persist();
 		return Response.ok().build();
 	}
 	
-	
-//	// all because I cant type-strong parse out a map of maps...
-//	private Map<String,Map<String,String>> getInfoAndData(String payload) throws JsonParseException, JsonMappingException, IOException{
-//		Map<String,Map<String,String>> result=new HashMap<String, Map<String,String>>();
-//		Map<String,Object> pageData=Json.toObject(payload, new TypeReference<HashMap<String,Object>>(){});
-//		Map<String,String> data=(Map<String,String>)pageData.get("data");
-//		Map<String,String> info=(Map<String,String>)pageData.get("info");
-//		result.put("info", info);
-//		result.put("data", data);
-//		return result;
-//	}
 
+	
+	// THIS METHOD IS OBSOLETE NOW
 	@POST
 	@Path("/{surveyId}/metrics/{pageId}/onComplete")
 	public Response onComplete(@PathParam("surveyId") String surveyId, @PathParam("pageId") String pageId, @QueryParam("visitorId") String visitorId, String payload) throws JsonParseException, JsonMappingException, IOException{
@@ -178,20 +185,24 @@ public class SurveyController{
 	}
 
 	
-	
 	@POST
-	@Path("/{surveyId}/metrics/onResults")
-	public Response onResults(@PathParam("surveyId") String surveyId, @QueryParam("visitorId") String visitorId, String payload) throws JsonParseException, JsonMappingException, IOException{
-		log.info("onResults::");
-
+	@Path("/{surveyId}/generateReport")
+	public Response generateReport(@PathParam("surveyId") String surveyId, @QueryParam("visitorId") String visitorId, @QueryParam("pageId") String pageId, String payload) throws JsonParseException, JsonMappingException, IOException{
+		log.info("generateReport::");
+		
+		onPageChange(surveyId, pageId, visitorId, payload);
+		
 		Survey o=Survey.findById(surveyId);
 		if (null==o) throw new RuntimeException("Survey ID doesn't exist! :"+surveyId);
+		
+		Map<String,Map<String,Object>> payloadObj=Json.toObject(payload, new TypeReference<HashMap<String,Map<String,Object>>>(){});
+		Map<String, Object> pageInfo=payloadObj.get("_page");
+		Map<String, Object> surveyData=payloadObj.get("_data");
+		
 		String YYMMM=FluentCalendar.get(new Date()).getString("yy-MMM");
-		Map<String,Object> data=Json.toObject(payload, new TypeReference<HashMap<String,Object>>(){});
+		log.debug("generateReport:: data="+Json.toJson(surveyData));
 		
-		log.debug("onResults:: data="+Json.toJson(data));
-		
-		// Metrics: log how many times a specific answer was provided to a question, for reporting % of answers per question
+	// Metrics: log how many times a specific answer was provided to a question, for reporting % of answers per question
 		new AnswerProcessor(false){
 			@Override public void onStringAnswer(String questionId, String answerId, Integer score){ // radiobuttons
 				log.debug("Reports: Adding answers for question '"+questionId+"' to metrics");
@@ -213,46 +224,163 @@ public class SurveyController{
 			public void onMapAnswer(String question, Answer answer){ // only seen this as a panel in surveyjs?
 				// ignore for the purpose of metrics because it's most likely a contact form
 			}
-		}.process(data);
+		}.process(surveyData);
 		
 		o.persist();
 		
-		// Execute post-survey plugins
+		
+		// Plugins::
 		Map<String, Map<String, Object>> plugins=o.getActivePlugins();
-		log.info("Active Plugins: "+(plugins.size()<=0?"None":""));
-		for(Entry<String, Map<String, Object>> pl:plugins.entrySet()){
-			log.info("  - "+pl.getKey());
+		
+		// Plugins:: Automatically add "Remove PII plugin" if it isn't configured
+		if (!Iterables.any(plugins.values(), new Predicate<Map<String,Object>>(){public boolean apply(@Nullable Map<String,Object> pluginCfg){
+					return pluginCfg.get("className").equals(RemovePIIAnswersPlugin.class.getName());
+				}})){
+			plugins.put("RemovePII", new MapBuilder<String,Object>().put("active", true).put("className",RemovePIIAnswersPlugin.class.getName()).build());
 		}
-		for(Entry<String, Map<String, Object>> pl:plugins.entrySet()){
-			String pluginName=pl.getKey();
-			log.debug("Executing Plugin: "+pluginName);
-			String clazz=(String)pl.getValue().get("className");
+		
+//		// Plugins:: Execute post-survey plugins
+//		log.info("Active Plugins: "+(plugins.size()<=0?"None":""));
+//		for(Entry<String, Map<String, Object>> pl:plugins.entrySet()){
+//			log.info("  - "+pl.getKey());
+//		}
+//		for(Entry<String, Map<String, Object>> pl:plugins.entrySet()){
+//			String pluginName=pl.getKey();
+//			log.debug("Executing Plugin: "+pluginName);
+//			String clazz=(String)pl.getValue().get("className");
+//			try{
+//				Plugin plugin=(Plugin)Class.forName(clazz).newInstance();
+//				plugin.setConfig(pl.getValue());
+//				surveyData=plugin.execute(surveyId, visitorId, surveyData); // after each plugin, keep the changes to the data (similar to the concept of Tomcat filters)
+//			}catch(Exception e){
+//				e.printStackTrace();
+//			}
+//		}
+//		for(Entry<String, Map<String, Object>> pl:plugins.entrySet()){
+//			pl.onDestroy();
+//		}
+		
+		// Plugins:: Execute post-survey plugins
+		List<Plugin> activePlugins=new LinkedList<Plugin>();
+		// Plugins:: Create Plugin list
+		for(Entry<String, Map<String, Object>> pl:o.getActivePlugins().entrySet()){
 			try{
-				Plugin plugin=(Plugin)Class.forName(clazz).newInstance();
+				Plugin plugin=(Plugin)Class.forName((String)pl.getValue().get("className")).newInstance();
 				plugin.setConfig(pl.getValue());
-				data=plugin.execute(surveyId, visitorId, data); // after each plugin, keep the changes to the data (similar to the concept of Tomcat filters)
+				activePlugins.add(plugin);
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 		}
+		// Plugins:: Execute post-survey plugins
+		for(Plugin plugin:activePlugins){
+			try{
+				surveyData=plugin.execute(surveyId, visitorId, surveyData); // after each plugin, keep the changes to the data (similar to the concept of Tomcat filters)
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		// Plugins:: Post-execution, cleanup
+		for(Plugin plugin:activePlugins){
+			plugin.onDestroy(surveyId, visitorId, surveyData);
+		}
+		
+		
+		
+		//MAT - TODO: generate a report ID, and store the results (minus any personal info), return the ID so the index.html can redirect to report.html passing the unique ID
+		
+//			String uniqueReportId="SOME MASSIVE UNIQUE ID FOR THE REPORT";
+		String uniqueReportId=UUID.randomUUID().toString().replaceAll("-", "");
+//		String uniqueReportId=surveyId+"_"+visitorId;
+		
+
 		
 		// store the enriched/processed results for the results page to use
 		log.debug("putting answers into cache, ready for the results page to render it");
-		log.debug("cache.put("+(surveyId+"_"+visitorId)+") = "+Json.toJson(data));
-//		CacheHelper.cache.put(surveyId+"_"+visitorId, Json.toJson(data));
+		log.debug("cache.put("+(uniqueReportId)+") = "+Json.toJson(surveyData));
 		Results results=Results.get();
-		results.getResults().put(surveyId+"_"+visitorId, Json.toJson(data));
+		results.getResults().put(uniqueReportId, Json.toJson(surveyData));
 		results.save();
 		
-		// Build report?
-		
-//		Cache<String, String> cache=new CacheHelper<String>().getCache("resultDataTransfer", 10, 100, 300);
-//		System.out.println("onResults:: cache('resultDataTransfer').put("+(surveyId+"_"+visitorId)+") = "+payload);
-//		cache.put(surveyId+"_"+visitorId, payload);
-		
-		
-		return Response.ok(Survey.findById(o.id)).build();
+		return Response.ok(uniqueReportId).build();
 	}
+	
+	
+//	// THIS METHOD IS NOW OBSOLETE
+//	@POST
+//	@Path("/{surveyId}/metrics/onResults")
+//	public Response onResults(@PathParam("surveyId") String surveyId, @QueryParam("visitorId") String visitorId, String payload) throws JsonParseException, JsonMappingException, IOException{
+//		log.info("onResults::");
+//
+//		Survey o=Survey.findById(surveyId);
+//		if (null==o) throw new RuntimeException("Survey ID doesn't exist! :"+surveyId);
+//		Map<String,Object> data=Json.toObject(payload, new TypeReference<HashMap<String,Object>>(){});
+//		String YYMMM=FluentCalendar.get(new Date()).getString("yy-MMM");
+//		
+//		log.debug("onResults:: data="+Json.toJson(data));
+//		
+//		// Metrics: log how many times a specific answer was provided to a question, for reporting % of answers per question
+//		new AnswerProcessor(false){
+//			@Override public void onStringAnswer(String questionId, String answerId, Integer score){ // radiobuttons
+//				log.debug("Reports: Adding answers for question '"+questionId+"' to metrics");
+//				Map<String, Map<String,Integer>> answers=o.getMetrics().getAnswersByMonth("answers", YYMMM);
+//				if (!answers.containsKey(questionId)) answers.put(questionId, new HashMap<>());
+//				answers.get(questionId).put(answerId, answers.get(questionId).containsKey(answerId)?answers.get(questionId).get(answerId)+1:1);
+//			}
+//			@Override
+//			public void onArrayListAnswer(String questionId, List<Answer> answerList, Integer averageScore){ // multi-checkboxes
+//				log.debug("Reports: Adding answers for question '"+questionId+"' to metrics");
+//				for (Answer answer:answerList){
+//					// Increment the metrics for each item selected
+//					Map<String, Map<String,Integer>> answers=o.getMetrics().getAnswersByMonth("answers", YYMMM);
+//					if (!answers.containsKey(questionId)) answers.put(questionId, new HashMap<>());
+//					answers.get(questionId).put(answer.id, answers.get(questionId).containsKey(answer.id)?answers.get(questionId).get(answer.id)+1:1);
+//				}
+//			}
+//			@Override
+//			public void onMapAnswer(String question, Answer answer){ // only seen this as a panel in surveyjs?
+//				// ignore for the purpose of metrics because it's most likely a contact form
+//			}
+//		}.process(data);
+//		
+//		o.persist();
+//		
+//		// Execute post-survey plugins
+//		Map<String, Map<String, Object>> plugins=o.getActivePlugins();
+//		log.info("Active Plugins: "+(plugins.size()<=0?"None":""));
+//		for(Entry<String, Map<String, Object>> pl:plugins.entrySet()){
+//			log.info("  - "+pl.getKey());
+//		}
+//		for(Entry<String, Map<String, Object>> pl:plugins.entrySet()){
+//			String pluginName=pl.getKey();
+//			log.debug("Executing Plugin: "+pluginName);
+//			String clazz=(String)pl.getValue().get("className");
+//			try{
+//				Plugin plugin=(Plugin)Class.forName(clazz).newInstance();
+//				plugin.setConfig(pl.getValue());
+//				data=plugin.execute(surveyId, visitorId, data); // after each plugin, keep the changes to the data (similar to the concept of Tomcat filters)
+//			}catch(Exception e){
+//				e.printStackTrace();
+//			}
+//		}
+//		
+//		// store the enriched/processed results for the results page to use
+//		log.debug("putting answers into cache, ready for the results page to render it");
+//		log.debug("cache.put("+(surveyId+"_"+visitorId)+") = "+Json.toJson(data));
+////		CacheHelper.cache.put(surveyId+"_"+visitorId, Json.toJson(data));
+//		Results results=Results.get();
+//		results.getResults().put(surveyId+"_"+visitorId, Json.toJson(data));
+//		results.save();
+//		
+//		// Build report?
+//		
+////		Cache<String, String> cache=new CacheHelper<String>().getCache("resultDataTransfer", 10, 100, 300);
+////		System.out.println("onResults:: cache('resultDataTransfer').put("+(surveyId+"_"+visitorId)+") = "+payload);
+////		cache.put(surveyId+"_"+visitorId, payload);
+//		
+//		
+//		return Response.ok(Survey.findById(o.id)).build();
+//	}
 	
 
 	

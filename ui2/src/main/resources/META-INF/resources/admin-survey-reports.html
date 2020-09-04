@@ -1,32 +1,46 @@
-<html>
+<html lang="EN">
 <head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-$(function(){
-  jQuery.each($('[data-include]'), function(){
-    var file = 'components/' + $(this).data('include') + '.html';
-    $(this).load(file);
-  });
-});
-</script>
-<script src="assets/js/http.js"></script>
-<script src="assets/js/utils.js"></script>
-<script src="assets/js/jquery-common.js"></script>
-<script src="assets/js/env.js"></script>
-<script src="assets/js/feedback-alert.js"></script>
-
-<script src="https://github.com/chartjs/Chart.js/releases/download/v2.9.3/Chart.min.js"></script>
-<!--script src="https://chartjs-plugin-datalabels.netlify.app/chartjs-plugin-datalabels.js"></script-->
-
-<script src="assets/js/charts.js"></script>
-<script src="assets/js/charts-datepicker.js"></script>
-
-<style id="customStyles">
-@import "https://go.redhat.com/hubfs/css/styles.min.css";
-</style>
-<link rel="stylesheet" href="assets/css/header.css">
-<link rel="stylesheet" href="assets/css/style.css">
-
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Admin @ Assessments | Red Hat Inc</title>
+	<meta name="description" content="Red Hat Assessment Platform">
+	<meta name="robots" content="noindex">
+	<meta name="viewport" content="width=device-width, initial scale= 1.0">
+	<meta property="og:title" content="Assessments | Red Hat Inc">
+	<meta property="og:description" content="">
+  <link rel="preload" href="https://static.redhat.com/libs/redhat/redhat-font/2/webfonts/RedHatText/RedHatText-Regular.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="https://static.redhat.com/libs/redhat/redhat-font/2/webfonts/RedHatText/RedHatText-Medium.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="https://static.redhat.com/libs/redhat/redhat-font/2/webfonts/RedHatDisplay/RedHatDisplay-Regular.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="https://static.redhat.com/libs/redhat/redhat-font/2/webfonts/RedHatDisplay/RedHatDisplay-Medium.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="https://static.redhat.com/libs/redhat/redhat-font/2/webfonts/RedHatDisplay/RedHatDisplay-Bold.woff" as="font" type="font/woff" crossorigin>
+  <link type="text/css" rel="stylesheet" href="https://static.redhat.com/libs/redhat/redhat-font/2/webfonts/red-hat-font.css" media="all" />
+  <link rel="icon" href="https://www.redhat.com/profiles/rh/themes/redhatdotcom/favicon.ico">
+	<style id="customStyles">
+	@import "https://go.redhat.com/hubfs/css/styles.min.css";
+	</style>
+	
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script>
+	$(function(){
+	  jQuery.each($('[data-include]'), function(){
+	    var file = 'components/' + $(this).data('include') + '.html';
+	    $(this).load(file);
+	  });
+	});
+	</script>
+	<script src="assets/js/http.js"></script>
+	<script src="assets/js/utils.js"></script>
+	<script src="assets/js/jquery-common.js"></script>
+	<script src="assets/js/env.js"></script>
+	<script src="assets/js/feedback-alert.js"></script>
+	<script src="https://github.com/chartjs/Chart.js/releases/download/v2.9.3/Chart.min.js"></script>
+	<!--script src="https://chartjs-plugin-datalabels.netlify.app/chartjs-plugin-datalabels.js"></script-->
+	<script src="assets/js/charts.js"></script>
+	<script src="assets/js/charts-datepicker.js"></script>
+	
+	<link rel="stylesheet" href="assets/css/header.css">
+	<link rel="stylesheet" href="assets/css/style.css">
 
 <script>
 var charts={};
@@ -115,7 +129,7 @@ canvas{
 </style>
 
 </head>
-<body>
+<body class="admin">
 	
 	<!-- Header (+Logo) -->
 	<div id="header">
@@ -131,7 +145,7 @@ canvas{
 	</div>
 	
 	<!-- Breadcrumb Menu -->
-	<div class="elevate" style="height: 27px">
+	<div class="admin elevate" style="height: 27px">
 		<ul style="float:left" class="menu menu_horizontal">
 			<li><a href="admin.html">Surveys</a></li>
 			<li class="noColor divider">/</li>
@@ -162,25 +176,7 @@ canvas{
 	</div>
 
 	<!-- Main Content -->
-	<div class="container py-1">
-		<table class="">
-			<tbody id="content">
-				<tr>
-					<td class="elevate section">
-						<span style="float:left;">
-							Period: <span id="monthswrapper"></span>
-						</span>
-						<span style="float:right;">
-							<a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="#" onclick="metricsReset();">Reset Metrics</a>
-						</span>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
-	<!--  -->
 	<style>
-	
 	.graph_header{
 		margin-block-end: 0em;
 	}
@@ -188,7 +184,17 @@ canvas{
 	<section class="container py-1">
 			<table class="">
 				<tbody id="content">
-					
+					<tr>
+						<td class="elevate section">
+							<span style="float:left;">
+								Period: <span id="monthswrapper"></span>
+							</span>
+							<span style="float:right;">
+								<a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="#" onclick="metricsReset();">Reset Metrics</a>
+							</span>
+						</td>
+					</tr>
+					<tr><td style="height: 35px;"></td></tr>
 					<tr>
 						<td class="elevate section">
 							<h3 class="graph_header center">TOTAL SURVEYS COMPLETED BY MONTH</h3>

@@ -3,33 +3,51 @@ table{width: 100%;}
 .admin table thead tr td,
 .admin table tbody tr td,
 .elevate tbody tr td{
+	/*
   padding: 10px 15px 10px 15px;
+	*/
   font-size: 11pt;
 }
+section .elevate{
+	padding: 20px 25px 20px 25px;
+}
+.py-1 .elevate tbody tr td{
+	padding: 10px 10px 10px 10px;
+}
+
+.py-1 .elevate textarea{
+	font-family: Overpass;
+	line-height: 1.2;
+}
+	
 .admin table thead tr td{
   color: grey;
   font-size: 10pt;
 }
 .admin table thead tr td:first-child,
 .admin table tbody tr td:first-child{
+	/*
   padding: 10px 10px 10px 10px;
+	*/
 }
 body{
 	display: flex;
   flex-direction: column;
 }
 body, p{
-  font: normal normal normal 16px/30px Red Hat Text, RedHatText, Overpass,"Helvetica Neue",Arial,sans-serif;
+  font: normal normal normal 16px/24px Red Hat Text, RedHatText, Overpass,"Helvetica Neue",Arial,sans-serif;
+  font-family: Red Hat Text, RedHatText, Overpass,"Helvetica Neue",Arial,sans-serif;
   text-align: left;
   letter-spacing: 0px;
   color: #151515;
   opacity: 1;
 }
-h1{ font: normal normal normal 36px/47px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
-h2{ font: normal normal normal 28px/47px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
-h3{ font: normal normal normal 26px/30px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
-h4{ font: normal normal normal 20px/30px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
-h5{ font: normal normal normal 11px/20px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
+h1{   font: normal normal normal 36px/47px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
+h2{   font: normal normal normal 28px/47px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
+h3{   font: normal normal normal 26px/30px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
+h4{   font: normal normal normal 20px/30px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
+h5{   font: normal normal 600    16px/30px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; } /* surveyjs question titles */
+.hdr{ font-family: Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
 
 .py-0{
 	margin-bottom: auto;
@@ -52,11 +70,13 @@ h5{ font: normal normal normal 11px/20px Red Hat Display,RedHatDisplay,Overpass,
    display: inline;
 }
 .menu li{
-   padding: 4px;
+   padding: 4px 15px 3px 15px;
    margin: 1px;
    color: #3f3f3f;
-   padding-left: 15px;
-   padding-right: 15px;
+   font-size: 12pt;
+   text-decoration: none !important;
+   line-height: 1.5 !important;
+   font-family: inherit !important;
    /*
    position: relative;
    top: 0px;
@@ -77,6 +97,7 @@ div.elevate li.noColor{
 .menu li:hover > *,
 .menu li.current a{
 	color: #fff;
+	text-decoration: none !important;
 }
 .menu li.divider{
 	padding-left: 0px;
@@ -189,8 +210,10 @@ div.elevate li.noColor{
 	margin-bottom: 0;
 }
 .sv_q_title span{
-	font-weight: bold; /* questions in bold */
+	/*
+	font-weight: bold;
 	font-size: 11pt;
+	*/
 }
 .sv_q_dropdown_control, .sv_q_text_root{
 	width: 80%;
@@ -204,9 +227,11 @@ div.elevate li.noColor{
 }
 .sv_q_imgsel_title{
 	font-size: 18pt;
+	margin-bottom: 15px;
 }
 .sv_q_imgsel_description{
 	font-size: 12pt;
+	line-height: 24px;
 }
 
 .sv_q_imgsel_text{
@@ -264,6 +289,7 @@ div.elevate li.noColor{
 		position: relative;
     top: 40px;
     white-space: normal;
+    padding: 0 5px;
 }
 
 
@@ -276,16 +302,20 @@ div.elevate li.noColor{
 }
 
 
+span.sv_q_required_text{
+	color: #E00;
+}
+
 /* spacing out each question with margins and borders on a white background */
 .sv_qstn>div:nth-child(1){
-	padding: 10px;
-    border: 1px solid #ccc;
+	padding: 10px 20px;
+  border: 1px solid #ccc;
 	background-color: white !important;
 	border-top-left-radius: 3px;
 	border-top-right-radius: 3px;
 }
 .sv_qstn>div:nth-child(2){
-	padding: 13px;
+	padding: 13px 20px;
   border: 1px solid #ccc;
   border-top: 0px;
   background-color: white !important;
@@ -333,7 +363,7 @@ div.elevate li.noColor{
   border-radius: 3px;
   font-size: 16px;
   font-weight: 400;
-  padding: 4px 16px 0px 16px;
+  padding: 2px 16px 2px 16px;
   opacity: 1;
   text-decoration: none;
   text-transform: none;
@@ -371,7 +401,7 @@ div.elevate li.noColor{
   color: #FFF;
 }
 fieldset div label {
-    margin-bottom: 0rem !important;
+    margin-bottom: 0.2rem !important;
 }
 
 .sv_q_radiogroup>label {

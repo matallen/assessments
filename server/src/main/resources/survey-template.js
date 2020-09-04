@@ -18,7 +18,7 @@ var imgpicker_template = `
 	                  <embed data-bind="css: question.koCss().image, attr: { src: $data.imageLink, width: question.imageWidth ? question.imageWidth + 'px' : undefined, height: question.imageHeight ? question.imageHeight + 'px' : undefined }, style: { objectFit: question.imageFit }"/>
 	                  <!-- /ko -->
 	                  <!-- ko if: question.showLabel -->
-	                  <div class="sv_q_imgsel_title" data-bind="text: text || value, attr: { title: text || value }, css: question.koCss().itemText"></div>
+	                  <div class="sv_q_imgsel_title hdr" data-bind="text: text || value, attr: { title: text || value }, css: question.koCss().itemText"></div>
 	                  <!-- /ko -->
 	                  <!-- ko if: description -->
 	                  <div class="sv_q_imgsel_description" data-bind="text: description, attr: { title: description }, css: question.koCss().itemText"></div>
@@ -212,7 +212,7 @@ survey
     	
 		LocalStorage.saveState(survey);
 		
-		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onPageChange?visitorId="+Cookie.get("rhae-visitorId"), buildPageChangePayload(page));
+		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onPageChange?visitorId="+Cookie.get("rhae-visitorId"), buildPayload(page));
 	});
 
 survey
@@ -246,26 +246,27 @@ survey
     	
 		// TODO: Remove this double posting, but find a way to make the multi-depth object easier to parse on the java side
 		
-		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onComplete?visitorId="+Cookie.get("rhae-visitorId"), buildPageChangePayload(page, false), function(response){
-			if (response.status==200){
-				// navigate to a results page
-				
-			}else{
-				// Handle the error scenario
-			}
-		});
+//		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onComplete?visitorId="+Cookie.get("rhae-visitorId"), buildPayload(page, false), function(response){
+//			if (response.status==200){
+//				// navigate to a results page
+//				
+//			}else{
+//				// Handle the error scenario
+//			}
+//		});
     	//Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"?event=onComplete&cookie="+Cookie.get("rhae-jwt")+"&time="+timeInfo[page.name]+"&country="+geoInfo["countryCode"]+"region"+geoInfo["region"]);
 		
-		var data=survey.data;
-		data["language"]=languageCode;
+		survey.data["language"]=languageCode;
     	
-    	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/onResults?visitorId="+Cookie.get("rhae-visitorId"), data, function(response){
+    	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/generateReport?pageId="+page.name+"&visitorId="+Cookie.get("rhae-visitorId"), buildPayload(page, true), function(response){
 			if (response.status==200){
 				// navigate to a results page
 				
 				console.log("Completed posting results to server");
 				
-				window.location.assign("/results.html?surveyId="+surveyId+"&visitorId="+visitorId);
+				var resultId=response.responseText;
+				window.location.assign("/results.html?surveyId="+surveyId+"&resultId="+resultId);
+//				window.location.assign("/results.html?surveyId="+surveyId+"&visitorId="+visitorId);
 				
 			}else{
 				// Handle the error scenario
@@ -275,7 +276,21 @@ survey
     	
     });
 
-function buildPageChangePayload(page, includeData){
+function buildPayload(page, includeData){
+	var payload={};
+	payload["_page"]={};
+	payload["_page"]["visitorId"]=Cookie.get("rhae-visitorId");
+	payload["_page"]["timeOnpage"]=timeInfo[page.name];
+	payload["_page"]["geo"]=geoInfo["continentCode"];
+	payload["_page"]["countryCode"]=geoInfo["countryCode"];
+	payload["_page"]["region"]=geoInfo["region"];
+	if (includeData){
+		payload["_data"]=survey.data;
+	}
+	return payload;
+}
+
+function xbuildPageChangePayload(page, includeData){
 	var payload={};
 	payload["visitorId"]=Cookie.get("rhae-visitorId");
 	payload["timeOnpage"]=timeInfo[page.name];
@@ -590,5 +605,4 @@ survey.completedHtml="<h2>Generating report... please wait</h2>";
 
 //survey.locale = languageCode;
 survey.render();
-
 

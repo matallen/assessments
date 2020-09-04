@@ -76,6 +76,7 @@ public class SurveyControllerTest {
 		
 		Survey survey=(Survey)new SurveyAdminController().create("{\"name\":\"TESTING\"}").getEntity();
 		
+		// TODO: fix - this is no longer correct as the payload is mixed with page stats 
 		String testPayload="{\n" + 
 				"  \"automation-development\" : \"item3\",\n" + 
 				"  \"question7\" : \"item5\",\n" + 
@@ -91,7 +92,7 @@ public class SurveyControllerTest {
 		
 		
 		System.out.println(
-				new SurveyController().onResults(survey.id, "visitorId-123", testPayload)
+				new SurveyController().generateReport(survey.id, "visitorId-123", "pageId", testPayload)
 		);
 	}
 	
@@ -100,8 +101,11 @@ public class SurveyControllerTest {
 	public void testResultsGatheringWithMultiChoice() throws JsonParseException, JsonMappingException, IOException{
 		Survey survey=(Survey)new SurveyAdminController().create("{\"name\":\"TESTING\"}").getEntity();
 		String payload="{\"question1\":[\"lion\"],\"cloud_q1\":[\"item1\"],\"question3\":{\"text1\":\"John\",\"text2\":\"Doe\"}}";
+		
+	// TODO: fix - this is no longer correct as the payload is mixed with page stats 
+		
 		System.out.println(
-				new SurveyController().onResults(survey.id, "visitorId-123", payload)
+				new SurveyController().generateReport(survey.id, "visitorId-123", "pageId", payload)
 		);
 	}
 	

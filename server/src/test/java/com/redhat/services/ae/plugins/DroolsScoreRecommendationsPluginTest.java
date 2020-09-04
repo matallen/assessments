@@ -17,7 +17,6 @@ import com.google.common.collect.Lists;
 import com.redhat.services.ae.Database;
 import com.redhat.services.ae.MapBuilder;
 import com.redhat.services.ae.model.Survey;
-import com.redhat.services.ae.plugins.droolsscore.DroolsScoreRecommendationsPlugin;
 import com.redhat.services.ae.utils.Json;
 
 public class DroolsScoreRecommendationsPluginTest{

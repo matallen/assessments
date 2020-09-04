@@ -33,6 +33,7 @@
     width: 100%;
     font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
     position: relative;
+    top: 2px; /* shuffle the circles down to be in-line with the text*/
 }
 
 .navigationProgressbar .pageTitle {

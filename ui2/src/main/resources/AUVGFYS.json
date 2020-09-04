@@ -1,0 +1,96 @@
+{
+ "pages": [
+  {
+   "name": "page1",
+   "elements": [
+    {
+     "type": "text",
+     "name": "question1",
+     "title": {
+      "default": "What is your name?",
+      "de": "Wie heißen Sie?"
+     }
+    },
+    {
+     "type": "text",
+     "name": "question2",
+     "title": {
+      "default": "What is your quest?",
+      "de": "Was ist deine Suche?"
+     }
+    },
+    {
+     "type": "radiogroup",
+     "name": "question3",
+     "title": {
+      "default": "What is your favorite color?",
+      "de": "Was ist deine Lieblingsfarbe?"
+     },
+     "choices": [
+      {
+       "value": "item1",
+       "text": {
+        "default": "Blue",
+        "de": "Blau"
+       }
+      },
+      {
+       "value": "item2",
+       "text": {
+        "default": "Yellow",
+        "de": "Gelb"
+       }
+      }
+     ]
+    },
+    {
+     "type": "rating",
+     "name": "question4",
+     "visibleIf": "{question3} = 'item2'",
+     "title": {
+      "default": "What... is the air-speed velocity of an unladen swallow?",
+      "de": "Was ... ist die Luftgeschwindigkeit einer unbeladenen Schwalbe?"
+     },
+     "rateValues": [
+      1,
+      {
+       "value": 2,
+       "text": "5"
+      },
+      {
+       "value": 3,
+       "text": "13"
+      },
+      {
+       "value": 4,
+       "text": "24"
+      },
+      {
+       "value": 5,
+       "text": "42"
+      }
+     ]
+    }
+   ],
+   "title": {
+    "default": "Demo Assessment",
+    "de": "Demo-Bewertung"
+   },
+   "description": {
+    "default": "Maturity assessment based on the teachings on Monty Python",
+    "de": "Reifegradbewertung basierend auf den Lehren über Monty Python"
+   }
+  },
+  {
+   "name": "page2",
+   "elements": [
+    {
+     "type": "html",
+     "name": "question5"
+    }
+   ],
+   "visibleIf": "{question4} = 4",
+   "title": "You are correct!"
+  }
+ ]
+}

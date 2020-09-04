@@ -15,11 +15,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.redhat.services.ae.model.Survey;
+import com.redhat.services.ae.plugins.RemovePIIAnswersPlugin;
 import com.redhat.services.ae.utils.Json;
 
 //import org.codehaus.jackson.JsonGenerationException;
@@ -29,7 +31,7 @@ import com.redhat.services.ae.utils.Json;
 
 
 public class Database{
-  private static final Logger log=Logger.getLogger(Database.class.getSimpleName());
+  public static final Logger log=LoggerFactory.getLogger(Database.class);
   public static String STORAGE="persistence/database.json";
   public static final File STORAGE_AS_FILE=new File(STORAGE);
   
@@ -80,7 +82,7 @@ public class Database{
         storeHere.getParentFile().mkdirs();
 //      IOUtils2.writeAndClose(Json.newObjectMapper(true).writeValueAsBytes(this), new FileOutputStream(storeHere));
       IOUtils.write(Json.toJson(this).getBytes(), new FileOutputStream(storeHere));
-      log.info("Database saved ("+(System.currentTimeMillis()-s)+"ms, size="+storeHere.length()+")");
+      log.debug("Database saved ("+(System.currentTimeMillis()-s)+"ms, size="+storeHere.length()+")");
     }catch (FileNotFoundException e){
       e.printStackTrace();
     }catch (IOException e){
@@ -102,7 +104,7 @@ public class Database{
     }catch (IOException e){
       e.printStackTrace();
     }
-    log.severe("Returning NULL Database - this is cause issues!");
+    log.error("Returning NULL Database - this is cause issues!");
     return null;
   }
   
@@ -113,7 +115,7 @@ public class Database{
   public static synchronized Database get(File storage){
     if (instance!=null) return instance;
     if (!storage.exists()){
-    	log.warning("No database file found, creating new/blank/default one... "+storage.getAbsolutePath());
+    	log.warn("No database file found, creating new/blank/default one... "+storage.getAbsolutePath());
     	new Database().save();
     }
     instance=Database.load(storage);

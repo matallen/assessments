@@ -1,6 +1,7 @@
 package com.redhat.services.ae.plugins;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -9,12 +10,11 @@ import org.slf4j.LoggerFactory;
 
 import com.redhat.services.ae.utils.Json;
 
-public class EmbeddedScoreTotalPlugin implements Plugin{
+public class EmbeddedScoreTotalPlugin extends Plugin{
 	public static final Logger log=LoggerFactory.getLogger(EmbeddedScoreTotalPlugin.class);
 
 	@Override
-	public void setConfig(Map<String, Object> config){
-	}
+	public void setConfig(Map<String, Object> config){}
 
 	private Map<String,Integer> sectionScores=new HashMap<String, Integer>();
 	private Map<String,Integer> sectionTotals=new HashMap<String, Integer>();
@@ -26,22 +26,25 @@ public class EmbeddedScoreTotalPlugin implements Plugin{
 		
 		for (Entry<String, Object> e:surveyResults.entrySet()){
 			String questionId=e.getKey();
-			System.out.println("XXX: questionId="+questionId);
 			
 			Map<String,Object> value=(Map<String,Object>)e.getValue();
 			
+//			System.out.println("XXX: value.contains('score')=="+value.containsKey("score") +"  AND value.contains('navigationTitle')=="+value.containsKey("navigationTitle"));
 			
-			System.out.println("XXX: value.contains('score')=="+value.containsKey("score") +"  AND value.contains('navigationTitle')=="+value.containsKey("navigationTitle"));
-			
-			if (value.containsKey("score") && value.containsKey("navigationTitle")){ // ie, if the question has a score set & belongs to a section/page
-				String navTitle=(String)value.get("navigationTitle");
-				int score=Integer.class.isAssignableFrom(value.get("score").getClass())?(Integer)value.get("score"):0; // it must be an integer score, I dont want to deal with string conversions
-				
-				log.debug(questionId+"::Adding score "+score+" to section ["+navTitle+"]");
-				
-				sectionTotals.put(navTitle, sectionTotals.containsKey(navTitle)?sectionTotals.get(navTitle)+score:score);
-				sectionCounts.put(navTitle, sectionCounts.containsKey(navTitle)?sectionCounts.get(navTitle)+1:1);
-				sectionScores.put(navTitle, sectionTotals.get(navTitle)/sectionCounts.get(navTitle));
+			if (value.containsKey("score")){
+				if (value.containsKey("navigationTitle")){
+					String navTitle=(String)value.get("navigationTitle");
+					int score=Integer.class.isAssignableFrom(value.get("score").getClass())?(Integer)value.get("score"):0; // it must be an integer score, I dont want to deal with string conversions
+					
+					log.debug(questionId+"::Adding score "+score+" to section ["+navTitle+"]");
+					
+					sectionTotals.put(navTitle, sectionTotals.containsKey(navTitle)?sectionTotals.get(navTitle)+score:score);
+					sectionCounts.put(navTitle, sectionCounts.containsKey(navTitle)?sectionCounts.get(navTitle)+1:1);
+					sectionScores.put(navTitle, sectionTotals.get(navTitle)/sectionCounts.get(navTitle));
+					
+				}else{
+					log.error("This question ("+questionId+") has a score ("+value.get("score")+"), so it should have a navigationTitle too ("+value.containsKey("navigationTitle")+")");
+				}
 			}
 			
 		}

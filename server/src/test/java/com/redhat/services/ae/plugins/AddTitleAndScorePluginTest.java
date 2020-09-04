@@ -33,40 +33,6 @@ public class AddTitleAndScorePluginTest{
 	@Test
 	public void test1() throws Exception{
 		String questionsJson=IOUtils.toString(this.getClass().getClassLoader().getResource("QuestionTitlePlugin_test1_questions.json"), "UTF-8");
-//		String answersJson="{\n" + 
-//				"  \"platforms_q3\": {\n" + 
-//				"    \"answers\": [\n" + 
-//				"      {\n" + 
-//				"        \"answer\": \"20#Agile\"\n" + 
-//				"      }\n" + 
-//				"    ],\n" + 
-//				"    \"title\": \"Which of the following practices/methodologies are implemented in your organization?\"\n" + 
-//				"  },\n" + 
-//				"  \"platforms_q2\": {\n" + 
-//				"    \"answer\": \"20#21-50\",\n" + 
-//				"    \"title\": \"What is the size of your department?\"\n" + 
-//				"  },\n" + 
-//				"  \"FirstName\": {\n" + 
-//				"    \"answer\": \"Mat\",\n" + 
-//				"    \"title\": \"First Name\"\n" + 
-//				"  },\n" + 
-//				"  \"WorkEmail\": {\n" + 
-//				"    \"answer\": \"mallen@redhat.com\",\n" + 
-//				"    \"title\": \"Work Email\"\n" + 
-//				"  },\n" + 
-//				"  \"interests\": {\n" + 
-//				"    \"answers\": [\n" + 
-//				"      {\n" + 
-//				"        \"answer\": \"platforms\"\n" + 
-//				"      }\n" + 
-//				"    ],\n" + 
-//				"    \"title\": \"interests\"\n" + 
-//				"  },\n" + 
-//				"  \"platforms_q1\": {\n" + 
-//				"    \"answer\": \"20#software\",\n" + 
-//				"    \"title\": \"What is your department / organizations main responsability?\"\n" + 
-//				"  }\n" + 
-//				"}";
 		String answersJson="{\n" + 
 				"  \"interests\": [\n" + 
 				"    \"platforms\"\n" + 
@@ -88,6 +54,10 @@ public class AddTitleAndScorePluginTest{
 		Map<String, Object> newData=new AddTitleAndScorePlugin().execute("test1", "TEST_VISITOR_ID", answers);
 		
 		System.out.println("to:"+Json.toJson(newData));
+		
+		new AddTitleAndScorePlugin().onDestroy("test1", "TEST_VISITOR_ID", newData);
+		
+		System.out.println("after destroy:"+Json.toJson(newData));
 		
 	}
 }

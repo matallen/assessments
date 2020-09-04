@@ -3,7 +3,9 @@ package com.redhat.services.ae.plugins;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
+import com.google.common.collect.Lists;
 import com.redhat.services.ae.MapBuilder;
 
 import mjson.Json;
@@ -19,11 +21,11 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 	 * 
 	 */
 	
-	private String getPageName(Json question){
-		Json page=getPageJson(question);
-		if (null!=page) return page.at("name").asString();
-		return null;
-	}
+//	private String getPageName(Json question){
+//		Json page=getPageJson(question);
+//		if (null!=page) return page.at("name").asString();
+//		return null;
+//	}
 	
 	private Json getPageJson(Json question){
 		int i=0;
@@ -54,10 +56,6 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 		
 		if (null==question) return answerData;
 
-//		if (answerSplit.score>=0){
-//			answerData.put("score", answerSplit.score);
-//		}
-		
 		common(answerSplit.score, question, answerData);
 		
 		return answerData;
@@ -79,10 +77,6 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 		
 		Map<String,Object> answerData=new MapBuilder<String,Object>().put("answers", newAnswers).build();
 		
-//		if (highestScore>=0){
-//			answerData.put("score", highestScore);
-//		}
-		
 		common(highestScore, question, answerData);
 		
 		return answerData;
@@ -96,6 +90,12 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 			answerData.put("pageId", pageJson.at("name").asString());
 			if (pageJson.has("navigationTitle")) answerData.put("navigationTitle", pageJson.at("navigationTitle").asString());
 		}
+	}
+	
+	@Override
+	public void onDestroy(String surveyId, String visitorId, Map<String, Object> surveyResults){
+		// At the end of the plugin execution, remove any fields added as cleanup
+		removeAnswerProperties(surveyResults, Lists.newArrayList("title", "navigationTitle", "pageId"));
 	}
 
 	

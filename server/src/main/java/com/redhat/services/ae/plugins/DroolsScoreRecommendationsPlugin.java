@@ -1,4 +1,4 @@
-package com.redhat.services.ae.plugins.droolsscore;
+package com.redhat.services.ae.plugins;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,9 +35,12 @@ import com.google.common.collect.Lists;
 import com.redhat.services.ae.Initialization;
 import com.redhat.services.ae.MapBuilder;
 import com.redhat.services.ae.dt.GoogleDrive3;
-import com.redhat.services.ae.plugins.Plugin;
+import com.redhat.services.ae.plugins.droolsscore.DroolsRecommendation;
+import com.redhat.services.ae.plugins.droolsscore.DroolsSurveyAnswer;
+import com.redhat.services.ae.plugins.droolsscore.DroolsSurveySection;
+import com.redhat.services.ae.plugins.droolsscore.ResultsBuilderTabsOverview;
 
-public class DroolsScoreRecommendationsPlugin implements Plugin{
+public class DroolsScoreRecommendationsPlugin extends Plugin{
 	public static final Logger log=LoggerFactory.getLogger(DroolsScoreRecommendationsPlugin.class);
 	
 	private static final int CACHE_EXPIRY_IN_MS=3000;
@@ -106,6 +109,7 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 			
 			List<String> sheets=Lists.newArrayList("Section Recommendations", "Question Recommendations");
 			drls=Lists.newArrayList();
+			int salience=65535;
 			for(String sheetName:sheets){
 				
 				// Load the excel sheet with a retry loop?
@@ -119,7 +123,7 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 				for(Map<String, String> rows:parseExcelDocument){
 					dataTableConfigList2.add(
 							new MapBuilder<String,Object>()
-							.put("salience", 65534-Integer.parseInt(rows.get("ROW_#")))
+							.put("salience", salience-=1)// 65534-Integer.parseInt(rows.get("ROW_#")))
 							.put("language", rows.get("Language"))
 							.put("description", makeTextSafeForCompilation(rows.get("Description")))
 							
@@ -189,7 +193,7 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 				Object val=e.getValue();
 				
 				
-				if (key.startsWith("_")){
+				if (key.startsWith("_") || key.startsWith("C_")){
 					if (key.equalsIgnoreCase("_sectionScore")){
 						Map<String, Integer> values=(Map<String, Integer>)val;
 						for(Entry<String, Integer> e2:values.entrySet()){
@@ -269,7 +273,7 @@ public class DroolsScoreRecommendationsPlugin implements Plugin{
 				// replace any key/values from the answers in the recommendation strings
 				for (Entry<String, String> e:kvReplacement.entrySet()){
 					if (r.getText().contains("$"+e.getKey()))
-						r.text=r.text.replaceFirst("\\$"+e.getKey(), e.getValue());
+						r.doKeyValueReplacement(e.getKey(), e.getValue());
 				}
 			}
 			

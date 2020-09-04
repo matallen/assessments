@@ -1,23 +1,41 @@
-<html>
+<!DOCTYPE html>
+<html lang="EN">
 <head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script>
-$(function(){
-  jQuery.each($('[data-include]'), function(){
-    var file = 'components/' + $(this).data('include') + '.html';
-    $(this).load(file);
-  });
-});
-</script>
-<script src="assets/js/http.js"></script>
-<script src="assets/js/utils.js"></script>
-<script src="assets/js/jquery-common.js"></script>
-<script src="assets/js/env.js"></script>
-<style id="customStyles">
-@import "https://go.redhat.com/hubfs/css/styles.min.css";
-</style>
-<link rel="stylesheet" href="assets/css/header.css">
-<link rel="stylesheet" href="assets/css/style.css">
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Login @ Assessments | Red Hat Inc</title>
+	<meta name="description" content="Red Hat Assessment Platform">
+	<meta name="robots" content="noindex">
+	<meta name="viewport" content="width=device-width, initial scale= 1.0">
+	<meta property="og:title" content="Assessments | Red Hat Inc">
+	<meta property="og:description" content="">
+  <link rel="preload" href="https://static.redhat.com/libs/redhat/redhat-font/2/webfonts/RedHatText/RedHatText-Regular.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="https://static.redhat.com/libs/redhat/redhat-font/2/webfonts/RedHatText/RedHatText-Medium.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="https://static.redhat.com/libs/redhat/redhat-font/2/webfonts/RedHatDisplay/RedHatDisplay-Regular.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="https://static.redhat.com/libs/redhat/redhat-font/2/webfonts/RedHatDisplay/RedHatDisplay-Medium.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="https://static.redhat.com/libs/redhat/redhat-font/2/webfonts/RedHatDisplay/RedHatDisplay-Bold.woff" as="font" type="font/woff" crossorigin>
+  <link type="text/css" rel="stylesheet" href="https://static.redhat.com/libs/redhat/redhat-font/2/webfonts/red-hat-font.css" media="all" />
+  <link rel="icon" href="https://www.redhat.com/profiles/rh/themes/redhatdotcom/favicon.ico">
+	<style id="customStyles">
+	@import "https://go.redhat.com/hubfs/css/styles.min.css";
+	</style>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script>
+	$(function(){
+	  jQuery.each($('[data-include]'), function(){
+	    var file = 'components/' + $(this).data('include') + '.html';
+	    $(this).load(file);
+	  });
+	});
+	</script>
+	<script src="assets/js/http.js"></script>
+	<script src="assets/js/utils.js"></script>
+	<script src="assets/js/jquery-common.js"></script>
+	<script src="assets/js/env.js"></script>
+	
+	<link rel="stylesheet" href="assets/css/header.css">
+	<link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 	
