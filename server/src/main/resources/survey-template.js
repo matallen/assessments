@@ -146,7 +146,7 @@ Survey
 
 Survey.requiredText = "AA";
 
-Survey.defaultStandardCss.navigation.complete = "sv_rh_btn sv_rh_complete_btn rhbtn rhbtn-primary";
+Survey.defaultStandardCss.navigation.complete = "sv_rh_btn sv_rh_complete_btn rhbtn rhbtn-red";
 Survey.defaultStandardCss.navigation.prev =     "sv_rh_btn sv_rh_prev_btn rhbtn rhbtn-secondary";
 Survey.defaultStandardCss.navigation.next =     "sv_rh_btn sv_rh_next_btn rhbtn rhbtn-primary";
 
@@ -191,7 +191,7 @@ if (undefined==geoInfo){
 //survey.showTimerPanelMode = 'page';
 survey.startTimer();
 survey.showTimerPanel = 'none'; //bottom
-//survey.completeText = 'View Results';
+survey.completeText = 'View my results';
 
 
 survey
@@ -202,6 +202,7 @@ survey
 			if (survey.currentPageNo==0){
 				$(".sv_rh_next_btn").prop("value", "Start");
 			}
+			// complete button
 			//if (survey.currentPageNo==survey.pages.length){
 			//	$(".sv_rh_next_btn").prop("value", "Start");
 			//}
@@ -276,13 +277,11 @@ survey
 				
 				var resultId=response.responseText;
 				window.location.assign("/results.html?surveyId="+surveyId+"&resultId="+resultId);
-//				window.location.assign("/results.html?surveyId="+surveyId+"&visitorId="+visitorId);
 				
 			}else{
 				// Handle the error scenario
 			}
     	});
-    	
     	
     });
 
@@ -300,25 +299,6 @@ function buildPayload(page, includeData){
 	return payload;
 }
 
-function xbuildPageChangePayload(page, includeData){
-	var payload={};
-	payload["visitorId"]=Cookie.get("rhae-visitorId");
-	payload["timeOnpage"]=timeInfo[page.name];
-	payload["geo"]=geoInfo["continentCode"];
-	payload["countryCode"]=geoInfo["countryCode"];
-	payload["region"]=geoInfo["region"];
-	if (includeData){
-		payload["data"]=survey.data;
-	}
-//	payload["info"]={};
-//	payload["info"]["visitorId"]=Cookie.get("rhae-jwt");
-//	payload["info"]["timeOnpage"]=timeInfo[page.name];
-//	payload["info"]["geo"]=geoInfo["continentCode"];
-//	payload["info"]["countryCode"]=geoInfo["countryCode"];
-//	payload["info"]["region"]=geoInfo["region"];
-//	payload["data"]=survey.data;
-	return payload;
-}
 
 //if (undefined!=window.localStorage.getItem("data"))
 //	survey.data=JSON.parse(window.localStorage.getItem("data"));
