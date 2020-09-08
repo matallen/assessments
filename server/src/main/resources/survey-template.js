@@ -197,6 +197,14 @@ survey.showTimerPanel = 'none'; //bottom
 survey
       .onAfterRenderPage
       .add(function(result, options){
+			// Change button text on specific pages (Start on page 1 &
+			$(".sv_rh_next_btn").prop("value", "Next");
+			if (survey.currentPageNo==0){
+				$(".sv_rh_next_btn").prop("value", "Start");
+			}
+			//if (survey.currentPageNo==survey.pages.length){
+			//	$(".sv_rh_next_btn").prop("value", "Start");
+			//}
       })
 
 survey
@@ -213,6 +221,8 @@ survey
 		LocalStorage.saveState(survey);
 		
 		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onPageChange?visitorId="+Cookie.get("rhae-visitorId"), buildPayload(page));
+		
+		
 	});
 
 survey
@@ -539,9 +549,10 @@ survey
 	        liEls[newIndex].classList.add("current");
         
         
-        
     });
-    
+
+
+
 /*
 var rightImg = document.createElement("img");
 rightImg.src = "https://img.icons8.com/material/4ac144/256/user-male.png";
@@ -600,6 +611,10 @@ LocalStorage.loadState(survey);
 //survey.showPreviewBeforeComplete = 'showAnsweredQuestions';
 //survey.showCompletedPage=false;
 //survey.navigateToUrl="/results.html?surveyId="+surveyId+"&visitorId="+visitorId;
+
+
+
+
 
 survey.completedHtml="<h2>Generating report... please wait</h2>";
 

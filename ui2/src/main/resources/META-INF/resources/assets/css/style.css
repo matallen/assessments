@@ -46,8 +46,10 @@ h1{   font: normal normal normal 36px/47px Red Hat Display,RedHatDisplay,Overpas
 h2{   font: normal normal normal 28px/47px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
 h3{   font: normal normal normal 26px/30px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
 h4{   font: normal normal normal 20px/30px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
-h5{   font: normal normal 600    16px/30px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; } /* surveyjs question titles */
+h5{   font: normal normal 500    18px/24px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; } /* surveyjs question titles */
 .hdr{ font-family: Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
+
+h5{ margin: 5px 0px !important; }
 
 .py-0{
 	margin-bottom: auto;
@@ -401,7 +403,7 @@ span.sv_q_required_text{
   color: #FFF;
 }
 fieldset div label {
-    margin-bottom: 0.2rem !important;
+    margin-bottom: 0.4rem !important;
 }
 
 .sv_q_radiogroup>label {
