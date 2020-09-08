@@ -43,7 +43,7 @@ body, p{
   opacity: 1;
 }
 h1{   font: normal normal normal 36px/47px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
-h2{   font: normal normal normal 28px/47px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
+h2{   font: normal normal normal 28px/40px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
 h3{   font: normal normal normal 26px/30px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
 h4{   font: normal normal normal 20px/30px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
 h5{   font: normal normal 500    18px/24px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; } /* surveyjs question titles */
