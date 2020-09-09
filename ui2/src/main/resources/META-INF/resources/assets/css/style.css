@@ -43,12 +43,17 @@ body, p{
   opacity: 1;
 }
 h1{   font: normal normal normal 36px/47px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
-h2{   font: normal normal normal 28px/40px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
-h3{   font: normal normal normal 26px/30px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
-h4{   font: normal normal normal 20px/30px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
+h2{   font: normal normal normal 28px/40px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; } /* results only */
+h3{   font: normal normal normal 26px/30px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; } /* admin pages only */
+h4{   font: normal normal normal 20px/30px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; } /* results only */
 h5{   font: normal normal 500    18px/24px Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; } /* surveyjs question titles */
 h5{ margin: 5px 0px !important; }
 .hdr{ font-family: Red Hat Display,RedHatDisplay,Overpass,"Helvetica Neue",Arial,sans-serif; }
+
+h4{
+	margin-top: 10px;
+  margin-bottom: 5px;
+}
 
 
 .py-0{
@@ -403,6 +408,7 @@ span.sv_q_required_text{
 .rhbtn-red:hover{
   background-color: #D40000;
   color: #FFF;
+  border-color: #D40000;
 }
 fieldset div label {
     margin-bottom: 0.4rem !important;
@@ -428,4 +434,7 @@ text-indent: -20px;
 vertical-align: middle;
 position: relative;
 top: -2px;
+}
+.txt{
+	padding-bottom: 15px;
 }

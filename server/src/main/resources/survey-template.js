@@ -43,7 +43,7 @@ Survey
 // ###############################################################################
 
 
-// ##### REPLACING RADIOGROUP #############
+// ##### REPLACING RADIOGROUP (https://github.com/surveyjs/survey-library/blob/master/src/knockout/templates/question-radiogroup.html) #############
  var radiogroup_template = `
  <fieldset data-bind="css: question.koCss().root">
      <legend data-bind="attr: { 'aria-label': question.locTitle.renderedHtml }"></legend>
@@ -119,7 +119,9 @@ var defaultThemeColors = Survey
     .ThemeColors["default"];
 
 defaultThemeColors["$main-color"] = "#ee0000";//"#a30000";
-defaultThemeColors["$main-hover-color"] = "#820000";
+//defaultThemeColors["$main-hover-color"] = "#820000";
+defaultThemeColors["$main-hover-color"] = "#D40000";
+
 defaultThemeColors["$text-color"] = "#4a4a4a";
 defaultThemeColors["$header-color"] = "#ffffff";
 defaultThemeColors["$header-background-color"] = "#cc0000";
@@ -199,13 +201,15 @@ survey
       .add(function(result, options){
 			// Change button text on specific pages (Start on page 1 &
 			$(".sv_rh_next_btn").prop("value", "Next");
-			if (survey.currentPageNo==0){
-				$(".sv_rh_next_btn").prop("value", "Start");
-			}
-			// complete button
-			//if (survey.currentPageNo==survey.pages.length){
-			//	$(".sv_rh_next_btn").prop("value", "Start");
-			//}
+			
+			// Change button text on page 1 to "Start"
+//			if (survey.currentPageNo==0){
+//				$(".sv_rh_next_btn").prop("value", "Start");
+//			}
+			// Change button text on last page to ???
+//			if (survey.currentPageNo==survey.pages.length){
+//				$(".sv_rh_next_btn").prop("value", "Start");
+//			}
       })
 
 survey
@@ -252,21 +256,9 @@ survey
 		//window.localStorage.removeItem("data");
 		
 		//window.localStorage.removeItem(storageName);
-		clearInterval(timerId);
+		//clearInterval(timerId);
 		//saveState(survey);
     	
-		// TODO: Remove this double posting, but find a way to make the multi-depth object easier to parse on the java side
-		
-//		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onComplete?visitorId="+Cookie.get("rhae-visitorId"), buildPayload(page, false), function(response){
-//			if (response.status==200){
-//				// navigate to a results page
-//				
-//			}else{
-//				// Handle the error scenario
-//			}
-//		});
-    	//Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"?event=onComplete&cookie="+Cookie.get("rhae-jwt")+"&time="+timeInfo[page.name]+"&country="+geoInfo["countryCode"]+"region"+geoInfo["region"]);
-		
 		survey.data["language"]=languageCode;
     	
     	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/generateReport?pageId="+page.name+"&visitorId="+Cookie.get("rhae-visitorId"), buildPayload(page, true), function(response){
@@ -308,18 +300,12 @@ $("#surveyElement").Survey({
 });
 
 
-
-// MAT - ADDING TOP NAV
+// Top Nav
 var navTopEl = document.querySelector("#surveyNavigation");
 navTopEl.className = "navigationContainer";
-//var leftImg = document.createElement("img");
-//leftImg.src = "/Content/Images/examples/covid/Left.svg";
-//leftImg.style = "width: 16px; height: 16px";
-//leftImg.className = "navigationProgressbarImage";
-//navTopEl.appendChild(leftImg);
 var textDiv = document.createElement("p");
 textDiv.className = "textProgress"
-textDiv.innerText = "PROGRESS";
+textDiv.innerText = "Progress";
 navTopEl.appendChild(textDiv);
 var navProgBarDiv = document.createElement("div");
 navProgBarDiv.className = "navigationProgressbarDiv";
@@ -327,95 +313,9 @@ navTopEl.appendChild(navProgBarDiv);
 var navProgBar = document.createElement("ul");
 navProgBar.className = "navigationProgressbar";
 navProgBarDiv.appendChild(navProgBar);
-//leftImg.onclick = function () {
-//    navProgBarDiv.scrollLeft -= 70;
-//};
-//var liEls = [];
-//for (var i = 0; i < survey.PageCount; i++) {
-//    var liEl = document.createElement("li");
-//    if (survey.currentPageNo == i) {
-//        liEl
-//            .classList
-//            .add("current");
-//    }
-//    //liEl.onclick = function (index) {
-//    //    return function () {
-//    //        if (survey['isCompleted']) 
-//    //            return;
-//    //        liEls[survey.currentPageNo]
-//    //            .classList
-//    //            .remove("current");
-//    //        if (index < survey.currentPageNo) {
-//    //            survey.currentPageNo = index;
-//    //        } else if (index > survey.currentPageNo) {
-//    //            var j = survey.currentPageNo;
-//    //            for (; j < index; j++) {
-//    //                if (survey.visiblePages[j].hasErrors(true, true)) 
-//    //                    break;
-//    //                if (!liEls[j].classList.contains("completed")) {
-//    //                    liEls[j]
-//    //                        .classList
-//    //                        .add("completed");
-//    //                }
-//    //            }
-//    //            survey.currentPageNo = j;
-//    //        }
-//    //        liEls[survey.currentPageNo]
-//    //            .classList
-//    //            .add("current");
-//    //    };
-//    //}(i);
-//    var pageTitle = document.createElement("span");
-//    if (!survey.pages[i].navigationTitle) {
-//        pageTitle.innerText = survey.pages[i].name;
-//    } else 
-//        pageTitle.innerText = survey.pages[i].navigationTitle;
-//    pageTitle.className = "pageTitle";
-//    liEl.appendChild(pageTitle);
-//    var br = document.createElement("br");
-//    liEl.appendChild(br);
-//    var pageDescription = document.createElement("span");
-//    if (!!survey.pages[i].navigationDescription) {
-//        pageDescription.innerText = survey.pages[i].navigationDescription;
-//    }
-//    pageDescription.className = "pageDescription";
-//    liEl.appendChild(pageDescription);
-//    liEls.push(liEl);
-//    navProgBar.appendChild(liEl);
-//}
-//survey
-//    .onCurrentPageChanged
-//    .add(function (sender, options) {
-//        var oldIndex = options.oldCurrentPage.visibleIndex;
-//        var newIndex = options.newCurrentPage.visibleIndex;
-//        if (undefined!=liEls[oldIndex])
-//	        liEls[oldIndex]
-//	            .classList
-//	            .remove("current");
-//        if (newIndex > oldIndex) {
-//            for (var i = oldIndex; i < newIndex; i++) {
-//                if (sender.visiblePages[i].hasErrors(true, true)) 
-//                    break;
-//                if (!liEls[i].classList.contains("completed")) {
-//                    liEls[i]
-//                        .classList
-//                        .add("completed");
-//                }
-//            }
-//        }
-//        if (undefined!=liEls[newIndex])
-//	        liEls[newIndex]
-//	            .classList
-//	            .add("current");
-//    });
-
-
 
 
 var navTitlesUniqueSet=[];
-//var navTitleToIndex={};
-//var indexToNavTitle={};
-
 var liEls = {};
 for (var i = 0; i < survey.PageCount; i++) {
     var liEl = document.createElement("li");
@@ -431,14 +331,9 @@ for (var i = 0; i < survey.PageCount; i++) {
     		pageTitle.innerText = survey.pages[i].navigationTitle;
     
     
-    
-    
     // logic to group question pages in progress panel
     if (navTitlesUniqueSet.includes(pageTitle.innerText)) continue;
     navTitlesUniqueSet.push(pageTitle.innerText);
-    
-//    navTitleToIndex[pageTitle]=i;
-    
     
     pageTitle.className = "pageTitle";
     
@@ -448,20 +343,7 @@ for (var i = 0; i < survey.PageCount; i++) {
 	navProgBar.appendChild(pageTitle);
 	navProgBar.appendChild(liEl);
 	
-//	var wr=document.createElement("div");
 	pageTitle.classList.add("_"+survey.pages[i].name.replace(/ /g,"_").toLowerCase());
-//	wr.appendChild(pageTitle);
-	//wr.appendChild(liEl);
-	//liEl.appendChild(pageTitle);
-//	navProgBar.appendChild(wr);
-    // var br = document.createElement("br");
-    // liEl.appendChild(br);
-    // var pageDescription = document.createElement("span");
-    // if (!!survey.pages[i].navigationDescription) {
-    //     pageDescription.innerText = survey.pages[i].navigationDescription;
-    // }
-    // pageDescription.className = "pageDescription";
-    // liEl.appendChild(pageDescription);
     liEls[undefined!=survey.pages[i].navigationTitle?survey.pages[i].navigationTitle:survey.pages[i].name]=liEl;
 
 }
@@ -469,7 +351,7 @@ for (var i = 0; i < survey.PageCount; i++) {
 survey
 	.onValueChanged
 	.add(function (sender, options) {
-		//console.log("XXXXX:: answer changed");
+		//console.log("Answer changed - saving state");
 		LocalStorage.saveState(survey);
 });
 
@@ -532,44 +414,12 @@ survey
     });
 
 
-
-/*
-var rightImg = document.createElement("img");
-rightImg.src = "https://img.icons8.com/material/4ac144/256/user-male.png";
-rightImg.style = "width: 16px; height: 16px";
-rightImg.className = "navigationProgressbarImage";
-rightImg.onclick = function () {
-    navProgBarDiv.scrollLeft += 70;
-};
-navTopEl.appendChild(rightImg);
-
-var updateScroller = setInterval(() => {
-    if (navProgBarDiv.scrollWidth <= navProgBarDiv.offsetWidth) {
-        leftImg
-            .classList
-            .add("hidden");
-        rightImg
-            .classList
-            .add("hidden");
-    } else {
-        leftImg
-            .classList
-            .remove("hidden");
-        rightImg
-            .classList
-            .remove("hidden");
-    }
-}, 100);
- * */
-
-//$(".sv_progress_bar").addClass("progress-bar");
-
 // /MAT - ADDING TOP NAV
 
 
 
 // State saving feature (+ timed saving)
-var timerId=0;
+//var timerId=0;
 var saveIntervalInSeconds=20;
 
 
@@ -587,16 +437,12 @@ LocalStorage.loadState(survey);
 
 
 
-
 //survey.showPreviewBeforeComplete = 'showAnsweredQuestions';
 //survey.showCompletedPage=false;
 //survey.navigateToUrl="/results.html?surveyId="+surveyId+"&visitorId="+visitorId;
 
 
-
-
-
-survey.completedHtml="<h2>Generating report... please wait</h2>";
+survey.completedHtml="<h2>Analysing responses and generating <br/>your report - please wait a moment</h2>";
 
 //survey.locale = languageCode;
 survey.render();

@@ -137,17 +137,10 @@
 			<div class="col-md-10 py-4 py-md-6">
 				<div id="page">
 					<div class="container">
-						<!--
-						<button type="button" class="btn btn-primary" id="retake_assessment">ReTake assessment</button>
-						<button type="button" class="btn btn-primary" id="review_assessment">Review/Edit assessment</button>
-						-->
 						<ul id="tabs" class="nav nav-tabs">
 						</ul>
 						<div id="tabsContent" class="tab-content">
-							<div id="raw" class="tab-pane fade">
-								<h3>Raw</h3>
-								<p id="raw"></p>
-							</div>
+							<div id="raw" class="tab-pane fade"></div>
 						</div>
 					</div>
 				</div>
@@ -235,36 +228,14 @@
 				//var tabName="menu"+tabCount++;
 				tabName="menu_"+section.replace(/ /g,"_").toLowerCase();
 				$("#tabs").append(`<li><a data-toggle="tab" id="tab_`+section.replace(/ /g,"_").toLowerCase()+`" href="#`+tabName+`">`+section+`</a></li>`);
-					
+				
+				
 				var html=`
 					<div id="`+tabName+`" class="tab-pane fade in `+(c==max-1 && undefined==overviews?`active`:``)+`">
 						<div class="row">
-							<div class="col-md-2">
-								
-								<div class="flex-wrapper">
-									<div class="single-chart">
-										<svg viewBox="0 0 36 44" class="circular-chart orange">
-								      <path class="circle-bg" d="M18 2.0845
-								          a 15.9155 15.9155 0 0 1 0 31.831
-								          a 15.9155 15.9155 0 0 1 0 -31.831" />
-								      <path class="circle" stroke-dasharray="`+scores[section]+`, 100" d="M18 2.0845
-								          a 15.9155 15.9155 0 0 1 0 31.83h1
-								          a 15.9155 15.9155 0 0 1 0 -31.831" />
-								      <image xlink:href="assets/images/`+section.replace(/ /g,"_").toLowerCase()+`_red.png" x="50%" y="50%" style="height:20px;width:20px;" transform="translate(-10,-14)" />
-								      <text class="score" x="50%" y="50%" transform="translate(-4,20)">`+scores[section]+`</text>
-								      <text class="outof" x="50%" y="50%" transform="translate(6,20)">/100</text>
-								    </svg>
-									</div>
-								</div>
-								
-							</div>
-				`;
-				// no graphic
-				//var html=`
-				//		<div id="`+tabName+`" class="tab-pane fade in `+(c==max-1 && undefined==overviews?`active`:``)+`">
-				//			<div class="row">
-				//				<div class="col-md-10">
-				//	`;
+							<div class="col-md-10">`;
+				html+=buildOverviewGraphic(section, scores[section]);
+				html+=`</div></div><div class="row" style="padding-left: 23px;">`;
 				
 				for(var l1 in report[section]){ // l1 is Environment, Development & Operations or Introduction
 					
@@ -309,7 +280,7 @@
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-md-10">
+							<div class="col-md-10" style="padding-left: 23px;">
 						`;
 							
 						for (var text in overviews[section][title]){

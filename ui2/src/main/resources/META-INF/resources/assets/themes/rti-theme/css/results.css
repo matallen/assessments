@@ -106,8 +106,14 @@ stroke-miterlimit:1;
     padding-top: 50px;
     padding-left: 50px;
 }
+.tab-content>div.col-md-*{
+    padding: 0px 0px !important;
+}
 
 .row-asset-links{
+    margin-bottom: -9px;
+    margin-top: 0px;
+    padding: 6px 0px;
 }
 
 
