@@ -80,7 +80,11 @@ public class AuthenticationController{
 				String jwtToken=Jwt.createJWT(jwtClaims, ttlMins*60);
 				String domainName=getDomainName(uri.getBaseUri().toString(), true);
 
-				System.out.println("URI="+Json.toJson(uri));
+				System.out.println("URI.getPath="+uri.getPath());
+				System.out.println("URI.getAbsolutePath="+uri.getAbsolutePath());
+				System.out.println("URI.getRequestUri="+uri.getRequestUri());
+				
+//				System.out.println("URI="+Json.toJson(uri));
 //				uri.getAbsolutePath();
 //				uri.get
 //				System.out.println("domain name="+domainName);
