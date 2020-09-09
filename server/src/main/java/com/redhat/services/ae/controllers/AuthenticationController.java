@@ -90,6 +90,7 @@ public class AuthenticationController{
 				}else
 					domainName="assessments.redhat.com";
 				
+				domainName="";
 //				System.out.println("URI="+Json.toJson(uri));
 //				uri.getAbsolutePath();
 //				uri.get
