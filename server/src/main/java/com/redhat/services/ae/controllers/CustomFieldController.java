@@ -386,7 +386,7 @@ public class CustomFieldController{
 	public Response getJobRoles(@PathParam("surveyId") String surveyId, @PathParam("dept") String dept) throws IOException{
 		List<String> result=Lists.newArrayList();
 		for(String k:jobRoles.keySet()){
-			System.out.println("jobroles:: "+dept+".matches("+k+") = "+dept.matches(k));
+//			System.out.println("jobroles:: "+dept+".matches("+k+") = "+dept.matches(k));
 			if (dept.matches(k)){
 				result=jobRoles.get(k);
 				break;

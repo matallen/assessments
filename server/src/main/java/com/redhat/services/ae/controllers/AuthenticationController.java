@@ -29,6 +29,7 @@ import com.google.common.base.Splitter;
 import com.redhat.services.ae.MapBuilder;
 import com.redhat.services.ae.model.User;
 import com.redhat.services.ae.modules.login.LoginModule;
+import com.redhat.services.ae.utils.Json;
 import com.redhat.services.ae.utils.Jwt;
 
 @Path("/")
@@ -78,7 +79,11 @@ public class AuthenticationController{
 				
 				String jwtToken=Jwt.createJWT(jwtClaims, ttlMins*60);
 				String domainName=getDomainName(uri.getBaseUri().toString(), true);
-				System.out.println("domain name="+domainName);
+
+				System.out.println("URI="+Json.toJson(uri));
+//				uri.getAbsolutePath();
+//				uri.get
+//				System.out.println("domain name="+domainName);
 //				log.info("returning jwt token in cookie rhae-jwt: "+jwtToken);
 //				log.info("uri.baseUri = "+uri.getBaseUri());
 //				log.info("uri.getPath= "+uri.getPath(true));

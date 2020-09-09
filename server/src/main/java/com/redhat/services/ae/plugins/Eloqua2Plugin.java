@@ -150,11 +150,13 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 	public void sendToEloqua(String url, boolean disabled, Map<String,String> eloquaData){
 		RequestSpecification rs=given()
 				.contentType(ContentType.JSON)
+//				.contentType(ContentType.)
 				.header("Accept", ContentType.JSON.getAcceptHeader())
 				;
 		for (Entry<String, String> e:eloquaFields.entrySet()){
 			log.debug(String.format("EloquaPlugin:: Adding queryParam:: %s = %s", e.getKey(), e.getValue()));
 			rs.queryParam(e.getKey(), e.getValue());
+//			rs.formParam(e.getKey(), e.getValue());
 		}
 
 		
