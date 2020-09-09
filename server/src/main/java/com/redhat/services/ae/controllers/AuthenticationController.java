@@ -111,7 +111,7 @@ public class AuthenticationController{
 //						.header("Access-Control-Allow-Methods", "GET, POST")
 //						.header("Access-Control-Allow-Headers", "Content-Type, *")
 						.cookie(new NewCookie("rhae-jwt", jwtToken, "/", domainName, "__SAME_SITE_NONE__", 60*60 /*1hr*/, false, false))
-						.header("Set-Cookie", "key=value; path=/; domain=.redhat.com; SameSite=none;")
+						.header("Set-Cookie", "key=value;Path=/;Domain=.redhat.com;Max-Age="+(60*60)+"; SameSite=none;")
 						.build();
 				
 			}else{
