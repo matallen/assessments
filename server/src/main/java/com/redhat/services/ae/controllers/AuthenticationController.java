@@ -87,13 +87,13 @@ public class AuthenticationController{
 				System.out.println("URI.getBaseUri.getHost="+uri.getBaseUri().getHost());
 				
 				if (uri.getRequestUri().toString().contains("localhost")){
-					domainName=getDomainName(uri.getBaseUri().toString(), true); // for dev purposes
+					domainName="";//getDomainName(uri.getBaseUri().toString(), true); // for dev purposes
 				}else
-					domainName="assessments.redhat.com";
+					domainName=getDomainName(params.get("onSuccess"), true);
 				
-				domainName="";
+//				domainName="";
 				
-				System.out.println("domain22="+getDomainName(params.get("onSuccess"), true));
+				System.out.println("domain="+getDomainName(params.get("onSuccess"), true));
 //				System.out.println("URI="+Json.toJson(uri));
 //				uri.getAbsolutePath();
 //				uri.get
@@ -110,8 +110,8 @@ public class AuthenticationController{
 //						.header("Access-Control-Allow-Credentials", "true")
 //						.header("Access-Control-Allow-Methods", "GET, POST")
 //						.header("Access-Control-Allow-Headers", "Content-Type, *")
-						.cookie(new NewCookie("rhae-jwt", jwtToken, "/", domainName, "__SAME_SITE_NONE__", 60*60 /*1hr*/, false, false))
-						.header("Set-Cookie", "rhae-jwt="+jwtToken+";Path=/;Domain=;Max-Age="+(60*60)+"; SameSite=none;")
+//						.cookie(new NewCookie("rhae-jwt", jwtToken, "/", domainName, "__SAME_SITE_NONE__", 60*60 /*1hr*/, false, false))
+						.header("Set-Cookie", "rhae-jwt="+jwtToken+";Path=/;Domain=redhat.com;Max-Age="+(60*60)+"; SameSite=none;")
 						.build();
 				
 			}else{
