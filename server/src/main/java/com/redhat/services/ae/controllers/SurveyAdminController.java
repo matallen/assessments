@@ -54,6 +54,25 @@ public class SurveyAdminController{
 	public static final Logger log=LoggerFactory.getLogger(SurveyAdminController.class);
   @Inject JsonWebToken jwt;
   @Context SecurityContext ctx;
+
+	/** ### Database Backup endpoint ### */
+	
+  /* temporary until backup solution is deployed with authentication */
+	@GET
+	@PermitAll
+	@Path("/database")
+	public Response getDatabase() throws FileNotFoundException, IOException{
+		return Response.ok(Json.toJson(Database.get())).build();
+	}
+	
+  /* temporary until backup solution is deployed with authentication */
+	@GET
+	@PermitAll
+	@Path("/{surveyId}/backup")
+	public Response getSurveyBackup(@PathParam("surveyId") String surveyId) throws FileNotFoundException, IOException{
+		return Response.ok(Json.toJson(Survey.findById(surveyId))).build();
+	}
+
   
 	/** #### SURVEY HANDLERS ####  */
   
@@ -111,16 +130,6 @@ public class SurveyAdminController{
 		Survey copy=o.copy();
 		return Response.ok(copy).build();
 	}
-	
-	/** ### Database Backup endpoint ### */
-	
-	@GET
-	@PermitAll
-	@Path("/database")
-	public Response getDatabase(@PathParam("surveyId") String surveyId) throws FileNotFoundException, IOException{
-		return Response.ok(Json.toJson(Database.get())).build();
-		
-	}	
 	
 	
 	/** #### PLUGIN HANDLERS #### */
