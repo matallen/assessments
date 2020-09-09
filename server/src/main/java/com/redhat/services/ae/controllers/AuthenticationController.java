@@ -63,7 +63,7 @@ public class AuthenticationController{
 	public Response login(String payload) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, URISyntaxException{
 		Map<String, String> params=parseQueryString(payload);
 		
-		log.info("Attempting login with "+params.get("username")+"/"+params.get("password"));
+		log.info("Attempting login with "+params.get("username")+"/****");//+params.get("password"));
 		String loginModuleClass=ConfigProvider.getConfig().getValue("modules.login.class", String.class);
 		try{
 			LoginModule loginModule=(LoginModule)Class.forName(loginModuleClass).newInstance();
@@ -84,7 +84,11 @@ public class AuthenticationController{
 				System.out.println("URI.getAbsolutePath="+uri.getAbsolutePath());
 				System.out.println("URI.getRequestUri="+uri.getRequestUri());
 				System.out.println("URI.getBaseUri.getHost="+uri.getBaseUri().getHost());
-				domainName="assessments.redhat.com";
+				
+				if (uri.getRequestUri().toString().contains("localhost")){
+					domainName=getDomainName(uri.getBaseUri().toString(), true); // for dev purposes
+				}else
+					domainName="assessments.redhat.com";
 				
 //				System.out.println("URI="+Json.toJson(uri));
 //				uri.getAbsolutePath();
@@ -102,7 +106,8 @@ public class AuthenticationController{
 //						.header("Access-Control-Allow-Credentials", "true")
 //						.header("Access-Control-Allow-Methods", "GET, POST")
 //						.header("Access-Control-Allow-Headers", "Content-Type, *")
-						.cookie(new NewCookie("rhae-jwt", jwtToken, "/", domainName, "comment", 60*60 /*1hr*/, false))
+						.cookie(new NewCookie("rhae-jwt", jwtToken, "/", domainName, "__SAME_SITE_NONE__", 60*60 /*1hr*/, false, false))
+						.header("Set-Cookie", "key=value; HttpOnly; SameSite=strict")
 						.build();
 				
 			}else{
