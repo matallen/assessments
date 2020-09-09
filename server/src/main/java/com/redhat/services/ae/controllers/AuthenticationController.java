@@ -61,6 +61,7 @@ public class AuthenticationController{
 	@POST
 	@Path("/login")
 	public Response login(String payload) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, URISyntaxException{
+		System.out.println("payload="+payload);
 		Map<String, String> params=parseQueryString(payload);
 		
 		log.info("Attempting login with "+params.get("username")+"/****");//+params.get("password"));
