@@ -59,6 +59,7 @@ public class Eloqua2PluginTest{
 			@Override public void sendToEloqua(String url, boolean disabled, Map<String,String> eloquaData){
 				Assert.assertTrue(disabled);
 				Assert.assertEquals(true, eloquaData.size()>0);
+				Assert.assertEquals("qwerty Bloggs", eloquaData.get("TestSubstitution"));
 			}
 		};
 		
@@ -105,6 +106,7 @@ public class Eloqua2PluginTest{
 								.put("elqFormName",  "consulting-assessment-integration-sandbox")
 								.put("A_OfferID",  "70160000000xZtmAAE")
 								.put("elqCustomerGUID",  "60e60dD55c-aec7-4b45-a936-d621ec1e8a6c")
+								.put("TestSubstitution","${FirstName} ${LastName}")
 								.build()
 								)
 						.build())

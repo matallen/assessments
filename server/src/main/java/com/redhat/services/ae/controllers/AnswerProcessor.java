@@ -26,8 +26,13 @@ public abstract class AnswerProcessor{
 		result.score=1; // default score is 1 point for everything
 		result.id=answer;
 		if (answer.contains("#")){
-			result.id=answer.split("#")[1];
-			result.score=Integer.parseInt(answer.split("#")[0]);
+//			try{
+				result.id=answer.split("#")[1];
+				result.score=Integer.parseInt(answer.split("#")[0]);
+//			}catch(Exception ex){
+//				System.err.println("error: questionId was '"++"', answer was '"+answer+"'");
+//				throw ex;
+//			}
 		}
 		return result;
 	}

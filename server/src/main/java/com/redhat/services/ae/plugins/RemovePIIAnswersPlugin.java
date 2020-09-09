@@ -18,9 +18,6 @@ public class RemovePIIAnswersPlugin extends Plugin{
 			return (str.startsWith("C_") || str.startsWith("_")) && !("_sectionScore".equals(str) || "_report".equals(str));
 	}};
 	
-	private static final Predicate<String> allNonReportFields=new Predicate<String>(){public boolean apply(@Nullable String str){
-		return !"_sectionScore".equals(str) && !"_report".equals(str);
-	}};
 
 	@Override
 	public void setConfig(Map<String, Object> config){}

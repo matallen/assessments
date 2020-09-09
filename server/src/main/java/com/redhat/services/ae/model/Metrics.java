@@ -43,4 +43,11 @@ public class Metrics implements Serializable{
 		return answersByMonth.get(type).get(YYMMM);
 	}
 	
+	private Map<String, Object> genericMetrics;
+	@JsonIgnore
+	public Map<String, Object> getGenericMetrics(){
+		if (null==genericMetrics) genericMetrics=new LinkedHashMap<>();
+		return genericMetrics;
+	}
+	
 }

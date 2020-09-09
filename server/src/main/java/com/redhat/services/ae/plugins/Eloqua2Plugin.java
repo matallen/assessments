@@ -2,13 +2,16 @@ package com.redhat.services.ae.plugins;
 
 import static io.restassured.RestAssured.given;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.text.StringSubstitutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +38,17 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 		mapping=(Map<String,String>)config.get("mapping");
 		values=(Map<String,String>)config.get("values");
 //		disabled=cfg.containsKey("disabled")?"true".equalsIgnoreCase((String)cfg.get("disabled")):false;
-		disabled=cfg.containsKey("disabled")?(Boolean)cfg.get("disabled"):false;
+		
+		if (cfg.containsKey("disabled")){
+			if (String.class.isAssignableFrom(cfg.get("disabled").getClass())){
+				disabled="true".equalsIgnoreCase((String)cfg.get("disabled"));
+			}else if (Boolean.class.isAssignableFrom(cfg.get("disabled").getClass())){
+				disabled=(Boolean)cfg.get("disabled");
+			}
+		}else
+			disabled=false; // enabled by default
+		
+		
 		
 		if (null==url || null==mapping)
 			throw new RuntimeException(String.format("Config not set correctly. Url is %s, and config==null is %s", url, (config==null)));
@@ -111,8 +124,22 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 				log.error("   - "+field);
 		}
 		
+		// Mat - TODO: review putting this here, it would be nice to have surveyId etc... available to all plugins
+		Map<String,String> answers=new HashMap<>();
+		answers.putAll(extractedAnswers);
+		answers.put("_surveyId", surveyId);
+		answers.put("_reportId", (String)surveyResults.get("_reportId"));
+		answers.put("_surveyId", surveyId);
+		answers.put("_timestamp", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").format(new Date()));
+		answers.put("_visitorId", visitorId);
+		
+//		for(Entry<String, String> a:answers.entrySet())
+//			System.out.println("Eloqua: substitute value - "+a.getKey()+"="+a.getValue());
+		
+		// Eloqua:: send literal values (+ replacement variables where configured)
+		StringSubstitutor substitutor=new StringSubstitutor(answers); // replaces ${name} placeholders
 		for(Entry<String, String> e:values.entrySet()){
-			eloquaFields.put(e.getKey(), e.getValue());
+			eloquaFields.put(e.getKey(), substitutor.replace(e.getValue()));
 		}
 		
 		sendToEloqua(url, disabled, eloquaFields);
@@ -126,16 +153,23 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 				.header("Accept", ContentType.JSON.getAcceptHeader())
 				;
 		for (Entry<String, String> e:eloquaFields.entrySet()){
-			log.debug(String.format("Sending to Eloqua:: %s = %s", e.getKey(), e.getValue()));
+			log.debug(String.format("EloquaPlugin:: Adding queryParam:: %s = %s", e.getKey(), e.getValue()));
 			rs.queryParam(e.getKey(), e.getValue());
 		}
 
 		
 		if (!disabled){
+			log.debug("EloquaPlugin:: Sending request to Eloqua: "+url);
 			Response response=rs.post(url).andReturn();
-			log.debug("Eloqua response statusCode="+response.statusCode());
+			
+			if (response.getStatusCode()!=200){
+				log.error("EloquaPlugin:: response statusCode="+response.statusCode());
+			}else{
+				log.debug("EloquaPlugin:: response statusCode="+response.statusCode());
+			}
+			
 		}else{
-			log.info("Plugin disabled - dummy call, not sent to Eloqua");
+			log.info("EloquaPlugin:: Plugin disabled - dummy call, not sent to Eloqua");
 		}
 	}
 	

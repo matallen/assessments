@@ -43,7 +43,7 @@ public class EmbeddedScoreTotalPlugin extends Plugin{
 					sectionScores.put(navTitle, sectionTotals.get(navTitle)/sectionCounts.get(navTitle));
 					
 				}else{
-					log.error("This question ("+questionId+") has a score ("+value.get("score")+"), so it should have a navigationTitle too ("+value.containsKey("navigationTitle")+")");
+					log.error("This question ("+questionId+") has a score ("+value.get("score")+"), so it should have a navigationTitle too to know which section to add it to ("+value.containsKey("navigationTitle")+"). It's score is being omitted");
 				}
 			}
 			

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.drools.template.ObjectDataCompiler;
@@ -232,43 +233,13 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 			
 			kSession.fireAllRules();
 			
-//			Map<String,List<String>> sections=new MapBuilder<String,List<String>>().build();
-//			
-//			// extract the recommendations from the drools session
-//			List<DroolsRecommendation> recommendations=Lists.newArrayList();
-//			for(FactHandle fh : kSession.getFactHandles(new ObjectFilter(){
-//				public boolean accept(Object object){
-//					return object instanceof DroolsRecommendation;
-//			}}).stream().toArray(FactHandle[]::new)){
-//				System.out.println(
-//						kSession.getObject(fh)
-//				);
-//				DroolsRecommendation recommendation=(DroolsRecommendation)kSession.getObject(fh);
-//				
-//				// replace any key/values from the answers in the recommendation strings
-//				for (Entry<String, String> e:kvReplacement.entrySet()){
-//					if (recommendation.getText().contains("$"+e.getKey())){
-//						recommendation=DroolsRecommendation.builder().section(recommendation.getSection()).text(recommendation.getText().replaceFirst("\\$"+e.getKey(), e.getValue())).build();
-//					}
-//				}
-//				
-//				if (!sections.containsKey(recommendation.getSection()))
-//					sections.put(recommendation.getSection(), Lists.newArrayList());
-//				
-//				sections.get(recommendation.getSection()).add(recommendation.getText());
-//				
-//				recommendations.add(recommendation);
-//			}
-			
-			
-//			Map<String,Map<String,Map<String,List<String>>>> resultSections=new TreeMap<String,Map<String,Map<String,List<String>>>>();
 			
 			// A global list was used to retain the order of the DroolsRecommendation objects. fact insertions and extractions through geFactHandles does not retain order
 			List<DroolsRecommendation> recommendations=(LinkedList<DroolsRecommendation>)kSession.getGlobal("list");
 
 			// key/values replacements
 			for (DroolsRecommendation r:recommendations){
-				System.out.println("Found Recommendation: "+r);
+//				System.out.println("Found Recommendation: "+r);
 				
 				// replace any key/values from the answers in the recommendation strings
 				for (Entry<String, String> e:kvReplacement.entrySet()){
@@ -279,39 +250,10 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 			
 			Object resultSections=new ResultsBuilderTabsOverview().build(recommendations, sectionScores);
 			
-//			for (DroolsRecommendation r:recommendations){
-//			
-//			// extract recommendations version 2 (with sub-sections)
-////			for(FactHandle fh : kSession.getFactHandles(new ObjectFilter(){
-////				public boolean accept(Object object){
-////					return object instanceof DroolsRecommendation;
-////			}}).stream().toArray(FactHandle[]::new)){
-////				
-////				DroolsRecommendation r=(DroolsRecommendation)kSession.getObject(fh);
-//				
-//				// replace any key/values from the answers in the recommendation strings
-//				for (Entry<String, String> e:kvReplacement.entrySet()){
-//					if (r.getText().contains("$"+e.getKey()))
-//						r.text=r.text.replaceFirst("\\$"+e.getKey(), e.getValue());
-//				}
-//				
-////				System.out.println("Adding Result Text: "+r);
-//				
-//				if (null==r.getSection()) throw new RuntimeException("Please check the rules, there is a null section");
-//				
-//				if (!resultSections.containsKey(r.getSection())) resultSections.put(r.getSection(), new LinkedHashMap<>());
-//				if (!resultSections.get(r.getSection()).containsKey(r.getLevel1())) resultSections.get(r.getSection()).put(r.getLevel1(), new LinkedHashMap<>());
-//				if (!resultSections.get(r.getSection()).get(r.getLevel1()).containsKey(r.getLevel2())) resultSections.get(r.getSection()).get(r.getLevel1()).put(r.getLevel2(), new LinkedList<>());
-//				
-////				if (!sections2.get(r.getSection()).containsKey(r.getSubSection())) sections2.get(r.getSection()).put(r.getSubSection(), new LinkedList<>());
-//				resultSections.get(r.getSection()).get(r.getLevel1()).get(r.getLevel2()).add(r.getText());
-//				
-//			}
-			
-			
 			
 			// add recommendations to the results
 			surveyResults.put("_report", resultSections);
+			surveyResults.put("_reportId", UUID.randomUUID().toString().replaceAll("-", ""));
 			
 			return surveyResults;
 			

@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.redhat.services.ae.Database;
+import com.redhat.services.ae.Results;
 import com.redhat.services.ae.Utils;
 import com.redhat.services.ae.model.Survey;
 import com.redhat.services.ae.utils.Json;
@@ -58,6 +59,7 @@ public class SurveyAdminController{
 	/** ### Database Backup endpoint ### */
 	
   /* temporary until backup solution is deployed with authentication */
+  /* not used */
 	@GET
 	@PermitAll
 	@Path("/database")
@@ -71,6 +73,14 @@ public class SurveyAdminController{
 	@Path("/{surveyId}/backup")
 	public Response getSurveyBackup(@PathParam("surveyId") String surveyId) throws FileNotFoundException, IOException{
 		return Response.ok(Json.toJson(Survey.findById(surveyId))).build();
+	}
+	
+	/* temporary until backup solution is deployed with authentication */
+	@GET
+	@PermitAll
+	@Path("/results")
+	public Response getSurveyResults() throws IOException{
+		return Response.ok().entity(Results.get().getResults()).build();
 	}
 
   

@@ -71,7 +71,7 @@ public class DroolsScoreRecommendationsPluginTest{
 		Assert.assertEquals(true, ((Map)answers.get("_report")).size()>0);
 		
 		
-		Assert.assertEquals(16, ((Map)answers.get("_sectionScore")).get("Modernizing Platforms"));
+		Assert.assertEquals(17, ((Map)answers.get("_sectionScore")).get("Modernizing Platforms"));
 		
 	}
 }
