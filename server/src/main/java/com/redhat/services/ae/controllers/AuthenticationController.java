@@ -84,7 +84,7 @@ public class AuthenticationController{
 				System.out.println("URI.getAbsolutePath="+uri.getAbsolutePath());
 				System.out.println("URI.getRequestUri="+uri.getRequestUri());
 				System.out.println("URI.getBaseUri.getHost="+uri.getBaseUri().getHost());
-				domainName="";
+				domainName="assessments.redhat.com";
 				
 //				System.out.println("URI="+Json.toJson(uri));
 //				uri.getAbsolutePath();
