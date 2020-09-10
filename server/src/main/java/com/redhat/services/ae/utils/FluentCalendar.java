@@ -9,6 +9,9 @@ public class FluentCalendar {
   public static FluentCalendar get(){
     return new FluentCalendar();
   }
+  public static FluentCalendar now(){
+    return new FluentCalendar(new Date(System.currentTimeMillis()));
+  }
   public static FluentCalendar get(Date time){
     return new FluentCalendar(time);
   }

@@ -91,6 +91,7 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 	
 	
 	private String makeTextSafeForCompilation(String text){
+		if (null==text) return text;
 		return text
 				.replaceAll(System.getProperty("line.separator"), "<br/>")
 				.replaceAll("\r\n", "<br/>")

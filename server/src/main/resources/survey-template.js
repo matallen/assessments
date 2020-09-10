@@ -282,9 +282,13 @@ function buildPayload(page, includeData){
 	payload["_page"]={};
 	payload["_page"]["visitorId"]=Cookie.get("rhae-visitorId");
 	payload["_page"]["timeOnpage"]=timeInfo[page.name];
-	payload["_page"]["geo"]=geoInfo["continentCode"];
-	payload["_page"]["countryCode"]=geoInfo["countryCode"];
-	payload["_page"]["region"]=geoInfo["region"];
+	if (undefined!=geoInfo){
+		payload["_page"]["geo"]=geoInfo["continentCode"];
+		payload["_page"]["countryCode"]=geoInfo["countryCode"];
+		payload["_page"]["region"]=geoInfo["region"];
+	}else{
+		console.log("Error: Unable to obtain geo information");
+	}
 	if (includeData){
 		payload["_data"]=survey.data;
 	}

@@ -57,9 +57,9 @@
 	<div class="container">
 		<div class="row">
 			<div class="container print-panel">
-				<h1>Results introduction copy</h1>
+				<h1>Ready-to-Accelerate results</h1>
 				<p>
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+					With a holistic strategy, you can implement environment, development, and operational changes needed to keep pace with growing business demands. The result is an organization that can deliver business innovation faster.
 				</p>
 				<p >
 					<button type="button" class="rhbtn rhbtn-secondary" id="review_assessment">Edit my answers</button>
@@ -170,6 +170,7 @@
 		var surveyId=Utils.getParameterByName("surveyId");
 		var visitorId=Utils.getParameterByName("visitorId");
 		var resultId=Utils.getParameterByName("resultId");
+		var isDebug="true"==Utils.getParameterByName("debug");
 		
 		var timerId;
 		var intervalInSeconds=1;
@@ -190,8 +191,11 @@
 						//LocalStorage.clearState(); // remove answers from localstorage once the report page has been received successfully
 						LocalStorage.saveFlag("lastAssessmentCompleted", "true");
 						
-						// raw output
-						$("#raw").html("<pre>"+JSON.stringify(response, undefined, 2)+"</pre>");
+						if (isDebug){
+							// raw output
+							$("#raw").html("<pre>"+JSON.stringify(response, undefined, 2)+"</pre>");
+						}
+						
 						displayResults(response);
 					}
 				}, function(status){
@@ -294,8 +298,11 @@
 			}
 			
 			
-			// Raw (debug)
-			$("#tabs").append(`<li><a data-toggle="tab" href="#raw">Raw</a></li>`);
+
+			if (isDebug){
+				// Raw (debug)
+				$("#tabs").append(`<li><a data-toggle="tab" href="#raw">Raw</a></li>`);
+			}
 			
 		}
 		

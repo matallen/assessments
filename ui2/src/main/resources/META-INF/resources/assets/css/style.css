@@ -34,7 +34,7 @@ body{
 	display: flex;
   flex-direction: column;
 }
-body, p{
+body, p, li{
   font: normal normal normal 16px/24px Red Hat Text, RedHatText, Overpass,"Helvetica Neue",Arial,sans-serif;
   font-family: Red Hat Text, RedHatText, Overpass,"Helvetica Neue",Arial,sans-serif;
   text-align: left;

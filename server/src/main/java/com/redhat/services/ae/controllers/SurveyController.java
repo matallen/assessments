@@ -131,13 +131,8 @@ public class SurveyController{
 		if (null==o) throw new RuntimeException("Survey ID doesn't exist! :"+surveyId);
 		String YYMMM=FluentCalendar.get(new Date()).getString("yy-MMM");
 		
-		// TODO: i don't like separating the data and info as it makes parsing less clean, but data may not be necessary anyway
-//		System.out.println("onPageChange: payload= "+payload);
-		Map<String,Map<String,Object>> payloadObj=Json.toObject(payload, new TypeReference<HashMap<String,Map<String,Object>>>(){});
-		Map<String, Object> info=payloadObj.get("_page");
-//		Map<String,String> data=(Map<String,String>)pageData.get("data");
-//		Map<String,String> info=(Map<String,String>)pageData.get("info");
-		
+//		Map<String,Map<String,Object>> payloadObj=Json.toObject(payload, new TypeReference<HashMap<String,Map<String,Object>>>(){});
+//		Map<String, Object> info=payloadObj.get("_page");
 		
 		// TODO: log the time window spent on page
 		
@@ -145,93 +140,42 @@ public class SurveyController{
 //		long moreThanAMonthInSeconds=60*60*24*32;
 //		Cache<String, String> visitorsThisMonth=new CacheHelper<String>().getCache("visitors", 10, 1000, moreThanAMonthInSeconds);
 		
-		if (!Database.get().getVisitors(YYMMM).contains(visitorId+pageId)){
-			log.debug("onPageChange:: incrementing monthly page counter for [visitorId="+visitorId+", pageId="+pageId+"]");
-			o.getMetrics().getByMonth("page", YYMMM).put(pageId, o.getMetrics().getByMonth("page", YYMMM).containsKey(pageId)?o.getMetrics().getByMonth("page", YYMMM).get(pageId)+1:1);
-		}
-
+		// Metrics:: update "page transition" metrics
+		updatePageTransitionMetrics(o, visitorId, YYMMM, pageId);
+		
 		o.persist();
 		return Response.ok().build();
 	}
 	
 
 	
-	// THIS METHOD IS OBSOLETE NOW - see generateReport
-	@POST
-	@Path("/{surveyId}/metrics/{pageId}/onComplete")
-	public Response onComplete(@PathParam("surveyId") String surveyId, @PathParam("pageId") String pageId, @QueryParam("visitorId") String visitorId, String payload) throws JsonParseException, JsonMappingException, IOException{
-		
-		onPageChange(surveyId, pageId, visitorId, payload);
-		
-		Survey o=Survey.findById(surveyId);
-		if (null==o) throw new RuntimeException("Survey ID doesn't exist! :"+surveyId);
-		String YYMMM=FluentCalendar.get(new Date()).getString("yy-MMM");
-//		Map<String,String> data=Json.toObject(payload, new TypeReference<HashMap<String,String>>(){});
-		Map<String,String> info=Json.toObject(payload, new TypeReference<HashMap<String,String>>(){});
-//		Map<String,String> data=(Map<String,String>)pageData.get("data");
-//		Map<String,String> info=(Map<String,String>)pageData.get("info");
-		
-//		log.debug("onComplete:: data="+Json.toJson(data));
-		
-		String geo=info.get("geo");
-		if (!Database.get().getVisitors(YYMMM).contains(visitorId)){
-			o.getMetrics().getCompletedByMonth().put(YYMMM, o.getMetrics().getCompletedByMonth().containsKey(YYMMM)?o.getMetrics().getCompletedByMonth().get(YYMMM)+1:1);
-//			o.getMetrics().getByMonth("page", YYMMM).put(pageId, o.getMetrics().getByMonth("page", YYMMM).containsKey(pageId)?o.getMetrics().getByMonth("page", YYMMM).get(pageId)+1:1);
-			o.getMetrics().getByMonth("geo", YYMMM).put(geo, o.getMetrics().getByMonth("geo", YYMMM).containsKey(geo)?o.getMetrics().getByMonth("geo", YYMMM).get(geo)+1:1);
-			//o.getMetrics().getByMonth("country", YYMMM).put(countryCode, o.getMetrics().getByMonth("country", YYMMM).containsKey(countryCode)?o.getMetrics().getByMonth("country", YYMMM).get(countryCode)+1:1);
-		}
-		
-		o.persist();
-		return Response.ok().build();
-	}
-
 	
 	@POST
 	@Path("/{surveyId}/generateReport")
 	public Response generateReport(@PathParam("surveyId") String surveyId, @QueryParam("visitorId") String visitorId, @QueryParam("pageId") String pageId, String payload) throws JsonParseException, JsonMappingException, IOException{
 		log.info("generateReport::");
 		
-		onPageChange(surveyId, pageId, visitorId, payload);
-		
 		Survey o=Survey.findById(surveyId);
 		if (null==o) throw new RuntimeException("Survey ID doesn't exist! :"+surveyId);
 		
 		Map<String,Map<String,Object>> payloadObj=Json.toObject(payload, new TypeReference<HashMap<String,Map<String,Object>>>(){});
-		Map<String, Object> pageInfo=payloadObj.get("_page");
+		String YYMMM=FluentCalendar.now().getString("yy-MMM");
+		
+		// Metrics:: Update "page transition" metrics
+		updatePageTransitionMetrics(o, visitorId, YYMMM, pageId);
+		
+		// Metrics:: Update "survey complete" metrics
+		Map<String, String> pageInfo=(Map<String,String>)(Object)payloadObj.get("_page"); // wow, this is a super hack to convert String/Object to String/String
+		updateSurveyCompleteMetrics(o, visitorId, YYMMM, pageInfo);
+		
+		// Metrics:: Update "cardinality of which answers selected" metrics
 		Map<String, Object> surveyData=payloadObj.get("_data");
-		
-		String YYMMM=FluentCalendar.get(new Date()).getString("yy-MMM");
 		log.debug("generateReport:: data="+Json.toJson(surveyData));
+		updateAnswerMetrics(o, YYMMM, surveyData);
 		
-	// Metrics: log how many times a specific answer was provided to a question, for reporting % of answers per question
-		new AnswerProcessor(false){
-			@Override public void onStringAnswer(String questionId, String answerId, Integer score){ // radiobuttons
-				log.debug("Reports: Adding answers for question '"+questionId+"' to metrics");
-				Map<String, Map<String,Integer>> answers=o.getMetrics().getAnswersByMonth("answers", YYMMM);
-				if (!answers.containsKey(questionId)) answers.put(questionId, new HashMap<>());
-				answers.get(questionId).put(answerId, answers.get(questionId).containsKey(answerId)?answers.get(questionId).get(answerId)+1:1);
-			}
-			@Override
-			public void onArrayListAnswer(String questionId, List<Answer> answerList, Integer averageScore){ // multi-checkboxes
-				log.debug("Reports: Adding answers for question '"+questionId+"' to metrics");
-				for (Answer answer:answerList){
-					// Increment the metrics for each item selected
-					Map<String, Map<String,Integer>> answers=o.getMetrics().getAnswersByMonth("answers", YYMMM);
-					if (!answers.containsKey(questionId)) answers.put(questionId, new HashMap<>());
-					answers.get(questionId).put(answer.id, answers.get(questionId).containsKey(answer.id)?answers.get(questionId).get(answer.id)+1:1);
-				}
-			}
-			@Override
-			public void onMapAnswer(String question, Answer answer){ // only seen this as a panel in surveyjs?
-				// ignore for the purpose of metrics because it's most likely a contact form
-			}
-		}.process(surveyData);
-		
+		// Save Survey & its metrics
 		o.persist();
 		
-		
-		// Plugins::
-//		Map<String, Map<String, Object>> plugins=o.getActivePlugins();
 		
 		// Plugins:: Automatically add "Remove PII plugin" if it isn't configured
 //		if (!Iterables.any(plugins.values(), new Predicate<Map<String,Object>>(){public boolean apply(@Nullable Map<String,Object> pluginCfg){
@@ -267,14 +211,10 @@ public class SurveyController{
 		}
 		
 		
-		
 		//MAT - TODO: generate a report ID, and store the results (minus any personal info), return the ID so the index.html can redirect to report.html passing the unique ID
-		
 //		String uniqueReportId=surveyId+"_"+visitorId;
 		String uniqueReportId=surveyData.containsKey("_reportId")?(String)surveyData.get("_reportId"):UUID.randomUUID().toString().replaceAll("-", ""); // reportId generated by the results plugin
 		
-		
-		//mat todo: put a timestamp in the surveyData before persisting so we can purge at a later date
 		surveyData.put("_timestamp", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").format(new Date()));
 		
 		// store the enriched/processed results for the results page to use
@@ -288,83 +228,52 @@ public class SurveyController{
 	}
 	
 	
-//	// THIS METHOD IS NOW OBSOLETE
-//	@POST
-//	@Path("/{surveyId}/metrics/onResults")
-//	public Response onResults(@PathParam("surveyId") String surveyId, @QueryParam("visitorId") String visitorId, String payload) throws JsonParseException, JsonMappingException, IOException{
-//		log.info("onResults::");
-//
-//		Survey o=Survey.findById(surveyId);
-//		if (null==o) throw new RuntimeException("Survey ID doesn't exist! :"+surveyId);
-//		Map<String,Object> data=Json.toObject(payload, new TypeReference<HashMap<String,Object>>(){});
-//		String YYMMM=FluentCalendar.get(new Date()).getString("yy-MMM");
-//		
-//		log.debug("onResults:: data="+Json.toJson(data));
-//		
-//		// Metrics: log how many times a specific answer was provided to a question, for reporting % of answers per question
-//		new AnswerProcessor(false){
-//			@Override public void onStringAnswer(String questionId, String answerId, Integer score){ // radiobuttons
-//				log.debug("Reports: Adding answers for question '"+questionId+"' to metrics");
-//				Map<String, Map<String,Integer>> answers=o.getMetrics().getAnswersByMonth("answers", YYMMM);
-//				if (!answers.containsKey(questionId)) answers.put(questionId, new HashMap<>());
-//				answers.get(questionId).put(answerId, answers.get(questionId).containsKey(answerId)?answers.get(questionId).get(answerId)+1:1);
-//			}
-//			@Override
-//			public void onArrayListAnswer(String questionId, List<Answer> answerList, Integer averageScore){ // multi-checkboxes
-//				log.debug("Reports: Adding answers for question '"+questionId+"' to metrics");
-//				for (Answer answer:answerList){
-//					// Increment the metrics for each item selected
-//					Map<String, Map<String,Integer>> answers=o.getMetrics().getAnswersByMonth("answers", YYMMM);
-//					if (!answers.containsKey(questionId)) answers.put(questionId, new HashMap<>());
-//					answers.get(questionId).put(answer.id, answers.get(questionId).containsKey(answer.id)?answers.get(questionId).get(answer.id)+1:1);
-//				}
-//			}
-//			@Override
-//			public void onMapAnswer(String question, Answer answer){ // only seen this as a panel in surveyjs?
-//				// ignore for the purpose of metrics because it's most likely a contact form
-//			}
-//		}.process(data);
-//		
-//		o.persist();
-//		
-//		// Execute post-survey plugins
-//		Map<String, Map<String, Object>> plugins=o.getActivePlugins();
-//		log.info("Active Plugins: "+(plugins.size()<=0?"None":""));
-//		for(Entry<String, Map<String, Object>> pl:plugins.entrySet()){
-//			log.info("  - "+pl.getKey());
-//		}
-//		for(Entry<String, Map<String, Object>> pl:plugins.entrySet()){
-//			String pluginName=pl.getKey();
-//			log.debug("Executing Plugin: "+pluginName);
-//			String clazz=(String)pl.getValue().get("className");
-//			try{
-//				Plugin plugin=(Plugin)Class.forName(clazz).newInstance();
-//				plugin.setConfig(pl.getValue());
-//				data=plugin.execute(surveyId, visitorId, data); // after each plugin, keep the changes to the data (similar to the concept of Tomcat filters)
-//			}catch(Exception e){
-//				e.printStackTrace();
-//			}
-//		}
-//		
-//		// store the enriched/processed results for the results page to use
-//		log.debug("putting answers into cache, ready for the results page to render it");
-//		log.debug("cache.put("+(surveyId+"_"+visitorId)+") = "+Json.toJson(data));
-////		CacheHelper.cache.put(surveyId+"_"+visitorId, Json.toJson(data));
-//		Results results=Results.get();
-//		results.getResults().put(surveyId+"_"+visitorId, Json.toJson(data));
-//		results.save();
-//		
-//		// Build report?
-//		
-////		Cache<String, String> cache=new CacheHelper<String>().getCache("resultDataTransfer", 10, 100, 300);
-////		System.out.println("onResults:: cache('resultDataTransfer').put("+(surveyId+"_"+visitorId)+") = "+payload);
-////		cache.put(surveyId+"_"+visitorId, payload);
-//		
-//		
-//		return Response.ok(Survey.findById(o.id)).build();
-//	}
 	
+  /** METRICS UPDATE METHODS */
 
+	private void updatePageTransitionMetrics(Survey s, String visitorId, String YYMMM, String pageId){
+		if (!Database.get().getVisitors(YYMMM).contains(visitorId+pageId)){
+			log.debug("onPageChange:: incrementing monthly page counter for [visitorId="+visitorId+", pageId="+pageId+"]");
+			s.getMetrics().getByMonth("page", YYMMM).put(pageId, s.getMetrics().getByMonth("page", YYMMM).containsKey(pageId)?s.getMetrics().getByMonth("page", YYMMM).get(pageId)+1:1);
+		}
+	}
+	private void updateSurveyCompleteMetrics(Survey s, String visitorId, String YYMMM, Map<String,String> info){
+//		Map<String,String> info=Json.toObject(payload, new TypeReference<HashMap<String,String>>(){});
+		String geo=(String)info.get("geo");
+		if (!Database.get().getVisitors(YYMMM).contains(visitorId)){
+			s.getMetrics().getCompletedByMonth().put(YYMMM, s.getMetrics().getCompletedByMonth().containsKey(YYMMM)?s.getMetrics().getCompletedByMonth().get(YYMMM)+1:1);
+//			o.getMetrics().getByMonth("page", YYMMM).put(pageId, o.getMetrics().getByMonth("page", YYMMM).containsKey(pageId)?o.getMetrics().getByMonth("page", YYMMM).get(pageId)+1:1);
+			s.getMetrics().getByMonth("geo", YYMMM).put(geo, s.getMetrics().getByMonth("geo", YYMMM).containsKey(geo)?s.getMetrics().getByMonth("geo", YYMMM).get(geo)+1:1);
+			//o.getMetrics().getByMonth("country", YYMMM).put(countryCode, o.getMetrics().getByMonth("country", YYMMM).containsKey(countryCode)?o.getMetrics().getByMonth("country", YYMMM).get(countryCode)+1:1);
+		}
+	}
+	
+	private void updateAnswerMetrics(Survey s, String YYMMM, Map<String,Object> surveyData){
+	  // Metrics: log how many times a specific answer was provided to a question, for reporting % of answers per question
+		new AnswerProcessor(false){
+			@Override public void onStringAnswer(String questionId, String answerId, Integer score){ // radiobuttons
+				log.debug("Reports: Adding answers for question '"+questionId+"' to metrics");
+				Map<String, Map<String,Integer>> answers=s.getMetrics().getAnswersByMonth("answers", YYMMM);
+				if (!answers.containsKey(questionId)) answers.put(questionId, new HashMap<>());
+				answers.get(questionId).put(answerId, answers.get(questionId).containsKey(answerId)?answers.get(questionId).get(answerId)+1:1);
+			}
+			@Override
+			public void onArrayListAnswer(String questionId, List<Answer> answerList, Integer averageScore){ // multi-checkboxes
+				log.debug("Reports: Adding answers for question '"+questionId+"' to metrics");
+				for (Answer answer:answerList){
+					// Increment the metrics for each item selected
+					Map<String, Map<String,Integer>> answers=s.getMetrics().getAnswersByMonth("answers", YYMMM);
+					if (!answers.containsKey(questionId)) answers.put(questionId, new HashMap<>());
+					answers.get(questionId).put(answer.id, answers.get(questionId).containsKey(answer.id)?answers.get(questionId).get(answer.id)+1:1);
+				}
+			}
+			@Override
+			public void onMapAnswer(String question, Answer answer){ // only seen this as a panel in surveyjs?
+				// ignore for the purpose of metrics because it's most likely a contact form
+			}
+		}.process(surveyData);
+	}
+	
 	
 	@DELETE
 	@Path("/{surveyId}/metrics/reset")
