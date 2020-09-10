@@ -178,7 +178,8 @@ var timeInfo=[];
 var geoInfo=undefined;
 if (undefined==geoInfo){
   $.ajax({
-    url: "http://ip-api.com/json?fields=continentCode,country,countryCode,region",
+//    url: "http://ip-api.com/json?fields=continentCode,country,countryCode,region",
+	url: env.server+"/api/geoInfo?url=http://ip-api.com/json&fields=continentCode,country,countryCode,region",
     type: 'GET',
     success: function(json){
 	  geoInfo=json;

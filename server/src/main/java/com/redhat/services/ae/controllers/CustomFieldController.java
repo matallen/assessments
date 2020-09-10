@@ -371,6 +371,7 @@ public class CustomFieldController{
 	
 	public static final Logger log=LoggerFactory.getLogger(CustomFieldController.class);
 
+	
 	/** This satisfies the dropdowns for industries, countries and departments (anything listed in the "values" object above. */
 	@GET
 	@PermitAll
