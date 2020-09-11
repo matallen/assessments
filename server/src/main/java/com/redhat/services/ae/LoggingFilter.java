@@ -23,7 +23,8 @@ public class LoggingFilter implements ContainerRequestFilter {
     
     @Override
     public void filter(ContainerRequestContext context) {
-      log.infof("[@%s] %s (user:%s, jwtRoles: %s)", context.getMethod(), info.getPath(), (null!=ctx.getUserPrincipal()?ctx.getUserPrincipal().getName():"anonymous"), jwt.getClaimNames()!=null?jwt.getClaim("groups"):"No Jwt provided");
+    	if (!info.getPath().contains("/login")) // so we dont log our passwords!
+    		log.infof("[@%s] %s (user:%s, jwtRoles: %s)", context.getMethod(), info.getPath(), (null!=ctx.getUserPrincipal()?ctx.getUserPrincipal().getName():"anonymous"), jwt.getClaimNames()!=null?jwt.getClaim("groups"):"No Jwt provided");
   		
       
 //      System.out.println("principal="+(null!=ctx.getUserPrincipal()?ctx.getUserPrincipal().getName():"anonymous"));

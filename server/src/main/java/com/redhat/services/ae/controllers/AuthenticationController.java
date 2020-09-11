@@ -61,7 +61,7 @@ public class AuthenticationController{
 	@POST
 	@Path("/login")
 	public Response login(String payload) throws NoSuchAlgorithmException, InvalidKeySpecException, IOException, URISyntaxException{
-		System.out.println("payload="+payload);
+//		System.out.println("payload="+payload);
 		Map<String, String> params=parseQueryString(payload);
 		
 		log.info("Attempting login with "+params.get("username")+"/****");//+params.get("password"));
@@ -81,11 +81,6 @@ public class AuthenticationController{
 				String jwtToken=Jwt.createJWT(jwtClaims, ttlMins*60);
 				String domainName=getDomainName(uri.getBaseUri().toString(), true);
 
-//				System.out.println("URI.getPath="+uri.getPath());
-//				System.out.println("URI.getAbsolutePath="+uri.getAbsolutePath());
-//				System.out.println("URI.getRequestUri="+uri.getRequestUri());
-//				System.out.println("URI.getBaseUri.getHost="+uri.getBaseUri().getHost());
-				
 				if (uri.getRequestUri().toString().contains("localhost")){
 					domainName="";//getDomainName(uri.getBaseUri().toString(), true); // for dev purposes
 				}else
@@ -109,8 +104,7 @@ public class AuthenticationController{
 						.build();
 				
 			}else{
-				log.info("Failure to authenticate user, returning to login screen with error 0");
-				System.out.println("onFailure.url:: "+params.get("onFailure"));
+				log.warn("AuthenticationController.login::Failure to authenticate user, returning to login screen with error 0 - "+params.get("onFailure"));
 				return Response.status(302).location(new URI(params.get("onFailure")+"?error=0")).build();
 			}
 		}catch(Exception e){
