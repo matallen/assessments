@@ -64,8 +64,8 @@
 			<li class="noColor divider">|</li>
 			<li class="menu_needsId"><a href="admin-survey-details.html?id=">Details</a></li>
 			<li class="menu_needsId"><a href="admin-survey-reports.html?id=">Reports</a></li>
-			<li class="menu_needsId"><a href="admin-survey-questions.html?id=">Questions</a></li>
-			<li class="menu_needsId"><a href="admin-survey-questions-embedded.html?id=">Questions (experimental)</a></li>
+			<!--li class="menu_needsId"><a href="admin-survey-questions.html?id=">Questions</a></li-->
+			<li class="menu_needsId"><a href="admin-survey-questions-embedded.html?id=">Questions</a></li>
 			<li class="menu_needsId"><a href="admin-survey-eloqua.html?id=">Eloqua</a></li>
 			<li class="menu_needsId"><a href="admin-survey-plugins.html?id=">Plugins</a></li>
 			<li class="menu_needsId"><a href="admin-survey-resources.html?id=">Resources</a></li>
@@ -253,7 +253,7 @@ var surveyId;
 $(document).ready(function() {
 	$("#feedback-alert").hide();
 	surveyId=Utils.getParameterByName("id");
-	setMenu("Questions (experimental)");
+	setMenu("Questions");
 	
 	if (undefined==surveyId){
 		// We have a new Survey - Enable all all input elements with id=_<something>, except ID
