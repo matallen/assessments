@@ -50,7 +50,13 @@ public abstract class AnswerProcessor{
 				onStringAnswer(questionId, answer.id, answer.score);
 				
 			}else if (ArrayList.class.isAssignableFrom(e.getValue().getClass())){
-				ArrayList<String> answerList=(ArrayList<String>)e.getValue();
+				// quick safe string conversion to prevent the list containing anything but a string
+				List<String> safe=new ArrayList<>();
+				for (Object s:(ArrayList)e.getValue()){
+					safe.add(s.toString());
+				}
+				
+				ArrayList<String> answerList=(ArrayList<String>)safe;
 				List<Answer> answers=new ArrayList<>();
 				int totalScore=0;
 				for (String answerString:answerList){

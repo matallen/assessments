@@ -196,6 +196,24 @@ survey.startTimer();
 survey.showTimerPanel = 'none'; //bottom
 survey.completeText = 'View my results';
 
+survey.onLoadChoicesFromServer.add(function(survey, options) {
+    
+	// CONSENT AGREEMENT LOGIC ONLY
+	if (options.question.name=="_consentAgreement"){
+		//console.log("options.length="+options.length);
+		var payload=options.serverResult;
+		var defaultValue=[];
+		for(var x in payload){
+			//console.log(payload[x]);
+			if (payload[x].name!=undefined && payload[x].checked!=undefined && payload[x].checked)
+				defaultValue.push(payload[x].name);
+		}
+		if (defaultValue.length>0)
+			options.question.defaultValue=defaultValue;
+	}
+	// END OF CONSENT AGREEMENT LOGIC
+	
+  });
 
 survey
       .onAfterRenderPage

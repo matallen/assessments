@@ -39,6 +39,7 @@ import com.redhat.services.ae.plugins.Plugin;
 import com.redhat.services.ae.utils.CacheHelper;
 import com.redhat.services.ae.utils.FluentCalendar;
 import com.redhat.services.ae.utils.Json;
+import com.redhat.services.ae.utils.Pair;
 
 import io.reactivex.internal.util.LinkedArrayList;
 
@@ -249,7 +250,7 @@ public class CustomFieldController{
 			country("LT","Lithuania                                   ".trim()),
 			country("LU","Luxembourg                                  ".trim()),
 			country("MO","Macau                                       ".trim()),
-			country("??","Macedonia                                   ".trim()),
+			country("MK","Macedonia                                   ".trim()),
 			country("MG","Madagascar                                  ".trim()),
 			country("MW","Malawi                                      ".trim()),
 			country("MY","Malaysia                                    ".trim()),
@@ -325,7 +326,7 @@ public class CustomFieldController{
 			country("VC","St. Vincent and Grenadines                  ".trim()),
 			country("SR","Suriname                                    ".trim()),
 			country("SJ","Svalbard/Jan Mayen Isls.                    ".trim()),
-			country("??","Swaziland                                   ".trim()),
+			country("SZ","Swaziland                                   ".trim()),
 			country("SE","Sweden                                      ".trim()),
 			country("CH","Switzerland                                 ".trim()),
 			country("TW","Taiwan                                      ".trim()),
@@ -350,7 +351,7 @@ public class CustomFieldController{
 			country("UM","US Minor Outlying Is.                       ".trim()),
 			country("UZ","Uzbekistan                                  ".trim()),
 			country("VU","Vanuatu                                     ".trim()),
-			country("??","Vatican City                                ".trim()),
+			country("VA","Vatican City                                ".trim()),
 			country("VE","Venezuela                                   ".trim()),
 			country("VN","Viet Nam                                    ".trim()),
 			country("VG","Virgin Islands (British)                    ".trim()),
@@ -369,6 +370,233 @@ public class CustomFieldController{
 			.build();
 	
 	
+	private Map<String,Pair<String,String>> consentCountries=new MapBuilder<String,Pair<String,String>>()
+			.put("ZW", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("ZM", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("ZA", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("YT", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("WF", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("VU", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("VN", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("VA", new Pair<>("opt-in ".trim(),"opt-in ".trim()))
+			.put("UZ", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("UG", new Pair<>("opt-in ".trim(),"opt-in ".trim()))
+			.put("UA", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("TR", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("TN", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("TM", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("TJ", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("TH", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("TG", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("TD", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("SZ", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("SY", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("ST", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("SO", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("SN", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("SM", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("SL", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("SK", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("SJ", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("SI", new Pair<>("opt-in ".trim(),"opt-in ".trim()))
+			.put("SH", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("SG", new Pair<>("opt-in ".trim(),"opt-in ".trim()))
+			.put("SE", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("SD", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("SC", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("SA", new Pair<>("opt-in ".trim(),"opt-in ".trim()))
+			.put("RW", new Pair<>("opt-in ".trim(),"opt-in ".trim()))
+			.put("RU", new Pair<>("opt-in ".trim(),"opt-in ".trim()))
+			.put("RS", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("RO", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("QA", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("PT", new Pair<>("opt-in ".trim(),"opt-in ".trim()))
+			.put("PN", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("PL", new Pair<>("opt-in ".trim(),"opt-in ".trim()))
+			.put("PK", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("PH", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("PF", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("PE", new Pair<>("opt-in ".trim(),"opt-in ".trim()))
+			.put("NZ", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("NO", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("NL", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("NG", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("NE", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("NC", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("NA", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("MZ", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("MY", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("MW", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("MT", new Pair<>("opt-in ".trim(),"opt-in ".trim()))
+			.put("MR", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("ML", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("MK", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("MG", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("ME", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("MD", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("MA", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("LY", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("LV", new Pair<>("opt-in ".trim(),"opt-in ".trim()))
+			.put("LU", new Pair<>("opt-in ".trim(),"opt-in ".trim()))
+			.put("LT", new Pair<>("opt-in ".trim(),"opt-in ".trim()))
+			.put("LS", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("LR", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("LI", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("KZ", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("KR", new Pair<>("opt-in ".trim(),"opt-in ".trim()))
+			.put("KM", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("KG", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("KE", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("JP", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("JE", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("IT", new Pair<>("opt-in ".trim(),"opt-in ".trim()))
+			.put("IS", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("IR", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("IO", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("IM", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("IL", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("IE", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("ID", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("HU", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("HR", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("GW", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("GS", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("GR", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("GQ", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("GN", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("GM", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("GL", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("GI", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("GH", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("GG", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("GE", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("GB", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("GA", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("FR", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("FO", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("FK", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("FI", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("ES", new Pair<>("opt-in ".trim(),"opt-in ".trim()))
+			.put("ER", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("EH", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("EE", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("DZ", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("DK", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("DJ", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("DE", new Pair<>("opt-in ".trim(),"opt-in ".trim()))
+			.put("CZ", new Pair<>("opt-in ".trim(),"opt-in ".trim()))
+			.put("CY", new Pair<>("opt-in ".trim(),"opt-in ".trim()))
+			.put("CV", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("CO", new Pair<>("opt-in ".trim(),"opt-in ".trim()))
+			.put("CM", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("CH", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("CG", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("CF", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("CD", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("CA", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("BY", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("BW", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("BV", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("BJ", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("BI", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("BG", new Pair<>("opt-in ".trim(),"opt-in ".trim()))
+			.put("BF", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("BE", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("BA", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("AZ", new Pair<>("opt-in ".trim(),"opt-in ".trim()))
+			.put("AX", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("AU", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("AT", new Pair<>("opt-in ".trim(),"opt-in ".trim()))
+			.put("AR", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("AO", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("AM", new Pair<>("opt-in ".trim(),"opt-in ".trim()))
+			.put("AL", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("AD", new Pair<>("opt-in ".trim(),"opt-out".trim()))
+			.put("YE", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("WS", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("VI", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("VE", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("UY", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("US", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("TZ", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("TW", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("TV", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("TO", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("TL", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("TK", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("TF", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("SV", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("SB", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("RE", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("PY", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("PW", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("PS", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("PR", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("PM", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("PG", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("PA", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("OM", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("NU", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("NR", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("NP", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("NI", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("NF", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("MX", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("MV", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("MU", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("MQ", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("MP", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("MO", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("MN", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("MM", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("MH", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("MC", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("LK", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("LC", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("LB", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("LA", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("KW", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("KP", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("KI", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("KH", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("JO", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("JM", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("IQ", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("IN", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("HT", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("HN", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("HM", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("HK", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("GU", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("GT", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("GP", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("GF", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("FM", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("FJ", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("ET", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("EG", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("EC", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("DO", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("CX", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("CU", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("CR", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("CN", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("CL", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("CK", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("CI", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("CC", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("BZ", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("BT", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("BR", new Pair<>("opt-in ".trim(),"opt-in ".trim()))
+			.put("BO", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("BN", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("BH", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("BD", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("AS", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("AF", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.put("AE", new Pair<>("opt-out".trim(),"opt-out".trim()))
+			.build();
+	
 	public static final Logger log=LoggerFactory.getLogger(CustomFieldController.class);
 
 	
@@ -380,7 +608,7 @@ public class CustomFieldController{
 		return Response.ok(Json.newObjectMapper(false).writeValueAsString(values.get(type))).type(MediaType.APPLICATION_JSON).build();
 	}
 
-	/** This satisfies the dependent dropdown of rob role based on selected department */
+	/** This satisfies the dependent dropdown of job role based on selected department */
 	@GET
 	@PermitAll
 	@Path("/{surveyId}/jobroles/{dept}")
@@ -394,6 +622,30 @@ public class CustomFieldController{
 			}
 		}
 		return Response.ok(Json.toJson(result)).build();
+	}
+	
+	
+	@GET
+	@PermitAll
+	@Path("/{surveyId}/consentagreement/{countryCode}")
+	public Response getConsentAgreement(@PathParam("surveyId") String surveyId, @PathParam("countryCode") String countryCode) throws IOException{
+//		Map<String,String result=Lists.newArrayList();
+		for(String k:consentCountries.keySet()){
+//			System.out.println("jobroles:: "+dept+".matches("+k+") = "+dept.matches(k));
+			if (countryCode.matches(k)){
+//				Map result=new MapBuilder<String,String>().put("key","value").build();
+				Pair<String,String> p=consentCountries.get(k);
+				
+				List<Map<String,Object>> result=Lists.newArrayList(
+						new MapBuilder<String,Object>().put("name", "by Email").put("checked",p.getFirst() .equalsIgnoreCase("opt-out")).build(),
+						new MapBuilder<String,Object>().put("name", "by Phone").put("checked",p.getSecond().equalsIgnoreCase("opt-out")).build()
+						);
+				return Response.ok(Json.toJson(result)).build();
+//				result=new MapBuilder<String,String>().build();// consentCountries.get(k);
+//				break;
+			}
+		}
+		return Response.ok(Json.toJson("{}")).build();
 	}
 	
 }
