@@ -377,7 +377,15 @@
 						html+=`<tr><td class='level2'>`;
 						if (l2!="") html+=`<h4>`+l2+`</h4>`;
 						for (var i in report[section][l1][l2]){
-							html+=`<p>`+report[section][l1][l2][i]+`</p>`;
+							var content=report[section][l1][l2][i];
+							if (content.startsWith("LINK:")){
+								content=content.substr(5);
+								var contentSplit=content.split("|");
+								var url=contentSplit[0],name=contentSplit[1],description=contentSplit[2];
+								html+=`<div class="row row-asset-links"><div class="col-md-4"><a href='`+url+`' target='_new'>`+name+`</a></div><div class="col-md-8">`+description+`</div></div>`;
+							}else{
+								html+=`<p>`+content+`</p>`;
+							}
 						}
 						html+=`</td></tr>`;
 					}
