@@ -8,12 +8,12 @@
 	<meta name="viewport" content="width=device-width, initial scale= 1.0">
 	<meta property="og:title" content="Assessments | Red Hat Inc">
 	<meta property="og:description" content="">
-  <link rel="preload" href="/assets/fonts/RedHatText/RedHatText-Regular.woff" as="font" type="font/woff" crossorigin>
-  <link rel="preload" href="/assets/fonts/RedHatText/RedHatText-Medium.woff" as="font" type="font/woff" crossorigin>
-  <link rel="preload" href="/assets/fonts/RedHatDisplay/RedHatDisplay-Regular.woff" as="font" type="font/woff" crossorigin>
-  <link rel="preload" href="/assets/fonts/RedHatDisplay/RedHatDisplay-Medium.woff" as="font" type="font/woff" crossorigin>
-  <link rel="preload" href="/assets/fonts/RedHatDisplay/RedHatDisplay-Bold.woff" as="font" type="font/woff" crossorigin>
-  <link type="text/css" rel="stylesheet" href="/assets/fonts/red-hat-font.css" media="all" />
+	<link rel="preload" href="/assets/fonts/RedHatText/RedHatText-Regular.woff" as="font" type="font/woff" crossorigin>
+	<link rel="preload" href="/assets/fonts/RedHatText/RedHatText-Medium.woff" as="font" type="font/woff" crossorigin>
+	<link rel="preload" href="/assets/fonts/RedHatDisplay/RedHatDisplay-Regular.woff" as="font" type="font/woff" crossorigin>
+	<link rel="preload" href="/assets/fonts/RedHatDisplay/RedHatDisplay-Medium.woff" as="font" type="font/woff" crossorigin>
+	<link rel="preload" href="/assets/fonts/RedHatDisplay/RedHatDisplay-Bold.woff" as="font" type="font/woff" crossorigin>
+	<link type="text/css" rel="stylesheet" href="/assets/fonts/red-hat-font.css" media="all" />
 	<link rel="icon" href="https://www.redhat.com/profiles/rh/themes/redhatdotcom/favicon.ico">
 	<style id="customStyles">
 	@import "https://go.redhat.com/hubfs/css/styles.min.css";
@@ -118,12 +118,12 @@
 				          a 15.9155 15.9155 0 0 1 0 -31.831" />
 				-->
 					
-			  <text style="fill: rgb(208, 208, 208); font-size: 8px; white-space: pre;" x="2.512"   y="51.189">0</text>
-			  <text style="fill: rgb(208, 208, 208); font-size: 8px; white-space: pre;" x="478.013" y="51.19">100</text>
-			  <text style="fill: rgb(138, 138, 138); font-size: 9px; white-space: pre;" x="46.945"  y="29.876">FOUNDATIONAL</text>
-			  <text style="fill: rgb(138, 138, 138); font-size: 9px; white-space: pre;" x="208.945" y="29.876">INTERMEDIATE</text>
-			  <text style="fill: rgb(138, 138, 138); font-size: 9px; white-space: pre;" x="379.469" y="29.495">ADVANCED</text>
-			  </image>
+				<text style="fill: rgb(208, 208, 208); font-size: 8px; white-space: pre;" x="2.512"   y="51.189">0</text>
+				<text style="fill: rgb(208, 208, 208); font-size: 8px; white-space: pre;" x="478.013" y="51.19">100</text>
+				<text style="fill: rgb(138, 138, 138); font-size: 9px; white-space: pre;" x="46.945"  y="29.876">FOUNDATIONAL</text>
+				<text style="fill: rgb(138, 138, 138); font-size: 9px; white-space: pre;" x="208.945" y="29.876">INTERMEDIATE</text>
+				<text style="fill: rgb(138, 138, 138); font-size: 9px; white-space: pre;" x="379.469" y="29.495">ADVANCED</text>
+				</image>
 			</svg>
 		`;
 	}
@@ -227,7 +227,7 @@
 				
 				// Add Tab/Menu Item
 				//var tabName="menu"+tabCount++;
-				tabName="menu_"+section.replace(/ /g,"_").toLowerCase();
+				tabName="tabcontent_"+section.replace(/ /g,"_").toLowerCase();
 				$("#tabs").append(`<li><a data-toggle="tab" id="tab_`+section.replace(/ /g,"_").toLowerCase()+`" href="#`+tabName+`">`+section+`</a></li>`);
 				
 				
@@ -270,8 +270,8 @@
 			
 			// if "overview" content exists, display it
 			if (undefined!=overviews){
-				$("#tabs").prepend(`<li class="active"><a data-toggle="tab" href="#overview">Overview</a></li>`);
-				var html=`<div id="overview" class="tab-pane fade in active">`;
+				$("#tabs").prepend(`<li class="active"><a data-toggle="tab" id="tab_overview" href="#tabcontent_overview">Overview</a></li>`);
+				var html=`<div id="tabcontent_overview" class="tab-pane fade in active">`;
 				for (var section in overviews){
 					for (var title in overviews[section]){
 						html+=`
@@ -310,8 +310,8 @@
 	<style>
 		/* no clue why, but this gets the footer displaying correctly */
 		footer.footerStyle p{
-    	margin-bottom: 2.05rem;
-    }
+			margin-bottom: 2.05rem;
+		}
 	</style>
 	<div id="footer">
 		<footer class="footerStyle">
@@ -355,40 +355,58 @@ $('#review_assessment').on('click', function() {
 
 
 
-    (function() {
-        var container = $('#tabsContent'),
-            cache_width = container.width(),
-            a4 = [595.28, 841.89]; // for a4 size paper width and height
-
-        $('#create_pdf').on('click', function() {
-            $('body').scrollTop(0);
-            createPDF();
-        });
-        //create pdf
-        function createPDF() {
-            getCanvas().then(function(canvas) {
-                var img = canvas.toDataURL('image/png'),
-                    doc = new jsPDF({
-                        unit: 'px',
-                        format: 'a4',
-                    });
-                doc.addImage(img, 'JPEG', 20, 20);
-                doc.save('Your_Results');
-                container.width(cache_width);
-            });
-        }
-
-        // create canvas object
-        function getCanvas() {
-            container.width(a4[0] * 1.33333 - 80).css('max-width', 'none');
-            return html2canvas(container, {
-                imageTimeout: 2000,
-                removeContainer: true,
-                scale: 2,
-                dpi: 144
-            });
-        }
-    })();
+$(document).ready(function(){
+	var container = $('#tabsContent'),
+			cache_width = container.width(),
+			a4 = [595.28, 841.89]; // for a4 size paper width and height
+	
+	$('#create_pdf').on('click', function() {
+		var activeTab=$('.tab-content .tab-pane.active').prop("id");
+		$('.nav-tabs').hide();
+		$('#tabcontent_overview').hide();
+		$headings = $('.nav-tabs li a');
+		$('.tab-content .tab-pane').each(function(i, el){
+			if ($(this).prop("id")!="raw")
+				$(this)
+					.addClass('active')
+				//.prepend('<h3>' + $($headings.get(i)).text() + '</h3>')
+		});
+		$('body').scrollTop(0);
+		createPDF();
+		function createPDF(){
+			getCanvas().then(function(canvas) {
+				var img = canvas.toDataURL('image/png'),
+				doc = new jsPDF({
+						unit: 'px',
+						format: 'a4',
+				});
+				doc.addImage(img, 'JPEG', 20, 20);
+				doc.save('Your_Results');
+				container.width(cache_width);
+				restore();
+			});
+		}
+		function getCanvas() {
+			container.width(a4[0] * 1.33333 - 80).css('max-width', 'none');
+			return html2canvas(container, {
+				imageTimeout: 2000,
+				removeContainer: true,
+				scale: 2,
+				dpi: 144
+			});
+		}
+		function restore(){
+			$('.tab-content .tab-pane').each(function(i, el){
+				if ($(this).prop("id")!=activeTab){
+					$(this).removeClass('active')
+				}
+			});
+			$('.nav-tabs').show();
+			$('#tabcontent_overview').show();
+//			$('#tab_overview').click();
+		}
+	});
+});
 </script>
 
 </body id="SurveyEngineBody" style="direction: inherit;">

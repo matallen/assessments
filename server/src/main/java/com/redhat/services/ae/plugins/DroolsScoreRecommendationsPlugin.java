@@ -244,7 +244,7 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 				
 				// replace any key/values from the answers in the recommendation strings
 				for (Entry<String, String> e:kvReplacement.entrySet()){
-					if (r.getText().contains("$"+e.getKey()))
+					if (null!=r.getText() && r.getText().contains("$"+e.getKey()))
 						r.doKeyValueReplacement(e.getKey(), e.getValue());
 				}
 			}
