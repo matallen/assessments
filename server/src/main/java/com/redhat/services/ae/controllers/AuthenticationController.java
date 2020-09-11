@@ -81,10 +81,10 @@ public class AuthenticationController{
 				String jwtToken=Jwt.createJWT(jwtClaims, ttlMins*60);
 				String domainName=getDomainName(uri.getBaseUri().toString(), true);
 
-				System.out.println("URI.getPath="+uri.getPath());
-				System.out.println("URI.getAbsolutePath="+uri.getAbsolutePath());
-				System.out.println("URI.getRequestUri="+uri.getRequestUri());
-				System.out.println("URI.getBaseUri.getHost="+uri.getBaseUri().getHost());
+//				System.out.println("URI.getPath="+uri.getPath());
+//				System.out.println("URI.getAbsolutePath="+uri.getAbsolutePath());
+//				System.out.println("URI.getRequestUri="+uri.getRequestUri());
+//				System.out.println("URI.getBaseUri.getHost="+uri.getBaseUri().getHost());
 				
 				if (uri.getRequestUri().toString().contains("localhost")){
 					domainName="";//getDomainName(uri.getBaseUri().toString(), true); // for dev purposes
@@ -93,16 +93,8 @@ public class AuthenticationController{
 				
 //				domainName="";
 				
-				System.out.println("domain="+getDomainName(params.get("onSuccess"), true));
-//				System.out.println("URI="+Json.toJson(uri));
-//				uri.getAbsolutePath();
-//				uri.get
 //				System.out.println("domain name="+domainName);
 //				log.info("returning jwt token in cookie rhae-jwt: "+jwtToken);
-//				log.info("uri.baseUri = "+uri.getBaseUri());
-//				log.info("uri.getPath= "+uri.getPath(true));
-//				log.info("uri.getAbsolutePath = "+uri.getAbsolutePath());
-//				log.info("uri.domainName = "+domainName);
 				
 				return Response.status(302)
 						.location(new URI(params.get("onSuccess")))
@@ -111,6 +103,8 @@ public class AuthenticationController{
 //						.header("Access-Control-Allow-Methods", "GET, POST")
 //						.header("Access-Control-Allow-Headers", "Content-Type, *")
 //						.cookie(new NewCookie("rhae-jwt", jwtToken, "/", domainName, "__SAME_SITE_NONE__", 60*60 /*1hr*/, false, false))
+
+						// TODO: need to make the cookie cross-domain so it works when accessed using a CNAME domain name
 						.header("Set-Cookie", "rhae-jwt="+jwtToken+";Path=/;Domain="+domainName+";Max-Age="+(60*60)+"; SameSite=none;")
 						.build();
 				
