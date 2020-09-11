@@ -61,9 +61,10 @@ stroke-miterlimit:1;
 }
 .progress-chart {
     display: block;
-    margin: 10px  auto;
+    margin: 10px auto 10px 0;
     max-width: 100%;
     max-height: 250px;
+    width: 83%;
 }
 @keyframes animate-bar { 
 	to {stroke-dashoffset: 0;} 
@@ -116,5 +117,8 @@ stroke-miterlimit:1;
     padding: 6px 0px;
 }
 
+div.tab-pane table tbody tr td.level2{
+	padding-left: 7px;
+}
 
 
