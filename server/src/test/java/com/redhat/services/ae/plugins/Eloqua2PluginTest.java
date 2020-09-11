@@ -65,7 +65,7 @@ public class Eloqua2PluginTest{
 		
 		
 		p.setConfig(getConfig());
-		p.disabled=true; // don't actually send the request to Eloqua
+		p.disabled=false; // the @redhat.com email in the answers should disable the plugin
 		answers=p.execute(surveyId, visitorId, answers);
 		System.out.println("Eloqua2Plugin:: To:\n"+Json.toJson(answers));
 		

@@ -89,7 +89,15 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 					if (Map.class.isAssignableFrom(e.getValue().getClass())){
 						Map<String,Object> value=(Map<String,Object>)e.getValue();
 						if (value.containsKey("answer")){
-							extractedAnswers.put(questionId, (String)value.get("answer"));
+							String answer=(String)value.get("answer");
+							extractedAnswers.put(questionId, answer);
+							
+							// Disable plugin if email is @redhat.com
+							if (questionId.toLowerCase().contains("email") && answer.toLowerCase().contains("@redhat.com")){
+								log.warn("Skipping Eloqua plugin because email is an @redhat.com email");
+								disabled=true;
+							}
+							
 						}else if (value.containsKey("answers")){
 							extractedAnswers.put(questionId, Joiner.on(",").join((Iterable)value.get("answers")));
 						}
@@ -148,19 +156,18 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 	}
 	
 	public void sendToEloqua(String url, boolean disabled, Map<String,String> eloquaData){
-		RequestSpecification rs=given()
-				.contentType(ContentType.JSON)
-//				.contentType(ContentType.)
-				.header("Accept", ContentType.JSON.getAcceptHeader())
-				;
-		for (Entry<String, String> e:eloquaFields.entrySet()){
-			log.debug(String.format("EloquaPlugin:: Adding queryParam:: %s = %s", e.getKey(), e.getValue()));
-			rs.queryParam(e.getKey(), e.getValue());
-//			rs.formParam(e.getKey(), e.getValue());
-		}
+		if (!disabled){
+			RequestSpecification rs=given()
+					.contentType(ContentType.JSON)
+					.header("Accept", ContentType.JSON.getAcceptHeader())
+					;
+			for (Entry<String, String> e:eloquaFields.entrySet()){
+				log.debug(String.format("EloquaPlugin:: Adding queryParam:: %s = %s", e.getKey(), e.getValue()));
+				rs.queryParam(e.getKey(), e.getValue());
+//				rs.formParam(e.getKey(), e.getValue());
+			}
 
 		
-		if (!disabled){
 			log.debug("EloquaPlugin:: Sending request to Eloqua: "+url);
 			Response response=rs.post(url).andReturn();
 			
@@ -178,12 +185,7 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 	@Override
 	public Map<String, Object> OnSingleStringAnswer(String questionId, String answer, Json question){
 		
-		if (questionId.toLowerCase().contains("@redhat.com")){
-			log.info("Skipping Eloqua plugin because email is an @redhat.com email");
-			disabled=true;
-		}
-		
-		extractedAnswers.put(questionId, "");
+//		extractedAnswers.put(questionId, "");
 		
 		return null;
 	}

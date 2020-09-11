@@ -64,7 +64,7 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 	@Override
 	public Map<String, Object> OnMultipleStringAnswers(String questionId, List<String> answers, Json question){
 		
-		int highestScore=0; /// for RTI v2 we are going to take the highest score vs average or any other complex calc
+		int highestScore=-1; /// for RTI v2 we are going to take the highest score vs average or any other complex calc
 		
 		List<String> newAnswers=new ArrayList<>();
 		for (String answerString:answers){

@@ -6,6 +6,7 @@
   "FirstName" : "qwerty",
   "LastName" : "Bloggs",
   "appdev1" : "item4",
+  "WorkEmail": "test@redhat.com",
   "language" : "en",
   "platforms_q1" : "20#software",
   "interests" : [ "platforms", "apps" ]
