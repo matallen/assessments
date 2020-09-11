@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.text.StringSubstitutor;
+import org.mvel2.MVEL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +29,8 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 	private Map<String,String> mapping;
 	private Map<String,String> values;
 	boolean disabled=false;
+	private String disabledIfExpression;
+	private boolean disabledIfResult=false;
 	
 	
 	@SuppressWarnings({"unchecked"})
@@ -38,6 +41,7 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 		mapping=(Map<String,String>)config.get("mapping");
 		values=(Map<String,String>)config.get("values");
 //		disabled=cfg.containsKey("disabled")?"true".equalsIgnoreCase((String)cfg.get("disabled")):false;
+		disabledIfExpression=(String)cfg.get("disabledIf");
 		
 		if (cfg.containsKey("disabled")){
 			if (String.class.isAssignableFrom(cfg.get("disabled").getClass())){
@@ -92,11 +96,11 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 							String answer=(String)value.get("answer");
 							extractedAnswers.put(questionId, answer);
 							
-							// Disable plugin if email is @redhat.com
-							if (questionId.toLowerCase().contains("email") && answer.toLowerCase().contains("@redhat.com")){
-								log.warn("Skipping Eloqua plugin because email is an @redhat.com email");
-								disabled=true;
-							}
+//							// Disable plugin if email is @redhat.com
+//							if (questionId.toLowerCase().contains("email") && answer.toLowerCase().contains("@redhat.com")){
+//								log.warn("Skipping Eloqua plugin because email is an @redhat.com email");
+//								disabled=true;
+//							}
 							
 						}else if (value.containsKey("answers")){
 							extractedAnswers.put(questionId, Joiner.on(",").join((Iterable)value.get("answers")));
@@ -150,7 +154,14 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 			eloquaFields.put(e.getKey(), substitutor.replace(e.getValue()));
 		}
 		
-		sendToEloqua(url, disabled, eloquaFields);
+		// execute mvel expression (ie. WorkEmail contains @redhat.com) then disabledIfResult becomes True
+		Object eval=MVEL.eval(disabledIfExpression, answers);
+		disabledIfResult=disabledIfResult || (eval instanceof Boolean && (boolean)eval);
+		if (disabledIfResult){
+			log.warn("Skipping Eloqua plugin because disabledIf expression '"+disabledIfExpression+"' evaluated to true");
+		}
+		
+		sendToEloqua(url, disabled || disabledIfResult, eloquaFields);
 		
 		return surveyResults;
 	}

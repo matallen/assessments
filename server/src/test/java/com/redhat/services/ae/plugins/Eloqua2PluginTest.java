@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mvel2.MVEL;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -31,6 +33,14 @@ import com.redhat.services.ae.utils.Json;
  */
 public class Eloqua2PluginTest{
 
+	
+	@Test
+	public void xTest(){
+		Map<String,Object> vars=new MapBuilder<String,Object>()
+				.put("abc", "mallen@redhat.com")
+				.build();
+		System.out.println(MVEL.eval("abc contains \"@redhat.com\"", vars)); 
+	}
 	
 	@Test
 	public void testEloquaWithFields() throws Exception{
@@ -92,6 +102,7 @@ public class Eloqua2PluginTest{
 //				.put("url", "https://s1795.t.eloqua.com/e/f2?elqSiteID=1795&elqFormName=consulting-assessment-integration-sandbox")
 				.put("url", "https://s1795.t.eloqua.com/e/f2")
 				.put("disabled", "true")
+				.put("disabledIf","WorkEmail contains @redhat.com")
 				.put("config", new MapBuilder<String,Map<String,String>>()
 						.put("mapping", new MapBuilder<String,String>()
 								.put("platforms_q1",  "UDF_01")
