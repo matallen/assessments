@@ -1,14 +1,15 @@
 package com.redhat.services.ae.controllers;
 
-import java.io.File;
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.math3.util.Pair;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,22 +17,111 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.redhat.services.ae.Database;
-import com.redhat.services.ae.controllers.ReportsController;
+import com.google.common.collect.Lists;
+import com.redhat.services.ae.charts.ChartJson;
+import com.redhat.services.ae.model.MetricsDecorator;
 import com.redhat.services.ae.model.Survey;
+import com.redhat.services.ae.model.storage.Surveys;
 import com.redhat.services.ae.utils.Json;
 
-public class ReportsControllerTest{
+
+public class ReportsControllerTest 
+//extends TestBase
+{
+
+	private static final String SURVEY_ID=ReportsControllerTest.class.getSimpleName();
+	private Pair<String,String> dateRange=new Pair<>("2020-Jan","2020-Apr");
 
 	@BeforeEach
 	public void init() throws FileNotFoundException, IOException{
-		Database.STORAGE="target/test/"+Database.STORAGE;
-		if (new File(Database.STORAGE).exists())
-			new File(Database.STORAGE).delete();
-		IOUtils.write(setupDatabase().getBytes(), new FileOutputStream(new File(Database.STORAGE)));
-		Survey s=Survey.findById("TESTING");
+		Survey s=Survey.builder()
+		.id(SURVEY_ID)
+		.name("My Test Survey")
+		.theme("theme1")
+		.build();
 		s.setQuestions(setupQuestions());
+		s.save();
+		s.saveQuestions();
+		
+		MetricsDecorator m=new MetricsDecorator(s.getMetrics());
+		m.increment(3, "completedByMonth", "20-Jul");
+		m.increment(5, "completedByMonth", "20-Aug");
+		m.increment(2, "completedByMonth", "20-Sep");
+		
+		m.increment(3, "byMonth", "page", "20-Jul", "environment");
+		m.increment(6, "byMonth", "page", "20-Jul", "automation");
+		m.increment(2, "byMonth", "page", "20-Jul", "strategy");
+		m.increment(8, "byMonth", "page", "20-Aug", "environment");
+		m.increment(4, "byMonth", "page", "20-Aug", "automation");
+		m.increment(6, "byMonth", "page", "20-Aug", "strategy");
+		
+		m.increment(3, "byMonth", "geo", "20-Jul", "environment");
+		m.increment(6, "byMonth", "geo", "20-Jul", "automation");
+		m.increment(2, "byMonth", "geo", "20-Jul", "strategy");
+		m.increment(8, "byMonth", "geo", "20-Aug", "environment");
+		m.increment(4, "byMonth", "geo", "20-Aug", "automation");
+		m.increment(6, "byMonth", "geo", "20-Aug", "strategy");
+
+		m.increment(1, "answersByMonth", "answers", "20-Jul", "question1", "answer1");
+		m.increment(3, "answersByMonth", "answers", "20-Jul", "question1", "answer2");
+		m.increment(1, "answersByMonth", "answers", "20-Jul", "question1", "answer3");
+		m.increment(2, "answersByMonth", "answers", "20-Jul", "question1", "answer1");
+		
+		m.increment(5, "answersByMonth", "answers", "20-Aug", "question1", "answer1");
+		m.increment(2, "answersByMonth", "answers", "20-Aug", "question1", "answer2");
+		m.increment(2, "answersByMonth", "answers", "20-Aug", "question1", "answer3");
+		m.increment(1, "answersByMonth", "answers", "20-Aug", "question1", "answer1");
+		
+		s.saveMetrics();
+		
 	}
+	
+	
+	
+	@Test
+	public void testPageCount() throws JsonProcessingException, ParseException{
+		String resultAsString=(String)new ReportsController().getPageCount(SURVEY_ID, dateRange.getFirst(), dateRange.getSecond()).getEntity();
+		System.out.println(resultAsString);
+	}
+	
+	@Test
+	public void test() throws JsonParseException, JsonMappingException, IOException, ParseException{
+		
+		Survey s=Survey.findById(SURVEY_ID);
+		
+//		s.getMetrics().put("completedByMonth", new LinkedHashMap<String, Map<String, Integer>>());
+		new MetricsDecorator(s.getMetrics()).increment(3, "completedByMonth", "20-Jul");
+		new MetricsDecorator(s.getMetrics()).increment(5, "completedByMonth", "20-Aug");
+		s.saveMetrics();
+		
+		String resultAsString=(String)new ReportsController().getSurveyCount(s.id, dateRange.getFirst(), dateRange.getSecond()).getEntity();
+		System.out.println(resultAsString);
+		ChartJson result=
+				Json.toObject(
+						new ByteArrayInputStream(((String)resultAsString).getBytes())
+						, ChartJson.class);
+				
+		
+		List<Integer> data=result.getDatasets().get(0).getData();
+		for(Integer l:data)
+			Assert.assertTrue(0==l);
+		Assert.assertEquals("Total Surveys Completed", result.getDatasets().get(0).getLabel());
+		Assert.assertTrue(result.getLabels().containsAll(Lists.newArrayList("20-Jan","20-Feb","20-Mar","20-Apr")));
+		
+	}
+	
+	
+	
+	
+//	@BeforeEach
+//	public void init() throws FileNotFoundException, IOException{
+//		Database.STORAGE="target/test/"+Database.STORAGE;
+//		if (new File(Database.STORAGE).exists())
+//			new File(Database.STORAGE).delete();
+//		IOUtils.write(setupDatabase().getBytes(), new FileOutputStream(new File(Database.STORAGE)));
+//		Survey s=Survey.findById("TESTING");
+//		s.setQuestions(setupQuestions());
+//	}
 	
 	@Test
 	public void testOnResultsWithComplexJson() throws JsonParseException, JsonMappingException, IOException{
@@ -67,29 +157,31 @@ public class ReportsControllerTest{
 	@Test
 	public void testSurveyCountGraph() throws JsonProcessingException, ParseException{
 		System.out.println(
-			new ReportsController().getSurveyCount("TESTING", "2020-Jan", "2020-Apr").getEntity()
+			new ReportsController().getSurveyCount(SURVEY_ID, "2020-Jan", "2020-Apr").getEntity()
 		);
 	}
 	
 	@Test
 	public void testPageGraph() throws JsonProcessingException, ParseException{
 		System.out.println(
-			new ReportsController().getPageCount("TESTING", "2020-Jan", "2020-Apr").getEntity()
+			new ReportsController().getPageCount(SURVEY_ID, "2020-Jan", "2020-Apr").getEntity()
 		);
 	}
 	@Test
 	public void testPageGraphWithPageNameChange() throws JsonProcessingException, ParseException{
-		Database.get().getSurveys().get("TESTING").getMetrics().getByMonth("page", "20-May").put("new page name", 2);
-		Database.get().save();
+		Survey s=Survey.findById(SURVEY_ID);
+		MetricsDecorator m=new MetricsDecorator(s.getMetrics());
+		m.getByMonth("page", "20-Jul").put("new page name", 2);
+		Surveys.get().save();
 		System.out.println(
-			new ReportsController().getPageCount("TESTING", "2020-Jan", "2020-Apr").getEntity()
+			new ReportsController().getPageCount(SURVEY_ID, "2020-Jan", "2020-Apr").getEntity()
 		);
 	}
 	
 	@Test
 	public void testGeoGraph() throws JsonProcessingException, ParseException{
 		System.out.println(
-			new ReportsController().getSurveyCountByGeo("TESTING", "2020-Apr", "2020-Apr").getEntity()
+			new ReportsController().getSurveyCountByGeo(SURVEY_ID, "2020-Apr", "2020-Apr").getEntity()
 		);
 	}
 	
@@ -99,7 +191,7 @@ public class ReportsControllerTest{
 	@Test
 	public void testAnswerPercentages() throws JsonProcessingException, ParseException{
 		System.out.println(
-				new ReportsController().answerPercentages("TESTING", "2019-Jan", "2022-Dec").getEntity()
+				new ReportsController().answerPercentages("RTADEV", "2019-Jan", "2022-Dec").getEntity()
 		);
 	}
 	
@@ -114,7 +206,7 @@ public class ReportsControllerTest{
 		"	{                                       "+
 		"  \"surveys\" : {                        "+
 		"    \"TESTING\" : {                      "+
-		"      \"id\" : \"DUWHSK\",               "+
+		"      \"id\" : \"TESTING\",              "+
 		"      \"name\" : \"Ready to Innovate\",  "+
 		"      \"description\" : \"\",            "+
 		"      \"metrics\" : {                    "+

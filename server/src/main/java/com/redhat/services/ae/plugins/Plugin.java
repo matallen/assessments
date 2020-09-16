@@ -7,13 +7,16 @@ import java.util.Map.Entry;
 import com.google.common.collect.Lists;
 
 public abstract class Plugin{
-
+	protected Map<String, Object> originalSurveyResults;
 	public abstract void setConfig(Map<String, Object> config);
 
 	public abstract Map<String, Object> execute(String surveyId, String visitorId, Map<String, Object> surveyResults) throws Exception;
 	
-	public void onDestroy(String surveyId, String visitorId, Map<String, Object> surveyResults){
+	public void setOriginalSurveyResults(Map<String, Object> originalSurveyResults){
+		this.originalSurveyResults=originalSurveyResults;
 	}
+	
+	public void onDestroy(String surveyId, String visitorId, Map<String, Object> surveyResults){}
 	
 	public void removeAnswerProperties(Map<String, Object> surveyResults, List<String> answerPropertiesToRemove){
 		if (null!=surveyResults){

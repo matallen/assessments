@@ -89,7 +89,7 @@ public class AuthenticationController{
 //				domainName="";
 				
 //				System.out.println("domain name="+domainName);
-//				log.info("returning jwt token in cookie rhae-jwt: "+jwtToken);
+//				log.info("returning jwt token in cookie rh_cat_jwt: "+jwtToken);
 				
 				return Response.status(302)
 						.location(new URI(params.get("onSuccess")))
@@ -97,10 +97,10 @@ public class AuthenticationController{
 //						.header("Access-Control-Allow-Credentials", "true")
 //						.header("Access-Control-Allow-Methods", "GET, POST")
 //						.header("Access-Control-Allow-Headers", "Content-Type, *")
-//						.cookie(new NewCookie("rhae-jwt", jwtToken, "/", domainName, "__SAME_SITE_NONE__", 60*60 /*1hr*/, false, false))
+//						.cookie(new NewCookie("rh_cat_jwt", jwtToken, "/", domainName, "__SAME_SITE_NONE__", 60*60 /*1hr*/, false, false))
 
 						// TODO: need to make the cookie cross-domain so it works when accessed using a CNAME domain name
-						.header("Set-Cookie", "rhae-jwt="+jwtToken+";Path=/;Domain="+domainName+";Max-Age="+(60*60)+"; SameSite=none;")
+						.header("Set-Cookie", "rh_cat_jwt="+jwtToken+";Path=/;Domain="+domainName+";Max-Age="+(60*60)+"; SameSite=none;")
 						.build();
 				
 			}else{
@@ -117,7 +117,7 @@ public class AuthenticationController{
 	public Response logout(@QueryParam("onSuccess") String onSuccess) throws URISyntaxException, UnsupportedEncodingException{
 		// delete cookie?
 		// invalidate session?
-		return Response.status(302).location(new URI(onSuccess)).cookie(new NewCookie("rhae-jwt", null)) .build();
+		return Response.status(302).location(new URI(onSuccess)).cookie(new NewCookie("rh_cat_jwt", null)) .build();
 	}
 
 	private Map<String,String> parseQueryString(String url) throws UnsupportedEncodingException{

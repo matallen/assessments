@@ -37,7 +37,9 @@ import com.redhat.services.ae.charts.ChartJson;
 import com.redhat.services.ae.charts.DataSet;
 import com.redhat.services.ae.charts.PieChartJson;
 import com.redhat.services.ae.charts.PieData;
+import com.redhat.services.ae.model.MetricsDecorator;
 import com.redhat.services.ae.model.Survey;
+import com.redhat.services.ae.model.storage.Surveys;
 import com.redhat.services.ae.plugins.Plugin;
 import com.redhat.services.ae.utils.FluentCalendar;
 import com.redhat.services.ae.utils.Json;
@@ -52,7 +54,7 @@ public class ReportsController{
 	@GET
 	@Path("/{surveyId}/reports/surveyCount")
 	public Response getSurveyCount(@PathParam("surveyId") String surveyId, @QueryParam("start") String dateRangeStart, @QueryParam("end") String dateRangeEnd) throws JsonProcessingException, ParseException{
-		Database.reset(); // force a reload
+		Surveys.reset(); // force a reload
 		Survey o=Survey.findById(surveyId);
 		Pair<Calendar, Calendar> range=buildDateRange(dateRangeStart, dateRangeEnd);
 		SimpleDateFormat YYMMM=new SimpleDateFormat("yy-MMM");
@@ -62,19 +64,16 @@ public class ReportsController{
 		ds.setLabel("Total Surveys Completed");
 		
 		Calendar start=range.getFirst();
+		MetricsDecorator m=new MetricsDecorator(o.getMetrics());
 		while (start.before(range.getSecond())) {
 			String month=YYMMM.format(start.getTime());
 			c.getLabels().add(month);
-			ds.getData().add(o.getMetrics().getCompletedByMonth().containsKey(month)?o.getMetrics().getCompletedByMonth().get(month):0);
+			
+			//ds.getData().add(m.containsKey(month)?m.get(month):0);
+			ds.getData().add(m.getCompletedByMonth().containsKey(month)?m.getCompletedByMonth().get(month):0);
+//			ds.getData().add(o.getMetrics().getCompletedByMonth().containsKey(month)?o.getMetrics().getCompletedByMonth().get(month):0);
 			start.add(Calendar.MONTH, 1);
 		}
-		
-//		for (Entry<String, Integer> e:o.getMetrics().getCompletedByMonth().entrySet()){
-//			if (isOnOrWithinRange(e.getKey(), range)){
-//				c.getLabels().add(e.getKey());
-//				ds.getData().add(e.getValue());
-//			}
-//		}
 		
 		return Response.ok(Json.toJson(c)).build();
 	}
@@ -82,7 +81,7 @@ public class ReportsController{
 	@GET
 	@Path("/{surveyId}/reports/pageCount")
 	public Response getPageCount(@PathParam("surveyId") String surveyId, @QueryParam("start") String dateRangeStart, @QueryParam("end") String dateRangeEnd) throws JsonProcessingException, ParseException{
-		Database.reset(); // force a reload
+		Surveys.reset(); // force a reload
 		Survey o=Survey.findById(surveyId);
 		Pair<Calendar, Calendar> range=buildDateRange(dateRangeStart, dateRangeEnd);
 		
@@ -94,28 +93,32 @@ public class ReportsController{
 //		// get absolute list of pages, then build the chart data from those
 		Set<String> pages=new LinkedHashSet<>(); // retain the page order or else this graph means nothing!
 		
-		boolean pagesFromQuestions=true;
-		if (!pagesFromQuestions) // then they come from metrics history 
-			for (Entry<String, Map<String, Integer>> e:o.getMetrics().getByMonth("page").entrySet())
-				pages.addAll(e.getValue().keySet());
+//		boolean pagesFromQuestions=true;
+//		if (!pagesFromQuestions){ // then they come from metrics history 
+////			for (Entry<String, Map<String, Integer>> e:o.getMetrics().getByMonth("page").entrySet())
+//			MetricsDecorator m=new MetricsDecorator(o.getMetrics());
+//			for (Entry<String, Map<String, Integer>> e:m.getByMonth("page").entrySet())
+////			for (Entry<String, Map<String, Integer>> e:m.entrySet())
+//				pages.addAll(e.getValue().keySet());
+//		}
 		
 		// sort the pages in the same order the questions were asked
-		if (pagesFromQuestions){
-			try{
-				List<mjson.Json> pagesx=mjson.Json.read(o.getQuestions()).at("pages").asJsonList();
-				for(mjson.Json page:pagesx){
-					String pageName=page.at("name").asString();
-					pages.add(pageName);
-				}
-			}catch(IOException e){
-				e.printStackTrace();
-			}
+//		if (pagesFromQuestions){
+		mjson.Json questionConfig=mjson.Json.read(o.getQuestions());
+		if (questionConfig.has("pages")){
+			List<mjson.Json> pagesRead=questionConfig.at("pages").asJsonList();
+			for(mjson.Json page:pagesRead)
+				pages.add(page.at("name").asString());
 		}
+//		}
 		
+		MetricsDecorator m=new MetricsDecorator(o.getMetrics());
 		for (String page:pages){
 			c.getLabels().add(page);
 			int total=0;
-			for (Entry<String, Map<String, Integer>> e:o.getMetrics().getByMonth("page").entrySet()){
+//			for (Entry<String, Map<String, Integer>> e:o.getMetrics().getByMonth("page").entrySet()){
+//			for (Entry<String, Map<String, Integer>> e:m.entrySet()){
+			for (Entry<String, Map<String, Integer>> e:m.getByMonth("page").entrySet()){
 				if (isOnOrWithinRange(e.getKey(), range)){
 					total+= e.getValue()!=null && e.getValue().get(page)!=null?e.getValue().get(page):0;
 				}
@@ -129,20 +132,28 @@ public class ReportsController{
 	@GET
 	@Path("/{surveyId}/reports/surveyCountByGeo")
 	public Response getSurveyCountByGeo(@PathParam("surveyId") String surveyId, @QueryParam("start") String dateRangeStart, @QueryParam("end") String dateRangeEnd) throws JsonProcessingException, ParseException{
-		Database.reset(); // force a reload
+		Surveys.reset(); // force a reload
 		Survey o=Survey.findById(surveyId);
 		Pair<Calendar, Calendar> range=buildDateRange(dateRangeStart, dateRangeEnd);
 		
 		PieChartJson c=new PieChartJson();
 		Set<String> keys=new HashSet<>(); // geos
-		for (Entry<String, Map<String, Integer>> x:o.getMetrics().getByMonth("geo").entrySet())
+		
+//		for (Entry<String, Map<String, Integer>> x:o.getMetrics().getByMonth("geo").entrySet())
+//		Map<String, Map<String, Integer>> m=new MetricsDecorator(o.getMetrics()).get2("byMonth", "geo");
+		MetricsDecorator m=new MetricsDecorator(o.getMetrics());
+//		for (Entry<String, Map<String, Integer>> x:m.entrySet())
+		for (Entry<String, Map<String, Integer>> x:m.getByMonth("geo").entrySet())
 			keys.addAll(x.getValue().keySet());
 		
 		PieData pd2=new PieData();
 		for(String geo:keys){
 			c.getLabels().add(geo);
 			int sum=0;
-			for (Entry<String, Map<String, Integer>> e:o.getMetrics().getByMonth("geo").entrySet())
+//			for (Entry<String, Map<String, Integer>> e:o.getMetrics().getByMonth("geo").entrySet())
+//			Map<String, Map<String, Integer>> m=new MetricsDecorator(o.getMetrics()).get2("byMonth", "geo");
+//			for (Entry<String, Map<String, Integer>> e:m.entrySet())
+			for (Entry<String, Map<String, Integer>> e:m.getByMonth("geo").entrySet())
 				if (isOnOrWithinRange(e.getKey(), range))
 					sum+=e.getValue().containsKey(geo)?e.getValue().get(geo):0;
 			pd2.getData().add(sum);
@@ -156,15 +167,18 @@ public class ReportsController{
 	@GET
 	@Path("/{surveyId}/reports/answerPercentages")
 	public Response answerPercentages(@PathParam("surveyId") String surveyId, @QueryParam("start") String dateRangeStart, @QueryParam("end") String dateRangeEnd) throws JsonProcessingException, ParseException{
-		Database.reset(); // force a reload
+		Surveys.reset(); // force a reload
 		Survey o=Survey.findById(surveyId);
 		Pair<Calendar, Calendar> range=buildDateRange(dateRangeStart, dateRangeEnd);
+		MetricsDecorator m=new MetricsDecorator(o.getMetrics());
 		
 		List<ChartJson> result=new ArrayList<>();
 		
-		try{
-			List<mjson.Json> pagesx=mjson.Json.read(o.getQuestions()).at("pages").asJsonList();
-			for(mjson.Json page:pagesx){
+//		try{
+		mjson.Json questionConfig=mjson.Json.read(o.getQuestions());
+		if (questionConfig.has("pages")){
+			List<mjson.Json> pageQuestion=questionConfig.at("pages").asJsonList();
+			for(mjson.Json page:pageQuestion){
 				String pageName=page.at("name").asString();
 				
 				for (mjson.Json question:page.at("elements").asJsonList()){
@@ -196,6 +210,9 @@ public class ReportsController{
 								}
 							}
 							
+							// TODO: Less than ideal hack here due to Score Plugin and 40#AnswerID format of the questions answers... Need to remove the score part for these metrics to display properly
+							String token="#";
+							if (answerId.contains(token)) answerId=answerId.substring(answerId.indexOf(token)+token.length());
 							
 							
 						}catch(NullPointerException npe){
@@ -209,7 +226,11 @@ public class ReportsController{
 						
 						// go through the metrics per month to find the question/answer combo cardinality
 						int count=0;
-						for (Entry<String, Map<String, Map<String, Integer>>> e:o.getMetrics().getAnswersByMonth("answers").entrySet()){			
+//						for (Entry<String, Map<String, Map<String, Integer>>> e:o.getMetrics().getAnswersByMonth("answers").entrySet()){
+//						MetricsDecorator m=new MetricsDecorator(o.getMetrics());
+//						Map<String, Map<String, Map<String, Integer>>> m=new MetricsDecorator(o.getMetrics()).get3("answersByMonth", "answers");
+//						for (Entry<String, Map<String, Map<String, Integer>>> e:m.entrySet()){
+						for (Entry<String, Map<String, Map<String, Integer>>> e:m.getAnswersByMonth("answers").entrySet()){
 							if (isOnOrWithinRange(e.getKey(), range)){
 								if (e.getValue().containsKey(questionId)){
 									count+=(e.getValue().get(questionId).containsKey(answerId)?e.getValue().get(questionId).get(answerId):0); 
@@ -222,10 +243,11 @@ public class ReportsController{
 					result.add(c);
 				}
 			}
-			
-		}catch(IOException e){
-			e.printStackTrace();
 		}
+			
+//		}catch(IOException e){
+//			e.printStackTrace();
+//		}
 		
 		return Response.ok(Json.toJson(result)).build();
 	}
@@ -244,7 +266,7 @@ public class ReportsController{
 		try{
 			Calendar startDate=FluentCalendar.get(sdf.parse(start)).firstDayOfMonth().startOfDay().build();
 			Calendar endDate=FluentCalendar.get(sdf.parse(end)).lastDayOfMonth().endOfDay().build();
-			System.out.println("Filtering data between: "+sdf.format(startDate.getTime())+" and "+sdf.format(endDate.getTime()));
+//			System.out.println("Filtering data between: "+sdf.format(startDate.getTime())+" and "+sdf.format(endDate.getTime()));
 			return new Pair<Calendar,Calendar>(startDate, endDate);
 		}catch(NumberFormatException e){
 			throw e;

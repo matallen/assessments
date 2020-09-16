@@ -35,11 +35,14 @@ import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.redhat.services.ae.Database;
 import com.redhat.services.ae.Results;
 import com.redhat.services.ae.Utils;
 import com.redhat.services.ae.model.Survey;
+import com.redhat.services.ae.model.storage.Surveys;
 import com.redhat.services.ae.utils.Json;
 import com.redhat.services.ae.utils.StringUtils;
 
@@ -64,7 +67,7 @@ public class SurveyAdminController{
 	@PermitAll
 	@Path("/database")
 	public Response getDatabase() throws FileNotFoundException, IOException{
-		return Response.ok(Json.toJson(Database.get())).build();
+		return Response.ok(Json.toJson(Surveys.get())).build();
 	}
 	
   /* temporary until backup solution is deployed with authentication */
@@ -101,7 +104,7 @@ public class SurveyAdminController{
 	public Response create(String payload) throws IOException{
 		Survey o=Json.toObject(payload, Survey.class);
 		if (StringUtils.isBlank(o.id)) o.id=Utils.generateId();
-		if (Database.get().getSurveys().containsKey(o.id))
+		if (Surveys.get().getSurveys().containsKey(o.id))
 			throw new RuntimeException("Survey ID already exists");
 		o.persist();
 		return Response.ok(Survey.findById(o.id)).build();
@@ -169,6 +172,14 @@ public class SurveyAdminController{
 		return Response.ok(Json.toJson(survey.getPlugins())).build();
 	}
 	
+	@DELETE
+	@Path("/{surveyId}/metrics/reset")
+	public Response metricsReset(@PathParam("surveyId") String surveyId) throws JsonParseException, JsonMappingException, IOException{
+		Survey o=Survey.findById(surveyId);
+		o.clearMetrics();
+		o.persist();
+		return Response.ok().build();
+	}
 	
 	/** #### QUESTION HANDLERS #### */
 	
@@ -178,6 +189,7 @@ public class SurveyAdminController{
 		Survey survey=Survey.findById(surveyId);
 		log.debug("Saving Questions:/n"+questionsJson);
 		survey.setQuestions(questionsJson);
+		survey.saveQuestions();
 		survey.update();
 		return Response.ok(Survey.findById(surveyId).getQuestions()).build();
 	}

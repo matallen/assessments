@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,9 @@ import com.google.common.collect.Iterables;
 import com.redhat.services.ae.Database;
 import com.redhat.services.ae.MapBuilder;
 import com.redhat.services.ae.Results;
+import com.redhat.services.ae.model.MetricsDecorator;
 import com.redhat.services.ae.model.Survey;
+import com.redhat.services.ae.model.storage.Surveys;
 import com.redhat.services.ae.plugins.Plugin;
 import com.redhat.services.ae.plugins.RemovePIIAnswersPlugin;
 import com.redhat.services.ae.utils.CacheHelper;
@@ -90,7 +93,8 @@ public class SurveyController{
 			@PathParam("resultId") String resultId
 			) throws IOException{
 		log.debug("results page loading from storage: "+resultId);
-		return Response.ok().entity(Results.get().getResults().get(resultId)).build();
+		return Response.ok().entity(Survey.findById(surveyId).getResults().get(resultId)).build();
+//		return Response.ok().entity(Results.get().getResults().get(resultId)).build();
 	}
 	
 	
@@ -143,6 +147,7 @@ public class SurveyController{
 		// Metrics:: update "page transition" metrics
 		updatePageTransitionMetrics(o, visitorId, YYMMM, pageId);
 		
+		o.saveMetrics();
 		o.persist();
 		return Response.ok().build();
 	}
@@ -166,7 +171,8 @@ public class SurveyController{
 		
 		// Metrics:: Update "survey complete" metrics
 		Map<String, String> pageInfo=(Map<String,String>)(Object)payloadObj.get("_page"); // wow, this is a super hack to convert String/Object to String/String
-		updateSurveyCompleteMetrics(o, visitorId, YYMMM, pageInfo);
+		if (null!=pageInfo)
+			updateSurveyCompleteMetrics(o, visitorId, YYMMM, pageInfo);
 		
 		// Metrics:: Update "cardinality of which answers selected" metrics
 		Map<String, Object> surveyData=payloadObj.get("_data");
@@ -174,6 +180,7 @@ public class SurveyController{
 		updateAnswerMetrics(o, YYMMM, surveyData);
 		
 		// Save Survey & its metrics
+		o.saveMetrics();
 		o.persist();
 		
 		
@@ -187,11 +194,13 @@ public class SurveyController{
 		
 		// Plugins:: Execute post-survey plugins
 		List<Plugin> activePlugins=new LinkedList<Plugin>();
+		Map<String,Object> originalSurveyData=new LinkedHashMap<>(surveyData);
 		// Plugins:: Create Plugin list
 		for(Entry<String, Map<String, Object>> pl:o.getActivePlugins().entrySet()){
 			try{
 				Plugin plugin=(Plugin)Class.forName((String)pl.getValue().get("className")).newInstance();
 				plugin.setConfig(pl.getValue());
+				plugin.setOriginalSurveyResults(originalSurveyData);
 				activePlugins.add(plugin);
 			}catch(Exception e){
 				e.printStackTrace();
@@ -220,9 +229,12 @@ public class SurveyController{
 		// store the enriched/processed results for the results page to use
 		log.debug("putting answers into cache, ready for the results page to render it");
 		log.debug("cache.put("+(uniqueReportId)+") = "+Json.toJson(surveyData));
-		Results results=Results.get();
-		results.getResults().put(uniqueReportId, Json.toJson(surveyData));
-		results.save();
+		
+		o.getResults().put(uniqueReportId, Json.toJson(surveyData));
+		o.saveResults();
+//		Results results=Results.get();
+//		results.getResults().put(uniqueReportId, Json.toJson(surveyData));
+//		results.save();
 		
 		return Response.ok(uniqueReportId).build();
 	}
@@ -232,39 +244,46 @@ public class SurveyController{
   /** METRICS UPDATE METHODS */
 
 	private void updatePageTransitionMetrics(Survey s, String visitorId, String YYMMM, String pageId){
-		if (!Database.get().getVisitors(YYMMM).contains(visitorId+pageId)){
+		// Removing the visitor ID for the time being because, the cookie lasts 30 days, but if someone took the assessment mid month1, then it wouldnt register until after mid month2 if we had a cookie/page check
+//		if (!Database.get().getVisitors(YYMMM).contains(visitorId+pageId)){
 			log.debug("onPageChange:: incrementing monthly page counter for [visitorId="+visitorId+", pageId="+pageId+"]");
-			s.getMetrics().getByMonth("page", YYMMM).put(pageId, s.getMetrics().getByMonth("page", YYMMM).containsKey(pageId)?s.getMetrics().getByMonth("page", YYMMM).get(pageId)+1:1);
-		}
+			
+			new MetricsDecorator(s.getMetrics()).increment(1, "byMonth", "page", YYMMM, pageId);
+//			s.getMetrics().getByMonth("page", YYMMM).put(pageId, s.getMetrics().getByMonth("page", YYMMM).containsKey(pageId)?s.getMetrics().getByMonth("page", YYMMM).load(pageId)+1:1);
+//		}
 	}
 	private void updateSurveyCompleteMetrics(Survey s, String visitorId, String YYMMM, Map<String,String> info){
 //		Map<String,String> info=Json.toObject(payload, new TypeReference<HashMap<String,String>>(){});
 		String geo=(String)info.get("geo");
-		if (!Database.get().getVisitors(YYMMM).contains(visitorId)){
-			s.getMetrics().getCompletedByMonth().put(YYMMM, s.getMetrics().getCompletedByMonth().containsKey(YYMMM)?s.getMetrics().getCompletedByMonth().get(YYMMM)+1:1);
-//			o.getMetrics().getByMonth("page", YYMMM).put(pageId, o.getMetrics().getByMonth("page", YYMMM).containsKey(pageId)?o.getMetrics().getByMonth("page", YYMMM).get(pageId)+1:1);
-			s.getMetrics().getByMonth("geo", YYMMM).put(geo, s.getMetrics().getByMonth("geo", YYMMM).containsKey(geo)?s.getMetrics().getByMonth("geo", YYMMM).get(geo)+1:1);
-			//o.getMetrics().getByMonth("country", YYMMM).put(countryCode, o.getMetrics().getByMonth("country", YYMMM).containsKey(countryCode)?o.getMetrics().getByMonth("country", YYMMM).get(countryCode)+1:1);
-		}
+		MetricsDecorator m=new MetricsDecorator(s.getMetrics());
+//		if (!Database.get().getVisitors(YYMMM).contains(visitorId)){
+			m.increment(1, "completedByMonth", YYMMM);
+//			s.getMetrics().getCompletedByMonth().put(YYMMM, s.getMetrics().getCompletedByMonth().containsKey(YYMMM)?s.getMetrics().getCompletedByMonth().load(YYMMM)+1:1);
+			m.increment(1, "byMonth", "geo", YYMMM, geo);
+//			s.getMetrics().getByMonth("geo", YYMMM).put(geo, s.getMetrics().getByMonth("geo", YYMMM).containsKey(geo)?s.getMetrics().getByMonth("geo", YYMMM).load(geo)+1:1);
+//		}
 	}
 	
 	private void updateAnswerMetrics(Survey s, String YYMMM, Map<String,Object> surveyData){
 	  // Metrics: log how many times a specific answer was provided to a question, for reporting % of answers per question
+		MetricsDecorator m=new MetricsDecorator(s.getMetrics());
 		new AnswerProcessor(false){
 			@Override public void onStringAnswer(String questionId, String answerId, Integer score){ // radiobuttons
 				log.debug("Reports: Adding answers for question '"+questionId+"' to metrics");
-				Map<String, Map<String,Integer>> answers=s.getMetrics().getAnswersByMonth("answers", YYMMM);
-				if (!answers.containsKey(questionId)) answers.put(questionId, new HashMap<>());
-				answers.get(questionId).put(answerId, answers.get(questionId).containsKey(answerId)?answers.get(questionId).get(answerId)+1:1);
+//				Map<String, Map<String,Integer>> answers=s.getMetrics().getAnswersByMonth("answers", YYMMM);
+//				if (!answers.containsKey(questionId)) answers.put(questionId, new HashMap<>());
+//				answers.get(questionId).put(answerId, answers.get(questionId).containsKey(answerId)?answers.get(questionId).get(answerId)+1:1);
+				m.increment(1, "answersByMonth", "answers", YYMMM, questionId, answerId);
 			}
 			@Override
 			public void onArrayListAnswer(String questionId, List<Answer> answerList, Integer averageScore){ // multi-checkboxes
 				log.debug("Reports: Adding answers for question '"+questionId+"' to metrics");
 				for (Answer answer:answerList){
 					// Increment the metrics for each item selected
-					Map<String, Map<String,Integer>> answers=s.getMetrics().getAnswersByMonth("answers", YYMMM);
-					if (!answers.containsKey(questionId)) answers.put(questionId, new HashMap<>());
-					answers.get(questionId).put(answer.id, answers.get(questionId).containsKey(answer.id)?answers.get(questionId).get(answer.id)+1:1);
+//					Map<String, Map<String,Integer>> answers=s.getMetrics().getAnswersByMonth("answers", YYMMM);
+//					if (!answers.containsKey(questionId)) answers.put(questionId, new HashMap<>());
+//					answers.get(questionId).put(answer.id, answers.get(questionId).containsKey(answer.id)?answers.get(questionId).get(answer.id)+1:1);
+					m.increment(1, "answersByMonth", "answers", YYMMM, questionId, answer.id);
 				}
 			}
 			@Override
@@ -275,12 +294,4 @@ public class SurveyController{
 	}
 	
 	
-	@DELETE
-	@Path("/{surveyId}/metrics/reset")
-	public Response metricsReset(@PathParam("surveyId") String surveyId) throws JsonParseException, JsonMappingException, IOException{
-		Survey o=Survey.findById(surveyId);
-		o.clearMetrics();
-		o.persist();
-		return Response.ok().build();
-	}
 }

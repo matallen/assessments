@@ -16,7 +16,7 @@ import com.redhat.services.ae.utils.Json;
 public class RemoveReportPropertiesPluginTest{
 
 	@Test
-	public void test() throws Exception{
+	public void testRemoveFieldsBasedOnRegEx() throws Exception{
 		String answersJson=IOUtils.toString(this.getClass().getClassLoader().getResource("test_2_answers.json"), "UTF-8");
 		Map<String,Object> answers=Json.toObject(answersJson, new TypeReference<HashMap<String,Object>>(){});
 		
@@ -29,7 +29,6 @@ public class RemoveReportPropertiesPluginTest{
 		Assert.assertEquals(true, result.containsKey("_Industry"));
 		Assert.assertEquals(false, result.containsKey("_FirstName"));
 		Assert.assertEquals(false, result.containsKey("_Email"));
-		
 	}
 	
 	

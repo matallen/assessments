@@ -16,18 +16,19 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.Lists;
 import com.redhat.services.ae.Database;
 import com.redhat.services.ae.MapBuilder;
+import com.redhat.services.ae.controllers.TestBase;
 import com.redhat.services.ae.model.Survey;
 import com.redhat.services.ae.utils.Json;
 
-public class DroolsScoreRecommendationsPluginTest{
+public class DroolsScoreRecommendationsPluginTest extends TestBase{
 
 	
 	@BeforeEach
 	public void init() throws FileNotFoundException, IOException{
-		Database.STORAGE="target/test/"+Database.STORAGE;
-		if (new File(Database.STORAGE).exists())
-			new File(Database.STORAGE).delete();
-		Database.get();
+//		Database.STORAGE="target/test/"+Database.STORAGE;
+//		if (new File(Database.STORAGE).exists())
+//			new File(Database.STORAGE).delete();
+//		Database.get();
 	}
 
 	

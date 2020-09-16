@@ -23,7 +23,7 @@ public abstract class AnswerProcessor{
 	
 	public Answer splitThis(String answer){
 		Answer result=new Answer();
-		result.score=1; // default score is 1 point for everything
+		result.score=0; // default score is 1 point for everything. Shouldnt this be 0 as default? what would this impact?
 		result.id=answer;
 		if (answer.contains("#")){
 //			try{
@@ -51,15 +51,15 @@ public abstract class AnswerProcessor{
 				
 			}else if (ArrayList.class.isAssignableFrom(e.getValue().getClass())){
 				// quick safe string conversion to prevent the list containing anything but a string
-				List<String> safe=new ArrayList<>();
+				List<String> safeAnswers=new ArrayList<>();
 				for (Object s:(ArrayList)e.getValue()){
-					safe.add(s.toString());
+					safeAnswers.add(s.toString());
 				}
 				
-				ArrayList<String> answerList=(ArrayList<String>)safe;
+//				List<String> answerList=safe;
 				List<Answer> answers=new ArrayList<>();
 				int totalScore=0;
-				for (String answerString:answerList){
+				for (String answerString:safeAnswers){
 					answers.add(splitThis(answerString));
 				}
 				for (Answer a:answers)

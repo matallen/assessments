@@ -97,7 +97,7 @@ public class IndustryStatisticsPlugin extends Plugin{
 		
 		p.execute(s, "V_123", surveyResults);
 		
-		System.out.println(Json.toJson(s.getMetrics().getGenericMetrics()));
+		System.out.println(Json.toJson(s.getMetrics()));
 	}
 	
 
@@ -107,7 +107,7 @@ public class IndustryStatisticsPlugin extends Plugin{
 	}		
 	public Map<String, Object> execute(Survey survey, String visitorId, Map<String, Object> surveyResults) throws Exception{
 
-		Map<String,Object> metrics=survey.getMetrics().getGenericMetrics();
+		Map<String,Object> metrics=survey.getMetrics();
 		
 //		survey.getMetrics().getIndustrySectionByMonth()
 		
@@ -144,8 +144,8 @@ public class IndustryStatisticsPlugin extends Plugin{
 		MultiLevelMetrics mlm=new IndustryStatisticsPlugin().new MultiLevelMetrics(metrics);
 		for(Entry<String, Integer> e:sectionScores.entrySet()){
 			String topic=e.getKey();
-			mlm.increment(e.getValue(), metricsName+"_total", YYMMM, topic, industry);
-			mlm.increment(1, metricsName+"_count", YYMMM, topic, industry);
+			mlm.increment(e.getValue(), metricsName, YYMMM, topic, industry);
+//			mlm.increment(1, metricsName+"_count", YYMMM, topic, industry);
 		}
 		
 		// save industry stats

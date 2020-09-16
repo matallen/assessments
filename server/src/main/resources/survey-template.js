@@ -244,7 +244,7 @@ survey
     	
 		LocalStorage.saveState(survey);
 		
-		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onPageChange?visitorId="+Cookie.get("rhae-visitorId"), buildPayload(page));
+		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onPageChange?visitorId="+Cookie.get("rh_cat_visitorId"), buildPayload(page));
 		
 		
 	});
@@ -280,7 +280,7 @@ survey
     	
 		survey.data["language"]=languageCode;
     	
-    	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/generateReport?pageId="+page.name+"&visitorId="+Cookie.get("rhae-visitorId"), buildPayload(page, true), function(response){
+    	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/generateReport?pageId="+page.name+"&visitorId="+Cookie.get("rh_cat_visitorId"), buildPayload(page, true), function(response){
 			if (response.status==200){
 				// navigate to a results page
 				

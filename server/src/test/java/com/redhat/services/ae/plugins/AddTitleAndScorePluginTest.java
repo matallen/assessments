@@ -12,17 +12,18 @@ import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.redhat.services.ae.Database;
+import com.redhat.services.ae.controllers.TestBase;
 import com.redhat.services.ae.model.Survey;
 import com.redhat.services.ae.utils.Json;
 
-public class AddTitleAndScorePluginTest{
+public class AddTitleAndScorePluginTest extends TestBase{
 
 	@BeforeEach
 	public void init() throws FileNotFoundException, IOException{
-		Database.STORAGE="target/test/"+Database.STORAGE;
-		if (new File(Database.STORAGE).exists())
-			new File(Database.STORAGE).delete();
-		Database.get();
+//		Database.STORAGE="target/test/"+Database.STORAGE;
+//		if (new File(Database.STORAGE).exists())
+//			new File(Database.STORAGE).delete();
+//		Database.get();
 		
 //		IOUtils.write(setupDatabase().getBytes(), new FileOutputStream(new File(Database.STORAGE)));
 //		Survey s=Survey.findById("TESTING");
