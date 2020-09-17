@@ -66,7 +66,7 @@ public class SurveyAdminController{
   /* temporary until backup solution is deployed with authentication */
 	@GET
 	@PermitAll
-	@Path("/{surveyId}/backup")
+	@Path("/{surveyId}/survey")
 	public Response getSurveyBackup(@PathParam("surveyId") String surveyId) throws FileNotFoundException, IOException{
 		return Response.ok(Json.toJson(Survey.findById(surveyId))).build();
 	}
@@ -90,7 +90,7 @@ public class SurveyAdminController{
 	/* temporary until backup solution is deployed with authentication */
 	@GET
 	@PermitAll
-	@Path("/{surveyId}/all")
+	@Path("/{surveyId}/backup")
 	public Response getSurveyAll(@PathParam("surveyId") String surveyId) throws IOException{
 		Survey s=Survey.findById(surveyId);
 		Map<String,Object> all=new HashMap<String, Object>();
