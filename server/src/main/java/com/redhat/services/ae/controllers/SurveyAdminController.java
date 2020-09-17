@@ -1,10 +1,7 @@
 package com.redhat.services.ae.controllers;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -14,20 +11,17 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
-import org.apache.commons.io.IOUtils;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 //import org.apache.commons.lang3.StringUtils;
 //import org.bson.types.ObjectId;
@@ -38,8 +32,6 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.redhat.services.ae.Database;
-import com.redhat.services.ae.Results;
 import com.redhat.services.ae.Utils;
 import com.redhat.services.ae.model.Survey;
 import com.redhat.services.ae.model.storage.Surveys;
@@ -81,9 +73,9 @@ public class SurveyAdminController{
 	/* temporary until backup solution is deployed with authentication */
 	@GET
 	@PermitAll
-	@Path("/results")
-	public Response getSurveyResults() throws IOException{
-		return Response.ok().entity(Results.get().getResults()).build();
+	@Path("/{surveyId}/results")
+	public Response getSurveyResults(@PathParam("surveyId") String surveyId) throws IOException{
+		return Response.ok(Json.toJson(Survey.findById(surveyId).getResults())).build();
 	}
 
   

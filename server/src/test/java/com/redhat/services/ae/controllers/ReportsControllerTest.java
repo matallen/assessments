@@ -80,7 +80,7 @@ public class ReportsControllerTest
 	
 	@Test
 	public void testPageCount() throws JsonProcessingException, ParseException{
-		String resultAsString=(String)new ReportsController().getPageCount(SURVEY_ID, dateRange.getFirst(), dateRange.getSecond()).getEntity();
+		String resultAsString=(String)new ReportsController().getPageTransitions(SURVEY_ID, dateRange.getFirst(), dateRange.getSecond()).getEntity();
 		System.out.println(resultAsString);
 	}
 	
@@ -164,19 +164,19 @@ public class ReportsControllerTest
 	@Test
 	public void testPageGraph() throws JsonProcessingException, ParseException{
 		System.out.println(
-			new ReportsController().getPageCount(SURVEY_ID, "2020-Jan", "2020-Apr").getEntity()
+			new ReportsController().getPageTransitions(SURVEY_ID, "2020-Jan", "2020-Apr").getEntity()
 		);
 	}
-	@Test
-	public void testPageGraphWithPageNameChange() throws JsonProcessingException, ParseException{
-		Survey s=Survey.findById(SURVEY_ID);
-		MetricsDecorator m=new MetricsDecorator(s.getMetrics());
-		m.getByMonth("page", "20-Jul").put("new page name", 2);
-		Surveys.get().save();
-		System.out.println(
-			new ReportsController().getPageCount(SURVEY_ID, "2020-Jan", "2020-Apr").getEntity()
-		);
-	}
+//	@Test
+//	public void testPageGraphWithPageNameChange() throws JsonProcessingException, ParseException{
+//		Survey s=Survey.findById(SURVEY_ID);
+//		MetricsDecorator m=new MetricsDecorator(s.getMetrics());
+//		m.getByMonth("page", "20-Jul").put("new page name", 2);
+//		Surveys.get().save();
+//		System.out.println(
+//			new ReportsController().getPageTransitions(SURVEY_ID, "2020-Jan", "2020-Apr").getEntity()
+//		);
+//	}
 	
 	@Test
 	public void testGeoGraph() throws JsonProcessingException, ParseException{

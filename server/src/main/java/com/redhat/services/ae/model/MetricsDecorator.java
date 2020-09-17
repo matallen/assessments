@@ -36,20 +36,30 @@ public class MetricsDecorator{
 	
 	
 	// ALIAS METHODS FOR THE GENERIC CALLS BELOW
-	public Map<String, Integer> getCompletedByMonth(){
-		return get("completedByMonth");
+	public Map<String, Integer> getCompletedSurveys(){
+		return get("completedSurveysByMonth");
+	}
+	public Map<String, Map<String, Integer>> getPageTransitions(){
+		return get2("pageTransitionsByMonth");
+	}
+	public Map<String, Map<String, Integer>> getGeo(){
+		return get2("geoByMonth");
+	}
+	public Map<String, Map<String, Map<String, Integer>>> getAnswersDistribution(){
+		return get3("answerDistribution");
 	}
 	
-	public Map<String, Map<String, Integer>> getByMonth(String key){
-		return get2("byMonth", key);
-	}
-	public Map<String, Integer> getByMonth(String key, String key2){
-		return get("byMonth", key, key2);
-	}
 	
-	public Map<String, Map<String, Map<String, Integer>>> getAnswersByMonth(String key){
-		return get3("answersByMonth", key);
-	}
+//	public Map<String, Map<String, Integer>> getByMonth(String key){
+//		return get2("byMonth", key);
+//	}
+//	public Map<String, Integer> getByMonth(String key, String key2){
+//		return get("byMonth", key, key2);
+//	}
+	
+//	public Map<String, Map<String, Map<String, Integer>>> getAnswersByMonth(String key){
+//		return get3("answersByMonth", key);
+//	}
 	
 	
 	public Map<String, Map<String, Map<String, Integer>>> get3(String... keys){

@@ -1,23 +1,20 @@
 package com.redhat.services.ae.controllers;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeSet;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -28,11 +25,8 @@ import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.redhat.services.ae.Database;
+import com.redhat.services.ae.MapBuilder;
 import com.redhat.services.ae.charts.ChartJson;
 import com.redhat.services.ae.charts.DataSet;
 import com.redhat.services.ae.charts.PieChartJson;
@@ -40,7 +34,6 @@ import com.redhat.services.ae.charts.PieData;
 import com.redhat.services.ae.model.MetricsDecorator;
 import com.redhat.services.ae.model.Survey;
 import com.redhat.services.ae.model.storage.Surveys;
-import com.redhat.services.ae.plugins.Plugin;
 import com.redhat.services.ae.utils.FluentCalendar;
 import com.redhat.services.ae.utils.Json;
 import com.redhat.services.ae.utils.Pair;
@@ -70,7 +63,7 @@ public class ReportsController{
 			c.getLabels().add(month);
 			
 			//ds.getData().add(m.containsKey(month)?m.get(month):0);
-			ds.getData().add(m.getCompletedByMonth().containsKey(month)?m.getCompletedByMonth().get(month):0);
+			ds.getData().add(m.getCompletedSurveys().containsKey(month)?m.getCompletedSurveys().get(month):0);
 //			ds.getData().add(o.getMetrics().getCompletedByMonth().containsKey(month)?o.getMetrics().getCompletedByMonth().get(month):0);
 			start.add(Calendar.MONTH, 1);
 		}
@@ -80,7 +73,7 @@ public class ReportsController{
 
 	@GET
 	@Path("/{surveyId}/reports/pageCount")
-	public Response getPageCount(@PathParam("surveyId") String surveyId, @QueryParam("start") String dateRangeStart, @QueryParam("end") String dateRangeEnd) throws JsonProcessingException, ParseException{
+	public Response getPageTransitions(@PathParam("surveyId") String surveyId, @QueryParam("start") String dateRangeStart, @QueryParam("end") String dateRangeEnd) throws JsonProcessingException, ParseException{
 		Surveys.reset(); // force a reload
 		Survey o=Survey.findById(surveyId);
 		Pair<Calendar, Calendar> range=buildDateRange(dateRangeStart, dateRangeEnd);
@@ -118,7 +111,7 @@ public class ReportsController{
 			int total=0;
 //			for (Entry<String, Map<String, Integer>> e:o.getMetrics().getByMonth("page").entrySet()){
 //			for (Entry<String, Map<String, Integer>> e:m.entrySet()){
-			for (Entry<String, Map<String, Integer>> e:m.getByMonth("page").entrySet()){
+			for (Entry<String, Map<String, Integer>> e:m.getPageTransitions().entrySet()){
 				if (isOnOrWithinRange(e.getKey(), range)){
 					total+= e.getValue()!=null && e.getValue().get(page)!=null?e.getValue().get(page):0;
 				}
@@ -143,7 +136,7 @@ public class ReportsController{
 //		Map<String, Map<String, Integer>> m=new MetricsDecorator(o.getMetrics()).get2("byMonth", "geo");
 		MetricsDecorator m=new MetricsDecorator(o.getMetrics());
 //		for (Entry<String, Map<String, Integer>> x:m.entrySet())
-		for (Entry<String, Map<String, Integer>> x:m.getByMonth("geo").entrySet())
+		for (Entry<String, Map<String, Integer>> x:m.getGeo().entrySet())
 			keys.addAll(x.getValue().keySet());
 		
 		PieData pd2=new PieData();
@@ -153,7 +146,7 @@ public class ReportsController{
 //			for (Entry<String, Map<String, Integer>> e:o.getMetrics().getByMonth("geo").entrySet())
 //			Map<String, Map<String, Integer>> m=new MetricsDecorator(o.getMetrics()).get2("byMonth", "geo");
 //			for (Entry<String, Map<String, Integer>> e:m.entrySet())
-			for (Entry<String, Map<String, Integer>> e:m.getByMonth("geo").entrySet())
+			for (Entry<String, Map<String, Integer>> e:m.getGeo().entrySet())
 				if (isOnOrWithinRange(e.getKey(), range))
 					sum+=e.getValue().containsKey(geo)?e.getValue().get(geo):0;
 			pd2.getData().add(sum);
@@ -230,7 +223,7 @@ public class ReportsController{
 //						MetricsDecorator m=new MetricsDecorator(o.getMetrics());
 //						Map<String, Map<String, Map<String, Integer>>> m=new MetricsDecorator(o.getMetrics()).get3("answersByMonth", "answers");
 //						for (Entry<String, Map<String, Map<String, Integer>>> e:m.entrySet()){
-						for (Entry<String, Map<String, Map<String, Integer>>> e:m.getAnswersByMonth("answers").entrySet()){
+						for (Entry<String, Map<String, Map<String, Integer>>> e:m.getAnswersDistribution().entrySet()){
 							if (isOnOrWithinRange(e.getKey(), range)){
 								if (e.getValue().containsKey(questionId)){
 									count+=(e.getValue().get(questionId).containsKey(answerId)?e.getValue().get(questionId).get(answerId):0); 
@@ -250,6 +243,48 @@ public class ReportsController{
 //		}
 		
 		return Response.ok(Json.toJson(result)).build();
+	}
+
+	@GET
+	@Path("/{surveyId}/reports/purgeMetricsOlderThan")
+	public Response purgeMetricsOlderThan(@PathParam("surveyId") String surveyId, @QueryParam("before") String target, @QueryParam("testMode") String test) throws JsonProcessingException, ParseException{
+		boolean testMode=test!=null && test.equalsIgnoreCase("true");
+		Survey s=Survey.findById(surveyId);
+		SimpleDateFormat sdf=new SimpleDateFormat("yy-MMM");
+		Date targetDate=sdf.parse(target);
+//		MetricsDecorator m=new MetricsDecorator(s.getMetrics());
+		
+		log.debug("before date found: "+sdf.format(targetDate));
+		
+		Map<String,Object> result=new LinkedHashMap<>();
+		
+		for (Entry<String, Object> e:s.getMetrics().entrySet()){
+			String metricCategory=e.getKey();
+			log.debug("Looking in '"+metricCategory+"' metrics...");
+			// level 2 should always be a YY-MMM
+			for (Entry<String, Object> met:((Map<String,Object>)e.getValue()).entrySet()){
+				Date yearMonth=sdf.parse(met.getKey());
+				log.debug("check: is '"+sdf.format(yearMonth)+"' before '"+sdf.format(targetDate)+"' ? "+ (yearMonth.equals(targetDate) || yearMonth.before(targetDate)));
+				if (yearMonth.equals(targetDate) || yearMonth.before(targetDate)){
+					// add to purge list
+					result.put(metricCategory, new MapBuilder<String,Object>().put(met.getKey(), met.getValue()).build());
+				}
+			}
+		}
+		
+		for (Entry<String, Object> e:result.entrySet()){
+			String metricCategory=e.getKey();
+			for (Entry<String, Object> toPurge:((Map<String,Object>)e.getValue()).entrySet()){
+				
+				log.debug("[testMode="+testMode+"] purging "+metricCategory+"."+toPurge.getKey()+"");
+				if (!testMode)
+					((Map<String,Object>)s.getMetrics().get(metricCategory)).remove(toPurge.getKey());
+				
+			}
+		}
+		s.saveMetrics();
+		
+		return Response.ok().entity(Json.toJson(result)).build();
 	}
 	
 	public static int getRandomInteger(int maximum, int minimum){ return ((int) (Math.random()*(maximum - minimum))) + minimum; }
