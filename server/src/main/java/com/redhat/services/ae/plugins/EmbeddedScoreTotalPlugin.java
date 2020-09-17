@@ -51,7 +51,10 @@ public class EmbeddedScoreTotalPlugin extends Plugin{
 		
 		surveyResults.put("_sectionScore", sectionScores);
 		
-		if (sectionScores.size()<=0) log.error(this.getClass().getSimpleName()+":: Likely error -> no scores detected therefore no section average scores!");
+		if (sectionScores.size()<=0){
+			log.error(this.getClass().getSimpleName()+":: Likely error -> no scores detected therefore no section average scores!");
+			log.debug("surveyResults as of ERROR (it's looking for 'score' property of each question, then sumby 'navigationTitle'):/n"+Json.toJson(surveyResults));
+		}
 		
 		log.debug("SectionScores = "+Json.toJson(sectionScores));
 		return surveyResults;
