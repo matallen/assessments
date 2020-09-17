@@ -47,7 +47,7 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 	private static final int CACHE_EXPIRY_IN_MS=3000;
 	private static final GoogleDrive3 drive=new GoogleDrive3(CACHE_EXPIRY_IN_MS);
 	private List<String> drls=null;
-	boolean heavyDebug=false;
+	boolean extraDebug=false;
 	
 //	@Inject
 //  private KieRuntimeBuilder runtimeBuilder;
@@ -65,6 +65,12 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 	public void setConfig(Map<String, Object> config){
 		decisionTableLocation=(String)config.get("decisionTableLocation");
 		decisionTableId=decisionTableLocation.substring(decisionTableLocation.lastIndexOf("/")+1);
+		
+		extraDebug=false; // default to off
+		if (config.containsKey("extraDebug")){
+			if (String.class.isAssignableFrom(config.get("extraDebug").getClass()))  extraDebug="true".equalsIgnoreCase((String)config.get("extraDebug"));
+			if (Boolean.class.isAssignableFrom(config.get("extraDebug").getClass())) extraDebug=(Boolean)config.get("extraDebug");
+		}
 	}
 	
   
@@ -149,7 +155,7 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 				InputStream template = DroolsScoreRecommendationsPlugin.class.getClassLoader().getResourceAsStream(templateName);
 				ObjectDataCompiler compiler = new ObjectDataCompiler();
 				String drl = compiler.compile(dataTableConfigList2, template);
-				if (heavyDebug){
+				if (extraDebug){
 					System.out.println(drl);
 				}
 				drls.add(drl);
@@ -172,7 +178,7 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 			KieSession kSession=newKieSession(decisionTableId);
 			
 			// DEBUG ONLY - make sure we have some rule packages to execute
-			if (heavyDebug){
+			if (extraDebug){
 				log.debug("Rule Packages/Rules:");
 				for(KiePackage pkg:kSession.getKieBase().getKiePackages()){
 					for (Rule r:pkg.getRules()){
@@ -238,11 +244,11 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 			// A global list was used to retain the order of the DroolsRecommendation objects. fact insertions and extractions through geFactHandles does not retain order
 			List<DroolsRecommendation> recommendations=(LinkedList<DroolsRecommendation>)kSession.getGlobal("list");
 			
-			if (heavyDebug) log.debug("Found "+recommendations.size()+" recommendations:");
+			if (extraDebug) log.debug("Found "+recommendations.size()+" recommendations:");
 			
 			// key/values replacements
 			for (DroolsRecommendation r:recommendations){
-				if (heavyDebug) log.debug("Found Recommendation: "+r);
+				if (extraDebug) log.debug("Found Recommendation: "+r);
 				
 				// replace any key/values from the answers in the recommendation strings
 				for (Entry<String, String> e:kvReplacement.entrySet()){
