@@ -56,7 +56,7 @@ public class SurveyController{
 		String template=IOUtils.toString(new File("target/classes", templateName).exists()?new FileInputStream(new File("target/classes", templateName).getAbsolutePath()):getClass().getClassLoader().getResourceAsStream(templateName), "UTF-8");
 		
 		Survey survey=Survey.findById(surveyId);
-		String questions=survey.getQuestions();
+		String questions=survey.getQuestionsAsString();
 		
 		String result;
 		if ("true".equalsIgnoreCase(questionsOnly)){
@@ -195,6 +195,9 @@ public class SurveyController{
 		for(Plugin plugin:activePlugins){
 			try{
 				surveyData=plugin.execute(surveyId, visitorId, surveyData); // after each plugin, keep the changes to the data (similar to the concept of Tomcat filters)
+				
+//				System.out.println("After '"+plugin.getClass().getSimpleName()+"': "+Json.toJson(surveyData));
+				
 			}catch(Exception e){
 				e.printStackTrace();
 			}

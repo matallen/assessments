@@ -47,7 +47,7 @@ public class AddTitleAndScorePluginTest extends TestBase{
 				"}";
 
 		Survey s=Survey.builder().id("test1").name("Test Survey").build();
-		s.setQuestions(questionsJson);
+		s.setQuestionsAsString(questionsJson);
 		s.persist();
 		
 		Map<String,Object> answers=Json.toObject(answersJson, new TypeReference<HashMap<String,Object>>(){});

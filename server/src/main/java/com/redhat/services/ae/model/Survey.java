@@ -15,9 +15,13 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 
 //import org.bson.codecs.pojo.annotations.BsonProperty;
 //import org.bson.types.ObjectId;
@@ -62,8 +66,8 @@ public class Survey{
 		}}.create("metrics.json");
 
 	@JsonIgnore
-	private EntityStorage<String> questionsStorage=new StorageFactory<String>(){
-		@Override public String createNewT(){ return "{}";
+	private EntityStorage<Map<String,Object>> questionsStorage=new StorageFactory<Map<String,Object>>(){
+		@Override public Map<String,Object> createNewT(){ return new LinkedHashMap<>();
 		}}.create("questions.json");
 		
 		
@@ -142,10 +146,18 @@ public class Survey{
 	}
 	
 	@JsonIgnore
-	public String getQuestions(){
+	public Map<String,Object> getQuestions(){
 		return questionsStorage.load(this.id);
 	}
-	public void setQuestions(String questions){
+	@JsonIgnore
+	public String getQuestionsAsString() throws JsonProcessingException{
+		return Json.toJson(questionsStorage.load(this.id));
+	}
+	public void setQuestionsAsString(String questionsJson) throws JsonParseException, JsonMappingException, IOException{
+		Map<String,Object> toStore=Json.toObject(questionsJson, new TypeReference<Map<String,Object>>(){});
+		questionsStorage.data=toStore;
+	}
+	public void setQuestions(Map<String,Object> questions){
 		questionsStorage.data=questions;
 	}
 	public void saveQuestions(){

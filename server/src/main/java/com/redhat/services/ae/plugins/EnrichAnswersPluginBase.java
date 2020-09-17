@@ -70,7 +70,7 @@ public abstract class EnrichAnswersPluginBase extends Plugin{
 	protected Map<String, mjson.Json> buildQuestionMap(String surveyId) throws FileNotFoundException, IOException{
 		Map<String, mjson.Json> questionsMapping=new HashMap<>();
 		Survey s=Survey.findById(surveyId);
-		List<mjson.Json> pages=mjson.Json.read(s.getQuestions()).at("pages").asJsonList();
+		List<mjson.Json> pages=mjson.Json.read(s.getQuestionsAsString()).at("pages").asJsonList();
 		for(mjson.Json page:pages){
 			for(mjson.Json question:page.at("elements").asJsonList()){
 				findInQuestions(question, questionsMapping);
@@ -101,7 +101,7 @@ public abstract class EnrichAnswersPluginBase extends Plugin{
 		// Extract the question names to titles
 		Map<String, mjson.Json> questionsMapping=new HashMap<>();
 		Survey s=Survey.findById(surveyId);
-		List<mjson.Json> pages=mjson.Json.read(s.getQuestions()).at("pages").asJsonList();
+		List<mjson.Json> pages=mjson.Json.read(s.getQuestionsAsString()).at("pages").asJsonList();
 		for(mjson.Json page:pages){
 			for(mjson.Json question:page.at("elements").asJsonList()){
 				findInQuestions(question, questionsMapping);

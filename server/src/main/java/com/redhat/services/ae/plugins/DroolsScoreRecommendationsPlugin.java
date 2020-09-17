@@ -237,10 +237,12 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 			
 			// A global list was used to retain the order of the DroolsRecommendation objects. fact insertions and extractions through geFactHandles does not retain order
 			List<DroolsRecommendation> recommendations=(LinkedList<DroolsRecommendation>)kSession.getGlobal("list");
-
+			
+			if (heavyDebug) log.debug("Found "+recommendations.size()+" recommendations:");
+			
 			// key/values replacements
 			for (DroolsRecommendation r:recommendations){
-//				System.out.println("Found Recommendation: "+r);
+				if (heavyDebug) log.debug("Found Recommendation: "+r);
 				
 				// replace any key/values from the answers in the recommendation strings
 				for (Entry<String, String> e:kvReplacement.entrySet()){

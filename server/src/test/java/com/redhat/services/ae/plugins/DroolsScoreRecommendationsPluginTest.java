@@ -41,8 +41,9 @@ public class DroolsScoreRecommendationsPluginTest extends TestBase{
 		
 		String surveyId="1";
 		Survey s=Survey.builder().id(surveyId).name("Test Survey").build();
-		s.setQuestions(questionsJson);
+		s.setQuestionsAsString(questionsJson);
 		s.persist();
+		s.saveQuestions();
 		
 		String visitorId="1";
 		

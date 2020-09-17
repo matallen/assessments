@@ -203,7 +203,8 @@ public class SurveyAdminController{
 	public Response saveQuestions(@PathParam("surveyId") String surveyId, String questionsJson) throws FileNotFoundException, IOException{
 		Survey survey=Survey.findById(surveyId);
 		log.debug("Saving Questions:/n"+questionsJson);
-		survey.setQuestions(questionsJson);
+		
+		survey.setQuestionsAsString(questionsJson);
 		survey.saveQuestions();
 		survey.update();
 		return Response.ok(Survey.findById(surveyId).getQuestions()).build();

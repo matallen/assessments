@@ -52,7 +52,7 @@ public class Eloqua2PluginTest{
 		String surveyId="1";
 		String visitorId="1";
 		Survey s=Survey.builder().id(surveyId).name("Test Survey").build();
-		s.setQuestions(questionsJson);
+		s.setQuestionsAsString(questionsJson);
 		s.persist();
 
 		// execute this plugin because it changes the structure of the answers

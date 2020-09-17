@@ -39,7 +39,7 @@ public class ReportsControllerTest
 		.name("My Test Survey")
 		.theme("theme1")
 		.build();
-		s.setQuestions(setupQuestions());
+		s.setQuestionsAsString(setupQuestions());
 		s.save();
 		s.saveQuestions();
 		

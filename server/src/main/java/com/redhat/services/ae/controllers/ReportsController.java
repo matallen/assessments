@@ -97,7 +97,7 @@ public class ReportsController{
 		
 		// sort the pages in the same order the questions were asked
 //		if (pagesFromQuestions){
-		mjson.Json questionConfig=mjson.Json.read(o.getQuestions());
+		mjson.Json questionConfig=mjson.Json.read(o.getQuestionsAsString());
 		if (questionConfig.has("pages")){
 			List<mjson.Json> pagesRead=questionConfig.at("pages").asJsonList();
 			for(mjson.Json page:pagesRead)
@@ -168,7 +168,7 @@ public class ReportsController{
 		List<ChartJson> result=new ArrayList<>();
 		
 //		try{
-		mjson.Json questionConfig=mjson.Json.read(o.getQuestions());
+		mjson.Json questionConfig=mjson.Json.read(o.getQuestionsAsString());
 		if (questionConfig.has("pages")){
 			List<mjson.Json> pageQuestion=questionConfig.at("pages").asJsonList();
 			for(mjson.Json page:pageQuestion){
@@ -248,6 +248,7 @@ public class ReportsController{
 	@GET
 	@Path("/{surveyId}/reports/purgeMetricsOlderThan")
 	public Response purgeMetricsOlderThan(@PathParam("surveyId") String surveyId, @QueryParam("before") String target, @QueryParam("testMode") String test) throws JsonProcessingException, ParseException{
+		// TODO: add purge logic to reports too
 		boolean testMode=test!=null && test.equalsIgnoreCase("true");
 		Survey s=Survey.findById(surveyId);
 		SimpleDateFormat sdf=new SimpleDateFormat("yy-MMM");

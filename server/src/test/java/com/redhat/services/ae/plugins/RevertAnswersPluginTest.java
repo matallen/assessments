@@ -21,7 +21,7 @@ public class RevertAnswersPluginTest extends TestBase{
 	public void testRevertAnswersButRetainSome() throws Exception{
 		
 		Survey s=Survey.builder().id("test1").name("Test Survey").build();
-		s.setQuestions(dummyQuestions());
+		s.setQuestionsAsString(dummyQuestions());
 		s.saveQuestions();
 		s.persist();
 
