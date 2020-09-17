@@ -2,6 +2,7 @@ package com.redhat.services.ae.controllers;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -85,6 +86,20 @@ public class SurveyAdminController{
 	public Response getSurveyMetrics(@PathParam("surveyId") String surveyId) throws IOException{
 		return Response.ok(Json.toJson(Survey.findById(surveyId).getMetrics())).build();
 	}
+	
+	/* temporary until backup solution is deployed with authentication */
+	@GET
+	@PermitAll
+	@Path("/{surveyId}/all")
+	public Response getSurveyAll(@PathParam("surveyId") String surveyId) throws IOException{
+		Survey s=Survey.findById(surveyId);
+		Map<String,Object> all=new HashMap<String, Object>();
+		all.put("results", s.getResults());
+		all.put("metrics", s.getMetrics());
+		all.put("questions", s.getQuestions());
+		return Response.ok(Json.toJson(all)).build();
+	}
+	
 
   
 	/** #### SURVEY HANDLERS ####  */
