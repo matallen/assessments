@@ -77,6 +77,14 @@ public class SurveyAdminController{
 	public Response getSurveyResults(@PathParam("surveyId") String surveyId) throws IOException{
 		return Response.ok(Json.toJson(Survey.findById(surveyId).getResults())).build();
 	}
+	
+	/* temporary until backup solution is deployed with authentication */
+	@GET
+	@PermitAll
+	@Path("/{surveyId}/metrics")
+	public Response getSurveyMetrics(@PathParam("surveyId") String surveyId) throws IOException{
+		return Response.ok(Json.toJson(Survey.findById(surveyId).getMetrics())).build();
+	}
 
   
 	/** #### SURVEY HANDLERS ####  */
