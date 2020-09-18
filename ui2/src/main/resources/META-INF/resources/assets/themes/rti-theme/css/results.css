@@ -113,7 +113,9 @@ stroke-miterlimit:1;
 }
 
 .row-asset-links{
+	/*
     margin-bottom: -9px;
+	*/
     margin-top: 0px;
     padding: 6px 0px;
 }
