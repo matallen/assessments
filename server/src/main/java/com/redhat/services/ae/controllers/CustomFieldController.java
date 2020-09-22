@@ -366,7 +366,7 @@ public class CustomFieldController{
 	/** This satisfies the dropdowns for industries, countries and departments (anything listed in the "values" object above. */
 	@GET
 	@PermitAll
-	@Path("/{surveyId}/{type}")
+	@Path("/{surveyId}/customfield/{type}")
 	public Response getDrowDownValues(@PathParam("surveyId") String surveyId, @PathParam("type") String type) throws IOException{
 		return Response.ok(Json.newObjectMapper(false).writeValueAsString(values.get(type))).type(MediaType.APPLICATION_JSON).build();
 	}
@@ -374,7 +374,7 @@ public class CustomFieldController{
 	/** This satisfies the dependent dropdown of job role based on selected department */
 	@GET
 	@PermitAll
-	@Path("/{surveyId}/jobroles/{dept}")
+	@Path("/{surveyId}/customfield/jobroles/{dept}")
 	public Response getJobRoles(@PathParam("surveyId") String surveyId, @PathParam("dept") String dept) throws IOException{
 		List<String> result=Lists.newArrayList();
 		for(String k:jobRoles.keySet()){
