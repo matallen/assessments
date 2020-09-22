@@ -196,20 +196,16 @@ survey.startTimer();
 survey.showTimerPanel = 'none'; //bottom
 survey.completeText = 'View my results';
 
+
+var countryNameValue={};
 survey.onLoadChoicesFromServer.add(function(survey, options) {
     
-	// CONSENT AGREEMENT LOGIC ONLY
-	if (options.question.name=="_consentAgreement"){
-		//console.log("options.length="+options.length);
-		var payload=options.serverResult;
-		var defaultValue=[];
-		for(var x in payload){
-			//console.log(payload[x]);
-			if (payload[x].name!=undefined && payload[x].checked!=undefined && payload[x].checked)
-				defaultValue.push(payload[x].name);
+	// CONSENT AGREEMENT & COUNTRY LOGIC
+	if (options.question.name=="_Country"){
+		for(i in options.serverResult){
+			countryNameValue[options.serverResult[i]["alpha2Code"]]={"name": options.serverResult[i]["name"], "optInEmail": options.serverResult[i]["optInEmail"], "optInPhone": options.serverResult[i]["optInPhone"]};
 		}
-		if (defaultValue.length>0)
-			options.question.defaultValue=defaultValue;
+		setConsentAgreement(options.question.value);
 	}
 	// END OF CONSENT AGREEMENT LOGIC
 	
@@ -219,7 +215,7 @@ survey
       .onAfterRenderPage
       .add(function(result, options){
 			// Change button text on specific pages (Start on page 1 &
-			$(".sv_rh_next_btn").prop("value", "Next");
+//			$(".sv_rh_next_btn").prop("value", "Next");
 			
 			// Change button text on page 1 to "Start"
 //			if (survey.currentPageNo==0){
@@ -272,12 +268,6 @@ survey
 		// Hide the survey Navigation pane
 		$("#surveyNavigation").hide();
 
-		//window.localStorage.removeItem("data");
-		
-		//window.localStorage.removeItem(storageName);
-		//clearInterval(timerId);
-		//saveState(survey);
-    	
 		survey.data["language"]=languageCode;
     	
     	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/generateReport?pageId="+page.name+"&visitorId="+Cookie.get("rh_cat_visitorId"), buildPayload(page, true), function(response){
@@ -371,11 +361,25 @@ for (var i = 0; i < survey.PageCount; i++) {
 
 }
 
+function setConsentAgreement(countryCode){
+	var consentInfo=countryNameValue[countryCode];
+	
+	var consent=[];
+	if (consentInfo["optInEmail"].includes("opt-out")) consent.push("by Email");
+	if (consentInfo["optInPhone"].includes("opt-out")) consent.push("by Phone");
+	survey.setValue("_ConsentAgreement", consent);
+}
+
 survey
 	.onValueChanged
 	.add(function (sender, options) {
 		//console.log("Answer changed - saving state");
 		LocalStorage.saveState(survey);
+		
+		if (options.name=="_Country"){
+			setConsentAgreement(options.value);
+		}
+		
 });
 
 survey
