@@ -362,12 +362,17 @@ for (var i = 0; i < survey.PageCount; i++) {
 }
 
 function setConsentAgreement(countryCode){
+	if (undefined==countryCode) return;
 	var consentInfo=countryNameValue[countryCode];
 	
-	var consent=[];
-	if (consentInfo["optInEmail"].includes("opt-out")) consent.push("by Email");
-	if (consentInfo["optInPhone"].includes("opt-out")) consent.push("by Phone");
-	survey.setValue("_ConsentAgreement", consent);
+	var consent=["by Email","by Phone"]; // default to opt-out for both
+	if (undefined!=consentInfo){
+		if (consentInfo["optInEmail"]!=undefined && consentInfo["optInEmail"].includes("opt-in"))
+			consent=consent.filter(e => e !== "by Email");
+		if (consentInfo["optInPhone"]!=undefined && consentInfo["optInPhone"].includes("opt-in"))
+			consent=consent.filter(e => e !== "by Phone");
+		survey.setValue("_ConsentAgreement", consent);
+	}
 }
 
 survey
