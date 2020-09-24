@@ -438,3 +438,6 @@ top: -2px;
 .txt{
 	padding-bottom: 15px;
 }
+input,button{
+  padding: 0 4px;
+}

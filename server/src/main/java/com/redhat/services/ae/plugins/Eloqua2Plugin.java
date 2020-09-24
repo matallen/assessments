@@ -28,6 +28,7 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 	private String url;
 	private Map<String,String> mapping;
 	private Map<String,String> values;
+	private Map<String,String> expressions;
 	boolean disabled=false;
 	private String disabledIfExpression;
 	private boolean disabledIfResult=false;
@@ -40,6 +41,7 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 		Map<String,Object> config=(Map<String,Object>)cfg.get("config");
 		mapping=(Map<String,String>)config.get("mapping");
 		values=(Map<String,String>)config.get("values");
+		expressions=(Map<String,String>)config.get("expressions");
 //		disabled=cfg.containsKey("disabled")?"true".equalsIgnoreCase((String)cfg.get("disabled")):false;
 		disabledIfExpression=(String)cfg.get("disabledIf");
 		
@@ -148,6 +150,19 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 //		for(Entry<String, String> a:answers.entrySet())
 //			System.out.println("Eloqua: substitute value - "+a.getKey()+"="+a.getValue());
 		
+		
+		// Evaluate expressions prior to processing values in case an expression creates a new value
+		if (null!=expressions){
+			for (Entry<String, String> e:expressions.entrySet()){
+				try{
+					Object eval=MVEL.eval(e.getValue(), answers);
+					values.put(e.getKey(), eval.toString());
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
+			}
+		}
+		
 		// Eloqua:: send literal values (+ replacement variables where configured)
 		StringSubstitutor substitutor=new StringSubstitutor(answers); // replaces ${name} placeholders
 		for(Entry<String, String> e:values.entrySet()){
@@ -159,6 +174,9 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 		disabledIfResult=disabledIfResult || (eval instanceof Boolean && (boolean)eval);
 		if (disabledIfResult){
 			log.warn("Skipping Eloqua plugin because disabledIf expression '"+disabledIfExpression+"' evaluated to true");
+			for (Entry<String, String> e:eloquaFields.entrySet()){
+				System.out.println(String.format("EloquaPlugin[DISABLED]:: Adding param:: %s = %s", e.getKey(), e.getValue()));
+			}
 		}
 		
 		sendToEloqua(url, disabled || disabledIfResult, eloquaFields);

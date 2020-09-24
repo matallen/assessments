@@ -15,6 +15,7 @@ import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mvel2.MVEL;
+import org.mvel2.ParserContext;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -24,6 +25,7 @@ import com.google.common.collect.Lists;
 import com.redhat.services.ae.Database;
 import com.redhat.services.ae.MapBuilder;
 import com.redhat.services.ae.controllers.ReportsController;
+import com.redhat.services.ae.controllers.TestBase;
 import com.redhat.services.ae.model.Survey;
 import com.redhat.services.ae.utils.Json;
 
@@ -31,7 +33,7 @@ import com.redhat.services.ae.utils.Json;
 /**
  * Can only be run after plugins AddTitleAndScore & EmbeddedScoreTotal 
  */
-public class Eloqua2PluginTest{
+public class Eloqua2PluginTest extends TestBase{
 
 	
 	@Test
@@ -39,7 +41,16 @@ public class Eloqua2PluginTest{
 		Map<String,Object> vars=new MapBuilder<String,Object>()
 				.put("abc", "mallen@redhat.com")
 				.build();
+//		ParserContext c=ParserContext.create().;
 		System.out.println(MVEL.eval("abc contains \"@redhat.com\"", vars)); 
+	}
+	
+	@Test
+	public void mvelTest(){
+		Map<String,Object> vars=new MapBuilder<String,Object>()
+				.put("_consentAgreement", Lists.newArrayList("by Email","by Phone"))
+				.build();
+		System.out.println(MVEL.eval("(int)(_consentAgreement contains \"by Email\")", vars)); 
 	}
 	
 	@Test
@@ -53,7 +64,8 @@ public class Eloqua2PluginTest{
 		String visitorId="1";
 		Survey s=Survey.builder().id(surveyId).name("Test Survey").build();
 		s.setQuestionsAsString(questionsJson);
-		s.persist();
+		s.saveQuestions();
+		s.save();
 
 		// execute this plugin because it changes the structure of the answers
 		System.out.println("AddTitleAndScorePlugin:: From:\n"+Json.toJson(answers));
@@ -102,7 +114,7 @@ public class Eloqua2PluginTest{
 //				.put("url", "https://s1795.t.eloqua.com/e/f2?elqSiteID=1795&elqFormName=consulting-assessment-integration-sandbox")
 				.put("url", "https://s1795.t.eloqua.com/e/f2")
 				.put("disabled", "true")
-				.put("disabledIf","WorkEmail contains @redhat.com")
+				.put("disabledIf","WorkEmail contains \"@redhat.com\"")
 				.put("config", new MapBuilder<String,Map<String,String>>()
 						.put("mapping", new MapBuilder<String,String>()
 								.put("platforms_q1",  "UDF_01")
@@ -118,8 +130,11 @@ public class Eloqua2PluginTest{
 								.put("A_OfferID",  "70160000000xZtmAAE")
 								.put("elqCustomerGUID",  "60e60dD55c-aec7-4b45-a936-d621ec1e8a6c")
 								.put("TestSubstitution","${FirstName} ${LastName}")
-								.build()
-								)
+								.build())
+						.put("expressions", new MapBuilder<String,String>()
+								.put("F_FormData_OptIn", "(int)(_consentAgreement contains \"by Email\")")
+								.put("F_FormData_OptInPhone", "(int)(_consentAgreement contains \"by Phone\")")
+								.build())
 						.build())
 				.build();
 	}

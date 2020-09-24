@@ -534,7 +534,6 @@
               "name": "Department",
               "width": "100%",
               "title": "Department",
-              "weighting": 100,
               "choices": [
                 "item1",
                 "item2",
@@ -548,7 +547,6 @@
               "type": "dropdown",
               "name": "JobRole",
               "title": "Job Role",
-              "weighting": 100,
               "choices": [
                 "item1",
                 "item2",
@@ -562,9 +560,28 @@
               "type": "dropdown",
               "name": "Country",
               "title": "Country/region",
-              "weighting": 100,
               "choices": [
                 "item1"
+              ],
+              "choicesByUrl": {
+                "url": "http://localhost:8081/api/surveys/xxx/countryList",
+                "valueName": "value",
+                "titleName": "name"
+              }
+            },
+            {
+              "type": "checkbox",
+              "name": "_consentAgreement",
+              "title": "Red Hat may use your personal data to inform you about its products, services, and events",
+              "choices": [
+				      {
+				       "value": "by Email",
+				       "text": "by email"
+				      },
+				      {
+				       "value": "by Phone",
+				       "text": "by telephone"
+				      }
               ],
               "choicesByUrl": {
                 "url": "http://localhost:8081/api/surveys/xxx/countryList",

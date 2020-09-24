@@ -9,5 +9,6 @@
   "WorkEmail": "test@redhat.com",
   "language" : "en",
   "platforms_q1" : "20#software",
-  "interests" : [ "platforms", "apps" ]
+  "interests" : [ "platforms", "apps" ],
+  "_consentAgreement": ["by Email"]
 }
