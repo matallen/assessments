@@ -1,4 +1,4 @@
-package com.redhat.services.ae.plugins;
+package com.redhat.services.ae.plugins.utils;
 
 import java.io.*;
 import java.util.*;

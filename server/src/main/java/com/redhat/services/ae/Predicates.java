@@ -1,4 +1,4 @@
-package com.redhat.services.ae.plugins;
+package com.redhat.services.ae;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 

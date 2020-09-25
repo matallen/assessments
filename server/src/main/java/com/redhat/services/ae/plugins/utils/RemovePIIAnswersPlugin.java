@@ -1,4 +1,4 @@
-package com.redhat.services.ae.plugins;
+package com.redhat.services.ae.plugins.utils;
 
 import java.util.List;
 import java.util.Map;
@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import com.google.api.client.util.Lists;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.redhat.services.ae.plugins.Plugin;
 
 public class RemovePIIAnswersPlugin extends Plugin{
 	public static final Logger log=LoggerFactory.getLogger(RemovePIIAnswersPlugin.class);

@@ -1,4 +1,4 @@
-package com.redhat.services.ae.plugins;
+package com.redhat.services.ae.plugins.utils;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.redhat.services.ae.MapBuilder;
+import com.redhat.services.ae.plugins.Plugin;
 import com.redhat.services.ae.utils.Pair;
 
 public class ExtractScoreFromValuePlugin extends Plugin{

@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.redhat.services.ae.model.Survey;
-import com.redhat.services.ae.plugins.RemovePIIAnswersPlugin;
+import com.redhat.services.ae.plugins.utils.RemovePIIAnswersPlugin;
 import com.redhat.services.ae.utils.Json;
 
 //import org.codehaus.jackson.JsonGenerationException;

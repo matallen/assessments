@@ -375,6 +375,24 @@ function setConsentAgreement(countryCode){
 	}
 }
 
+
+var markDownConverter = new showdown.Converter();
+var markdownEnabled=true;
+survey
+    .onTextMarkdown
+    .add(function (survey, options) {
+        //convert all question and answer text into html (ie. to accept html elements)
+        var str=options.text;
+        if (markdownEnabled){
+        	var str = markDownConverter.makeHtml(options.text);
+        	//remove root paragraphs <p></p>
+        	str = str.substring(3);
+        	str = str.substring(0, str.length - 4);
+        }
+        options.html = str;
+        //set html
+    });
+
 survey
 	.onValueChanged
 	.add(function (sender, options) {

@@ -95,7 +95,7 @@ public class IndustryStatisticsPlugin extends Plugin{
 				.put("Modernizing Platforms", 50)
 				.build());
 		
-		p.execute(s, "V_123", surveyResults);
+		p.execute(s, "Visitor123", surveyResults);
 		
 		System.out.println(Json.toJson(s.getMetrics()));
 	}
