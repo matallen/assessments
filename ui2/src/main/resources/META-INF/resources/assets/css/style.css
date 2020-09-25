@@ -1,12 +1,12 @@
 table{width: 100%;}
  /*TRBL*/
 .admin table thead tr td,
-.admin table tbody tr td,
-.elevate tbody tr td{
-	/*
+.admin table tbody tr td{
   padding: 10px 15px 10px 15px;
-	*/
   font-size: 11pt;
+}
+.elevate tbody tr td{
+	font-size: 11pt;
 }
 section .elevate{
 	padding: 20px 25px 20px 25px;

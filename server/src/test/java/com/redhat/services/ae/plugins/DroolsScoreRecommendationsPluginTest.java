@@ -61,7 +61,11 @@ public class DroolsScoreRecommendationsPluginTest extends TestBase{
 //		
 //		System.out.println("ScoreRecommendationsPlugin:: From:\n"+Json.toJson(answers));
 		DroolsScoreRecommendationsPlugin test=new DroolsScoreRecommendationsPlugin();
-		test.setConfig(new MapBuilder<String,Object>().put("decisionTableLocation", "https://docs.google.com/spreadsheets/d/19d03Qi0mr-9mcfYp9__sjNkFJcGCx2zT4D26NYH1US4").build());
+		test.setConfig(new MapBuilder<String,Object>()
+				.put("decisionTableLocation", "https://docs.google.com/spreadsheets/d/19d03Qi0mr-9mcfYp9__sjNkFJcGCx2zT4D26NYH1US4")
+				.put("configSheetName", "Config")
+				.put("thresholdSection", "Report Thresholds")
+				.build());
 		answers=test.execute(surveyId, visitorId, answers);
 		System.out.println("ScoreRecommendationsPlugin:: To:\n"+Json.toJson(answers));
 		

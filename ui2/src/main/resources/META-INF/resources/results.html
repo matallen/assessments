@@ -72,8 +72,8 @@
 	
 	<script>
 	
-	function buildOverviewGraphic(title, rating){
-		return overviewGraphicHeader_tabular(title, rating) + overviewGraphicProgress_svg(title, rating);
+	function buildOverviewGraphic(title, rating, thresholds){
+		return overviewGraphicHeader_tabular(title, rating) + overviewGraphicProgress_svg(title, rating, thresholds);
 	}
 	
 	function overviewGraphicHeader_tabular(title, rating){
@@ -87,12 +87,12 @@
 		`;
 	}
 	
-	function overviewGraphicProgress_svg(title, rating){
+	function overviewGraphicProgress_svg(title, rating, thresholds){
 		var max=480;
 		var len=((max/100)*rating);
 		if (len<=00)len=1;
 		len+=5; // +5px offset on left of svg
-		return `
+		var result= `
 			<svg class="progress-chart red" viewBox="0 0 493 54" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:bx="https://boxy-svg.com">
 			  <rect x="5.02" width="479.974" height="8" style="fill: rgb(238, 238, 238);" y="0"/>
 			  <rect x="5.02" width="479.974" height="8" style="fill: rgb(238, 238, 238);" y="31"/>
@@ -100,32 +100,52 @@
 			  <rect width="479.974" height="20" style="fill: rgb(238, 238, 238);" y="16" x="5"/>
 			  <line style="paint-order: stroke; stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209); stroke-opacity: 0.5;" x1="5"   y1="8"  x2="5"   y2="44"/>
 			  <line style="paint-order: stroke; stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209); stroke-opacity: 0.5;" x1="485" y1="8"  x2="485" y2="44"/>
+			  <!--
 			  <line style="paint-order: stroke; stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209); stroke-opacity: 0.5;" x1="165" y1="16" x2="165" y2="36"/>
 			  <line style="paint-order: stroke; stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209); stroke-opacity: 0.5;" x1="325" y1="16" x2="325" y2="36"/>
-			  <!--
-			  <rect x="5" y="7.982" width="`+(rating*0.974)+`%" height="8" style="fill: rgb(225, 0, 0); animation: progress 1s ease-out forwards;"/>
 			  -->
-			  <!--
-				<path class="xbar" stroke-dasharray="60, 100" d="M 5 7.982 H 101.35 V 15.982 H 5 V 7.982 Z" style="xfill: rgb(225, 0, 0);"/>
-			  -->
+			  
 				<line class="bar" x1="5" y1="12" x2="`+len+`" y2="12" style="stroke-dasharray: `+len+`; stroke-dashoffset: `+len+`; "/>
-				<!--
-					<path class="circle-bg" d="M18 2.0845
-				          a 15.9155 15.9155 0 0 1 0 31.831
-				          a 15.9155 15.9155 0 0 1 0 -31.831" />
-				<path class="circle" stroke-dasharray="`+rating+`, 100" d="M18 2.0845
-				          a 15.9155 15.9155 0 0 1 0 31.83h1
-				          a 15.9155 15.9155 0 0 1 0 -31.831" />
-				-->
-					
+				
 				<text style="fill: rgb(208, 208, 208); font-size: 8px; white-space: pre;" x="2.512"   y="51.189">0</text>
 				<text style="fill: rgb(208, 208, 208); font-size: 8px; white-space: pre;" x="478.013" y="51.19">100</text>
+				<!--
 				<text style="fill: rgb(138, 138, 138); font-size: 9px; white-space: pre;" x="46.945"  y="29.876">FOUNDATIONAL</text>
 				<text style="fill: rgb(138, 138, 138); font-size: 9px; white-space: pre;" x="208.945" y="29.876">INTERMEDIATE</text>
 				<text style="fill: rgb(138, 138, 138); font-size: 9px; white-space: pre;" x="379.469" y="29.495">ADVANCED</text>
+				-->
+				<!--
+				-->
+		`;
+		var i=0;
+		var lastThreshold=0, lastLinePosInPx=0;
+		var width=485;
+		var size=0;
+		for (thresholdTitle in thresholds)
+			size+=1;
+		for (thresholdTitle in thresholds){
+			var threshold=thresholds[thresholdTitle];
+			var linePosInPx=(width/100)*threshold;
+			//var textPosInPx=width/(100/(threshold/2));
+			//var textPosInPx=width/(100/(lastThreshold+(threshold/2)));
+//			var textPosInPx=(width/100)*(lastThreshold+(threshold/2));
+//			textPosInPx-=(7*thresholdTitle.length)/2; // half width of text
+			
+			var textPosInPx=(lastLinePosInPx+(linePosInPx-lastLinePosInPx)/2)-(5*thresholdTitle.length)/2;
+			
+			if (i<size-1)
+				result+=`<line style="paint-order: stroke; stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209); stroke-opacity: 0.5;" x1="`+linePosInPx+`" y1="16" x2="`+linePosInPx+`" y2="39"/>\n`;
+			result+=`<text style="fill: rgb(138, 138, 138); font-size: 9px; white-space: pre;" x="`+textPosInPx+`"  y="29.876">`+thresholdTitle+`</text>\n`;
+			lastThreshold=thresholds[thresholdTitle];
+			lastLinePosInPx=linePosInPx;
+			i+=1;
+		}
+		
+		return result+`
 				</image>
 			</svg>
 		`;
+		
 	}
 	</script>
 
@@ -208,6 +228,13 @@
 			
 			var tabCount=10;
 			var report=jsonResponse["_report"];
+			var thresholds;
+			
+			if (report["thresholds"]){
+				thresholds=report["thresholds"];
+			}else{
+				thresholds={"Basic":33,"Intermediate":66,"Advanced":100};
+			}
 			
 			// if it contains overviews for an overviews tab, then drill in for the content, and extract the overviews
 			if (report["overviews"]){
@@ -224,75 +251,7 @@
 			for(var section in report){ // section is Modernize Platforms etc...
 				
 				var tabName="tabcontent_"+section.replace(/ /g,"_").toLowerCase();
-				html=displaySection(report, section, scores, overviews, c, max);
-				
-				// Add Tab/Menu Item
-				//var tabName="menu"+tabCount++;
-//				tabName="tabcontent_"+section.replace(/ /g,"_").toLowerCase();
-//				$("#tabs").append(`<li><a data-toggle="tab" id="tab_`+section.replace(/ /g,"_").toLowerCase()+`" href="#`+tabName+`">`+section+`</a></li>`);
-//				
-//				
-////				var inPrintableFormat=true;
-////				if (inPrintableFormat){
-//					var html=`
-//						<div id="`+tabName+`" class="tab-pane fade in `+(c==max-1 && undefined==overviews?`active`:``)+`">
-//							<table>
-//								<tr><td>`+buildOverviewGraphic(section, scores[section])+`</td></tr>
-//								`;
-//					for(var l1 in report[section]){
-//						html+=`<tr><td class='level1'>`;
-//						if (l1!="") html+=`<h2>`+l1+`</h2>`;
-//						html+=`</td></tr>`;
-//						for(var l2 in report[section][l1]){
-//							html+=`<tr><td class='level2'>`;
-//							if (l2!="") html+=`<h4>`+l2+`</h4>`;
-//							for (var i in report[section][l1][l2]){
-//								html+=`<p>`+report[section][l1][l2][i]+`</p>`;
-//							}
-//							html+=`</td></tr>`;
-//						}
-//						//html+=`<div class=" separator"></div>`;
-//					}
-//					html+=`
-//							</table>
-//						</div>
-//					`;
-//				}else{
-//					
-//					var html=`
-//						<div id="`+tabName+`" class="tab-pane fade in `+(c==max-1 && undefined==overviews?`active`:``)+`">
-//							<div class="row">
-//								<div class="col-md-10">`;
-//					html+=buildOverviewGraphic(section, scores[section]);
-//					html+=`</div></div><div class="row" style="padding-left: 23px;">`;
-//					
-//					for(var l1 in report[section]){ // l1 is Environment, Development & Operations or Introduction
-//						
-//						html+=`<div class=" l1">`;
-//						if (l1!="") html+=`<h2>`+l1+`</h2>`;
-//						
-//						for(var l2 in report[section][l1]){ // l2 is Findings, Recommendations & Learn More
-//							html+=`<div class=" txt">`;
-//							if (l2!="") html+=`<h4>`+l2+`</h4>`;
-//							for (var i in report[section][l1][l2]){
-//								html+=`<p>`+report[section][l1][l2][i]+`</p>`;
-//							}
-//							html+=`</div> <!--txt  -->`;
-//						}
-//						html+=`
-//							</div>
-//							<div class=" separator"></div>
-//						`;
-//					}
-//					
-//					html+=`
-//								</div>
-//							</div>
-//						</div>
-//					`;
-//					
-//				}
-				
+				html=displaySection(report, section, scores, overviews, c, max, thresholds, undefined);
 				
 				$("#tabsContent").append(html);
 				c=c+1;
@@ -301,11 +260,6 @@
 			
 			// if "overview" content exists, display it
 			if (undefined!=overviews){
-//				for (var section in overviews){
-//					//$("#tabs").prepend(`<li class="active"><a data-toggle="tab" id="tab_overview" href="#tabcontent_overview">Overview</a></li>`);
-//					//var html=`<div id="tabcontent_overview" class="tab-pane fade in active">`;
-//					html+=displaySection(overviews, section, scores, undefined, 0, 1, "Overview");
-//				}
 				
 				$("#tabs").prepend(`<li class="active"><a data-toggle="tab" id="tab_overview" href="#tabcontent_overview">Overview</a></li>`);
 				var html=`<div id="tabcontent_overview" class="tab-pane fade in active">`;
@@ -316,7 +270,7 @@
 					for (var title in overviews[section]){
 						
 						html+=`
-							<tr><td>`+buildOverviewGraphic(section, scores[section])+`</td></tr>
+							<tr><td>`+buildOverviewGraphic(section, scores[section], thresholds)+`</td></tr>
 							<tr><td class='level2'>
 							`;
 						
@@ -329,21 +283,6 @@
 							</td></tr>
 						`;
 						
-//						html+=`
-//						<div class="row">
-//							<div class="col-md-10">
-//							`+buildOverviewGraphic(section, scores[section])+`
-//							</div>
-//						</div>
-//						<div class="row">
-//							<div class="col-md-10" style="padding-left: 23px;">
-//						`;
-//							
-//						for (var text in overviews[section][title]){
-//							html+=`<p>`+overviews[section][title][text]+`</p>`;
-//						}
-//						html+=`<a onclick="document.getElementById('tab_`+section.replace(/ /g,"_").toLowerCase()+`').click();return false;" href="#">See details &rarr;</a>`;
-//						html+=`</div><div class="col-md-10"><hr/></div></div>`; // end row
 					}
 					html+=`</table>`;
 				}
@@ -360,14 +299,14 @@
 			
 		}
 		
-		function displaySection(report, section, scores, overviews, c, max, overview){
+		function displaySection(report, section, scores, overviews, c, max, thresholds, overview){
 			var tabName="tabcontent_"+section.replace(/ /g,"_").toLowerCase();
 			$("#tabs").append(`<li><a data-toggle="tab" id="tab_`+section.replace(/ /g,"_").toLowerCase()+`" href="#`+tabName+`">`+section+`</a></li>`);
 			
 			var html=`
 				<div id="`+tabName+`" class="tab-pane fade in `+(c==max-1 && undefined==overviews?`active`:``)+`">
 					<table>
-						<tr><td>`+buildOverviewGraphic(section, scores[section])+`</td></tr>
+						<tr><td>`+buildOverviewGraphic(section, scores[section], thresholds)+`</td></tr>
 						`;
 				for(var l1 in report[section]){
 					html+=`<tr><td class='level1'>`;

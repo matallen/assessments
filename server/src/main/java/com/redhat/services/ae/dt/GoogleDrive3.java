@@ -314,7 +314,7 @@ public class GoogleDrive3 {
     FileInputStream in=null;
     if (file==null || !file.exists()) return new ArrayList<Map<String,String>>();
     try{
-    	System.out.println("GoogleDrive3::parseExcelDocument() - file is "+file.getAbsolutePath() +" (exists="+file.exists()+", size="+(file.length()/1024)+"k)");
+//    	System.out.println("GoogleDrive3::parseExcelDocument() - file is "+file.getAbsolutePath() +" (exists="+file.exists()+", size="+(file.length()/1024)+"k)");
       in=new FileInputStream(file);
       XSSFWorkbook wb=new XSSFWorkbook(in);
       
@@ -398,7 +398,7 @@ public class GoogleDrive3 {
       IOUtils.closeQuietly(in);
     }
     
-    System.out.println("GoogleDrive3::parseExcelDocument() - leaving method, file "+file.getAbsolutePath() +" is "+(file.length()/1024)+"k in size");
+//    System.out.println("GoogleDrive3::parseExcelDocument() - leaving method, file "+file.getAbsolutePath() +" is "+(file.length()/1024)+"k in size");
     
     return entries;
   }

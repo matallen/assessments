@@ -44,10 +44,13 @@ import com.redhat.services.ae.plugins.droolsscore.ResultsBuilderTabsOverview;
 public class DroolsScoreRecommendationsPlugin extends Plugin{
 	public static final Logger log=LoggerFactory.getLogger(DroolsScoreRecommendationsPlugin.class);
 	
-	private static final int CACHE_EXPIRY_IN_MS=3000;
+	private static final int CACHE_EXPIRY_IN_MS=10000;
 	private static final GoogleDrive3 drive=new GoogleDrive3(CACHE_EXPIRY_IN_MS);
 	private List<String> drls=null;
 	boolean extraDebug=false;
+	private String configSheetName;
+	private String thresholdSection;
+	
 	
 //	@Inject
 //  private KieRuntimeBuilder runtimeBuilder;
@@ -71,6 +74,13 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 			if (String.class.isAssignableFrom(config.get("extraDebug").getClass()))  extraDebug="true".equalsIgnoreCase((String)config.get("extraDebug"));
 			if (Boolean.class.isAssignableFrom(config.get("extraDebug").getClass())) extraDebug=(Boolean)config.get("extraDebug");
 		}
+		
+		thresholdSection=(String)config.get("thresholdSection");
+		configSheetName=(String)config.get("configSheetName");
+		
+		if (null==configSheetName) throw new RuntimeException("'configSheetName' in "+this.getClass().getSimpleName()+" plugin must be set");
+		if (null==thresholdSection) throw new RuntimeException("'thresholdSection' in "+this.getClass().getSimpleName()+" plugin must be set");
+		
 	}
 	
   
@@ -171,6 +181,22 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 	}
 		
 	
+	private Map<String, Integer> getThresholdRanges(String decisionTableId) throws IOException, InterruptedException{
+		SimpleDateFormat dateFormatter=null;
+		File sheet=drive.downloadFile(decisionTableId);
+		
+		List<Map<String, String>> parseExcelDocument=drive.parseExcelDocument(sheet, configSheetName, new GoogleDrive3.HeaderRowFinder(){ public int getHeaderRow(XSSFSheet s){
+			return GoogleDrive3.SheetSearch.get(s).find(0, thresholdSection).getRowIndex();
+		}}, dateFormatter);
+		
+		Map<String,Integer> ranges=new LinkedHashMap<>();
+		for (Map<String, String> row:parseExcelDocument){
+			ranges.put(row.get("Report Thresholds"), (int)Double.parseDouble(row.get("To")));
+		}
+		
+		return ranges;
+	}
+	
 	@Override
 	public Map<String, Object> execute(String surveyId, String visitorId, Map<String, Object> surveyResults) throws Exception{
 		try{
@@ -257,7 +283,9 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 				}
 			}
 			
-			Object resultSections=new ResultsBuilderTabsOverview().build(recommendations, sectionScores);
+			Map<String,Integer> thresholds=getThresholdRanges(decisionTableId);
+			
+			Object resultSections=new ResultsBuilderTabsOverview().build(recommendations, sectionScores, thresholds);
 			
 			
 			// add recommendations to the results

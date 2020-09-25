@@ -170,8 +170,13 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 		}
 		
 		// execute mvel expression (ie. WorkEmail contains @redhat.com) then disabledIfResult becomes True
-		Object eval=MVEL.eval(disabledIfExpression, answers);
-		disabledIfResult=disabledIfResult || (eval instanceof Boolean && (boolean)eval);
+		try{
+			Object eval=MVEL.eval(disabledIfExpression, answers);
+			disabledIfResult=disabledIfResult || (eval instanceof Boolean && (boolean)eval);
+		}catch(Exception ex){
+			log.error("Not disabling eloqua plugin, however an expression error occured: "+ex.getMessage());
+			ex.printStackTrace();
+		}
 		if (disabledIfResult){
 			log.warn("Skipping Eloqua plugin because disabledIf expression '"+disabledIfExpression+"' evaluated to true");
 			for (Entry<String, String> e:eloquaFields.entrySet()){
