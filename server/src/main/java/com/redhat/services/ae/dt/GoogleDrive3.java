@@ -289,8 +289,10 @@ public class GoogleDrive3 {
   	public XSSFCell find(int col, String text){
   		
   		for(int iRow=0;iRow<=sheet.getLastRowNum();iRow++){
+//  			System.out.println("get sheet("+sheet.getSheetName()+").row("+iRow+").col("+col+")");
   			XSSFCell cell=sheet.getRow(iRow).getCell(col);
   			
+  			if (null==cell) continue;
   			//if (cell.getCellType()==CellType.STRING){
   			if (cell.getCellType()==CellType.STRING){//Cell.CELL_TYPE_STRING){
 //  				if (text.equals(cell.getStringCellValue())){
