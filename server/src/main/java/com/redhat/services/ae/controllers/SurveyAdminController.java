@@ -105,7 +105,9 @@ public class SurveyAdminController{
 	/** #### SURVEY HANDLERS ####  */
   
 	@GET
+	@RolesAllowed({"Admin"})
 	public Response list(){
+		Surveys.reset(); // ensure to reload what's actually in the database
 		return Response.ok(Survey.findAll()).build();
 	}
 	
