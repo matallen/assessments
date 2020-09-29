@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.mvel2.MVEL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,12 +28,16 @@ public class IndustryStatisticsPlugin extends Plugin{
 	private String metricsName;      // industryTopicByMonth
 	private String monthFormat;      // yy-MMM
 	private String groupByFieldName; // _Industry
+	private String disabledIfExpression;
+	boolean extraDebug=false;
 	
 	@Override
 	public void setConfig(Map<String, Object> config){
 		metricsName=(String)config.get("metricsName");
 		monthFormat=(String)config.get("monthFormat");
 		groupByFieldName=(String)config.get("groupByFieldName");
+		disabledIfExpression=(String)config.get("disabledIf");
+		extraDebug=super.hasExtraDebug(config, "extraDebug");
 		
 		if (null==metricsName) metricsName="IndustryScoresByMonth";
 		if (null==monthFormat) monthFormat="yy-MMM";
@@ -50,7 +55,7 @@ public class IndustryStatisticsPlugin extends Plugin{
 			
 			if (!data.containsKey(category)) data.put(category, new ArrayList<>());
 			
-			if (!List.class.isAssignableFrom(data.get("category").getClass())){
+			if (!List.class.isAssignableFrom(data.get(category).getClass())){
 				log.error("Unable to store score of "+incrementBy+" for to industry "+category+"");
 				return;
 			}
@@ -69,30 +74,30 @@ public class IndustryStatisticsPlugin extends Plugin{
 		
 	}
 	
-	public static void main(String[] asd) throws Exception{
-//		Map<String,Object> metrics=new HashMap<>();
-//		MultiLevelMetrics mlm=new IndustryStatisticsPlugin().new MultiLevelMetrics(metrics);
-//		mlm.increment(20, "industryTopicByMonth", "20-Jul", "Modernizing Platforms", "Agriculture");
-//		mlm.increment(40, "industryTopicByMonth", "20-Jul", "Modernizing Platforms", "Technology");
-//		mlm.increment(30, "industryTopicByMonth", "20-Jul", "Modernizing Platforms", "Agriculture");
-		
-		IndustryStatisticsPlugin p=new IndustryStatisticsPlugin();
-		p.setConfig(null);
-		Survey s=new Survey();
-		Map<String,Object> surveyResults=new MapBuilder<String,Object>().build();
-		surveyResults.put("_Industry", "Agriculture");
-		surveyResults.put("_sectionScore", new MapBuilder<String,Integer>()
-				.put("Modernizing Platforms", 50)
-				.build());
-		
-		p.execute(s, "Visitor123", surveyResults);
-		p.execute(s, "Visitor456", surveyResults);
-		((Map)surveyResults.get("_sectionScore")).put("Modernizing Platforms", 40);
-		p.execute(s, "Visitor789", surveyResults);
-		
-		
-		System.out.println(Json.toJson(s.getMetrics()));
-	}
+//	public static void main(String[] asd) throws Exception{
+////		Map<String,Object> metrics=new HashMap<>();
+////		MultiLevelMetrics mlm=new IndustryStatisticsPlugin().new MultiLevelMetrics(metrics);
+////		mlm.increment(20, "industryTopicByMonth", "20-Jul", "Modernizing Platforms", "Agriculture");
+////		mlm.increment(40, "industryTopicByMonth", "20-Jul", "Modernizing Platforms", "Technology");
+////		mlm.increment(30, "industryTopicByMonth", "20-Jul", "Modernizing Platforms", "Agriculture");
+//		
+//		IndustryStatisticsPlugin p=new IndustryStatisticsPlugin();
+//		p.setConfig(null);
+//		Survey s=new Survey();
+//		Map<String,Object> surveyResults=new MapBuilder<String,Object>().build();
+//		surveyResults.put("_Industry", "Agriculture");
+//		surveyResults.put("_sectionScore", new MapBuilder<String,Integer>()
+//				.put("Modernizing Platforms", 50)
+//				.build());
+//		
+//		p.execute(s, "Visitor123", surveyResults);
+//		p.execute(s, "Visitor456", surveyResults);
+//		((Map)surveyResults.get("_sectionScore")).put("Modernizing Platforms", 40);
+//		p.execute(s, "Visitor789", surveyResults);
+//		
+//		
+//		System.out.println(Json.toJson(s.getMetrics()));
+//	}
 	
 
 	@Override
@@ -100,53 +105,50 @@ public class IndustryStatisticsPlugin extends Plugin{
 		return execute(Survey.findById(surveyId), visitorId, surveyResults);
 	}		
 	public Map<String, Object> execute(Survey survey, String visitorId, Map<String, Object> surveyResults) throws Exception{
-
-		Map<String,Object> metrics=survey.getMetrics();
 		
-//		survey.getMetrics().getIndustrySectionByMonth()
-		
-//		{
-//		  "industryTopicByMonth_total" : {
-//		    "20-Sep" : {
-//		      "Modernizing Platforms" : {
-//		        "Agriculture" : 50
-//		      }
-//		    }
-//		  },
-//		  "industryTopicByMonth_count" : {
-//		    "20-Sep" : {
-//		      "Modernizing Platforms" : {
-//		        "Agriculture" : 1
-//		      }
-//		    }
-//		  }
-//		}
-		
-		// load industry stats from database/survey
-		
-		// extract industry field (_industry?)
-		String YYMMM=new SimpleDateFormat(monthFormat).format(new Date(System.currentTimeMillis()));
-		String industry=(String)surveyResults.get(groupByFieldName);
-		
-		// extract _sectionScores
-		Map<String,Integer> sectionScores=(Map<String,Integer>)surveyResults.get("_sectionScore");
-		
-		// increment industry stats
-//		Map<String,Object> metrics=new HashMap<>();
-//		MultiLevelMetrics mlm=new IndustryStatisticsPlugin().new MultiLevelMetrics(metrics);
-		
-		MultiLevelMetricsList mlm=new IndustryStatisticsPlugin().new MultiLevelMetricsList(metrics);
-		for(Entry<String, Integer> e:sectionScores.entrySet()){
-			String topic=e.getKey();
-			mlm.increment(e.getValue(), metricsName, YYMMM, topic, industry);
-//			mlm.increment(1, metricsName+"_count", YYMMM, topic, industry);
+		boolean disabled=false;
+		try{
+			Object eval=MVEL.eval(disabledIfExpression, surveyResults);
+			disabled=disabled || (eval instanceof Boolean && (boolean)eval);
+			if (disabled)
+				log.debug(this.getClass().getSimpleName()+":: disabled due to expression evaluating to true: "+disabledIfExpression);
+		}catch(Exception ex){
+			log.error("Not disabling eloqua plugin, however an expression error occured: "+ex.getMessage());
+			ex.printStackTrace();
 		}
 		
-		// save industry stats
+		if (!disabled){
+			Map<String,Object> metrics=survey.getMetrics();
+			
+			// extract industry field (_industry?)
+			String YYMMM=new SimpleDateFormat(monthFormat).format(new Date(System.currentTimeMillis()));
+			String industry=(String)surveyResults.get(groupByFieldName);
+			
+			
+			// extract _sectionScores
+			Map<String,Integer> sectionScores=(Map<String,Integer>)surveyResults.get("_sectionScore");
+			
+			// increment industry stats
+//		Map<String,Object> metrics=new HashMap<>();
+//		MultiLevelMetrics mlm=new IndustryStatisticsPlugin().new MultiLevelMetrics(metrics);
+			
+			MultiLevelMetricsList mlm=new IndustryStatisticsPlugin().new MultiLevelMetricsList(metrics);
+			for(Entry<String, Integer> e:sectionScores.entrySet()){
+				String section=e.getKey();
+				log.info(this.getClass().getSimpleName()+":: Incrementing section "+section+" for "+industry+" industry by "+e.getValue());
+				mlm.increment(e.getValue(), metricsName, YYMMM, section, industry);
+//			mlm.increment(1, metricsName+"_count", YYMMM, topic, industry);
+			}
+			
+			// save industry stats
 //		survey.persist();
-		
-		survey.saveMetrics();
-		System.out.println(Json.toJson(survey.getMetrics()));
+			
+			survey.saveMetrics();
+			
+			if (extraDebug)
+				log.debug("IndustryStatisticsPlugin:: "+Json.toJson(survey.getMetrics()));
+			
+		}
 		
 		// return an unchanged surveyResults
 		return surveyResults;

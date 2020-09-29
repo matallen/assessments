@@ -68,13 +68,7 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 	public void setConfig(Map<String, Object> config){
 		decisionTableLocation=(String)config.get("decisionTableLocation");
 		decisionTableId=decisionTableLocation.substring(decisionTableLocation.lastIndexOf("/")+1);
-		
-		extraDebug=false; // default to off
-		if (config.containsKey("extraDebug")){
-			if (String.class.isAssignableFrom(config.get("extraDebug").getClass()))  extraDebug="true".equalsIgnoreCase((String)config.get("extraDebug"));
-			if (Boolean.class.isAssignableFrom(config.get("extraDebug").getClass())) extraDebug=(Boolean)config.get("extraDebug");
-		}
-		
+		extraDebug=super.hasExtraDebug(config, "extraDebug");
 		thresholdSection=(String)config.get("thresholdSection");
 		configSheetName=(String)config.get("configSheetName");
 		

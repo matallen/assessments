@@ -32,4 +32,13 @@ public abstract class Plugin{
 		}
 	}
 	
+	public boolean hasExtraDebug(Map<String, Object> config, String extraDebugParam){
+		boolean result=false;
+		if (config.containsKey(extraDebugParam)){
+			if (String.class.isAssignableFrom(config.get(extraDebugParam).getClass()))  result="true".equalsIgnoreCase((String)config.get(extraDebugParam));
+			if (Boolean.class.isAssignableFrom(config.get(extraDebugParam).getClass())) result=(Boolean)config.get(extraDebugParam);
+		}
+		return result;
+	}
+	
 }
