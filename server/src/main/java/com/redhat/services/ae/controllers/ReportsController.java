@@ -172,15 +172,20 @@ public class ReportsController{
 				String pageName=page.at("name").asString();
 				
 				for (mjson.Json question:page.at("elements").asJsonList()){
-					ChartJson c=new ChartJson();
 					String questionId=question.at("name").asString();
+					System.out.println(questionId);
+					
+					if (questionId.startsWith("_")) continue;
+					if (!question.has("choices")) continue;
+					
+					ChartJson c=new ChartJson();
 					
 					// TODO: lookup the questionId into the question.title from the question config
 					
 					c.setName(questionId);
 //					c.getLabels().add(questionName);
 					
-					if (!question.has("choices")) continue;
+					
 					DataSet ds=c.addNewDataSet();
 					for (mjson.Json option:question.at("choices").asJsonList()){
 						String answerId=null;

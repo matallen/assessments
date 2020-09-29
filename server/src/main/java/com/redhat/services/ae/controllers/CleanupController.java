@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 import com.redhat.services.ae.MapBuilder;
 import com.redhat.services.ae.model.Survey;
 import com.redhat.services.ae.utils.Json;
@@ -40,20 +42,37 @@ public class CleanupController{
 	 * 
 	 */
 	
+	// TODO: add dataformat to the params so we can take some complexity out the front end
+	// TOO: add exclusions, so we can purge metrics EXCEPT the industry averages for example
+	
 	
 	@GET
 	@Path("/{surveyId}/metrics/purgeOlderThan")
-	public Response purgeMetrics(@PathParam("surveyId") String surveyId, @QueryParam("date") String pTargetDate, @QueryParam("testMode") String pTestMode) throws JsonProcessingException, ParseException{
+	public Response purgeMetrics(
+			@PathParam("surveyId") String surveyId, 
+			@QueryParam("date") String pTargetDate, 
+			@QueryParam("except") String pExcept, 
+			@QueryParam("testMode") String pTestMode
+			) throws JsonProcessingException, ParseException{
 		SimpleDateFormat sdf=new SimpleDateFormat("yy-MMM");
 		Pair<Boolean,Date> checks=getParametersForPurge(pTestMode, pTargetDate, sdf);
 		Boolean testMode=checks.getFirst();
 		Date targetDate=checks.getSecond();
-
+		
+		
+		List<String> except=pExcept!=null?Splitter.on(",").splitToList(pExcept):Lists.newArrayList();
+		
 		Survey s=Survey.findById(surveyId);
 		Map<String,Object> result=new LinkedHashMap<>();
 		for (Entry<String, Object> e:s.getMetrics().entrySet()){
 			String metricCategory=e.getKey();
 			log.debug("Looking in '"+metricCategory+"' metrics...");
+			
+			if (except.contains(metricCategory)){
+				log.debug("Skipping: '"+metricCategory+"' is in exception list");
+				continue;
+			}
+			
 			// level 2 should always be a YY-MMM
 			for (Entry<String, Object> met:((Map<String,Object>)e.getValue()).entrySet()){
 				Date yearMonth=sdf.parse(met.getKey());
@@ -82,7 +101,11 @@ public class CleanupController{
 	
 	@GET
 	@Path("/{surveyId}/results/purgeOlderThan")
-	public Response purgeReports(@PathParam("surveyId") String surveyId, @QueryParam("date") String pTargetDate, @QueryParam("testMode") String pTestMode) throws ParseException, IOException{
+	public Response purgeReports(
+			@PathParam("surveyId") String surveyId, 
+			@QueryParam("date") String pTargetDate, 
+			@QueryParam("testMode") String pTestMode
+			) throws ParseException, IOException{
 		SimpleDateFormat sdf=new SimpleDateFormat("yy-MMM");
 		Pair<Boolean,Date> checks=getParametersForPurge(pTestMode, pTargetDate, sdf);
 		Boolean testMode=checks.getFirst();

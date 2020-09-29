@@ -88,95 +88,94 @@
 	<div class="container py-1">
 		<table class="elevate">
 			<tbody id="content">
-				<tr><td>Survey ID</td>							<td><input type="text" disabled id="_id"						value=""/></td></tr>
-				<tr><td>Survey Name</td>						<td><input type="text" disabled id="_name"					value=""/></td></tr>
-				<tr><td>Survey Description</td>			<td><input type="text" disabled id="_description"		value=""/></td></tr>
-				<tr><td>Survey Owner</td>						<td><input type="text" disabled id="_owner"					value=""/></td></tr>
-				<tr><td>Survey Theme</td>						<td><input type="text" disabled id="_theme"					value=""/></td></tr>
-				<!--
-				<td>
-					<select disabled id="_theme">
-						<option>rti-theme</option>
-					</select>
-				</td>
-				<input type="text" disabled id="_theme"					value=""/></td></tr>
-				-->
 				<tr>
-					<td colspan="2">
-					<a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="#" onclick="save();">Save</a>
+					<td class=" section graph">
+						<h3 class="graph_header center">Data Purge</h3>
+						<!--h5 class="center">Subtitle</span></h5-->
+						<div>
+							<table class="section_content">
+								<tr>
+									<td>
+										<script>
+										
+								    var monthNames2 =["Jan","Feb","Mar","Apr",
+								                      "May","Jun","Jul","Aug",
+								                      "Sep", "Oct","Nov","Dec"];
+										Date.prototype.toLongForm=function() {
+										    var day=''+this.getDate();
+										    var monthIndex=this.getMonth();
+										    var monthNumeral=''+(monthIndex+1);
+										    //var monthName=monthNames[monthIndex];
+										    var year=this.getFullYear();
+										    
+										    if (day.length<2) day='0'+day;
+										    if (monthNumeral.length<2) monthNumeral='0'+monthNumeral;
+										    
+										    return `${year}-${monthNumeral}-${day}T23:59`;
+										}
+											
+										$(document).ready(function() {
+											var initialDate=new Date().toLongForm();
+											console.log("initialDate="+initialDate);
+											$("#purgeBeforeDate").prop("value", initialDate);
+										});
+											
+										function purgeBefore(o){
+											var url=o.dataset.href;
+											var purgeBeforeDate=$("#purgeBeforeDate").prop("value");
+											var yearLong=purgeBeforeDate.split("-")[0];
+											var year=yearLong.substring(2);
+											var monthNumeral=purgeBeforeDate.split("-")[1];
+											var month=monthNames2[parseInt(monthNumeral)-1];
+											var yymmm=year+"-"+month;
+											//var url="SERVER/api/purge/surveys/SURVEYID/metrics/purgeOlderThan?date=PURGEDATE&testMode=true";
+											url=url.replace("SERVER", env.server);
+											url=url.replace("SURVEYID", surveyId);
+											url=url.replace("PURGEDATE", yymmm);
+											
+											window.open(
+											  url,
+											  '_blank' // <- This is what makes it open in a new window.
+											);
+											
+										}
+										</script>
+										<label for="purgeBeforeDate">Date (YY-MMM) to purge prior to</label>
+										<input id="purgeBeforeDate" max="2020-09-29T23:59"  type="datetime-local"/>
+										<br/>
+										<label for="test">Test Mode (can be removed to execute later)</label>
+										<input type="checkbox" id="test" disabled checked/>
+									</td>
+								</tr>
+								<tr>
+									<td class="graph_containerx" style="">
+										<a class="btn rh-btn" onclick="purgeBefore(this);return false;" data-href="SERVER/api/purge/surveys/SURVEYID/metrics/purgeOlderThan?date=PURGEDATE&testMode=true">Purge metrics</a>
+									</td>
+								</tr>
+								<tr>
+									<td class="graph_containerx" style="">
+										<a class="btn rh-btn" onclick="purgeBefore(this);return false;" data-href="SERVER/api/purge/surveys/SURVEYID/results/purgeOlderThan?date=PURGEDATE&testMode=true">Purge Customer results</a>
+									</td>
+								</tr>
+							</table>
+						</div>
 					</td>
 				</tr>
+				
 			</tbody>
 		</table>
 	</div>
 	
 	<script>
 
-
 var surveyId;
 $(document).ready(function() {
 	$("#feedback-alert").hide();
 	surveyId=Utils.getParameterByName("id");
-	setMenu("Details");
-	
-	if (undefined==surveyId){
-		// We have a new Survey - Enable all all input elements with id=_<something>, except ID
-		$("input[id^=\"_\"]").each(function(index){
-			if ("_id"!=$(this).prop("id")){
-				$(this).prop("disabled", false);
-			}
-		});
-	}else{
-		// We have an existing Survey - enable all inputs 
-		Http.httpGetObject(env.server+"/api/surveys/"+surveyId, function(status, survey){
-			for (key in survey){
-				$("#_"+key).val(survey[key]);
-				if ("id"!=key) // don't enable id fields, they need to remain generated/protected
-					$("#_"+key).prop("disabled", false);
-			}
-		});
-		
-	}
+	setMenu("Settings");
 	
 });
 
-function nullToEmpty(v){ if (undefined!=v) return v; else return "";}
-function newData(){
-	var result={};
-	$('input[id^=\"_\"]').each(function() {
-		result[this.id.substr(1)]=null;
-	});
-	return result;
-}
-function save(){
-	var data=populate(newData());
-	Http.send((undefined==surveyId?"POST":"PUT"), env.server+"/api/surveys"+(undefined==surveyId?"":"/"+surveyId), data, function(resp, status){
-		jsonToDisplay(resp.response);
-		// update breadcrumbs
-		// push to url line
-		surveyId=JSON.parse(resp.response)["id"];
-		setMenu("Details");
-		if (undefined==data["id"] || ""==data["id"])
-			window.history.pushState("", "", location.pathname+(location.search!=""?location.search+"&":"?")+"id="+JSON.parse(resp.response)["id"]);
-		
-		showSuccess(200==status?"Saved Ok":"Save Error (Status: "+status+")");
-		//alert(200==status?"Saved Ok":"Save Error (Status: "+status+")");
-		//window.location.href="admin.html";
-	});
-}
-function jsonToDisplay(surveyJson){ // json to html fields
-	var response=JSON.parse(surveyJson);
-	for (key in response)
-		$("#_"+key).val(response[key]);
-}
-function populate(obj){ // html fields to javascript object
-	for (key in obj){
-		obj[key]=$("#_"+key).val();
-	}
-	return obj
-}
-
-	
 	</script>
 
 </body>
