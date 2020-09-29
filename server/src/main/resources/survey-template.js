@@ -316,7 +316,7 @@ $("#surveyElement").Survey({
 // Top Nav
 var navTopEl = document.querySelector("#surveyNavigation");
 navTopEl.className = "navigationContainer";
-var textDiv = document.createElement("p");
+var textDiv = document.createElement("h5");
 textDiv.className = "textProgress"
 textDiv.innerText = "Progress";
 navTopEl.appendChild(textDiv);
@@ -492,7 +492,7 @@ LocalStorage.loadState(survey);
 //survey.navigateToUrl="/results.html?surveyId="+surveyId+"&visitorId="+visitorId;
 
 
-survey.completedHtml="<h2>Analysing responses and generating <br/>your report - please wait a moment</h2>";
+survey.completedHtml="<h2>Analyzing responses and generating <br/>your report - please wait a moment...</h2><br/><br/>";
 
 //survey.locale = languageCode;
 survey.render();

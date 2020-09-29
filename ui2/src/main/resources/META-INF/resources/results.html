@@ -58,10 +58,8 @@
 		<div class="row">
 			<div class="container print-panel">
 				<h1>Ready-to-Accelerate results</h1>
+				<p>With a holistic strategy, organizations can implement environment, development, and operational changes needed to keep pace with growing business demands.</p>
 				<p>
-					With a holistic strategy, organizations can implement environment, development, and operational changes needed to keep pace with growing business demands. The result is an organization that can deliver business innovation faster.
-				</p>
-				<p >
 					<button type="button" class="rhbtn rhbtn-secondary" id="review_assessment">Edit my answers</button>
 					<button type="button" class="rhbtn rhbtn-primary" id="create_pdf">Download results as a PDF</button>
 				</p>
@@ -173,9 +171,8 @@
 	<div class="container">
 		<div class="row">
 			<div class="container print-panel">
-				<h1>Get started with a discovery session</h1>
+				<h1>Let’s Get started with a discovery session</h1>
 				<p>The best way to accelerate your transformation journey is with a discovery session. Red Hat experts provide a complimentary, personalized session to review your organization’s goals and identify business challenges and viable solutions.</p>
-				<p>We also identify the necessary participants in your engagement and provide actionable next steps to accelerate the modernization of your platforms, applications, automation, and to speed up new application development and transformation collaboration with open and agile practices.</p>
 				<p>Take the first step towards accelerating your innovation today with a no-cost Red Hat Consulting discovery session.</p>
 				<button type="button" class="rhbtn btn-lg rhbtn-red rhbtn-large" id="talk_to_expert" onclick="window.location.href='https://www.redhat.com/de/services/consulting#GatedFormContainer';">Talk to a Red Hat expert</button>
 			</div>
@@ -269,11 +266,10 @@
 					`;
 					for (var title in overviews[section]){
 						
-						html+=`
-							<tr><td>`+buildOverviewGraphic(section, scores[section], thresholds)+`</td></tr>
-							<tr><td class='level2'>
-							`;
+						if (undefined!=scores[section])
+							html+=`<tr><td>`+buildOverviewGraphic(section, scores[section], thresholds)+`</td></tr>`;
 						
+						html+=`<tr><td class='level2'>`;
 						for (var text in overviews[section][title]){
 							html+=`<p>`+overviews[section][title][text]+`</p>`;
 						}
