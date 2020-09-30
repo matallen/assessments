@@ -32,7 +32,7 @@ public class IndustryStatisticsPlugin extends Plugin{
 	boolean extraDebug=false;
 	
 	@Override
-	public void setConfig(Map<String, Object> config){
+	public Plugin setConfig(Map<String, Object> config){
 		metricsName=(String)config.get("metricsName");
 		monthFormat=(String)config.get("monthFormat");
 		groupByFieldName=(String)config.get("groupByFieldName");
@@ -43,6 +43,8 @@ public class IndustryStatisticsPlugin extends Plugin{
 		if (null==monthFormat) monthFormat="yy-MMM";
 //		if (null==groupByFieldName) groupByFieldName="_Industry";
 		if (null==groupByFieldName) throw new RuntimeException("'groupByFieldName' must be set in config. It's the question name of the field you want to group metrics by");
+		
+		return this;
 	}
 
 

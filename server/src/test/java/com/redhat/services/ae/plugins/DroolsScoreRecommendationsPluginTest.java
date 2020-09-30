@@ -53,7 +53,7 @@ public class DroolsScoreRecommendationsPluginTest extends TestBase{
 		System.out.println("AddTitleAndScorePlugin:: To:\n"+Json.toJson(answers));
 
 //		System.out.println("EmbeddedScoreTotalPlugin:: From:\n"+Json.toJson(answers));
-		answers=new EmbeddedScoreTotalPlugin().execute(surveyId, visitorId, answers);
+		answers=new SectionScoreAveragePlugin().execute(surveyId, visitorId, answers);
 		System.out.println("EmbeddedScoreTotalPlugin:: To:\n"+Json.toJson(answers));
 
 //		answers=new Eloqua2Plugin().execute(surveyId, visitorId, answers);

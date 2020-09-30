@@ -18,8 +18,6 @@ public class RemoveAllNonReportPropertiesPlugin extends Plugin{
 		return !"_sectionScore".equals(str) && !"_report".equals(str);
 	}};
 
-	@Override
-	public void setConfig(Map<String, Object> config){}
 
 	@Override
 	public Map<String, Object> execute(String surveyId, String visitorId, Map<String, Object> surveyResults) throws Exception{
@@ -31,6 +29,12 @@ public class RemoveAllNonReportPropertiesPlugin extends Plugin{
 		}
 		
 		return surveyResults;
+	}
+
+
+	@Override
+	public Plugin setConfig(Map<String, Object> config){
+		return null;
 	}
 
 }

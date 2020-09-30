@@ -16,8 +16,9 @@ public class RemoveReportPropertiesPlugin extends Plugin{
 	private String fieldsToRemoveRegEx;
 	
 	@Override
-	public void setConfig(Map<String, Object> config){
+	public Plugin setConfig(Map<String, Object> config){
 		fieldsToRemoveRegEx=(String)config.get("fieldsToRemoveRegEx");
+		return this;
 	}
 
 	@Override

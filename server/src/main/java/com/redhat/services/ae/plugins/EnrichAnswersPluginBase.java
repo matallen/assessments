@@ -57,8 +57,8 @@ public abstract class EnrichAnswersPluginBase extends Plugin{
 	
 	
 	@Override
-	public void setConfig(Map<String, Object> config){
-		
+	public Plugin setConfig(Map<String, Object> config){
+		return this;
 	}
 	
 	

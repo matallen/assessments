@@ -36,7 +36,7 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 	
 	@SuppressWarnings({"unchecked"})
 	@Override
-	public void setConfig(Map<String, Object> cfg){
+	public Plugin setConfig(Map<String, Object> cfg){
 		url=(String)cfg.get("url");
 		Map<String,Object> config=(Map<String,Object>)cfg.get("config");
 		mapping=(Map<String,String>)config.get("mapping");
@@ -58,6 +58,8 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 		
 		if (null==url || null==mapping)
 			throw new RuntimeException(String.format("Config not set correctly. Url is %s, and config==null is %s", url, (config==null)));
+		
+		return this;
 	}
 
 	private Map<String,String> eloquaFields=new LinkedHashMap<String, String>();

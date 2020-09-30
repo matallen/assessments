@@ -8,8 +8,18 @@ import com.google.common.collect.Lists;
 
 public abstract class Plugin{
 	protected Map<String, Object> originalSurveyResults;
-	public abstract void setConfig(Map<String, Object> config);
-
+	Map<String,String> cfg;
+	
+	public abstract Plugin setConfig(Map<String, Object> config);
+	protected Object getConfigValue(Map<String, Object> config, String propertyName, String propertyDefault){
+		if (config!=null) return config.containsKey(propertyName)?config.get(propertyName):propertyDefault;
+		return propertyDefault;
+	}
+	protected String getConfigValueAsString(Map<String, Object> config, String propertyName, String propertyDefault){
+		if (config!=null) return config.containsKey(propertyName)?(String)config.get(propertyName):propertyDefault;
+		return propertyDefault;
+	}
+	
 	public abstract Map<String, Object> execute(String surveyId, String visitorId, Map<String, Object> surveyResults) throws Exception;
 	
 	public void setOriginalSurveyResults(Map<String, Object> originalSurveyResults){
@@ -32,7 +42,7 @@ public abstract class Plugin{
 		}
 	}
 	
-	public boolean hasExtraDebug(Map<String, Object> config, String extraDebugParam){
+	protected boolean hasExtraDebug(Map<String, Object> config, String extraDebugParam){
 		boolean result=false;
 		if (config.containsKey(extraDebugParam)){
 			if (String.class.isAssignableFrom(config.get(extraDebugParam).getClass()))  result="true".equalsIgnoreCase((String)config.get(extraDebugParam));

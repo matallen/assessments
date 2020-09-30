@@ -21,7 +21,7 @@ public class RemovePIIAnswersPlugin extends Plugin{
 	
 
 	@Override
-	public void setConfig(Map<String, Object> config){}
+	public Plugin setConfig(Map<String, Object> config){ return this;}
 
 	@Override
 	public Map<String, Object> execute(String surveyId, String visitorId, Map<String, Object> surveyResults) throws Exception{

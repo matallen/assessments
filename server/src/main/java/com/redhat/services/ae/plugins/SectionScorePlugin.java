@@ -8,13 +8,26 @@ import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Lists;
 import com.redhat.services.ae.utils.Json;
 
-public class EmbeddedScoreTotalPlugin extends Plugin{
-	public static final Logger log=LoggerFactory.getLogger(EmbeddedScoreTotalPlugin.class);
-
+// EmbeddedScoreTotalPlugin
+public class SectionScorePlugin extends Plugin{
+	public static final Logger log=LoggerFactory.getLogger(SectionScorePlugin.class);
+	private String sectionScoreName="_sectionScore";
+	private String arithmaticMethod="average";
+	
 	@Override
-	public void setConfig(Map<String, Object> config){}
+	public Plugin setConfig(Map<String, Object> config){
+		sectionScoreName=getConfigValueAsString(config, "sectionScoreName", "_sectionScore");
+		arithmaticMethod=getConfigValueAsString(config, "arithmaticMethod", "average");
+		
+		if (!Lists.newArrayList("average","sum").contains(arithmaticMethod)){
+			throw new RuntimeException("property 'arithmaticMethod' must contain either 'average' or sum'");
+		}
+		
+		return this;
+	}
 
 	private Map<String,Integer> sectionScores=new HashMap<String, Integer>();
 	private Map<String,Integer> sectionTotals=new HashMap<String, Integer>();
@@ -29,18 +42,17 @@ public class EmbeddedScoreTotalPlugin extends Plugin{
 			
 			Map<String,Object> value=(Map<String,Object>)e.getValue();
 			
-//			System.out.println("XXX: value.contains('score')=="+value.containsKey("score") +"  AND value.contains('navigationTitle')=="+value.containsKey("navigationTitle"));
 			
 			if (value.containsKey("score")){
-				if (value.containsKey("navigationTitle")){
-					String navTitle=(String)value.get("navigationTitle");
+				if (value.containsKey("navigationTitle") || value.containsKey("pageId")){
+					String sectionName=(String)(value.containsKey("navigationTitle")?value.get("navigationTitle"):value.get("pageId"));
 					int score=Integer.class.isAssignableFrom(value.get("score").getClass())?(Integer)value.get("score"):0; // it must be an integer score, I dont want to deal with string conversions
 					
-					log.debug(questionId+"::Adding score "+score+" to section ["+navTitle+"]");
+					log.debug(questionId+"::Adding score "+score+" to section ["+sectionName+"]");
 					
-					sectionTotals.put(navTitle, sectionTotals.containsKey(navTitle)?sectionTotals.get(navTitle)+score:score);
-					sectionCounts.put(navTitle, sectionCounts.containsKey(navTitle)?sectionCounts.get(navTitle)+1:1);
-					sectionScores.put(navTitle, sectionTotals.get(navTitle)/sectionCounts.get(navTitle));
+					sectionTotals.put(sectionName, sectionTotals.containsKey(sectionName)?sectionTotals.get(sectionName)+score:score);
+					sectionCounts.put(sectionName, sectionCounts.containsKey(sectionName)?sectionCounts.get(sectionName)+1:1);
+					sectionScores.put(sectionName, sectionTotals.get(sectionName)/sectionCounts.get(sectionName));
 					
 				}else{
 					log.error("This question ("+questionId+") has a score ("+value.get("score")+"), so it should have a navigationTitle too to know which section to add it to ("+value.containsKey("navigationTitle")+"). It's score is being omitted");
@@ -49,7 +61,11 @@ public class EmbeddedScoreTotalPlugin extends Plugin{
 			
 		}
 		
-		surveyResults.put("_sectionScore", sectionScores);
+		if ("sum".equalsIgnoreCase(arithmaticMethod)){
+			surveyResults.put(sectionScoreName, sectionTotals);
+		}else{
+			surveyResults.put(sectionScoreName, sectionScores);
+		}
 		
 		if (sectionScores.size()<=0){
 			log.error(this.getClass().getSimpleName()+":: Likely error -> no scores detected therefore no section average scores!");

@@ -65,16 +65,16 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 	}
 	
 	@Override
-	public void setConfig(Map<String, Object> config){
-		decisionTableLocation=(String)config.get("decisionTableLocation");
+	public Plugin setConfig(Map<String, Object> config){
+		decisionTableLocation=getConfigValueAsString(config, "decisionTableLocation", null);
 		decisionTableId=decisionTableLocation.substring(decisionTableLocation.lastIndexOf("/")+1);
-		extraDebug=super.hasExtraDebug(config, "extraDebug");
-		thresholdSection=(String)config.get("thresholdSection");
-		configSheetName=(String)config.get("configSheetName");
+		thresholdSection=getConfigValueAsString(config, "thresholdSection", null);
+		configSheetName=getConfigValueAsString(config, "configSheetName", null);
+		extraDebug=hasExtraDebug(config, "extraDebug");
 		
 		if (null==configSheetName) throw new RuntimeException("'configSheetName' in "+this.getClass().getSimpleName()+" plugin must be set");
 		if (null==thresholdSection) throw new RuntimeException("'thresholdSection' in "+this.getClass().getSimpleName()+" plugin must be set");
-		
+		return this;
 	}
 	
   

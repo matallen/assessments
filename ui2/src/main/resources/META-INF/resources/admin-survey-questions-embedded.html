@@ -205,10 +205,12 @@
 				//var allowedQuestionTypes = ["checkbox", "radiogroup", "dropdown", "imagepicker", "html" ];
 				//var creatorOptions = { showLogicTab: true, questionTypes: allowedQuestionTypes };
 				var creatorOptions = { showLogicTab: true }
+				var creatorOptions = { showLogicTab: true, haveCommercialLicense: true }
 						
 				
 				Survey.Survey.cssType = "bootstrap";
 				var creator = new SurveyCreator.SurveyCreator("creatorElement", creatorOptions);
+				creator.haveCommercialLicense = true;
 				creator.showToolbox = "right";
 				creator.showPropertyGrid = "right";
 				creator.rightContainerActiveItem("toolbox");

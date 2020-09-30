@@ -12,11 +12,14 @@ import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.redhat.services.ae.Database;
+import com.redhat.services.ae.MapBuilder;
 import com.redhat.services.ae.controllers.TestBase;
 import com.redhat.services.ae.model.Survey;
 import com.redhat.services.ae.utils.Json;
 
-public class AddTitleAndScorePluginTest extends TestBase{
+import junit.framework.Assert;
+
+public class SectionScorePluginTest extends TestBase{
 
 	@BeforeEach
 	public void init() throws FileNotFoundException, IOException{
@@ -30,10 +33,8 @@ public class AddTitleAndScorePluginTest extends TestBase{
 //		s.setQuestions(setupQuestions());
 	}
 
-	@Test
-	public void test1() throws Exception{
-		
-		String questionsJson=
+	private String getQuestions(){
+		return
 		"{                                                                                 "+
 		" \"pages\": [                                                                     "+
 		"  {                                                                               "+
@@ -53,31 +54,91 @@ public class AddTitleAndScorePluginTest extends TestBase{
 		"       \"value\": \"20#software\",                                                "+
 		"       \"text\": \"Software Engineering\",                                        "+
 		"       \"score\": \"2\"                                                           "+
+		"      }                                                                           "+
+		"     ]                                                                            "+
+		"    },                                                                            "+
+		"    {                                                                             "+
+		"     \"type\": \"radiogroup\",                                                    "+
+		"     \"name\": \"q2\",                                                            "+
+		"     \"title\": \"Question 2\",                                                   "+
+		"     \"choices\": [                                                               "+
+		"      {                                                                           "+
+		"       \"value\": \"15#answer1\",                                                 "+
+		"       \"text\": \"Answer 1\",                                                    "+
+		"       \"score\": \"1\"                                                           "+
 		"      },                                                                          "+
 		"      {                                                                           "+
-		"       \"value\": \"30#Operations\",                                              "+
-		"       \"text\": \"Operations and software/infrastructure  support\",             "+
-		"       \"score\": \"3\"                                                           "+
+		"       \"value\": \"20#software\",                                                "+
+		"       \"text\": \"Answer 2\",                                                    "+
+		"       \"score\": \"2\"                                                           "+
 		"      }                                                                           "+
 		"     ]                                                                            "+
 		"    }                                                                             "+
 		"   ]}                                                                             "+
 		"]}                                                                                "+
 		"";
+	}
+	
+	@Test
+	public void testAverage() throws Exception{
+
 		String answersJson=                                                                    
 		"{                                                                                 "+
-		" \"q1\": \"10#infra\"                                                             "+
+		" \"q1\": \"10#infra\",                                                            "+
+		" \"q2\": \"15#answer1\"                                                           "+
 		"}                                                                                 "+
 		"";
 		Survey s=Survey.builder().id("test1").name("Test Survey").build();
-		s.setQuestionsAsString(questionsJson);
+		s.setQuestionsAsString(getQuestions());
 		s.saveQuestions();
 		s.save();
 		
 		Map<String,Object> answers=Json.toObject(answersJson, new TypeReference<HashMap<String,Object>>(){});
 		System.out.println("from:"+Json.toJson(answers));
-		Map<String, Object> newData=new AddTitleAndScorePlugin().execute("test1", "TEST_VISITOR_ID", answers);
-		System.out.println("to:"+Json.toJson(newData));
+		answers=new AddTitleAndScorePlugin().setConfig(null).execute("test1", "TEST_VISITOR_ID", answers);
+		
+		
+		SectionScorePlugin test=new SectionScorePlugin();
+		test.setConfig(new MapBuilder<String,Object>()
+				.put("arithmaticMethod", "average")
+				.build());
+		answers=test.execute("test1", "TEST_VISITOR_ID", answers);
+		System.out.println("to:"+Json.toJson(answers));
+		
+		
+		Assert.assertEquals(12, ((Map)answers.get("_sectionScore")).get("page1"));
+		
+	}
+	
+	@Test
+	public void testSumTotal() throws Exception{
+
+		String answersJson=                                                                    
+		"{                                                                                 "+
+		" \"q1\": \"10#infra\",                                                            "+
+		" \"q2\": \"15#answer1\"                                                           "+
+		"}                                                                                 "+
+		"";
+		Survey s=Survey.builder().id("test1").name("Test Survey").build();
+		s.setQuestionsAsString(getQuestions());
+		s.saveQuestions();
+		s.save();
+		
+		Map<String,Object> answers=Json.toObject(answersJson, new TypeReference<HashMap<String,Object>>(){});
+		System.out.println("from:"+Json.toJson(answers));
+		answers=new AddTitleAndScorePlugin().setConfig(null).execute("test1", "TEST_VISITOR_ID", answers);
+		
+		
+		SectionScorePlugin test=new SectionScorePlugin();
+		test.setConfig(new MapBuilder<String,Object>()
+				.put("arithmaticMethod", "sum")
+				.build());
+		answers=test.execute("test1", "TEST_VISITOR_ID", answers);
+		System.out.println("to:"+Json.toJson(answers));
+		
+		
+		Assert.assertEquals(25, ((Map)answers.get("_sectionScore")).get("page1"));
+		
 	}
 	
 	

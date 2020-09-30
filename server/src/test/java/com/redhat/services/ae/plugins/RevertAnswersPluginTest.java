@@ -28,7 +28,7 @@ public class RevertAnswersPluginTest extends TestBase{
 		
 		Map<String, Object> newAnswers=dummyAnswers();
 		newAnswers=new AddTitleAndScorePlugin().execute("test1", "TEST_VISITOR_ID", newAnswers);
-		newAnswers=new EmbeddedScoreTotalPlugin().execute("test1", "TEST_VISITOR_ID", newAnswers);
+		newAnswers=new SectionScoreAveragePlugin().execute("test1", "TEST_VISITOR_ID", newAnswers);
 		
 		
 		RevertAnswersPlugin p=new RevertAnswersPlugin();

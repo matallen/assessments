@@ -37,10 +37,6 @@ public class ExtractScoreFromValuePlugin extends Plugin{
 	 */
 	
 	
-	@Override
-	public void setConfig(Map<String, Object> config){
-	}
-	
 	
 	public Pair<String,Integer> splitThis(String answer){
 		int score=0; // default score is 1 point for everything
@@ -93,6 +89,13 @@ public class ExtractScoreFromValuePlugin extends Plugin{
 		
 		
 		return result;
+	}
+
+
+	@Override
+	public Plugin setConfig(Map<String, Object> config){
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

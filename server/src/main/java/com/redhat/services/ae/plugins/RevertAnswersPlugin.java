@@ -14,10 +14,12 @@ public class RevertAnswersPlugin extends Plugin{
 	private String fieldsToRetainRegEx;
 	
 	@Override
-	public void setConfig(Map<String, Object> config){
+	public Plugin setConfig(Map<String, Object> config){
 		fieldsToRetainRegEx=(String)config.get("fieldsToRetainRegEx");
 		
 		if (null==fieldsToRetainRegEx) throw new RuntimeException("RevertAnswersPlugin not configured. Missing 'fieldsToRetainRegEx'.");
+		
+		return this;
 	}
 
 	@Override
