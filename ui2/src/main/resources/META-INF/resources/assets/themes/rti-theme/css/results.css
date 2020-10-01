@@ -126,3 +126,27 @@ div.tab-pane table tbody tr td.level2{
 }
 
 
+.links tr{
+	border-bottom: 1px solid #eee;
+}
+.links tr td{
+	vertical-align: top;
+	padding: 9px 0px 7px 0px;
+}
+.links tr td:first-child{
+	width: 33.33333333%;
+	padding-right: 10px;
+}
+.links tr td:nth-child(2){
+	padding-left: 10px;
+}
+/*
+.level2{
+	padding-bottom: 30px !important;
+}
+
+.level1{
+    color: red;
+    padding-top: 30px !important;
+}
+*/

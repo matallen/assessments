@@ -311,17 +311,24 @@
 					for(var l2 in report[section][l1]){
 						html+=`<tr><td class='level2'>`;
 						if (l2!="") html+=`<h4>`+l2+`</h4>`;
+						var hasLink=false;
 						for (var i in report[section][l1][l2]){
 							var content=report[section][l1][l2][i];
 							if (content.startsWith("LINK:")){
+								if (!hasLink) html+=`<table class="links">`;
+								hasLink=true;
 								content=content.substr(5);
 								var contentSplit=content.split("|");
 								var url=contentSplit[0],name=contentSplit[1],description=contentSplit[2];
-								html+=`<div class="row row-asset-links"><div class="col-md-4"><a href='`+url+`' target='_new'>`+name+`</a></div><div class="col-md-8">`+description+`</div></div>`;
+								//html+=`<div class="row row-asset-links"><div class="col-md-4"><a href='`+url+`' target='_new'>`+name+`</a></div><div class="col-md-8">`+description+`</div></div>`;
+								html+=`<tr><td><a href='`+url+`' target='_new'>`+name+`</a></td><td>`+description+`</td></tr>`;
+								
 							}else{
 								html+=`<p>`+content+`</p>`;
 							}
 						}
+						if (hasLink)
+							html+=`</table>`;
 						html+=`</td></tr>`;
 					}
 				}
@@ -369,10 +376,20 @@
 <!-- https://printjs.crabbly.com/ -->
 <link rel="stylesheet" href="/assets/css/print.min.css"></link>
 <script src="/assets/js/print.min.js"></script>
+<!--
+-->
+
+<!--
+v 1.4
+<script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+<link rel="stylesheet" href="https://printjs-4de6.kxcdn.com/print.min.css"></link>
+-->
+  
 <div id="printable">
 
 </div>
- 
+
+
 <script>
 
 $('#retake_assessment').on('click', function() {
@@ -412,11 +429,26 @@ $(document).ready(function(){
 		});
 		$('body').scrollTop(0);
 		//createPDF();
+		
+		// TODO: this fiddling with padding is to make it print properly because I dont know why there are sections that overlap text in the current version on printjs, maybe it'll be fixed in a later edition
+		var saved1=$(".level1").css("padding-bottom");
+		var saved2=$(".level2").css("padding-bottom");
+		$(".level1").css("padding-bottom", "40px");
+		$(".level2:nth-child(1)").css("padding-bottom", "90px");
 		printPDF();
+		$(".level1").css("padding-bottom", saved1);
+		$(".level2").css("padding-bottom", saved2);
+		
 		function printPDF(){
 			$("page").width(500);
 			//printJS({ printable: 'page', type: 'html'});
-			printJS({ printable: 'printable', type: 'html'});
+			printJS({ 
+				printable: 'printable', 
+				type: 'html',
+				css: ['assets/css/printpdf.css'],
+				targetStyles: ['*'],//'font-family','font','margin','font-size','text-align','font-weight','border','margin-top','margin-bottom']
+				//style: 'h2 {	color: red; }'
+			});
 			cleanupPrintArea();
 		}
 		function createPDF(){
