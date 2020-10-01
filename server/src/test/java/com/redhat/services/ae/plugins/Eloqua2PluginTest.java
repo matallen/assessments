@@ -72,7 +72,7 @@ public class Eloqua2PluginTest extends TestBase{
 		answers=new AddTitleAndScorePlugin().execute(surveyId, visitorId, answers);
 		System.out.println("AddTitleAndScorePlugin:: To:\n"+Json.toJson(answers));
 		
-		answers=new SectionScoreAveragePlugin().execute(surveyId, visitorId, answers);
+		answers=new SectionScorePlugin().execute(surveyId, visitorId, answers);
 		System.out.println("EmbeddedScoreTotalPlugin:: To:\n"+Json.toJson(answers));
 
 		
