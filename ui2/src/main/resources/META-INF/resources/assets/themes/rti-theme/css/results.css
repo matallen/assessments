@@ -133,7 +133,9 @@ div.tab-pane table tbody tr td.level2{
 	vertical-align: top;
 	padding: 9px 0px 7px 0px;
 }
-.links tr td:first-child{
+.links tr td:first-child,
+.links tbody tr td:first-child
+{
 	width: 33.33333333%;
 	padding-right: 10px;
 }
