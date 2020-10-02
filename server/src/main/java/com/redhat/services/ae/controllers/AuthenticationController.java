@@ -40,23 +40,59 @@ public class AuthenticationController{
 	@Context
 	UriInfo uri;
 
-	private static final String IPV4_REGEX =
-			"^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
-			"(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
-			"(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
-			"(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
-	private static final Pattern IPv4_PATTERN = Pattern.compile(IPV4_REGEX);
+	
+	enum SameSite{Strict,Lax,None}
+	class Cookie{
+		private static final String IPV4_REGEX =
+				"^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
+				"(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
+				"(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\." +
+				"(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
+		private final Pattern IPv4_PATTERN = Pattern.compile(IPV4_REGEX);
+		protected String name,value,domain,path,maxAge,sameSite,secure,httpOnly;
+		public Cookie name(String v){this.name=v;return this;}
+		public Cookie value(String v){this.value=v;return this;}
+		public Cookie path(String v){this.path=v;return this;}
+		public Cookie domainStr(String v){this.domain=v;return this;}
+		public Cookie domainUrl(String v){this.domain=getDomainForCookie(v);return this;}
+		public Cookie maxAge(Integer v){this.maxAge=String.valueOf(v);return this;}
+		public Cookie maxAge(String v){this.maxAge=v;return this;}
+		public Cookie httpOnly(boolean v){this.httpOnly=v?"HttpOnly":null;return this;}
+		public Cookie secure(boolean v){this.secure=v?"Secure":null;return this;}
+		public Cookie sameSite(SameSite v){this.sameSite=v.name();return this;}
+		public String build(){
+			return name+"="+value+";"+
+					(path!=null?  "Path="+path+";":"")+
+					(domain!=null?"Domain="+domain+";":"")+
+					(maxAge!=null?"Max-Age="+maxAge+";":"")+
+					(httpOnly!=null?httpOnly+";":"")+
+					(secure!=null?secure+";":"")+
+					(sameSite!=null?"SameSite="+sameSite+";":"")+
+					"";
+		}
+		private String getDomainForCookie(String url){
+			String r=url;
+			if (r.matches("http.*://.*"))
+				r=r.substring(r.indexOf("://")+"://".length());
+			if (r.contains(":")) r=r.substring(0, r.lastIndexOf(":"));
+			if (r.contains("/")) r=r.substring(0, r.indexOf("/"));
+			if (IPv4_PATTERN.matcher(r).matches()){
+				// do nothing
+			}else{
+				r=r.startsWith("www.")?r.substring(4):r;
+				
+				if (r.contains(".")){
+					int lastDot=r.lastIndexOf(".");
+					if (r.substring(0,lastDot).contains(".")){
+						r=r.substring(r.substring(0,lastDot).lastIndexOf("."));
+					}
+				}
+			}
 
-	public static String getDomainName(String url, boolean stripSubdomain) throws URISyntaxException {
-    URI uri = new URI(url);
-    String domain = uri.getHost();
-    boolean isIp=IPv4_PATTERN.matcher(domain).matches();
-    if (isIp) return domain;
-    
-    domain=domain.startsWith("www.") ? domain.substring(4) : domain;
-    if (!isIp && stripSubdomain) domain=domain.substring(domain.indexOf(".")+1);
-    return domain;
+			return r;
+		}
 	}
+	
 	
 	@POST
 	@Path("/login")
@@ -79,17 +115,46 @@ public class AuthenticationController{
 				Long ttlMins=Long.parseLong(ConfigProvider.getConfig().getValue("modules.login.jwt.ttlInMins", String.class));
 				
 				String jwtToken=Jwt.createJWT(jwtClaims, ttlMins*60);
-				String domainName=getDomainName(uri.getBaseUri().toString(), true);
+//				String domainName=getDomainName(uri.getBaseUri().toString(), true);
 
-				if (uri.getRequestUri().toString().contains("localhost")){
-					domainName="";//getDomainName(uri.getBaseUri().toString(), true); // for dev purposes
-				}else
-					domainName=getDomainName(params.get("onSuccess"), true);
+//				if (uri.getRequestUri().toString().contains("localhost")){
+//					domainName="localhost";//getDomainName(uri.getBaseUri().toString(), true); // for dev purposes
+//				}else
+//					domainName=getDomainName(params.get("onSuccess"), true);
 				
 //				domainName="";
 				
+				
 //				System.out.println("domain name="+domainName);
 //				log.info("returning jwt token in cookie rh_cat_jwt: "+jwtToken);
+//				domainName="*";
+//				domainName="localhost:8081";
+//				domainName="192.168.1.29:8081";
+//				domainName=".redhat.com";
+				
+				Cookie cookie=new Cookie()
+						.name("rh_cat_jwt")
+						.value(jwtToken)
+						.path("/")
+						.domainUrl(params.get("onSuccess"))
+//						.domain(domainName)
+//						.maxAge(60*60*24) // if unset it's a Session cookie
+//						.maxAge("Session")
+						.sameSite(SameSite.Lax)
+//						.secure(true)
+//						.build()
+						;
+				
+				System.out.println("requestUri="+uri.getRequestUri().toString());
+				System.out.println("cookie.domain="+cookie.domain);
+				System.out.println("onsuccess="+params.get("onSuccess"));
+				
+//				String fakeCookie="rh_cat_jwt=${TOKEN};Path=/;Domain="+domainName+";Max-Age="+(60*60)+"; SameSite=None;";
+//				String cookie="rh_cat_jwt="+jwtToken+";Path=/;Domain="+domainName+";Max-Age="+(60*60)+"; SameSite=None;";
+				
+//				String cookie="rh_cat_jwt="+jwtToken+";Max-Age="+(60*60)+"; SameSite=None;";
+				
+				System.out.println("RETURNING JWT COOKIE: "+cookie.build());
 				
 				return Response.status(302)
 						.location(new URI(params.get("onSuccess")))
@@ -100,7 +165,7 @@ public class AuthenticationController{
 //						.cookie(new NewCookie("rh_cat_jwt", jwtToken, "/", domainName, "__SAME_SITE_NONE__", 60*60 /*1hr*/, false, false))
 
 						// TODO: need to make the cookie cross-domain so it works when accessed using a CNAME domain name
-						.header("Set-Cookie", "rh_cat_jwt="+jwtToken+";Path=/;Domain="+domainName+";Max-Age="+(60*60)+"; SameSite=none;")
+						.header("Set-Cookie", cookie.build())
 						.build();
 				
 			}else{
