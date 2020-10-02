@@ -17,7 +17,7 @@ import com.redhat.services.ae.controllers.TestBase;
 import com.redhat.services.ae.model.Survey;
 import com.redhat.services.ae.utils.Json;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 public class SectionScorePluginTest extends TestBase{
 
@@ -95,12 +95,12 @@ public class SectionScorePluginTest extends TestBase{
 		
 		Map<String,Object> answers=Json.toObject(answersJson, new TypeReference<HashMap<String,Object>>(){});
 		System.out.println("from:"+Json.toJson(answers));
-		answers=new AddTitleAndScorePlugin().setConfig(null).execute("test1", "TEST_VISITOR_ID", answers);
+		answers=new AddTitleAndScorePlugin().execute("test1", "TEST_VISITOR_ID", answers);
 		
 		
 		SectionScorePlugin test=new SectionScorePlugin();
 		test.setConfig(new MapBuilder<String,Object>()
-				.put("arithmaticMethod", "average")
+				.put("scoreStrategy", "average")
 				.build());
 		answers=test.execute("test1", "TEST_VISITOR_ID", answers);
 		System.out.println("to:"+Json.toJson(answers));
@@ -126,12 +126,12 @@ public class SectionScorePluginTest extends TestBase{
 		
 		Map<String,Object> answers=Json.toObject(answersJson, new TypeReference<HashMap<String,Object>>(){});
 		System.out.println("from:"+Json.toJson(answers));
-		answers=new AddTitleAndScorePlugin().setConfig(null).execute("test1", "TEST_VISITOR_ID", answers);
+		answers=new AddTitleAndScorePlugin().execute("test1", "TEST_VISITOR_ID", answers);
 		
 		
 		SectionScorePlugin test=new SectionScorePlugin();
 		test.setConfig(new MapBuilder<String,Object>()
-				.put("arithmaticMethod", "sum")
+				.put("scoreStrategy", "sum")
 				.build());
 		answers=test.execute("test1", "TEST_VISITOR_ID", answers);
 		System.out.println("to:"+Json.toJson(answers));

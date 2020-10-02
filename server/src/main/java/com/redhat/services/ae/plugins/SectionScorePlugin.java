@@ -15,14 +15,14 @@ import com.redhat.services.ae.utils.Json;
 public class SectionScorePlugin extends Plugin{
 	public static final Logger log=LoggerFactory.getLogger(SectionScorePlugin.class);
 	private String sectionScoreName="_sectionScore";
-	private String arithmaticMethod="average";
+	private String scoreStrategy="average";
 	
 	@Override
 	public Plugin setConfig(Map<String, Object> config){
 		sectionScoreName=getConfigValueAsString(config, "sectionScoreName", "_sectionScore");
-		arithmaticMethod=getConfigValueAsString(config, "arithmaticMethod", "average");
+		scoreStrategy=getConfigValueAsString(config, "scoreStrategy", "average");
 		
-		if (!Lists.newArrayList("average","sum").contains(arithmaticMethod)){
+		if (!Lists.newArrayList("average","sum").contains(scoreStrategy)){
 			throw new RuntimeException("property 'arithmaticMethod' must contain either 'average' or sum'");
 		}
 		
@@ -61,7 +61,7 @@ public class SectionScorePlugin extends Plugin{
 			
 		}
 		
-		if ("sum".equalsIgnoreCase(arithmaticMethod)){
+		if ("sum".equalsIgnoreCase(scoreStrategy)){
 			surveyResults.put(sectionScoreName, sectionTotals);
 		}else{
 			surveyResults.put(sectionScoreName, sectionScores);

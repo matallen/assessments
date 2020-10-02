@@ -11,7 +11,13 @@ import com.redhat.services.ae.MapBuilder;
 import mjson.Json;
 
 public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
-
+	
+	private String scoreStrategy="highest";
+	private Map<String,String> addQuestionFields=new MapBuilder<String,String>()
+			.put("title", "title")
+			.put("pageId", "page/name")
+			.put("navigationTitle", "page/navigationTitle")
+			.build();
 	/**
 	 * 
 	 * This plugin does multiple jobs:
@@ -21,12 +27,13 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 	 * 
 	 */
 	
+	@Override
+	public Plugin setConfig(Map<String, Object> config){
+		if (config.containsKey("scoreStrategy")) scoreStrategy=(String)config.get("scoreStrategy");
+		if (config.containsKey("addQuestionFields")) addQuestionFields=(Map<String,String>)config.get("addQuestionFields");
+		return this;
+	}
 	
-//	private String getPageName(Json question){
-//		Json page=getPageJson(question);
-//		if (null!=page) return page.at("name").asString();
-//		return null;
-//	}
 	
 	private Json getPageJson(Json question){
 		int i=0;
@@ -65,32 +72,49 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 	@Override
 	public Map<String, Object> OnMultipleStringAnswers(String questionId, List<String> answers, Json question){
 		
-		int highestScore=-1; /// for RTI v2 we are going to take the highest score vs average or any other complex calc
+		int score=-1; /// for RTI v2 we are going to take the highest score vs average or any other complex calc
 		
 		List<String> newAnswers=new ArrayList<>();
 		for (String answerString:answers){
 			Answer answerSplit=splitThis((String)answerString);
 			if (answerSplit.score>=0){
-				highestScore=Math.max(answerSplit.score, highestScore);
+				if ("sum".equalsIgnoreCase(scoreStrategy)){
+					if (score==-1) score=0; // this is so we can use -1 as "unset", but that += doesnt start counting at -1
+					score+=answerSplit.score;
+				}else{ // by default take the highest
+					score=Math.max(answerSplit.score, score);
+				}
 			}
 			newAnswers.add(answerSplit.text);
 		}
 		
 		Map<String,Object> answerData=new MapBuilder<String,Object>().put("answers", newAnswers).build();
 		
-		common(highestScore, question, answerData);
+		common(score, question, answerData);
 		
 		return answerData;
 	}
 	
 	private void common(int score, Json question, Map<String,Object> answerData){
 		if (score>=0) answerData.put("score", score);
-		if (question.has("title")) answerData.put("title", question.at("title").asString());
 		Json pageJson=getPageJson(question);
-		if (null!=pageJson){
-			answerData.put("pageId", pageJson.at("name").asString());
-			if (pageJson.has("navigationTitle")) answerData.put("navigationTitle", pageJson.at("navigationTitle").asString());
+		for(Entry<String, String> e:addQuestionFields.entrySet()){
+			if (e.getValue().startsWith("page/")){
+				String value=e.getValue().split("/")[1];
+				if (pageJson!=null){
+					if (pageJson.has(value)) answerData.put(e.getKey(), pageJson.at(value).asString());
+				}
+			}else{ // question level
+				if (question.has(e.getValue())) answerData.put(e.getKey(), question.at(e.getValue()).asString());		
+			}
 		}
+		
+//		if (question.has("title")) answerData.put("title", question.at("title").asString());
+//		Json pageJson=getPageJson(question);
+//		if (null!=pageJson){
+//			answerData.put("pageId", pageJson.at("name").asString());
+//			if (pageJson.has("navigationTitle")) answerData.put("navigationTitle", pageJson.at("navigationTitle").asString());
+//		}
 	}
 	
 	@Override
