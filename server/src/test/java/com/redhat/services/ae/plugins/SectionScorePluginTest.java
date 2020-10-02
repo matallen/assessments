@@ -80,7 +80,7 @@ public class SectionScorePluginTest extends TestBase{
 	}
 	
 	@Test
-	public void testAverage() throws Exception{
+	public void testAverageScoreBySection() throws Exception{
 
 		String answersJson=                                                                    
 		"{                                                                                 "+
@@ -95,12 +95,19 @@ public class SectionScorePluginTest extends TestBase{
 		
 		Map<String,Object> answers=Json.toObject(answersJson, new TypeReference<HashMap<String,Object>>(){});
 		System.out.println("from:"+Json.toJson(answers));
-		answers=new AddTitleAndScorePlugin().execute("test1", "TEST_VISITOR_ID", answers);
+		answers=new AddTitleAndScorePlugin().setConfig(new MapBuilder<String,Object>()
+				.put("addQuestionFields", new MapBuilder<String,Object>()
+						.put("pageId", "page/name")
+						.build())
+				.build())
+				.execute("test1", "TEST_VISITOR_ID", answers);
 		
 		
 		SectionScorePlugin test=new SectionScorePlugin();
 		test.setConfig(new MapBuilder<String,Object>()
 				.put("scoreStrategy", "average")
+				.put("scoreBy", "section")
+				.put("sectionTitle", "pageId")
 				.build());
 		answers=test.execute("test1", "TEST_VISITOR_ID", answers);
 		System.out.println("to:"+Json.toJson(answers));
@@ -111,7 +118,45 @@ public class SectionScorePluginTest extends TestBase{
 	}
 	
 	@Test
-	public void testSumTotal() throws Exception{
+	public void testSumScoreBySection() throws Exception{
+
+		String answersJson=                                                                    
+		"{                                                                                 "+
+		" \"q1\": \"10#infra\",                                                            "+
+		" \"q2\": \"15#answer1\"                                                           "+
+		"}                                                                                 "+
+		"";
+		Survey s=Survey.builder().id("test1").name("Test Survey").build();
+		s.setQuestionsAsString(getQuestions());
+		s.saveQuestions();
+		s.save();
+		
+		Map<String,Object> answers=Json.toObject(answersJson, new TypeReference<HashMap<String,Object>>(){});
+		System.out.println("from:"+Json.toJson(answers));
+		answers=new AddTitleAndScorePlugin().setConfig(new MapBuilder<String,Object>()
+				.put("addQuestionFields", new MapBuilder<String,Object>()
+						.put("pageId", "page/name")
+						.build())
+				.build())
+				.execute("test1", "TEST_VISITOR_ID", answers);
+		
+		
+		SectionScorePlugin test=new SectionScorePlugin();
+		test.setConfig(new MapBuilder<String,Object>()
+				.put("scoreStrategy", "sum")
+				.put("scoreBy", "section")
+				.put("sectionTitle", "pageId")
+				.build());
+		answers=test.execute("test1", "TEST_VISITOR_ID", answers);
+		System.out.println("to:"+Json.toJson(answers));
+		
+		
+		Assert.assertEquals(25, ((Map)answers.get("_sectionScore")).get("page1"));
+		
+	}
+	
+	@Test
+	public void testSumScoreByOverallSurvey() throws Exception{
 
 		String answersJson=                                                                    
 		"{                                                                                 "+
@@ -132,12 +177,13 @@ public class SectionScorePluginTest extends TestBase{
 		SectionScorePlugin test=new SectionScorePlugin();
 		test.setConfig(new MapBuilder<String,Object>()
 				.put("scoreStrategy", "sum")
+				.put("scoreBy", "survey")
 				.build());
 		answers=test.execute("test1", "TEST_VISITOR_ID", answers);
 		System.out.println("to:"+Json.toJson(answers));
 		
 		
-		Assert.assertEquals(25, ((Map)answers.get("_sectionScore")).get("page1"));
+		Assert.assertEquals(25, ((Map)answers.get("_sectionScore")).get("survey"));
 		
 	}
 	
