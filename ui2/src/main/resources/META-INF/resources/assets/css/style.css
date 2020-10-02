@@ -16,7 +16,7 @@ section .elevate{
 }
 
 .py-1 .elevate textarea{
-	font-family: Overpass;
+	font-family: Overpass,sans-serif;
 	line-height: 1.2;
 }
 	

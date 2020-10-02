@@ -57,8 +57,8 @@ public class AuthenticationController{
 		public Cookie domainUrl(String v){this.domain=getDomainForCookie(v);return this;}
 		public Cookie maxAge(Integer v){this.maxAge=String.valueOf(v);return this;}
 		public Cookie maxAge(String v){this.maxAge=v;return this;}
-		public Cookie httpOnly(boolean v){this.httpOnly=v?"HttpOnly":null;return this;}
-		public Cookie secure(boolean v){this.secure=v?"Secure":null;return this;}
+		public Cookie httpOnly(){this.httpOnly="HttpOnly";return this;}
+		public Cookie secure(){this.secure="Secure";return this;}
 		public Cookie sameSite(SameSite v){this.sameSite=v.name();return this;}
 		public String build(){
 			return name+"="+value+";"+
@@ -132,6 +132,11 @@ public class AuthenticationController{
 //				domainName="192.168.1.29:8081";
 //				domainName=".redhat.com";
 				
+//				Cookie cookie=new Cookie().name("rh_cat_jwt").value(jwtToken)
+//						.path("/").domainUrl(params.get("onSuccess")).sameSite(SameSite.Lax)
+////						.path("/").domainUrl(params.get("onSuccess")).secure().sameSite(SameSite.None)
+//						;
+				
 				Cookie cookie=new Cookie()
 						.name("rh_cat_jwt")
 						.value(jwtToken)
@@ -145,9 +150,9 @@ public class AuthenticationController{
 //						.build()
 						;
 				
-				System.out.println("requestUri="+uri.getRequestUri().toString());
-				System.out.println("cookie.domain="+cookie.domain);
-				System.out.println("onsuccess="+params.get("onSuccess"));
+//				System.out.println("requestUri="+uri.getRequestUri().toString());
+//				System.out.println("cookie.domain="+cookie.domain);
+//				System.out.println("onsuccess="+params.get("onSuccess"));
 				
 //				String fakeCookie="rh_cat_jwt=${TOKEN};Path=/;Domain="+domainName+";Max-Age="+(60*60)+"; SameSite=None;";
 //				String cookie="rh_cat_jwt="+jwtToken+";Path=/;Domain="+domainName+";Max-Age="+(60*60)+"; SameSite=None;";
