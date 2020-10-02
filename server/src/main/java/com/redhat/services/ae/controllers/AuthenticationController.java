@@ -159,7 +159,7 @@ public class AuthenticationController{
 				
 //				String cookie="rh_cat_jwt="+jwtToken+";Max-Age="+(60*60)+"; SameSite=None;";
 				
-				System.out.println("RETURNING JWT COOKIE: "+cookie.build());
+				System.out.println("RETURNING JWT COOKIE: "+cookie.build().replace(jwtToken, "${token}"));
 				
 				return Response.status(302)
 						.location(new URI(params.get("onSuccess")))
