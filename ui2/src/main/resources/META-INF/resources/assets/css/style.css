@@ -331,8 +331,8 @@ span.sv_q_required_text{
 }
 
 .loginForm{
-    width: 50%;
-   padding-left: 375px;
+  width: 50%;
+  margin: 0 auto;
 }
 
 
