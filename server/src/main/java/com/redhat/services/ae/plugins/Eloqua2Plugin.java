@@ -158,7 +158,7 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 			for (Entry<String, String> e:expressions.entrySet()){
 				try{
 					Object eval=MVEL.eval(e.getValue(), answers);
-					values.put(e.getKey(), eval.toString());
+					eloquaFields.put(e.getKey(), eval.toString());
 				}catch(Exception ex){
 					ex.printStackTrace();
 				}
