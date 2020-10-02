@@ -55,12 +55,38 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 		return null;
 	}
 	
+	private Answer findInQuestions(List<Json> questionChoices, String answerProvided){
+		Answer result=new Answer();
+		result.score=-1;
+		for (Json ans:questionChoices){
+			String qValue=ans.at("value").asString();
+			String qText=ans.at("text").asString();
+			
+			if (answerProvided.equals(qValue)){
+				if (ans.has("score"))
+					result.score=Integer.parseInt(ans.at("score").asString());
+				result.value=qValue;
+//				System.out.println("found answer in question 'score' property");
+				return result;
+			}
+		}
+		return result;
+	}
+	
+	private Answer getAnswerScore(String answer, Json question){
+		if (answer.contains("#")){ // get the score embedded in the answer. ie. "10#answer text"
+			return splitThis((String)answer);
+		}else{ // get the score from the question 'score' property
+			return findInQuestions(question.at("choices").asJsonList(), answer);
+		}
+	}
+	
 	@Override
 	public Map<String, Object> OnSingleStringAnswer(String questionId, String answer, Json question){
 		
-		Answer answerSplit=splitThis((String)answer);
+		Answer answerSplit=getAnswerScore(answer, question);
 		
-		Map<String,Object> answerData=new MapBuilder<String,Object>().put("answer", answerSplit.text).build();
+		Map<String,Object> answerData=new MapBuilder<String,Object>().put("answer", answerSplit.value).build();
 		
 		if (null==question) return answerData;
 
@@ -76,7 +102,8 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 		
 		List<String> newAnswers=new ArrayList<>();
 		for (String answerString:answers){
-			Answer answerSplit=splitThis((String)answerString);
+			Answer answerSplit=getAnswerScore(answerString, question);
+			
 			if (answerSplit.score>=0){
 				if ("sum".equalsIgnoreCase(scoreStrategy)){
 					if (score==-1) score=0; // this is so we can use -1 as "unset", but that += doesnt start counting at -1
@@ -85,7 +112,7 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 					score=Math.max(answerSplit.score, score);
 				}
 			}
-			newAnswers.add(answerSplit.text);
+			newAnswers.add(answerSplit.value);
 		}
 		
 		Map<String,Object> answerData=new MapBuilder<String,Object>().put("answers", newAnswers).build();
@@ -97,6 +124,8 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 	
 	private void common(int score, Json question, Map<String,Object> answerData){
 		if (score>=0) answerData.put("score", score);
+		
+		// now enrich with other question fields
 		Json pageJson=getPageJson(question);
 		for(Entry<String, String> e:addQuestionFields.entrySet()){
 			if (e.getValue().startsWith("page/")){
@@ -126,16 +155,16 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 	
 	
 	class Answer{
-		private String text;
+		private String value;
 		private int score;
 	}
 	
 	public Answer splitThis(String answer){
 		Answer result=new Answer();
 		result.score=-1; // default score is X point for everything
-		result.text=answer;
+		result.value=answer;
 		if (answer.contains("#")){
-			result.text=answer.split("#")[1];
+			result.value=answer.split("#")[1];
 			result.score=Integer.parseInt(answer.split("#")[0]);
 		}
 		return result;
