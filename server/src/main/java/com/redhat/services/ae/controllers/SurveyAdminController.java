@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
@@ -56,7 +57,7 @@ import com.redhat.services.ae.utils.StringUtils;
 @Path("/api/surveys")
 @Produces(MediaType.APPLICATION_JSON)
 @RequestScoped
-//@RolesAllowed({"Admin"})
+@RolesAllowed({"Admin"})
 public class SurveyAdminController{
 	public static final Logger log=LoggerFactory.getLogger(SurveyAdminController.class);
   @Inject JsonWebToken jwt;

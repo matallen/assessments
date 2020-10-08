@@ -84,16 +84,14 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 		}else{ // get the score from the question 'score' property
 			String questionType=question.at("type").asString();
 			
-			System.out.println("looking in question "+question.at("name").asString());
+//			System.out.println("looking in question "+question.at("name").asString());
 			
 			if (question.has("choices")){
 				return findInQuestions(question.at("choices").asJsonList(), answer);
 			}else{
-				log.error("Question has no 'choices', unable to determine score -> "+question.at("name").asString()+" ");
+				log.error("Answer didnt contain a # score delimiter, AND question has no 'choices', unable to determine score -> "+question.at("name").asString()+" ");
 //				throw new RuntimeException("Question has no 'choices' -> "+question.asString()+" ");
 				Answer a=new Answer(answer,-1);
-//				a.score=-1;
-//				a.value=answer;
 				return a;
 			}
 		}
