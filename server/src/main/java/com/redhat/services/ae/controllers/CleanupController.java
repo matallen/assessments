@@ -144,7 +144,6 @@ public class CleanupController{
 	private Pair<Boolean,Date> getParametersForPurge(String pTestMode, String pTargetDate, SimpleDateFormat sdf) throws ParseException{
 		Preconditions.checkArgument(pTargetDate!=null && pTargetDate.matches("[0-9]{2}-[a-zA-Z]{3}"), "'date' parameter needs to be provided and in 'YY-MMM' format. Found "+pTargetDate);
 		boolean testMode=pTestMode!=null && pTestMode.equalsIgnoreCase("true");
-		System.out.println("xxx"+pTargetDate);
 		Date targetDate=sdf.parse(pTargetDate);
 		log.debug("before date found: "+sdf.format(targetDate));
 		return new Pair<Boolean, Date>(testMode, targetDate);

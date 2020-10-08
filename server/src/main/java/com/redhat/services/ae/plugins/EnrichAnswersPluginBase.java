@@ -90,6 +90,7 @@ public abstract class EnrichAnswersPluginBase extends Plugin{
 	}
 	private void findInQuestion(mjson.Json question, Map<String, mjson.Json> questionsMapping){
 		if ("html".contains(question.at("type").asString())) return; // shortcut these controls since we dont want to know about them
+		System.out.println("Question:"+question.at("name").asString());
 		questionsMapping.put(question.at("name").asString(), question);
 	}
 	// ====

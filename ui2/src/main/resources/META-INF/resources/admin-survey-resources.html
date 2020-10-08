@@ -38,6 +38,9 @@
 	<link rel="stylesheet" href="assets/css/header.css">
 	<link rel="stylesheet" href="assets/css/style.css">
 	<link rel="stylesheet" href="assets/css/controls-slide-switch.css">
+	
+	<!--link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/fontawesome.min.css"-->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
@@ -93,24 +96,68 @@
 			<tbody id="content">
 				<tr>
 					<td>
-						<h2>Not yet implemented</h2>
+						<h2>Resources</h2>
 						<p>
 						 The purpose of this page is to upload images and other resources that the survey or report can show or link to
 						</p>
 						<!--
 						<textarea id="_resources" style="width: 100%; height: 800px;"></textarea>
 						-->
+						<!--
+						<input type="text" id="filename" name="filename"/>
+						-->
+						<input type="file" id="file" name="file"/>
+						<input type="button" value="Upload" onclick="return upload();"/>
+						<div id="progress-wrp">
+					    <div class="progress-bar"></div>
+					    <div class="status">0%</div>
+						</div>
+						
+						<div id="resourceList"></div>
+						
 					</td>
 				</tr>
+				<!--
 				<tr>
 					<td colspan="2">
 					<a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="#" onclick="alert('Be patient! I said this is not implemented yet!');">Save</a>
-					<!--a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="/admin.html">Cancel</a-->
+					<!--a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="/admin.html">Cancel</a->
 					</td>
 				</tr>
+				-->
 			</tbody>
 		</table>
 	</div>
+	
+	<style>
+#progress-wrp {
+  border: 1px solid #0099CC;
+  padding: 1px;
+  position: relative;
+  height: 30px;
+  border-radius: 3px;
+  margin: 10px;
+  text-align: left;
+  background: #fff;
+  box-shadow: inset 1px 3px 6px rgba(0, 0, 0, 0.12);
+}
+
+#progress-wrp .progress-bar {
+  height: 100%;
+  border-radius: 3px;
+  background-color: #c10000;
+  width: 0;
+  box-shadow: inset 1px 1px 10px rgba(0, 0, 0, 0.11);
+}
+
+#progress-wrp .status {
+  top: 3px;
+  left: 50%;
+  position: absolute;
+  display: inline-block;
+  color: #FFF;
+}
+	</style>
 	
 	<script>
 
@@ -123,38 +170,133 @@ $(document).ready(function() {
 	
 	if (undefined!=surveyId){
 		
-		Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/resources", function(status, survey){
-			// on success
-			$("#_resources").text(JSON.stringify(survey, null, 2));
-		}, function(status){
-			// on error
-			alert("Error: response code was "+status);
-		});
+		refreshDisplay();
 		
 	}else{
 		// Throw error message to page saying survey doesnt exist
 	}
 	
+//	attachUploadHandler();
+	
+	
+	
 });
 
-function nullToEmpty(v){ if (undefined!=v) return v; else return "";}
-function save(){
-	var data=$("#_plugins").val();
-	Http.send((undefined==surveyId?"POST":"PUT"), env.server+"/api/surveys"+(undefined==surveyId?"/?????":"/"+surveyId)+"/resources", JSON.parse(data), function(resp, status){
-		$("#_plugins").text(prettyPrint(resp.response));
-		showSuccess(200==status?"Saved Ok":"Save Error (Status: "+status+")");
-		//alert(200==status?"Saved Ok":"Save Error (Status: "+status+")");
+
+function refreshDisplay(){
+	Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/resources", function(status, resources){
+		updateDisplay(resources);
+	}, function(status){
+		// on error
 	});
 }
-function prettyPrint(jsonText){
-	return JSON.stringify(JSON.parse(jsonText), null, 2);
-}
-function populate(obj){ // html fields to javascript object
-	for (key in obj){
-		obj[key]=$("#_"+key).val();
+function updateDisplay(resources){
+	var html="<table>";
+	html+="<head><tr><th>File:</th><th>Relative Path (for use in questions & results):</th></tr></thead><tbody>";
+	for (var r in resources){
+		html+=`<tr><td><a href="`+resources[r]["path"]+`">`+resources[r]["name"]+`</a>`;
+		html+=`&nbsp;<a href="#" onclick="deleteResource('`+resources[r]["path"]+`');"><i class="fa fa-trash"></i></a>`;
+		html+=`</td><td>`+resources[r]["path"]+`</td></tr>`;
 	}
-	return obj
+	html+="</tbody></html>";
+	$("#resourceList").html(html);
 }
+
+function deleteResource(path){
+	Http.httpDelete(env.server+path, null, function(xhr, status){
+		//console.log("DELETE status="+status);
+		//console.log("DELETE xhr.response="+JSON.parse(xhr.response));
+		updateDisplay(JSON.parse(xhr.response));
+		if (200==status){
+		}else{
+		}
+	});
+}
+function attachUploadHandler(){
+	$("#file").on("change", function (e) {
+		upload($(this));
+	});
+}
+function upload(){
+	var file=$("#file")[0].files[0];
+	//var file = $(this)[0].files[0];
+	var upload = new Upload(file);
+
+	// mayby check size or type here with upload.getSize() and upload.getType()
+	console.log("file size: "+upload.getSize());
+	if (upload.getSize()>150000){
+		showSuccess("Cannot upload files more than 150k in size");
+		return;
+	}
+	
+	// execute upload
+	upload.doUpload();
+}
+
+
+var Upload = function (file) {
+    this.file = file;
+};
+Upload.prototype.getType = function() {
+    return this.file.type;
+};
+Upload.prototype.getSize = function() {
+    return this.file.size;
+};
+Upload.prototype.getName = function() {
+    return this.file.name;
+};
+Upload.prototype.doUpload = function () {
+    var that = this;
+    var formData = new FormData();
+
+    // add assoc key values, this will be posts values
+    formData.append("file", this.file, this.getName());
+    //formData.append("filename", "test1");
+    //formData.append("upload_file", true);
+
+    $.ajax({
+        type: "POST",
+        url: env.server+"/api/surveys/"+surveyId+"/resources",
+        xhr: function () {
+            var myXhr = $.ajaxSettings.xhr();
+            if (myXhr.upload) {
+                myXhr.upload.addEventListener('progress', that.progressHandling, false);
+            }
+            return myXhr;
+        },
+        success: function (data) {
+            // your callback here
+          //console.log("response.status="+JSON.stringify(data));
+        	showSuccess("File uploaded");
+        	updateDisplay(data);
+        },
+        error: function (error) {
+            // handle error
+        	showSuccess("Error: "+error);
+        },
+        async: true,
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        timeout: 60000
+    });
+};
+
+Upload.prototype.progressHandling = function (event) {
+    var percent = 0;
+    var position = event.loaded || event.position;
+    var total = event.total;
+    var progress_bar_id = "#progress-wrp";
+    if (event.lengthComputable) {
+        percent = Math.ceil(position / total * 100);
+    }
+    // update progressbars classes so it fits your code
+    $(progress_bar_id + " .progress-bar").css("width", +percent + "%");
+    $(progress_bar_id + " .status").text(percent + "%");
+};
+
 
 	</script>
 

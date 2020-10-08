@@ -1,5 +1,8 @@
 package com.redhat.services.ae.controllers;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
@@ -7,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
+import javax.imageio.ImageIO;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -23,10 +26,14 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
+import org.apache.commons.io.IOUtils;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 //import org.apache.commons.lang3.StringUtils;
 //import org.bson.types.ObjectId;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+//import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,19 +41,22 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.redhat.services.ae.Utils;
+import com.redhat.services.ae.model.MultipartBody;
 import com.redhat.services.ae.model.Survey;
 import com.redhat.services.ae.model.storage.Surveys;
+import com.redhat.services.ae.plugins.utils.MultipartReader;
+import com.redhat.services.ae.plugins.utils.MultipartReader.MultipartReaderResult;
 import com.redhat.services.ae.utils.Json;
 import com.redhat.services.ae.utils.StringUtils;
 
 //import io.quarkus.mongodb.panache.PanacheMongoEntity;
 //import io.quarkus.mongodb.panache.PanacheMongoEntityBase;
+//@Consumes(MediaType.APPLICATION_JSON)
 
 @Path("/api/surveys")
 @Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
 @RequestScoped
-@RolesAllowed({"Admin"})
+//@RolesAllowed({"Admin"})
 public class SurveyAdminController{
 	public static final Logger log=LoggerFactory.getLogger(SurveyAdminController.class);
   @Inject JsonWebToken jwt;
@@ -105,20 +115,18 @@ public class SurveyAdminController{
 	/** #### SURVEY HANDLERS ####  */
   
 	@GET
-	@RolesAllowed({"Admin"})
-	public Response list(){
+	public Response listSurveys(){
 		Surveys.reset(); // ensure to reload what's actually in the database
 		return Response.ok(Survey.findAll()).build();
 	}
 	
 	@GET
 	@Path("/{surveyId}")
-	public Response get(@PathParam("surveyId") String surveyId){
+	public Response getSurvey(@PathParam("surveyId") String surveyId){
 		return Response.ok(Survey.findById(surveyId)).build();
 	}
 	@POST
-	@RolesAllowed({"Admin"})
-	public Response create(String payload) throws IOException{
+	public Response createSurvey(String payload) throws IOException{
 		Survey o=Json.toObject(payload, Survey.class);
 		if (StringUtils.isBlank(o.id)) o.id=Utils.generateId();
 		if (Surveys.get().getSurveys().containsKey(o.id))
@@ -128,7 +136,7 @@ public class SurveyAdminController{
 	}
 	@PUT
 	@Path("/{surveyId}")
-	public Response update(@PathParam("surveyId") String surveyId, String payload) throws IOException{
+	public Response updateSurvey(@PathParam("surveyId") String surveyId, String payload) throws IOException{
 //		System.out.println("PUT detected - payload = "+payload);
 		Survey o=Json.toObject(payload, Survey.class);
 		Survey entity=Survey.findById(surveyId);
@@ -139,27 +147,69 @@ public class SurveyAdminController{
 	}
 	@DELETE
 	@Path("/{id}")
-	public Response deleteSingle(@PathParam String id) throws IOException{
+	public Response deleteSingleSurvey(@PathParam String id) throws IOException{
 		Survey entity=Survey.findById(id);
 		if (null==entity) throw new WebApplicationException("Unable to find "+Survey.class.getClass().getSimpleName()+" with id "+id);
 		entity.delete();
 		return Response.status(204).build();
 	}
 	@DELETE
-	public Response deleteMany(String ids) throws IOException{
+	public Response deleteManySurvey(String ids) throws IOException{
 //		System.out.println("ids="+ids);
 		List<String> l=Json.newObjectMapper(true).readValue(ids, new TypeReference<List<String>>(){});
 		for (String id:l)
-			deleteSingle(id);
+			deleteSingleSurvey(id);
 		return Response.status(204).build();
 	}
 	@POST
 	@Path("/{surveyId}/copy")
-	public Response copy(@PathParam("surveyId") String surveyId) throws IOException{
+	public Response copySurvey(@PathParam("surveyId") String surveyId) throws IOException{
 		Survey o=Survey.findById(surveyId);
 		Survey copy=o.copy();
 		return Response.ok(copy).build();
 	}
+	
+	
+	/** #### SURVEY RESOURCE HANDLERS ####  */
+	
+	@GET
+	@Path("/{surveyId}/resources")
+	public Response listResources(@PathParam("surveyId") String surveyId) throws IOException{
+		return Response.ok(Survey.findById(surveyId).getResources()).build();
+	}
+	
+	
+	
+	@POST
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces({ MediaType.APPLICATION_JSON })
+	@Path("/{surveyId}/resources")
+	public Response createResource(@PathParam("surveyId") String surveyId, MultipartFormDataInput data) throws IOException{
+		MultipartReaderResult multipartData=new MultipartReader("file").process(data);
+		log.info("CreateResource:: surveyId="+surveyId+", file="+multipartData.getFilename());
+		Survey s=Survey.findById(surveyId);
+		s.addResource(multipartData.getFilename(), multipartData.getFileStream());
+		return listResources(surveyId);
+	}
+	@GET
+	@Path("/{surveyId}/resources/{name}")
+	public Response getResource(@PathParam("surveyId") String surveyId, @PathParam("name") String name) throws IOException{
+		File resource=Survey.findById(surveyId).getResource(name);
+		return Response.ok(new FileInputStream(resource)).build();
+	}
+	@DELETE
+	@Path("/{surveyId}/resources/{name}")
+	public Response deleteResource(@PathParam("surveyId") String surveyId, @PathParam("name") String name) throws IOException{
+//		return Response.ok("TODO").build();
+		Survey.findById(surveyId).deleteResource(name);
+		return listResources(surveyId);
+	}
+	@DELETE
+	@Path("/{surveyId}/resources")
+	public Response deleteMultipleResources(@PathParam("surveyId") String surveyId, String listOfResourceNames) throws IOException{
+		return Response.ok("TODO").build();
+	}
+	
 	
 	
 	/** #### PLUGIN HANDLERS #### */

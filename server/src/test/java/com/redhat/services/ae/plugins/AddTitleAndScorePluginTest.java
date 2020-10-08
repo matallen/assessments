@@ -1,6 +1,7 @@
 package com.redhat.services.ae.plugins;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
@@ -58,6 +59,13 @@ public class AddTitleAndScorePluginTest extends TestBase{
 						"      }                                                                           "+
 						"     ]                                                                            "+
 						"    },                                                                            "+
+				    "    {                                                                             "+
+					  "     \"type\": \"boolean\",                                                       "+
+					  "     \"name\": \"q3\",                                                            "+
+					  "     \"title\": \"this is a boolean question?\",                                  "+
+					  "     \"valueTrue\": \"40#Yes\",                                                   "+
+					  "     \"valueFalse\": \"0#No\"                                                     "+
+					  "    },                                                                            "+
 						"    {                                                                             "+
 						"     \"type\": \"radiogroup\",                                                    "+
 						"     \"name\": \"q1\",                                                            "+
@@ -110,6 +118,13 @@ public class AddTitleAndScorePluginTest extends TestBase{
 				"      }                                                                           "+
 				"     ]                                                                            "+
 				"    },                                                                            "+
+		    "    {                                                                             "+
+			  "     \"type\": \"boolean\",                                                       "+
+			  "     \"name\": \"q3\",                                                            "+
+			  "     \"title\": \"this is a boolean question?\",                                  "+
+			  "     \"valueTrue\": \"40#Yes\",                                                   "+
+			  "     \"valueFalse\": \"0#No\"                                                     "+
+			  "    },                                                                            "+
 				"    {                                                                             "+
 				"     \"type\": \"radiogroup\",                                                    "+
 				"     \"name\": \"q1\",                                                            "+
@@ -139,6 +154,42 @@ public class AddTitleAndScorePluginTest extends TestBase{
 	private Object readAnswer(Map<String,Object> answers,String question, String field){
 		Map<String,Object> answer=(Map<String,Object>)answers.get(question);
 		return (Object)answer.get(field);
+	}
+	
+	
+	
+	@Test
+	public void test1() throws Exception{
+		Map<String,Object> config=new MapBuilder<String,Object>()
+				.put("scoreStrategy", "highest")
+				.build();
+		
+		String answersJson=                                                                    
+		"{                                                                                 "+
+		" \"Q19-interested_in_learning_more\": \"item1\",                                  "+
+		" \"First Name\": \"Mat\"                                                          "+
+		"}                                                                                 "+
+		"";
+		Survey s=Survey.builder().id("test1").name("Test Survey").build();
+		String questionsJson=IOUtils.toString(this.getClass().getClassLoader().getResource("ocpmigration-1.json"), "UTF-8");
+		s.setQuestionsAsString(questionsJson);
+		s.saveQuestions();
+		s.save();
+		
+		
+		Map<String,Object> answers=Json.toObject(answersJson, new TypeReference<HashMap<String,Object>>(){});
+		System.out.println("from:"+Json.toJson(answers));
+		Map<String, Object> newData=new AddTitleAndScorePlugin().setConfig(config).execute("test1", "TEST_VISITOR_ID", answers);
+		System.out.println("to:"+Json.toJson(newData));
+		
+//		Assert.assertEquals(10, readAnswer(newData, "q1", "score"));
+//		Assert.assertEquals("page1", readAnswer(newData, "q1", "pageId"));
+//		Assert.assertEquals("What is your department / organizations main responsability?", readAnswer(newData, "q1", "title"));
+//		
+//		Assert.assertEquals(20, readAnswer(newData, "q2", "score"));
+//		Assert.assertEquals("page1", readAnswer(newData, "q2", "pageId"));
+//		Assert.assertEquals("this is a checkbox question", readAnswer(newData, "q2", "title"));
+		
 	}
 	
 	@Test

@@ -79,6 +79,8 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 	public Map<String, Object> execute(String surveyId, String visitorId, Map<String, Object> surveyResults) throws Exception{
 //		super.execute(surveyId, visitorId, surveyResults);
 		
+		System.out.println("ELOQUA: surveyResults="+com.redhat.services.ae.utils.Json.toJson(surveyResults));
+		
 		// Extract the question config
 		Map<String, mjson.Json> questionsMapping=buildQuestionMap(surveyId);
 		
@@ -99,12 +101,6 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 						if (value.containsKey("answer")){
 							String answer=(String)value.get("answer");
 							extractedAnswers.put(questionId, answer);
-							
-//							// Disable plugin if email is @redhat.com
-//							if (questionId.toLowerCase().contains("email") && answer.toLowerCase().contains("@redhat.com")){
-//								log.warn("Skipping Eloqua plugin because email is an @redhat.com email");
-//								disabled=true;
-//							}
 							
 						}else if (value.containsKey("answers")){
 							extractedAnswers.put(questionId, Joiner.on(",").join((Iterable)value.get("answers")));

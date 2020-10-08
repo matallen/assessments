@@ -56,28 +56,46 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 	}
 	
 	private Answer findInQuestions(List<Json> questionChoices, String answerProvided){
-		Answer result=new Answer();
-		result.score=-1;
+		Answer result=new Answer(null,-1);
+//		result.score=-1;
 		for (Json ans:questionChoices){
-			String qValue=ans.at("value").asString();
-			String qText=ans.at("text").asString();
-			
-			if (answerProvided.equals(qValue)){
-				if (ans.has("score"))
-					result.score=Integer.parseInt(ans.at("score").asString());
-				result.value=qValue;
+			if (ans.isString()) break;  // this is for surveyjs choicesFromUrl questions that have a null string in the choices
+			if (ans.has("value") && ans.has("text")){
+				String qValue=ans.at("value").asString();
+				String qText=ans.at("text").asString();
+				
+				if (answerProvided.equals(qValue)){
+					if (ans.has("score"))
+						result.score=Integer.parseInt(ans.at("score").asString());
+					result.value=qValue;
 //				System.out.println("found answer in question 'score' property");
-				return result;
+					return result;
+				}
 			}
 		}
 		return result;
 	}
 	
 	private Answer getAnswerScore(String answer, Json question){
+		
+		
 		if (answer.contains("#")){ // get the score embedded in the answer. ie. "10#answer text"
 			return splitThis((String)answer);
 		}else{ // get the score from the question 'score' property
-			return findInQuestions(question.at("choices").asJsonList(), answer);
+			String questionType=question.at("type").asString();
+			
+			System.out.println("looking in question "+question.at("name").asString());
+			
+			if (question.has("choices")){
+				return findInQuestions(question.at("choices").asJsonList(), answer);
+			}else{
+				log.error("Question has no 'choices', unable to determine score -> "+question.at("name").asString()+" ");
+//				throw new RuntimeException("Question has no 'choices' -> "+question.asString()+" ");
+				Answer a=new Answer(answer,-1);
+//				a.score=-1;
+//				a.value=answer;
+				return a;
+			}
 		}
 	}
 	
@@ -155,14 +173,18 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 	
 	
 	class Answer{
+		public Answer(String value, int score){
+			this.score=score;
+			this.value=value;
+		}
 		private String value;
 		private int score;
 	}
 	
 	public Answer splitThis(String answer){
-		Answer result=new Answer();
-		result.score=-1; // default score is X point for everything
-		result.value=answer;
+		Answer result=new Answer(answer, -1);
+//		result.score=-1; // default score is X point for everything
+//		result.value=answer;
 		if (answer.contains("#")){
 			result.value=answer.split("#")[1];
 			result.score=Integer.parseInt(answer.split("#")[0]);

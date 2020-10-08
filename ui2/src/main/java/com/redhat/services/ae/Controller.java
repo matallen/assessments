@@ -1,25 +1,41 @@
 package com.redhat.services.ae;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URLDecoder;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Files;
 
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.core.NewCookie;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
-
-import com.google.api.client.util.Base64;
-import com.google.common.base.Splitter;
 
 
 @Path("/")
 public class Controller{
+	
+	
+	// Resource proxy
+	@GET
+	@Path("/api/surveys/{surveyId}/resources/{name}")
+	public Response getSurveyResourceProxy(@PathParam("surveyId") String surveyId, @PathParam("name") String name){
+		String server=System.getenv("SERVER");
+		
+		try{
+			URL u=new URL(server+"/api/surveys/"+surveyId+"/resources/"+name);
+			InputStream openStream=u.openStream();
+			String contentType=Files.probeContentType(new File(name).toPath());
+			return Response.status(200).entity(openStream).type(contentType).build();
+		}catch (MalformedURLException e){
+			e.printStackTrace();
+		}catch (IOException e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	
 	@GET
 	@Path("/assets/js/env.js")

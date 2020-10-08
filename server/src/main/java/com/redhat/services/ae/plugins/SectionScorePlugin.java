@@ -58,7 +58,7 @@ public class SectionScorePlugin extends Plugin{
 						continue;
 					}
 				}else{ // score the whole assessment together
-					
+					sectionName=scoreBy;
 				}
 				
 				score=Integer.class.isAssignableFrom(value.get("score").getClass())?(Integer)value.get("score"):0; // it must be an integer score, I dont want to deal with string conversions

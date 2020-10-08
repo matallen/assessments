@@ -202,10 +202,18 @@
 			  //  .findProperty("question", "weighting")
 			  //  .readOnly = false;
 				
-				//var allowedQuestionTypes = ["checkbox", "radiogroup", "dropdown", "imagepicker", "html" ];
-				//var creatorOptions = { showLogicTab: true, questionTypes: allowedQuestionTypes };
-				var creatorOptions = { showLogicTab: true }
-				var creatorOptions = { showLogicTab: true, haveCommercialLicense: true }
+				var allowedQuestionTypes = [
+					"checkbox", "radiogroup", "dropdown", "imagepicker", "boolean", "html"
+//					, "comment", "rating", "image", "file"
+//					, "multipletext", "panel", "paneldynamic"
+//			cant's seem to turn off
+					, "bootstrap slider", "microphone"
+//			don't work yet
+//					, "singleinput"
+					];
+				var creatorOptions = { showLogicTab: true, questionTypes: allowedQuestionTypes, haveCommercialLicense: true };
+				//var creatorOptions = { showLogicTab: true }
+				//var creatorOptions = { showLogicTab: true, haveCommercialLicense: true }
 						
 				
 				Survey.Survey.cssType = "bootstrap";

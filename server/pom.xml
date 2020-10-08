@@ -10,7 +10,10 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+<!--
     <quarkus-bom-version>1.4.1.Final</quarkus-bom-version>
+-->
+    <quarkus-bom-version>1.8.1.Final</quarkus-bom-version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -126,13 +129,10 @@
       <artifactId>rest-assured</artifactId>
       <version>4.2.0</version>
     </dependency>
-    
     <dependency>
       <groupId>org.jboss.logging</groupId>
       <artifactId>commons-logging-jboss-logging</artifactId>
-      <version>1.0.0.Final</version>
     </dependency>
-    
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-jwt</artifactId>
@@ -142,13 +142,10 @@
       <artifactId>jjwt</artifactId>
       <version>0.9.1</version>
     </dependency>
-
-    <!-- 
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-jsonb</artifactId>
+      <artifactId>quarkus-resteasy-multipart</artifactId>
     </dependency>
-    -->
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-openapi</artifactId>
@@ -167,7 +164,12 @@
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-jwt</artifactId>
+      <!-- 
       <version>2.1.2</version>
+       -->
+      <version>2.3.0</version>
+      
+      
       <exclusions>
         <exclusion>
           <artifactId>jboss-logging</artifactId>
@@ -198,6 +200,14 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-jsonb</artifactId>
+    </dependency>
+    -->
+    <!--
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-test-security</artifactId>
+      <scope>test</scope>
+      <version>1.8.1.Final</version>
     </dependency>
     -->
     <dependency>

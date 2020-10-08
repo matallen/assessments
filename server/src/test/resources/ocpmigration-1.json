@@ -1,0 +1,510 @@
+{
+ "completedHtmlOnCondition": [
+  {
+   "expression": "{Q3_Migration_learn_more} = 'item2'",
+   "html": "Thanks for your responses. Here are some resources to support your ongoing work with OpenShift 4. \n"
+  },
+  {
+   "expression": "{Q8_Continue_option} = 'item2'",
+   "html": "Thank you for taking the time to answer our questions about OpenShift 3. You’ll receive an email with a link to return to the assessment at a later time."
+  }
+ ],
+ "pages": [
+  {
+   "name": "Plans for OpenShift 3 and 4",
+   "elements": [
+    {
+     "type": "radiogroup",
+     "name": "Q1_Evaluated_OCP3",
+     "title": "Have you evaluated migrating your OpenShift 3 workloads to OpenShift 4, or have you evaluated OpenShift 4 for new workloads? ",
+     "isRequired": true,
+     "choices": [
+      {
+       "value": "item1",
+       "text": "Yes, we are running workloads on OpenShift 4 today",
+       "score": "0"
+      },
+      {
+       "value": "item2",
+       "text": "Yes, we are migrating workloads from OpenShift 3 now or plan to in the next 12 months",
+       "score": "2"
+      },
+      {
+       "value": "item3",
+       "text": "Yes, we have evaluated, but we don’t have a plan to deploy OpenShift 4 or migrate workloads",
+       "score": "5"
+      },
+      {
+       "value": "item4",
+       "text": "No, we haven’t evaluated OpenShift 4 ",
+       "score": "10"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "Q2_Retire_OCP3",
+     "visibleIf": "{Q1_Evaluated_OCP3} = 'item1' or {Q1_Evaluated_OCP3} = 'item2'",
+     "title": "When do you expect to retire OpenShift 3?",
+     "isRequired": true,
+     "choices": [
+      {
+       "value": "item1",
+       "text": "We already retired OpenShift 3",
+       "score": "0"
+      },
+      {
+       "value": "item2",
+       "text": "Within 6 months",
+       "score": "2"
+      },
+      {
+       "value": "item3",
+       "text": "Within 12 months",
+       "score": "4"
+      },
+      {
+       "value": "item4",
+       "text": "Within 24 months",
+       "score": "6"
+      },
+      {
+       "value": "item5",
+       "text": "We don't have plans to retire it yet",
+       "score": "10"
+      }
+     ],
+     "otherText": "We already retired OpenShift 3"
+    },
+    {
+     "type": "radiogroup",
+     "name": "Q3_Migration_learn_more",
+     "visibleIf": "{Q2_Retire_OCP3} anyof ['item1', 'item2', 'item3']",
+     "title": "Would you like to find out more about how Red Hat can help you migrate additional workloads to OpenShift 4?",
+     "isRequired": true,
+     "choices": [
+      {
+       "value": "item1",
+       "text": "Yes"
+      },
+      {
+       "value": "item2",
+       "text": "No thanks, I'm all set for now"
+      }
+     ]
+    }
+   ],
+   "title": "Plans for OpenShift 3 and 4",
+   "navigationTitle": "Introduction"
+  },
+  {
+   "name": "Barriers to OpenShift 4",
+   "elements": [
+    {
+     "type": "checkbox",
+     "name": "Q4_OCP4_migration_barriers",
+     "visibleIf": "{Q1_Evaluated_OCP3} = 'item3' or {Q1_Evaluated_OCP3} = 'item4' or {Q2_Retire_OCP3} = 'item4'",
+     "title": "What’s currently keeping you from moving workloads to OpenShift 4? Select all that apply. ",
+     "isRequired": true,
+     "hasComment": true,
+     "choices": [
+      {
+       "value": "item1",
+       "text": "It’s missing critical features or lacks compatibility with apps or infrastructure",
+       "score": "50"
+      },
+      {
+       "value": "item2",
+       "text": "We don’t have additional hardware resources available to install OpenShift 4",
+       "score": "2"
+      },
+      {
+       "value": "item3",
+       "text": "We’re concerned about application downtime during migration",
+       "score": "4"
+      },
+      {
+       "value": "item4",
+       "text": "We don’t have enough knowledge of OCP 4 technical requirements",
+       "score": "7"
+      },
+      {
+       "value": "item5",
+       "text": "We don’t have the time or resources to take on a migration project  right now",
+       "score": "10"
+      },
+      {
+       "value": "item6",
+       "text": "We’re concerned about meeting security requirements",
+       "score": "15"
+      },
+      {
+       "value": "item7",
+       "text": "We don’t see the value of OpenShift 4 over OpenShift 3",
+       "score": "20"
+      }
+     ]
+    },
+    {
+     "type": "comment",
+     "name": "Q5_OCP4_features",
+     "visibleIf": "{Q4_OCP4_migration_barriers} = ['item1']",
+     "title": "What feature(s) or infrastructure compatibility do you feel is missing from OpenShift 4? ",
+     "isRequired": true
+    },
+    {
+     "type": "radiogroup",
+     "name": "Q6_Greenfield_Apps",
+     "visibleIf": "{Q4_OCP4_migration_barriers} anyof ['item1', 'item2', 'item3', 'item4', 'item5', 'item6', 'item7']",
+     "title": "Do you have greenfield applications that could be onboarded to OpenShift 4, independent of migrating any workloads from OpenShift 3?",
+     "isRequired": true,
+     "choices": [
+      {
+       "value": "item1",
+       "text": "Yes, we already have greenfield applications on OpenShift 4] [continue to assessment"
+      },
+      {
+       "value": "item2",
+       "text": "Yes, but we have not deployed OpenShift 4 yet"
+      },
+      {
+       "value": "item3",
+       "text": "No"
+      }
+     ]
+    }
+   ],
+   "title": "Barriers to OpenShift 4",
+   "navigationTitle": "Introduction"
+  },
+  {
+   "name": "Migration Readiness Welcome",
+   "elements": [
+    {
+     "type": "html",
+     "name": "Q7_Continue_text",
+     "visibleIf": "{Q4_OCP4_migration_barriers} = ['item2', 'item3', 'item6'] or {Q6_Greenfield_Apps} = 'item1' or {Q3_Migration_learn_more} = 'item1'",
+     "html": "<p>We’ll now continue to a migration readiness assessment that will take about 5 minutes to complete. Once you’ve submitted your answers, you’ll receive a report with recommendations for migration to OpenShift 4, along with guidance on overcoming specific blockers.\n</p>"
+    },
+    {
+     "type": "radiogroup",
+     "name": "Q8_Continue_option",
+     "visibleIf": "{Q4_OCP4_migration_barriers} anyof ['item1', 'item4', 'item7', 'item5'] or {Q6_Greenfield_Apps} anyof ['item2', 'item3']",
+     "title": "Would you like to complete a migration readiness assessment now, for new or existing workloads? You will receive a report with recommendations for migrating workloads to OpenShift 4 once you complete it.  It takes about 5 minutes to complete. ",
+     "isRequired": true,
+     "choices": [
+      {
+       "value": "item1",
+       "text": "Yes"
+      },
+      {
+       "value": "item2",
+       "text": "No thanks, maybe another time"
+      }
+     ]
+    }
+   ],
+   "readOnly": true,
+   "title": "Welcome - Migration Readiness Assessment",
+   "navigationTitle": "Introduction"
+  },
+  {
+   "name": "OCP Deployment 1",
+   "elements": [
+    {
+     "type": "radiogroup",
+     "name": "Q9_total_clusters",
+     "visibleIf": "({Q8_Continue_option} == item1)",
+     "title": "How many OpenShift 3 clusters - including production and non-production - do you have deployed today?",
+     "isRequired": true,
+     "choices": [
+      {
+       "value": "item1",
+       "text": "1 cluster"
+      },
+      {
+       "value": "item2",
+       "text": "2 to 6 clusters"
+      },
+      {
+       "value": "item3",
+       "text": "More than 6 clusters"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "Q10_total_nodes",
+     "title": "Approximately how many OpenShift 3 nodes are running across those clusters?",
+     "isRequired": true,
+     "choices": [
+      {
+       "value": "item1",
+       "text": "Fewer than 10 nodes"
+      },
+      {
+       "value": "item2",
+       "text": "10 to 25 nodes"
+      },
+      {
+       "value": "item3",
+       "text": "26 to 50 nodes"
+      },
+      {
+       "value": "item4",
+       "text": "More than 50 nodes"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "Q11_total_namespaces",
+     "title": "Approximately how many namespaces do you have across all OpenShift 3 clusters?",
+     "isRequired": true,
+     "choices": [
+      {
+       "value": "item1",
+       "text": "Fewer than 50 namespaces"
+      },
+      {
+       "value": "item2",
+       "text": "50 to 100 namespaces"
+      },
+      {
+       "value": "item3",
+       "text": "101 to 250 namespaces"
+      },
+      {
+       "value": "item4",
+       "text": "251 to 500 namespaces"
+      },
+      {
+       "value": "item5",
+       "text": "More than 500 namespaces"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "Q14_total_storage",
+     "title": "What is the approximate total storage used by all persistent volumes on all OpenShift 3 clusters, production and non-production?",
+     "isRequired": true,
+     "choices": [
+      {
+       "value": "item1",
+       "text": "Less than 200GB"
+      },
+      {
+       "value": "item2",
+       "text": "200GB to 5 TB"
+      },
+      {
+       "value": "item3",
+       "text": "5 TB to 10 TB"
+      },
+      {
+       "value": "item4",
+       "text": "More than 10 TB"
+      }
+     ]
+    }
+   ],
+   "title": "Existing OpenShift 3 Deployment (Part 1)",
+   "navigationTitle": "OCP Migration Self-Assessment"
+  },
+  {
+   "name": "OCP Deployment 2",
+   "elements": [
+    {
+     "type": "radiogroup",
+     "name": "Q12_HA_config",
+     "title": "Are production applications running on OpenShift configured with load balancing or across 2 or more clusters, or do you otherwise have an HA configuration to provide redundancy for production clusters?",
+     "isRequired": true,
+     "choices": [
+      {
+       "value": "item1",
+       "text": "Yes"
+      },
+      {
+       "value": "item2",
+       "text": "No"
+      },
+      {
+       "value": "item3",
+       "text": "I'm not sure"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "Q13_app_dependencies",
+     "title": "Are there dependencies between any of those applications that require them to run on the same cluster?",
+     "isRequired": true,
+     "choices": [
+      {
+       "value": "item1",
+       "text": "All or most applications have dependencies"
+      },
+      {
+       "value": "item2",
+       "text": "About 50% of applications have dependencies"
+      },
+      {
+       "value": "item3",
+       "text": "Few or no applications have dependencies"
+      }
+     ]
+    }
+   ],
+   "title": "Existing OpenShift 3 Deployment (Part 2)",
+   "navigationTitle": "OCP Migration Self-Assessment"
+  },
+  {
+   "name": "OpenShift Migration Environments",
+   "elements": [
+    {
+     "type": "radiogroup",
+     "name": "Q15_migration_network",
+     "title": "If you migrated to OpenShift 4, would you do this within the same network or data center, or be migrating to a new facility or environment?",
+     "isRequired": true,
+     "choices": [
+      {
+       "value": "item1",
+       "text": "Migrating within the same network/data center"
+      },
+      {
+       "value": "item2",
+       "text": "Migrating to another facility on our corporate network"
+      },
+      {
+       "value": "item3",
+       "text": "Migrating to a hosted environment or public cloud"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "Q16_hosted_option",
+     "title": "Would you consider migrating applications from OpenShift 3 to a public cloud-hosted OpenShift 4 cluster?",
+     "isRequired": true,
+     "choices": [
+      {
+       "value": "item1",
+       "text": "Yes"
+      },
+      {
+       "value": "item2",
+       "text": "Maybe, we would be interested in learning more"
+      },
+      {
+       "value": "item3",
+       "text": "That wouldn't work for us"
+      }
+     ]
+    }
+   ],
+   "title": "OpenShift Migration Environments",
+   "navigationTitle": "OCP Migration Self-Assessment"
+  },
+  {
+   "name": "Kubernetes Knowledge",
+   "elements": [
+    {
+     "type": "radiogroup",
+     "name": "Q17_Kubernetes_knowledge",
+     "title": "And finally, how would you rate you and your team’s knowledge of Kubernetes?",
+     "isRequired": true,
+     "choices": [
+      {
+       "value": "item1",
+       "text": "1 - We only have basic knowledge of Kubernetes"
+      },
+      {
+       "value": "item2",
+       "text": "2 - We know enough to get by"
+      },
+      {
+       "value": "item3",
+       "text": "3 - We have working knowledge of Kubernetes"
+      },
+      {
+       "value": "item4",
+       "text": "4 - We're advanced users"
+      }
+     ],
+     "hasOther": true,
+     "otherText": "5 - We could teach a class on it"
+    }
+   ],
+   "title": "Kubernetes Knowledge",
+   "navigationTitle": "OCP Migration Self-Assessment"
+  },
+  {
+   "name": "OCP 3 to 4-Page 8",
+   "elements": [
+    {
+     "type": "image",
+     "name": "question1",
+     "imageLink": "data:image/png;base64,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",
+     "imageHeight": 300,
+     "imageWidth": 650
+    },
+    {
+     "type": "multipletext",
+     "name": "Q18-please_provide_contact",
+     "title": "Please provide your contact information so we can send you a copy of the report.",
+     "isRequired": true,
+     "items": [
+      {
+       "name": "First Name",
+       "isRequired": true,
+       "title": "First Name"
+      },
+      {
+       "name": "Last Name",
+       "isRequired": true,
+       "title": "Last Name"
+      },
+      {
+       "name": "_WorkEmail",
+       "isRequired": true,
+       "title": "Email Address"
+      },
+      {
+       "name": "Company",
+       "isRequired": true
+      },
+      {
+       "name": "Country",
+       "isRequired": true
+      }
+     ]
+    },
+    {
+     "type": "checkbox",
+     "name": "Q19-interested_in_learning_more",
+     "title": "Would you be interested in learning about Red Hat training and migration services? Choose all that apply. ",
+     "isRequired": true,
+     "choices": [
+      {
+       "value": "item1",
+       "text": "Yes, send me information about Red Hat training and certification. "
+      },
+      {
+       "value": "item2",
+       "text": "Yes, send me information about how Red Hat Consulting can help me migrate workloads to OpenShift 4. "
+      },
+      {
+       "value": "item3",
+       "text": "Not at this time."
+      }
+     ]
+    }
+   ],
+   "title": "Get your results",
+   "navigationTitle": "OCP 3 to 4-Page 11 (contact form)"
+  }
+ ],
+ "showProgressBar": "hidden",
+ "progressBarType": "questions"
+}

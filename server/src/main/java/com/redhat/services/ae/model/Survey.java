@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -22,6 +24,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.google.api.client.util.Lists;
 
 //import org.bson.codecs.pojo.annotations.BsonProperty;
 //import org.bson.types.ObjectId;
@@ -48,13 +51,6 @@ public class Survey{
 	public String owner;
 	public String theme;
 	
-//	private EntityStorage<Metrics> getMetricsStorage(){
-//		return new EntityStorage<Metrics>(){
-//			@Override public Metrics createNew(){ return new Metrics(); }
-//			@Override public String getStorageLocation(){ return "metrics"; }
-//		};
-//	}
-	
 	@JsonIgnore
 	private EntityStorage<Map<String,Object>> resultsStorage=new StorageFactory<Map<String,Object>>(){
 		@Override public Map<String, Object> createNewT(){ return new LinkedHashMap<>();
@@ -69,60 +65,6 @@ public class Survey{
 	private EntityStorage<Map<String,Object>> questionsStorage=new StorageFactory<Map<String,Object>>(){
 		@Override public Map<String,Object> createNewT(){ return new LinkedHashMap<>();
 		}}.create("questions.json");
-		
-		
-//	@JsonIgnore
-//	private static EntityStorage<Map<String,Survey>> surveysStorage=new StorageFactory<Map<String,Survey>>(){
-//		@Override public Map<String,Survey> createNewT(){ return new HashMap<>();
-//		}}.create("surveys.json");
-	
-	
-
-//	private Persister<Map<String,Object>> metricsStorage=new Persister<Map<String,Object>>(this.id, "metrics.json");
-	
-	
-	
-//	class Persister<T>{
-//		private String surveyId;
-//		private String filename;
-//		public Persister(String surveyId, String filename){}
-//		public T get(){
-//			File file=getStorage(getStorageRoot(), surveyId+File.separator+filename);
-//			if (file.exists()){
-//				try{
-//					String json=IOUtils.toString(new FileInputStream(file), "UTF-8");
-//					return Json.newObjectMapper(true).readValue(json, new TypeReference<T>(){});
-//				}catch(Exception e){
-//					e.printStackTrace();
-//				}
-//			}else{
-//				return null;
-//			}
-//		}
-//		public void save(T obj){
-//			try{
-//				String json=Json.newObjectMapper(true).writeValueAsString(obj);
-//				File saveTo=getStorage(getStorageRoot(), surveyId+File.separator+filename);
-//				saveTo.getParentFile().mkdirs(); // ensure the parent exists
-//				System.out.println("Saving to: "+saveTo.getAbsolutePath());
-//				IOUtils.write(json, new FileOutputStream(saveTo), "UTF-8");
-//			}catch(IOException e){
-//				e.printStackTrace();
-//			}
-//		}
-//	}
-//	
-	
-//	private Map<String,Object> metrics;
-//	public Map<String,Object> getMetrics2(boolean createIfNotFound){
-//		if (null==metrics){
-//			metrics=new Persister<Map<String,Object>>(this.id, "metrics.json").get();
-//			if (metrics==null) metrics=new LinkedHashMap<>();
-//		}
-//		return metrics;
-//	}
-	
-	
 	
 	@JsonIgnore
 	public Map<String,Object> getMetrics(){
@@ -168,31 +110,19 @@ public class Survey{
 		save();
 	}
 	public void save(){
-		
 		Surveys.get().getSurveys().put(this.id, this);
 		Surveys.get().save();
-//		surveysStorage.load();
-//		surveysStorage.data.put(this.id, this);
-//		surveysStorage.save();
 	}
 	public static Survey findById(String id){
 		return Surveys.get().getSurveys().get(id);
-//		surveysStorage.load();
-//		Survey survey=surveysStorage.data.get(id);
-//		return survey;
 	}
 	public static List<Survey> findAll(){
-//		surveysStorage.load();
-//		return surveysStorage.data.values().stream().collect(Collectors.toList());
 		return Surveys.get().getSurveys().values().stream().collect(Collectors.toList());
 	}
 	
 	public void delete(){
 		Surveys.get().getSurveys().remove(this.id);
 		Surveys.get().save();
-//		surveysStorage.load();
-//		surveysStorage.data.remove(this.id);
-//		surveysStorage.save();
 		// TODO: Delete from surveys storage & the sub folder on the filesystem
 		
 		File toDelete=new File(Surveys.getStorageRoot(), this.id);
@@ -202,25 +132,9 @@ public class Survey{
 		}catch (IOException e){
 			e.printStackTrace();
 		}
-//  	File storage=new File(Database.STORAGE).getParentFile();
-//  	File questionsLocation=new File(storage, id+".json");
-//  	System.out.println("Removing questionnaire file:"+questionsLocation.getAbsolutePath() );
-//		questionsLocation.delete();
 	}
 	
 	
-//	public static Survey findById(String id){
-//		Database db=Database.get();
-//		if (null==db) System.err.println("Database.get() returned NULL!!!!!!");
-//		Map<String, Survey> surveys=db.getSurveys();
-//		if (null==surveys) System.err.println("Database.get().getSurveys() returned NULL!!!!!!");
-//		Survey survey=surveys.get(id);
-//		if (null==survey) System.err.println("Database.get().getSurveys().get('"+id+"') returned NULL!!!!!!");
-//		return survey;
-//	}
-//	public static List<Survey> findAll(){
-//		return Database.get().getSurveys().values().stream().collect(Collectors.toList());
-//	}
 	
 	private Map<String,Map<String,Object>> plugins;
 	public Map<String,Map<String,Object>> getPlugins(){
@@ -228,40 +142,10 @@ public class Survey{
 		return plugins;
 	}
 	
-//	public static List<Survey> findAll(){
-//		return Database.get().getSurveys().values().stream().collect(Collectors.toList());
-//	}
-//	public static Survey findById(String id){
-//		EntityStorage<Survey> db2=new StorageFactory<Survey>().create(Survey.class, "survey.json");
-//		Survey s2=db2.get(id, false);
-//		return s2;
-//		
-//		Database db=Database.get();
-//		if (null==db) System.err.println("Database.get() returned NULL!!!!!!");
-//		Map<String, Survey> surveys=db.getSurveys();
-//		if (null==surveys) System.err.println("Database.get().getSurveys() returned NULL!!!!!!");
-//		Survey survey=surveys.get(id);
-//		if (null==survey) System.err.println("Database.get().getSurveys().get('"+id+"') returned NULL!!!!!!");
-//		return survey;
-////		return Database.get().getSurveys().get(id);
-//	}
-//	public void persist(){
-//		Database.get().getSurveys().put(id, this);
-//		Database.get().save();
-//	}
 	public void update(){
 		// should throw exception if it doesnt exist, but not necessary
 		persist();
 	}
-//	public void delete(){
-//		Database.get().getSurveys().remove(id);
-//		Database.get().save();
-//		// TODO: Delete file
-//  	File storage=new File(Database.STORAGE).getParentFile();
-//  	File questionsLocation=new File(storage, id+".json");
-//  	System.out.println("Removing questionnaire file:"+questionsLocation.getAbsolutePath() );
-//		questionsLocation.delete();
-//	}
 	public Survey copy() throws FileNotFoundException, IOException{
 		Survey o=new Survey();
 		o.id=Utils.generateId();
@@ -274,33 +158,6 @@ public class Survey{
 		return o;
 	}
 	
-//	@JsonIgnore
-//  public String getQuestions() throws FileNotFoundException, IOException{
-//  	File storage=new File(Database.STORAGE).getParentFile();
-//  	File questionsLocation=new File(storage, id+".json");
-//  	System.out.println("Loading from: "+questionsLocation.getAbsolutePath());
-//  	if (!questionsLocation.exists())
-//  		setQuestions("{}");
-//  	
-////  	if (questionsLocation.exists()){
-//  		return IOUtils.toString(questionsLocation.exists()?new FileInputStream(questionsLocation.getAbsolutePath()):getClass().getClassLoader().getResourceAsStream(id), "UTF-8");
-////  	}else{
-////  		throw new FileNotFoundException("Can't find survey questions for "+id+" at "+questionsLocation.getAbsolutePath());
-////  	}
-//  }
-//	@JsonIgnore
-//	public void setQuestions(String questionsJson) throws IOException{
-//  	File storage=new File(Database.STORAGE).getParentFile();
-//  	File questionsLocation=new File(storage, id+".json");
-//  	if (!questionsLocation.exists()){
-//  		questionsLocation.getParentFile().mkdirs();
-//  		questionsLocation.createNewFile();
-//		}
-//  	
-//  	// TODO: check the questions can be read as json / ie valid/readable json format?
-//  	
-//		IOUtils.write(questionsJson, new FileOutputStream(questionsLocation), "UTF-8");
-//	}
 	
 	@JsonIgnore
 	public Map<String,Map<String,Object>> getActivePlugins() throws IOException{
@@ -313,6 +170,59 @@ public class Survey{
 		return result;
 	}
 	
+	
+	class Resource{
+		public Resource(String name, String path){
+			this.name=name;
+			this.path=path;
+		}
+		private String name; public String getName(){ return name; }
+		private String path; public String getPath(){ return path; }
+	}
+	@JsonIgnore
+	private File getResourcesRoot(){
+		return new File(Surveys.getStorageRoot()+File.separator+id+File.separator+"resources");
+	}
+	public File getResource(String name){
+		File result=new File(getResourcesRoot(), name);
+		return result;
+	}
+	@JsonIgnore
+	public List<Resource> getResources(){
+		// list files in the survey/resources folder
+		List<Resource> result=Lists.newArrayList();
+		for (File f:getResourcesRoot().listFiles()){
+			result.add(new Resource(f.getName(), "/api/surveys/"+id+"/resources/"+f.getName()));
+//			result.add(new Resource(f.getName(), "/resources/"+f.getName()));
+		}
+		return result;
+	}
+	public void deleteResource(String filename){
+		try{
+			FileUtils.forceDelete(new File(getResourcesRoot(), filename));
+		}catch (IOException e){
+			e.printStackTrace();
+		}
+	}
+	public void addResource(String filename, InputStream fileStream){
+		// upload file into survey/resources folder
+		
+		File destinationFile=new File(Surveys.getStorageRoot()+File.separator+id+File.separator+"resources"+File.separator+filename);
+		destinationFile.getParentFile().mkdirs();
+		
+		System.out.println("saving resource to: "+destinationFile.getAbsolutePath());
+		
+		try(OutputStream out=new FileOutputStream(destinationFile)){
+		    IOUtils.copy(fileStream, out);
+		} catch (FileNotFoundException e) {
+		    // handle exception here
+			e.printStackTrace();
+		} catch (IOException e) {
+		    // handle exception here
+			e.printStackTrace();
+		}
+		
+	}
 	
 	
 	public static Builder builder(){

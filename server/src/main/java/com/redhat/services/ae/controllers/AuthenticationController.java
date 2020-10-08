@@ -141,7 +141,8 @@ public class AuthenticationController{
 						.name("rh_cat_jwt")
 						.value(jwtToken)
 						.path("/")
-						.domainUrl(params.get("onSuccess"))
+						.domainUrl(uri.getRequestUri().toString())
+//						.domainUrl(params.get("onSuccess"))
 //						.domain(domainName)
 //						.maxAge(60*60*24) // if unset it's a Session cookie
 //						.maxAge("Session")

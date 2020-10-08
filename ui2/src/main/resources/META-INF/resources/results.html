@@ -124,11 +124,6 @@
 		for (thresholdTitle in thresholds){
 			var threshold=thresholds[thresholdTitle];
 			var linePosInPx=(width/100)*threshold;
-			//var textPosInPx=width/(100/(threshold/2));
-			//var textPosInPx=width/(100/(lastThreshold+(threshold/2)));
-//			var textPosInPx=(width/100)*(lastThreshold+(threshold/2));
-//			textPosInPx-=(7*thresholdTitle.length)/2; // half width of text
-			
 			var textPosInPx=(lastLinePosInPx+(linePosInPx-lastLinePosInPx)/2)-(5*thresholdTitle.length)/2;
 			
 			if (i<size-1)
@@ -171,10 +166,10 @@
 	<div class="container">
 		<div class="row">
 			<div class="container print-panel">
-				<h1>Let’s Get started with a discovery session</h1>
+				<h1>Let’s get started with a discovery session</h1>
 				<p>The best way to accelerate your transformation journey is with a discovery session. Red Hat experts provide a complimentary, personalized session to review your organization’s goals and identify business challenges and viable solutions.</p>
 				<p>Take the first step towards accelerating your innovation today with a no-cost Red Hat Consulting discovery session.</p>
-				<button type="button" class="rhbtn btn-lg rhbtn-red rhbtn-large" id="talk_to_expert" onclick="window.location.href='https://www.redhat.com/en/services/consulting#GatedFormContainer';">Talk to a Red Hat expert</button>
+				<a class="rhbtn btn-lg rhbtn-red rhbtn-large" href="https://www.redhat.com/en/services/consulting#GatedFormContainer" target="_new">Talk to a Red Hat expert</a>
 			</div>
 		</div>
 	</div>

@@ -173,7 +173,6 @@ public class ReportsController{
 				
 				for (mjson.Json question:page.at("elements").asJsonList()){
 					String questionId=question.at("name").asString();
-					System.out.println(questionId);
 					
 					if (questionId.startsWith("_")) continue;
 					if (!question.has("choices")) continue;

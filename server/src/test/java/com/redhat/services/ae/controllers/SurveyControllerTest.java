@@ -40,6 +40,7 @@ import com.redhat.services.ae.model.storage.Surveys;
 import com.redhat.services.ae.utils.Json;
 
 import io.quarkus.test.junit.QuarkusTest;
+//import io.quarkus.test.security.TestSecurity;
 import io.restassured.response.Response;
 import io.smallrye.config.common.utils.ConfigSourceUtil;
 
@@ -76,7 +77,7 @@ public class SurveyControllerTest {
 	@Test
 	public void testResultsGathering() throws ParseException, IOException{
 		
-		Survey survey=(Survey)new SurveyAdminController().create("{\"name\":\"TESTING\"}").getEntity();
+		Survey survey=(Survey)new SurveyAdminController().createSurvey("{\"name\":\"TESTING\"}").getEntity();
 		
 		// TODO: fix - this is no longer correct as the payload is mixed with page stats 
 		String testPayload="{\n" + 
@@ -127,7 +128,7 @@ public class SurveyControllerTest {
 	
 	@Test
 	public void testResultsGatheringWithMultiChoice() throws JsonParseException, JsonMappingException, IOException{
-		Survey survey=(Survey)new SurveyAdminController().create("{\"name\":\"SurveyControllerTest-1\"}").getEntity();
+		Survey survey=(Survey)new SurveyAdminController().createSurvey("{\"name\":\"SurveyControllerTest-1\"}").getEntity();
 //		String payload="{\"question1\":[\"lion\"],\"cloud_q1\":[\"item1\"],\"question3\":{\"text1\":\"John\",\"text2\":\"Doe\"}}";
 		String visitorId="61b76b3d-401b-4eda-9e6a-842697cf466f";
 		String payload2="{\"_page\":{\"visitorId\":\""+visitorId+"\",\"timeOnpage\":\"27 sec\",\"geo\":\"NA\",\"countryCode\":\"US\",\"region\":\"TX\"},\"_data\":{\"interests\":[\"platforms\"],\"platforms_env_q1\":\"Operations and software/infrastructure  support\",\"platforms_env_q2\":\"100+\",\"platforms_env_q3\":[\"100#DevSecOps\"],\"platforms_env_q4\":\"100#Advanced automation using IaC principles (e.g: Ansible + CI/CD)\",\"_FirstName\":\"test\",\"_LastName\":\"test\",\"_WorkEmail\":\"mallen@redhat.com\",\"_WorkPhone\":\"123\",\"_Company\":\"123\",\"_Industry\":\"Aerospace & Defense\",\"_Department\":\"IT - Business Intelligence\",\"_JobRole\":\"Chief Architect\",\"_Country\":\"US\"}}";
@@ -147,17 +148,19 @@ public class SurveyControllerTest {
 	}
 	
   @Test
+//  @TestSecurity(authorizationEnabled = false)
   public void addWithSameIDShouldFail() {
+  	String sameSurveyName="Duplicate Survey Name";
   	given()
-  	.body("{\"name\":\"Survey 2\"}")
+  	.body("{\"name\":\""+sameSurveyName+"\"}")
   	.contentType("application/json")
 		.when().post("/api/surveys")
 		.then()
 			.statusCode(200)
-			.body(containsString("\"name\":\"Survey 2\""));
+			.body(containsString("\"name\":\""+sameSurveyName+"\""));
   	
   	given()
-  	.body("{\"name\":\"Survey 2\"}")
+  	.body("{\"name\":\""+sameSurveyName+"\"}")
   	.contentType("application/json")
 		.when().post("/api/surveys")
 		.then()

@@ -395,7 +395,7 @@ span.sv_q_required_text{
   background-color: Transparent !important;
   color: #0066CC !important;
 }
-.rhbtn-red{
+.rhbtn-red, .rhbtn-red:visited{
   margin: 20px 0 20px 0;
   background: #EE0000 0% 0% no-repeat padding-box;
   border: 1px solid #EE0000;
@@ -404,14 +404,17 @@ span.sv_q_required_text{
 .rhbtn-large{
   width: 230px;
   height: 56px;
+  padding-top: 17px;
+  padding-bottom: 17px;
 }
 .rhbtn-red:hover{
   background-color: #D40000;
   color: #FFF;
   border-color: #D40000;
+  text-decoration: none;
 }
 fieldset div label {
-    margin-bottom: 0.6rem !important;
+  margin-bottom: 0.6rem !important;
 }
 
 .sv_q_radiogroup>label {

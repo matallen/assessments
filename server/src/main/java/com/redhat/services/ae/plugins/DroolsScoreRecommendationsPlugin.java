@@ -225,10 +225,11 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 					if (key.equalsIgnoreCase("_sectionScore")){
 						Map<String, Integer> values=(Map<String, Integer>)val;
 						for(Entry<String, Integer> e2:values.entrySet()){
-							DroolsSurveySection a=new DroolsSurveySection(e2.getKey(), "this will be a subsection one day", language, e2.getValue());
+							String sectionName=e2.getKey();
+							DroolsSurveySection a=new DroolsSurveySection(sectionName, "subSection", language, e2.getValue());
 							log.debug("Inserting fact: "+a);
-							kvReplacement.put("score_"+e2.getKey().replaceAll(" ", "_"), String.valueOf(e2.getValue()));
-							sectionScores.put(e2.getKey(), e2.getValue());
+							kvReplacement.put("score_"+sectionName.replaceAll(" ", "_"), String.valueOf(e2.getValue()));
+							sectionScores.put(sectionName, e2.getValue());
 							kSession.insert(a);
 						}
 					}
@@ -275,6 +276,9 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 					if (null!=r.getText() && r.getText().contains("$"+e.getKey()))
 						r.doKeyValueReplacement(e.getKey(), e.getValue());
 				}
+				
+				if (r.getText().contains("$score"))
+					r.doKeyValueReplacement("$score", kvReplacement.get("score_"+r.getSection().replaceAll(" ", "_")));
 			}
 			
 			Map<String,Integer> thresholds=getThresholdRanges(decisionTableId);
