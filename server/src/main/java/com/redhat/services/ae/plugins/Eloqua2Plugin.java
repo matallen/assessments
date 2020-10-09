@@ -79,7 +79,7 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 	public Map<String, Object> execute(String surveyId, String visitorId, Map<String, Object> surveyResults) throws Exception{
 //		super.execute(surveyId, visitorId, surveyResults);
 		
-		System.out.println("ELOQUA: surveyResults="+com.redhat.services.ae.utils.Json.toJson(surveyResults));
+//		System.out.println("ELOQUA: surveyResults="+com.redhat.services.ae.utils.Json.toJson(surveyResults));
 		
 		// Extract the question config
 		Map<String, mjson.Json> questionsMapping=buildQuestionMap(surveyId);
@@ -141,7 +141,6 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 		answers.putAll(extractedAnswers);
 		answers.put("_surveyId", surveyId);
 		answers.put("_reportId", (String)surveyResults.get("_reportId"));
-		answers.put("_surveyId", surveyId);
 		answers.put("_timestamp", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").format(new Date()));
 		answers.put("_visitorId", visitorId);
 		
@@ -178,7 +177,7 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 		if (disabledIfResult){
 			log.warn("Skipping Eloqua plugin because disabledIf expression '"+disabledIfExpression+"' evaluated to true");
 			for (Entry<String, String> e:eloquaFields.entrySet()){
-				System.out.println(String.format("EloquaPlugin[DISABLED]:: Adding param:: %s = %s", e.getKey(), e.getValue()));
+				log.debug(String.format("EloquaPlugin[DISABLED]:: Adding param:: %s = %s", e.getKey(), e.getValue()));
 			}
 		}
 		

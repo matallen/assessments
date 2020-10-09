@@ -89,10 +89,10 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 			if (question.has("choices")){
 				return findInQuestions(question.at("choices").asJsonList(), answer);
 			}else{
-				log.error("Answer didnt contain a # score delimiter, AND question has no 'choices', unable to determine score -> "+question.at("name").asString()+" ");
+				log.warn(question.at("name").asString()+":: Unable to determine score (no # delimiter, nor score field)");
+//				log.warn("Answer no # score delimiter found, AND question has no 'choices', cant determine score for: "+question.at("name").asString()+" ");
 //				throw new RuntimeException("Question has no 'choices' -> "+question.asString()+" ");
-				Answer a=new Answer(answer,-1);
-				return a;
+				return new Answer(answer,-1);
 			}
 		}
 	}

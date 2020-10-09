@@ -193,6 +193,7 @@ public class SurveyAdminController{
 		return listResources(surveyId);
 	}
 	@GET
+	@PermitAll
 	@Path("/{surveyId}/resources/{name}")
 	public Response getResource(@PathParam("surveyId") String surveyId, @PathParam("name") String name) throws IOException{
 		File resource=Survey.findById(surveyId).getResource(name);

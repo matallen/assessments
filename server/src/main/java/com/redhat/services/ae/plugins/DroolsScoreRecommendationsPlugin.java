@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -288,7 +289,12 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 			
 			// add recommendations to the results
 			surveyResults.put("_report", resultSections);
-			surveyResults.put("_reportId", UUID.randomUUID().toString().replaceAll("-", ""));
+			
+			// Generate a unique. date-stamped result ID so we can identify old data easily later on
+			String ts=new SimpleDateFormat("yyMMdd").format(new Date());
+			String uniqueReportId=surveyResults.containsKey("_reportId")?(String)surveyResults.get("_reportId"):ts+UUID.randomUUID().toString().replaceAll("-", "");
+			log.debug("Adding _reportId: "+uniqueReportId);
+			surveyResults.put("_reportId", uniqueReportId);
 			
 			return surveyResults;
 			
@@ -297,7 +303,8 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 			t.printStackTrace();
 		}
 		
-		return null;
+		log.error("Returning survey results but an error occured in the DroolsReport plugin that needs investigating");
+		return surveyResults;
 	}
 
 }

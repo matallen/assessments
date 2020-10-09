@@ -115,27 +115,8 @@ public class AuthenticationController{
 				Long ttlMins=Long.parseLong(ConfigProvider.getConfig().getValue("modules.login.jwt.ttlInMins", String.class));
 				
 				String jwtToken=Jwt.createJWT(jwtClaims, ttlMins*60);
-//				String domainName=getDomainName(uri.getBaseUri().toString(), true);
-
-//				if (uri.getRequestUri().toString().contains("localhost")){
-//					domainName="localhost";//getDomainName(uri.getBaseUri().toString(), true); // for dev purposes
-//				}else
-//					domainName=getDomainName(params.get("onSuccess"), true);
-				
-//				domainName="";
 				
 				
-//				System.out.println("domain name="+domainName);
-//				log.info("returning jwt token in cookie rh_cat_jwt: "+jwtToken);
-//				domainName="*";
-//				domainName="localhost:8081";
-//				domainName="192.168.1.29:8081";
-//				domainName=".redhat.com";
-				
-//				Cookie cookie=new Cookie().name("rh_cat_jwt").value(jwtToken)
-//						.path("/").domainUrl(params.get("onSuccess")).sameSite(SameSite.Lax)
-////						.path("/").domainUrl(params.get("onSuccess")).secure().sameSite(SameSite.None)
-//						;
 				
 				Cookie cookie=new Cookie()
 						.name("rh_cat_jwt")
@@ -155,10 +136,7 @@ public class AuthenticationController{
 //				System.out.println("cookie.domain="+cookie.domain);
 //				System.out.println("onsuccess="+params.get("onSuccess"));
 				
-//				String fakeCookie="rh_cat_jwt=${TOKEN};Path=/;Domain="+domainName+";Max-Age="+(60*60)+"; SameSite=None;";
 //				String cookie="rh_cat_jwt="+jwtToken+";Path=/;Domain="+domainName+";Max-Age="+(60*60)+"; SameSite=None;";
-				
-//				String cookie="rh_cat_jwt="+jwtToken+";Max-Age="+(60*60)+"; SameSite=None;";
 				
 				System.out.println("RETURNING JWT COOKIE: "+cookie.build().replace(jwtToken, "${token}"));
 				
