@@ -69,8 +69,7 @@ public class CustomFieldController{
 		"Marketing Communications",
 		"Research & Development",
 		"Sales",
-		"Technical Support",
-		"Other"
+		"Technical Support"
 		);
 
 	// list got from near "UpdateJobRoleList" in here: https://www.redhat.com/forms/scripts/jquery.gatedform.js
@@ -129,7 +128,7 @@ public class CustomFieldController{
 	
 
 	private static List<Map<String,String>> countries2=Lists.newArrayList(					
-			country(	"AX",	"Ãland Islands",	"opt-in",	"opt-out"	),
+			country(	"AX",	"Åland Islands",	"opt-in",	"opt-out"	),
 			country(	"AL",	"Albania",	"opt-in",	"opt-out"	),
 			country(	"DZ",	"Algeria",	"opt-in",	"opt-out"	),
 			country(	"AS",	"American Samoa",	"opt-out",	"opt-out"	),
@@ -294,11 +293,11 @@ public class CustomFieldController{
 			country(	"PT",	"Portugal",	"opt-in",	"opt-in"	),
 			country(	"PR",	"Puerto Rico",	"opt-out",	"opt-out"	),
 			country(	"QA",	"Qatar",	"opt-in",	"opt-out"	),
-			country(	"RE",	"RÃ©union",	"opt-out",	"opt-out"	),
+			country(	"RE",	"Réunion",	"opt-out",	"opt-out"	),
 			country(	"RO",	"Romania",	"opt-in",	"opt-out"	),
 			country(	"RU",	"Russian Federation",	"opt-in",	"opt-in"	),
 			country(	"RW",	"Rwanda",	"opt-in",	"opt-in"	),
-			country(	"ST",	"SÃ£o Tome and Principe",	"opt-in",	"opt-out"	),
+			country(	"ST",	"São Tomé and Príncipe",	"opt-in",	"opt-out"	),
 			country(	"SH",	"Saint Helena",	"opt-in",	"opt-out"	),
 			country(	"LC",	"Saint Lucia",	"opt-out",	"opt-out"	),
 			country(	"PM",	"Saint Pierre and Miquelon",	"opt-out",	"opt-out"	),
