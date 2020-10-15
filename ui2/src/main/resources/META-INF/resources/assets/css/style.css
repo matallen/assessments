@@ -420,7 +420,7 @@ fieldset div label {
 .sv_q_radiogroup>label {
 display: block;
 padding-left: 25px;
-text-indent: -21px;
+text-indent: -22px;
 }
 .sv_q_radiogroup_label > [type=radio] {
 vertical-align: middle;
