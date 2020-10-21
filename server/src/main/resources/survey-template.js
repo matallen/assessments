@@ -74,6 +74,28 @@ new Survey
 .SurveyTemplateText()
 .replaceText(radiogroup_template, "question", "radiogroup");
 
+var page_template = `
+  <div data-bind="css: cssClasses.page.root">
+      <!-- ko if: _showTitle -->
+      <h4 data-bind="css: cssClasses.page.title">
+          <!-- ko template: { name: 'survey-string', data: locTitle } -->
+          <!-- /ko -->
+      </h4>
+      <!-- /ko -->
+      <!-- ko if: _showDescription-->
+      <div class="sv_page_description" data-bind="visible: data.showPageTitles, css: cssClasses.page.description">
+          <!-- ko template: { name: 'survey-string', data: locDescription } -->
+          <!-- /ko -->
+      </div>
+      <!-- /ko -->
+      <!-- ko template: { name: 'survey-rows', data: $data} -->
+      <!-- /ko -->
+  </div>
+`;
+new Survey
+.SurveyTemplateText()
+.replaceText(page_template, "page");
+
 
 //var radiogroupitem_template = `
 //  <div data-bind="css: question.getItemClass(item)">
@@ -365,7 +387,7 @@ function setConsentAgreement(countryCode){
 	if (undefined==countryCode) return;
 	var consentInfo=countryNameValue[countryCode];
 	
-	var consent=["by Email","by Phone"]; // default to opt-out for both
+	var consent=["by Email","by Phone"];
 	if (undefined!=consentInfo){
 		if (consentInfo["optInEmail"]!=undefined && consentInfo["optInEmail"].includes("opt-in"))
 			consent=consent.filter(e => e !== "by Email");
@@ -373,6 +395,11 @@ function setConsentAgreement(countryCode){
 			consent=consent.filter(e => e !== "by Phone");
 		survey.setValue("_ConsentAgreement", consent);
 	}
+	// In case the consent info cannot be deferred from the country code
+//	if (consentInfo==undefined || consentInfo["optInEmail"]==undefined || consentInfo["optInPhone"]==undefined)
+//		consent.push("No consent info found for country code "+countryCode);
+//	
+//	survey.setValue("_ConsentAgreement", consent);
 }
 
 

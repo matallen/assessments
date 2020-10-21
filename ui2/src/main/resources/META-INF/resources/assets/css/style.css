@@ -185,7 +185,7 @@ div.elevate li.noColor{
   margin-bottom: 7px;
   text-align: center;
 }
-.sv_p_root>div:first-of-type{ /* page description */
+.sv_page_description{
 	font-size: 12pt;
 	font-weight: normal;
   margin-bottom: 20px;
