@@ -83,7 +83,7 @@
 	function overviewGraphicHeader_tabular(title, rating){
 		return `
 			<table class="maturity"><tr>
-					<td rowspan="2" style="width:110px;"><image src="assets/images/`+title.replace(/ /g,"_").toLowerCase()+`_red.png" width="100" height="100" x="180" y="0" style=""></td>
+					<td rowspan="2" style="width:110px;"><image src="api/surveys/`+surveyId+`/resources/`+title.replace(/ /g,"_").toLowerCase()+`.png" width="100" height="100" x="180" y="0" style=""></td>
 					<td style="vertical-align: bottom;"><h2>`+title+`</h2></td>
 				</tr><tr>
 					<td style="vertical-align: top;"><h2><span style="color: #e10000;">Rating: `+rating+`</span><span style="color: #000;">/100</span></h2></td>
