@@ -1,11 +1,8 @@
-
+@import "https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css";
 @import "/assets/fonts/red-hat-font.css";
 @import "https://go.redhat.com/hubfs/css/styles.min.css";
-@import "https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css";
 @import "/assets/css/survey-progress-panel.css";
 @import "/assets/css/header.css";
-@import "/assets/css/style.css";
 @import "/assets/css/footer.css";
-@import "/assets/themes/rti-theme/css/results.css";
-
-
+@import "/assets/css/style.css";
+@import "/assets/css/results.css";

@@ -2,7 +2,8 @@ Http = {
 	send: function(action, uri, data, callback){
 		var xhr = new XMLHttpRequest();
 		xhr.open(action, uri, true);
-		xhr.setRequestHeader('Authorization','Bearer '+ Http.getCookie("rh_cat_jwt"));
+		//if (undefined!=Http.getCookie("rh_cat_jwt") && uri.includes("admin"))
+			xhr.setRequestHeader('Authorization','Bearer '+ Http.getCookie("rh_cat_jwt"));
 		if (data != undefined){
 			xhr.setRequestHeader("Content-type", "application/json");
 			xhr.send(JSON.stringify(data));
@@ -35,9 +36,11 @@ Http = {
 	httpGet: function(url, callback){
 		var xhr = new XMLHttpRequest();
 		xhr.open("GET", url, true);
-		var jwt=Http.getCookie("rhae-jwt"); // debug
-		//console.log("sending token: "+jwt); // debug
-		xhr.setRequestHeader('Authorization','Bearer '+ Http.getCookie("rh_cat_jwt"));
+		//if (undefined!=Http.getCookie("rh_cat_jwt") && url.includes("admin")){
+			var jwt=Http.getCookie("rhae-jwt"); // debug
+			//console.log("sending token: "+jwt); // debug
+			xhr.setRequestHeader('Authorization','Bearer '+ Http.getCookie("rh_cat_jwt"));
+		//}
 		xhr.send();
 		xhr.onloadend = function () {
 			if (401==this.status)

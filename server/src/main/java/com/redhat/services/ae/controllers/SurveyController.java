@@ -14,12 +14,15 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -68,6 +71,26 @@ public class SurveyController{
 		return Response.ok(result, null==responseContentType?"text/html; charset=UTF-8":responseContentType).build();
 	}
 	
+	@GET
+	@PermitAll
+	@Path("/{surveyId}/config")
+	public Response getConfig(@PathParam("surveyId") String surveyId) throws IOException{
+		return Response.ok(Json.toJson(Survey.findById(surveyId).getConfig())).build();
+	}
+  
+	@PUT
+	@RolesAllowed({"Admin"})
+	@Path("/{surveyId}/config")
+	public Response updateConfig(@PathParam("surveyId") String surveyId, String payload) throws IOException{
+		System.out.println("payload="+payload);
+		Survey s=Json.toObject(payload, Survey.class);
+		System.out.println("s="+s);
+		Survey entity=Survey.findById(surveyId);
+		if (null==entity) throw new WebApplicationException("Unable to find "+Survey.class.getSimpleName()+" with id "+surveyId);
+		entity=Survey.builder().populate(s, entity);
+		entity.update();
+		return Response.ok(entity).build();
+	}
 	
 	@GET
 	@PermitAll

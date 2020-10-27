@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="EN">
 <head>
 	<meta charset="UTF-8">
@@ -19,7 +20,6 @@
 	@import "https://go.redhat.com/hubfs/css/styles.min.css";
 	</style>
 	
-	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 	<script>
 	$(function(){
@@ -35,8 +35,9 @@
 	<script src="assets/js/feedback-alert.js"></script>
 	<link rel="stylesheet" href="assets/css/header.css">
 	<link rel="stylesheet" href="assets/css/style.css">
+	<link rel="stylesheet" href="assets/css/results.css">
 </head>
-
+<body class="admin">
 
 	<!-- Header (+Logo) -->
 	<div id="header">
@@ -86,92 +87,154 @@
 	
 	<!-- Main Content -->
 	<div class="container py-1">
-		<table class="elevate">
-			<tbody id="content">
-				<tr><td>Survey ID</td>							<td><input type="text" disabled id="_id"						value=""/></td></tr>
-				<tr><td>Survey Name</td>						<td><input type="text" disabled id="_name"					value=""/></td></tr>
-				<tr><td>Survey Description</td>			<td><input type="text" disabled id="_description"		value=""/></td></tr>
-				<tr><td>Survey Owner</td>						<td><input type="text" disabled id="_owner"					value=""/></td></tr>
-				<tr><td>Survey Theme</td>						<td><input type="text" disabled id="_theme"					value=""/></td></tr>
-				<!--
-				<td>
-					<select disabled id="_theme">
-						<option>rti-theme</option>
-					</select>
-				</td>
-				<input type="text" disabled id="_theme"					value=""/></td></tr>
-				-->
-				<tr>
-					<td colspan="2">
-					<a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="#" onclick="save();">Save</a>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+		<!--
+		<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js"></script>
+	  <script src="/assets/js/tinymce.min.js"></script>
+		<script src="https://cdn.tiny.cloud/1/kqjorf16lbrjslj3o5d6t1or1fffjsa43hhp3s5kaoeyt1ir/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>		
+		-->
+	  <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
+	  <!--script src="http://cdn.tinymce.com/4/plugins/advcode/plugin.min.js"></script-->
+		<script>
+//			tinymce.init({
+//			  selector: 'textarea',  // change this value according to your HTML
+//			  plugins: 'code,autoresize,fullpage',
+//			  toolbar: '' //code - this seems to disable all the other toolbars
+//			  
+////			  ,extended_valid_elements: "style"
+//			});
+		</script>
+		<style>
+		.admin .section{
+			margin-bottom: 35px;
+			padding: 10px 20px;
+		}
+		.admin table tbody tr td{
+			vertical-align: top;
+		}
+		</style>
+		
+		<div class="elevate section">
+			<table><tr>
+					<td><label for="title">Results Page Title:</label></td>
+					<td><input id="_results_title" type="text" style="width:350px;"/></td>
+			</tr></table>
+		</div>
+		<div class="elevate section">
+			<table>
+					<tr><td><label for="title">Results Page Header:</label></td></tr>
+					<tr><td><textarea onblue="return save();" id="_results_header"></textarea></td></tr>
+			</table>
+		</div>
+		<div class="elevate section">
+			<table>
+					<tr><td><label for="title">Results Page Footer:</label></td></tr>
+					<tr><td><textarea onblur="return save();" id="_results_footer"></textarea></td></tr>
+			</table>
+		</div>
+		<div class="elevate section">
+			<a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="#" onclick="save();">Save</a>
+		</div>
+		
 	</div>
 	
-	<script>
+<script>
 
+//$(document).ajaxStop(function () {
+//
+//});
 
 var surveyId=Utils.getParameterByName("id");
-setMenu("Details");
+setMenu("Results");
 $(document).ready(function() {
 	$("#feedback-alert").hide();
 	
-	if (undefined==surveyId){
-		// We have a new Survey - Enable all all input elements with id=_<something>, except ID
-		$("input[id^=\"_\"]").each(function(index){
-			if ("_id"!=$(this).prop("id")){
-				$(this).prop("disabled", false);
+	Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/resources", function(status, resources){
+		var tiny_content_css="/assets/css/style.css";
+		for(i in resources){
+			if (resources[i]["path"].endsWith(".css")){
+				//$(this).load(resources[i]["path"]);
+				tiny_content_css+=(tiny_content_css.length>0?",":"")+ resources[i]["path"];
 			}
-		});
-	}else{
-		// We have an existing Survey - enable all inputs 
-		Http.httpGetObject(env.server+"/api/surveys/"+surveyId, function(status, survey){
-			for (key in survey){
-				$("#_"+key).val(survey[key]);
-				if ("id"!=key) // don't enable id fields, they need to remain generated/protected
-					$("#_"+key).prop("disabled", false);
-			}
+		}
+		
+		tinymce.init({
+			  selector: 'textarea',  // change this value according to your HTML
+			  plugins: 'code,autoresize,fullpage',
+			  toolbar: '', //code - this seems to disable all the other toolbars
+		// TODO: Need to find a better way to pull in resources in one call
+		//	  content_css: '/assets/css/style.css,/assets/css/survey-progress-panel.css,/assets/themes/rti-theme/css/style.css,/assets/themes/rti-theme/css/results.css'
+			  content_css: tiny_content_css
 		});
 		
-	}
+		Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/config", function(status, survey){
+			for (key in survey){
+				
+				if ($("#_"+key).is("textarea")){
+					// check it's not a tinymce editor, if it is then initialise it
+					//var tinymceeditor=tinymce.get('_'+key);
+					var t=tinymce.get("_"+key);
+					if (null!=t)
+						t.setContent(survey[key]);
+						//$(tinymce.get('_'+key).getBody()).html(survey[key]);
+					
+				}else{
+					$("#_"+key).val(survey[key]);
+				}
+				
+			}
+			return;
+		});
+		
+	});
+	
+	
 	
 });
 
-function nullToEmpty(v){ if (undefined!=v) return v; else return "";}
+//function nullToEmpty(v){ if (undefined!=v) return v; else return "";}
 function newData(){
 	var result={};
-	$('input[id^=\"_\"]').each(function() {
+	$('input[id^=\"_\"],textarea[id^=\"_\"]').each(function() {
 		result[this.id.substr(1)]=null;
 	});
 	return result;
 }
 function save(){
 	var data=populate(newData());
-	Http.send((undefined==surveyId?"POST":"PUT"), env.server+"/api/surveys"+(undefined==surveyId?"":"/"+surveyId), data, function(resp, status){
-		jsonToDisplay(resp.response);
-		// update breadcrumbs
-		// push to url line
-		surveyId=JSON.parse(resp.response)["id"];
-		setMenu("Details");
-		if (undefined==data["id"] || ""==data["id"])
-			window.history.pushState("", "", location.pathname+(location.search!=""?location.search+"&":"?")+"id="+JSON.parse(resp.response)["id"]);
+	data={"config":data}; // put it in a config object so it parses into a partial survey on the other end
+	Http.send((undefined==surveyId?"POST":"PUT"), env.server+"/api/surveys"+(undefined==surveyId?"":"/"+surveyId+"/config"), data, function(resp, status){
+		//jsonToDisplay(resp.response);
+		var response=JSON.parse(resp.response);
+		//jsonToDisplay2(response["config"],0);
+		response=response["config"];
+		for (key in response){
+			if ($("#_"+key).is("textarea")){
+				// check it's not a tinymce editor, if it is then initialise it
+				var tinymceeditor=tinymce.get('_'+key);
+				if (null!=tinymceeditor)
+					$(tinymce.get('_'+key).getBody()).html(response[key]);
+				
+			}else{
+				$("#_"+key).val(response[key]);
+			}
+		}
 		
 		showSuccess(200==status?"Saved Ok":"Save Error (Status: "+status+")");
-		//alert(200==status?"Saved Ok":"Save Error (Status: "+status+")");
-		//window.location.href="admin.html";
 	});
-}
-function jsonToDisplay(surveyJson){ // json to html fields
-	var response=JSON.parse(surveyJson);
-	for (key in response)
-		$("#_"+key).val(response[key]);
 }
 function populate(obj){ // html fields to javascript object
 	for (key in obj){
-		obj[key]=$("#_"+key).val();
+		
+		if ($("#_"+key).is("textarea")){
+			// no value? lets see if it's a tinyMCE rich editor
+			obj[key]=tinymce.get("_"+key).getContent({format : 'raw'})
+			//obj[key]=obj[key].replaceAll("\n","");
+		}else{
+			obj[key]=$.trim($("#_"+key).val());
+		}
+		
 	}
+	
 	return obj
 }
 

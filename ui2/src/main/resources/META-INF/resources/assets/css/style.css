@@ -444,3 +444,58 @@ top: -2px;
 input,button{
   padding: 0 4px;
 }
+
+
+
+/* REVERSING THE COLOR SCHEME FOR THE CONTACT PAGE */
+.sv_page_contact_form>.sv_row {
+    background-color: #f0f0f0 !important;
+    border: 0px;
+}
+.sv_page_contact_form .sv_qstn>div:nth-child(1) {
+    padding: 0 10px 0 10px;
+    border: 0px solid #ccc;
+    background-color: white !important;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
+.sv_page_contact_form .sv_qstn>div:nth-child(2) {
+    padding: 0 10px 0 10px;
+    border: 0px solid #ccc;
+    border-top: 0px;
+    background-color: white !important;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+.sv_wrapper_contact_form,
+.sv_page_contact_form,
+.sv_page_contact_form .sv_p_root, 
+.sv_page_contact_form .sv_row,
+.sv_wrapper_contact_form .sv_nav {
+    background-color: white !important;
+    border: 0px;
+    margin: 10px 0 10px 0;
+}
+
+
+@media only screen and (max-width: 600px) {
+    .sv_p_container>div:nth-of-type(3) {
+        display: grid;
+        grid-gap: 15px;
+        grid-template-columns: repeat(1,1fr);
+    }
+
+    .sv_imgsel_grid{
+        display: grid;
+        grid-gap: 30px;
+        grid-template-columns: repeat(1,1fr);
+    }
+}
+
+@media only screen and (device-width: 768px) {
+    .sv_p_container>div:nth-of-type(3) {
+        display: grid;
+        grid-gap: 15px;
+        grid-template-columns: repeat(1,1fr);
+    }
+}

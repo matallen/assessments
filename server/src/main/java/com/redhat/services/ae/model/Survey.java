@@ -50,6 +50,8 @@ public class Survey{
 	public String description;
 	public String owner;
 	public String theme;
+	public Map<String,String> config;
+	
 	
 	@JsonIgnore
 	private EntityStorage<Map<String,Object>> resultsStorage=new StorageFactory<Map<String,Object>>(){
@@ -106,6 +108,11 @@ public class Survey{
 		questionsStorage.save(this.id);
 	}
 	
+	public Map<String,String> getConfig(){
+		if (null==config) config=new LinkedHashMap<>();
+		return config;
+	}
+	
 	public void persist(){
 		save();
 	}
@@ -153,7 +160,10 @@ public class Survey{
 		o.description=this.description;
 		o.owner=this.owner;
 		o.theme=this.theme;
+		o.config=this.config;
 		o.setQuestions(this.getQuestions());
+		// TODO: what about resources?
+		
 		o.persist();
 		return o;
 	}
@@ -193,7 +203,6 @@ public class Survey{
 		List<Resource> result=Lists.newArrayList();
 		for (File f:getResourcesRoot().listFiles()){
 			result.add(new Resource(f.getName(), "/api/surveys/"+id+"/resources/"+f.getName()));
-//			result.add(new Resource(f.getName(), "/resources/"+f.getName()));
 		}
 		return result;
 	}
@@ -234,6 +243,7 @@ public class Survey{
 		public String getDescription(){return description;}   public Builder description(String v){description=v; return this;}
 		public String getOwner(){return owner;}						    public Builder owner(String v){owner=v; return this;}
 		public String getTheme(){return theme;}               public Builder theme(String v){theme=v; return this;}
+		public Map<String,String> getConfig(){return config;} public Builder config(Map<String,String> v){config=v; return this;}
 //		public String getExternalUrl(){return externalUrl;}   public Builder externalUrl(String v){externalUrl=v; return this;}
 //		public String getContent(){return content;}           public Builder content(String v){content=v; return this;}
 		
@@ -244,6 +254,7 @@ public class Survey{
 			c.description=super.description;
 			c.owner=super.owner;
 			c.theme=super.theme;
+			c.config=super.config;
 //			c.content=super.content;
 			return c;
 		}
@@ -253,6 +264,7 @@ public class Survey{
 			dst.description=src.description!=null?src.description:dst.description;
 			dst.owner=src.owner!=null?src.owner:dst.owner;
 			dst.theme=src.theme!=null?src.theme:dst.theme;
+			dst.config=src.config!=null?src.config:dst.config;
 //			dst.content=src.content!=null?src.content:dst.content;
 			return dst;
 		}
@@ -279,6 +291,7 @@ public class Survey{
     sb.append(", description:").append(Utils.toIndentedString(description));
     sb.append(", owner:").append(Utils.toIndentedString(owner));
     sb.append(", theme:").append(Utils.toIndentedString(theme));
+    sb.append(", config:").append(Utils.toIndentedString(config));
     sb.append("}");
     return sb.toString();
 	}

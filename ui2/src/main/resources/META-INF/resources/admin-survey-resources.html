@@ -31,7 +31,6 @@
 	</script>
 	<script src="assets/js/http.js"></script>
 	<script src="assets/js/utils.js"></script>
-	<script src="assets/js/jquery-common.js"></script>
 	<script src="assets/js/env.js"></script>
 	<script src="assets/js/feedback-alert.js"></script>
 	
@@ -69,9 +68,10 @@
 			<li class="menu_needsId"><a href="admin-survey-reports.html?id=">Reports</a></li>
 			<!--li class="menu_needsId"><a href="admin-survey-questions.html?id=">Questions</a></li-->
 			<li class="menu_needsId"><a href="admin-survey-questions-embedded.html?id=">Questions</a></li>
-			<li class="menu_needsId"><a href="admin-survey-eloqua.html?id=">Eloqua</a></li>
+			<!--li class="menu_needsId"><a href="admin-survey-eloqua.html?id=">Eloqua</a></li-->
 			<li class="menu_needsId"><a href="admin-survey-plugins.html?id=">Plugins</a></li>
 			<li class="menu_needsId"><a href="admin-survey-resources.html?id=">Resources</a></li>
+			<li class="menu_needsId"><a href="admin-survey-results.html?id=">Results</a></li>
 			<li class="menu_needsId"><a href="admin-survey-settings.html?id=">Settings</a></li>
 		</ul>
 		<ul style="float:right" class="menu menu_horizontal">
@@ -85,7 +85,7 @@
 	</div>
 	
 	<!-- success/error message --> 
-	<div class="alert alert-success" id="feedback-alert">
+	<div class="alert alert-success" id="feedback-alert" style="display:none">
     <button type="button" class="close" data-dismiss="alert">x</button>
     <span id="feedback-alert-text">&nbsp;</span>
 	</div>
@@ -162,11 +162,10 @@
 	<script>
 
 
-var surveyId;
+var surveyId=Utils.getParameterByName("id");
+setMenu("Resources");
 $(document).ready(function() {
 	$("#feedback-alert").hide();
-	surveyId=Utils.getParameterByName("id");
-	setMenu("Resources");
 	
 	if (undefined!=surveyId){
 		
@@ -258,6 +257,9 @@ Upload.prototype.doUpload = function () {
     $.ajax({
         type: "POST",
         url: env.server+"/api/surveys/"+surveyId+"/resources",
+        headers: {
+        	"Authorization": "Bearer "+Http.getCookie("rh_cat_jwt")
+        },
         xhr: function () {
             var myXhr = $.ajaxSettings.xhr();
             if (myXhr.upload) {

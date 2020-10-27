@@ -101,17 +101,26 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 	}
 	
 	
-	private String makeTextSafeForCompilation(String text){
-		if (null==text) return text;
-		return text
-				.replaceAll(System.getProperty("line.separator"), "<br/>")
-				.replaceAll("\r\n", "<br/>")
-				.replaceAll("\\r\\n", "<br/>")
-				.replaceAll("(\n|\r)", "<br/>")
-				.replaceAll("(\\n|\\r)", "<br/>")
-				.replaceAll("\"", "\\\\\"")
-				;
-		
+	
+	static class Utils{
+		public static String defaultTo(String value, String defaultTo){
+			if (value==null || "".equals(value)) return defaultTo;
+			return value;
+		}
+		public static String makeTextSafeForCompilation(String text){
+			return makeTextSafeForCompilation(text, text);
+		}
+		public static String makeTextSafeForCompilation(String text, String defaultTo){
+			if (null==text || "".equals(text)) return defaultTo;
+			return text
+					.replaceAll(System.getProperty("line.separator"), "<br/>")
+					.replaceAll("\r\n", "<br/>")
+					.replaceAll("\\r\\n", "<br/>")
+					.replaceAll("(\n|\r)", "<br/>")
+					.replaceAll("(\\n|\\r)", "<br/>")
+					.replaceAll("\"", "\\\\\"")
+					;
+		}
 	}
 	
 	public KieSession newKieSession(String sheetId) throws IOException, InterruptedException{
@@ -137,8 +146,8 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 					dataTableConfigList2.add(
 							new MapBuilder<String,Object>()
 							.put("salience", salience-=1)// 65534-Integer.parseInt(rows.get("ROW_#")))
-							.put("language", rows.get("Language"))
-							.put("description", makeTextSafeForCompilation(rows.get("Description")))
+							.put("language", Utils.defaultTo(rows.get("Language"), "en"))
+							.put("description", Utils.makeTextSafeForCompilation(rows.get("Description"), "NoDescription")) // default to prevent rule compilation error on rule name
 							
 							.put("section", rows.get("Section"))
 							.put("subSection", rows.get("Sub-section"))
@@ -150,7 +159,7 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 							
 							.put("resultLevel1", rows.get("Result Level 1"))
 							.put("resultLevel2", rows.get("Result Level 2"))
-							.put("resultText", makeTextSafeForCompilation(rows.get("Text")))
+							.put("resultText", Utils.makeTextSafeForCompilation(rows.get("Text")))
 							
 							.build()
 							);

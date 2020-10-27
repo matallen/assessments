@@ -178,9 +178,6 @@ public class SurveyAdminController{
 	public Response listResources(@PathParam("surveyId") String surveyId) throws IOException{
 		return Response.ok(Survey.findById(surveyId).getResources()).build();
 	}
-	
-	
-	
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces({ MediaType.APPLICATION_JSON })
@@ -202,7 +199,6 @@ public class SurveyAdminController{
 	@DELETE
 	@Path("/{surveyId}/resources/{name}")
 	public Response deleteResource(@PathParam("surveyId") String surveyId, @PathParam("name") String name) throws IOException{
-//		return Response.ok("TODO").build();
 		Survey.findById(surveyId).deleteResource(name);
 		return listResources(surveyId);
 	}

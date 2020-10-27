@@ -37,7 +37,7 @@
 	<link rel="stylesheet" href="assets/css/header.css">
 	<link rel="stylesheet" href="assets/css/style.css">
 	<link rel="stylesheet" href="assets/css/footer.css" type="text/css" />
-	<link rel="stylesheet" href="assets/themes/rti-theme/css/results.css" type="text/css" />
+	<link rel="stylesheet" href="assets/css/results.css" type="text/css" />
 </head>
 
 
@@ -57,8 +57,14 @@
 	<div class="container">
 		<div class="row">
 			<div class="container print-panel">
-				<h1>Ready-to-Accelerate results</h1>
-				<p>With a holistic strategy, organizations can implement environment, development, and operational changes needed to keep pace with growing business demands.</p>
+				<h1 id="results_title"></h1>
+				<!--
+				Ready-to-Accelerate results
+				-->
+				<p id="results_header"></p>
+				<!--
+				With a holistic strategy, organizations can implement environment, development, and operational changes needed to keep pace with growing business demands.
+				-->
 				<p>
 					<button type="button" class="rhbtn rhbtn-secondary" id="review_assessment">Edit my answers</button>
 					<button type="button" class="rhbtn rhbtn-primary" id="create_pdf">Print preview</button>
@@ -98,22 +104,9 @@
 			  <rect width="479.974" height="20" style="fill: rgb(238, 238, 238);" y="16" x="5"/>
 			  <line style="paint-order: stroke; stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209); stroke-opacity: 0.5;" x1="5"   y1="8"  x2="5"   y2="44"/>
 			  <line style="paint-order: stroke; stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209); stroke-opacity: 0.5;" x1="485" y1="8"  x2="485" y2="44"/>
-			  <!--
-			  <line style="paint-order: stroke; stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209); stroke-opacity: 0.5;" x1="165" y1="16" x2="165" y2="36"/>
-			  <line style="paint-order: stroke; stroke: rgb(209, 209, 209); fill: rgb(209, 209, 209); stroke-opacity: 0.5;" x1="325" y1="16" x2="325" y2="36"/>
-			  -->
-			  
 				<line class="bar" x1="5" y1="12" x2="`+len+`" y2="12" style="stroke-dasharray: `+len+`; stroke-dashoffset: `+len+`; "/>
-				
 				<text style="fill: rgb(208, 208, 208); font-size: 8px; white-space: pre;" x="2.512"   y="51.189">0</text>
 				<text style="fill: rgb(208, 208, 208); font-size: 8px; white-space: pre;" x="478.013" y="51.19">100</text>
-				<!--
-				<text style="fill: rgb(138, 138, 138); font-size: 9px; white-space: pre;" x="46.945"  y="29.876">FOUNDATIONAL</text>
-				<text style="fill: rgb(138, 138, 138); font-size: 9px; white-space: pre;" x="208.945" y="29.876">INTERMEDIATE</text>
-				<text style="fill: rgb(138, 138, 138); font-size: 9px; white-space: pre;" x="379.469" y="29.495">ADVANCED</text>
-				-->
-				<!--
-				-->
 		`;
 		var i=0;
 		var lastThreshold=0, lastLinePosInPx=0;
@@ -162,7 +155,9 @@
 	</div>
 </section>
 
-<div class="print-panel-container">
+<div id="results_footer" class="print-panel-container">
+</div>
+<!--
 	<div class="container">
 		<div class="row">
 			<div class="container print-panel">
@@ -173,7 +168,7 @@
 			</div>
 		</div>
 	</div>
-</div>
+-->
 
 	<script>
 		var surveyId=Utils.getParameterByName("surveyId");
@@ -186,6 +181,9 @@
 		var retries=0;
 		var maxRetries=20;
 		$(document).ready(function() {
+			
+			loadCssResources();
+			loadHeaderFooter();
 			
 			timerId = window.setInterval(function () {
 				
@@ -215,18 +213,36 @@
 			}, intervalInSeconds*1000);
 			
 		});
-
+		
+		// this should load css files configured in the assessment resources
+		function loadCssResources(){
+			Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/resources", function(status, resources){
+				for(i in resources){
+					if (resources[i]["path"].endsWith(".css")){
+						$(this).load(resources[i]["path"]);
+					}
+				}
+			});
+		}
+		
+		// this should load the header and footer for the results page from the assessment config
+		function loadHeaderFooter(){
+			Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/config", function(status, config){
+				console.log(config);
+				if (undefined!=config["results_title"]) $("#results_title").html(config["results_title"]);
+				if (undefined!=config["results_header"]) $("#results_header").html(config["results_header"]);
+				if (undefined!=config["results_footer"]) $("#results_footer").html(config["results_footer"]);
+			});
+		}
+		
+		
 		function displayResults(jsonResponse){
 			
 			var tabCount=10;
 			var report=jsonResponse["_report"];
-			var thresholds;
+			var thresholds={"Basic":33,"Intermediate":66,"Advanced":100}; // default
 			
-			if (report["thresholds"]){
-				thresholds=report["thresholds"];
-			}else{
-				thresholds={"Basic":33,"Intermediate":66,"Advanced":100};
-			}
+			if (report["thresholds"]) thresholds=report["thresholds"];
 			
 			// if it contains overviews for an overviews tab, then drill in for the content, and extract the overviews
 			if (report["overviews"]){
@@ -436,7 +452,6 @@ $(document).ready(function(){
 		
 		function printPDF(){
 			$("page").width(500);
-			//printJS({ printable: 'page', type: 'html'});
 			printJS({ 
 				printable: 'printable', 
 				type: 'html',
@@ -446,19 +461,19 @@ $(document).ready(function(){
 			});
 			cleanupPrintArea();
 		}
-		function createPDF(){
-			getCanvas().then(function(canvas) {
-				var img = canvas.toDataURL('image/png'),
-				doc = new jsPDF({
-						unit: 'px',
-						format: 'a4',
-				});
-				doc.addImage(img, 'JPEG', 20, 20);
-				doc.save('Your_Results');
-				container.width(cache_width);
-				cleanupPrintArea();
-			});
-		}
+//		function createPDF(){
+//			getCanvas().then(function(canvas) {
+//				var img = canvas.toDataURL('image/png'),
+//				doc = new jsPDF({
+//						unit: 'px',
+//						format: 'a4',
+//				});
+//				doc.addImage(img, 'JPEG', 20, 20);
+//				doc.save('Your_Results');
+//				container.width(cache_width);
+//				cleanupPrintArea();
+//			});
+//		}
 		function getCanvas() {
 			container.width(a4[0] * 1.33333 - 80).css('max-width', 'none');
 			return html2canvas(container, {
@@ -470,14 +485,6 @@ $(document).ready(function(){
 		}
 		function cleanupPrintArea(){
 			$("#printable").html("");
-			//$('.tab-content .tab-pane').each(function(i, el){
-			//	if ($(this).prop("id")!=activeTab){
-			//		$(this).removeClass('active')
-			//	}
-			//});
-			//$('.nav-tabs').show();
-			//$('#tabcontent_overview').show();
-//			$('#tab_overview').click();
 		}
 	});
 });
