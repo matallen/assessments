@@ -34,11 +34,18 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import com.redhat.services.ae.MapBuilder;
 import com.redhat.services.ae.model.MetricsDecorator;
 import com.redhat.services.ae.model.Survey;
 import com.redhat.services.ae.plugins.Plugin;
+import com.redhat.services.ae.plugins.UpdateAnswerMetricsPlugin;
+import com.redhat.services.ae.plugins.utils.RemovePIIAnswersPlugin;
 import com.redhat.services.ae.utils.FluentCalendar;
 import com.redhat.services.ae.utils.Json;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 @Path("/api/surveys")
 @Produces(MediaType.APPLICATION_JSON)
@@ -163,7 +170,9 @@ public class SurveyController{
 		// Metrics:: Update "cardinality of which answers selected" metrics
 		Map<String, Object> surveyData=payloadObj.get("_data");
 		log.debug("generateReport:: data="+Json.toJson(surveyData));
-		updateAnswerMetrics(o, YYMMM, surveyData);
+		
+		// TODO: Move this to plugins so we can configure under what conditions it fires
+//		updateAnswerMetrics(o, YYMMM, surveyData);
 		
 		// Save Survey & its metrics
 		o.saveMetrics();
@@ -178,20 +187,44 @@ public class SurveyController{
 //		}
 		
 		
+		// Plugins:: Add/Insert any mandatory plugins, prior to executing the plugin chain
+//		List<Plugin> activePlugins=new LinkedList<Plugin>();
+//		Iterables.any(o.getActivePlugins().values(), new Predicate<Map<String,Object>>(){
+//			@Override
+//			public boolean apply(@org.checkerframework.checker.nullness.qual.Nullable Map<String, Object> input){
+//				return false;
+//			}});
+		
+		Map<String, Map<String, Object>> activePluginMap=new LinkedHashMap<String, Map<String,Object>>();
+		// Plugins:: Add any mandatory plugins at the start of the plugin chain
+		if (!Iterables.any(o.getActivePlugins().values(), new Predicate<Map<String,Object>>(){public boolean apply(@Nullable Map<String,Object> pluginCfg){
+			return pluginCfg.get("className").equals(UpdateAnswerMetricsPlugin.class.getName());}})){
+			log.info("Adding default 'UpdateAnswerMetrics' since it was not found in plugin chain");
+			activePluginMap.put("UpdateAnswerMetrics", new MapBuilder<String,Object>().put("active", true).put("className",UpdateAnswerMetricsPlugin.class.getName()).build());
+		}
+		activePluginMap.putAll(o.getActivePlugins());
+		// Plugins:: Add any mandatory plugins at the end of the plugin chain
+//		if (!Iterables.any(activePluginMap.values(), new Predicate<Map<String,Object>>(){public boolean apply(@Nullable Map<String,Object> pluginCfg){
+//			return pluginCfg.get("className").equals(RemovePIIAnswersPlugin.class.getName());}})){
+//			activePluginMap.put("RemovePIIAnswers", new MapBuilder<String,Object>().put("active", true).put("className",RemovePIIAnswersPlugin.class.getName()).build());
+//		}
+		
+
 		// Plugins:: Execute post-survey plugins
 		List<Plugin> activePlugins=new LinkedList<Plugin>();
 		Map<String,Object> originalSurveyData=new LinkedHashMap<>(surveyData);
 		// Plugins:: Create Plugin list
-		for(Entry<String, Map<String, Object>> pl:o.getActivePlugins().entrySet()){
+		for(Entry<String, Map<String, Object>> pl:activePluginMap.entrySet()){
 			try{
 				Plugin plugin=(Plugin)Class.forName((String)pl.getValue().get("className")).newInstance();
-				plugin.setConfig(pl.getValue());
+				plugin._setConfig(pl.getValue());
 				plugin.setOriginalSurveyResults(originalSurveyData);
 				activePlugins.add(plugin);
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 		}
+		
 		// Plugins:: Execute post-survey plugins
 		for(Plugin plugin:activePlugins){
 			try{
