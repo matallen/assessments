@@ -174,6 +174,7 @@ public class SurveyAdminController{
 	/** #### SURVEY RESOURCE HANDLERS ####  */
 	
 	@GET
+	@PermitAll
 	@Path("/{surveyId}/resources")
 	public Response listResources(@PathParam("surveyId") String surveyId) throws IOException{
 		return Response.ok(Survey.findById(surveyId).getResources()).build();

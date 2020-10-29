@@ -123,6 +123,7 @@ public class SurveyController{
 	}
 	
 	@POST
+	@PermitAll
 	@Path("/{surveyId}/metrics/{pageId}/onPageChange")
 	public Response onPageChange(@PathParam("surveyId") String surveyId, @PathParam("pageId") String pageId, @QueryParam("visitorId") String visitorId, String payload) throws JsonParseException, JsonMappingException, IOException{
 		log.debug("metrics onPageChange : "+surveyId);
@@ -149,6 +150,7 @@ public class SurveyController{
 	
 
 	@POST
+	@PermitAll
 	@Path("/{surveyId}/generateReport")
 	public Response generateReport(@PathParam("surveyId") String surveyId, @QueryParam("visitorId") String visitorId, @QueryParam("pageId") String pageId, String payload) throws JsonParseException, JsonMappingException, IOException{
 		log.debug("generateReport: "+surveyId);
