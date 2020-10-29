@@ -74,9 +74,9 @@ public abstract class Plugin{
 				ex.printStackTrace();
 			}
 		}else
-			log.warn("No 'disabledIfExpression' config found");
+			log.warn(this.getClass().getSimpleName()+":: No 'disabledIfExpression' config found");
 		
-		if (disabledIfResult) log.warn("Skipping "+this.getClass().getSimpleName()+" because disabledIfExpression '"+disabledIfExpression+"' evaluated to true");
+		if (disabledIfResult) log.warn(this.getClass().getSimpleName()+":: Skipping because disabledIfExpression '"+disabledIfExpression+"' evaluated to true");
 		
 		return disabled || disabledIfResult;
 	}

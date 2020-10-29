@@ -94,11 +94,11 @@ $(document).ready(function() {
 	surveyId=Utils.getParameterByName("surveyId");
 	
 	if (undefined!=Utils.getParameterByName("dev_reset")){
-		console.log("Removing Cookie \"rhae-visitorId\"");
-		Cookie.remove("rhae-visitorId");
+		console.log("Removing Cookie \"rh_cat_visitorId\"");
+		Cookie.remove("rh_cat_visitorId");
 	}
 	
-	visitorId=getVisitorId("rhae-visitorId");
+	visitorId=getVisitorId("rh_cat_visitorId");
 	if (undefined!=surveyId)
 		startSurvey();
 	

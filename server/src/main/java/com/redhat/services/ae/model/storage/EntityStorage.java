@@ -77,7 +77,7 @@ public abstract class EntityStorage<T>{
 			String json=Json.newObjectMapper(true).writeValueAsString(data);
 			File saveTo=new File(getStorageRoot(), null!=objectId?objectId+File.separator+getStorageFilename():getStorageFilename());
 			saveTo.getParentFile().mkdirs(); // ensure the parent exists
-			System.out.println("Saving to: "+saveTo.getAbsolutePath());
+//			System.out.println("Saving to: "+saveTo.getAbsolutePath());
 			IOUtils.write(json, new FileOutputStream(saveTo), "UTF-8");
 			lastModified=saveTo.lastModified(); // save the modified date so when it's next accessed it doesnt force a reload after each save
 		}catch(IOException e){

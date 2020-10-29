@@ -126,7 +126,7 @@ public class SurveyController{
 	@PermitAll
 	@Path("/{surveyId}/metrics/{pageId}/onPageChange")
 	public Response onPageChange(@PathParam("surveyId") String surveyId, @PathParam("pageId") String pageId, @QueryParam("visitorId") String visitorId, String payload) throws JsonParseException, JsonMappingException, IOException{
-		log.debug("metrics onPageChange : "+surveyId);
+		log.debug("onPageChange:: "+surveyId);
 		Survey o=Survey.findById(surveyId);
 		if (null==o) throw new RuntimeException("Survey ID doesn't exist! :"+surveyId);
 		String YYMMM=FluentCalendar.get(new Date()).getString("yy-MMM");
@@ -153,7 +153,7 @@ public class SurveyController{
 	@PermitAll
 	@Path("/{surveyId}/generateReport")
 	public Response generateReport(@PathParam("surveyId") String surveyId, @QueryParam("visitorId") String visitorId, @QueryParam("pageId") String pageId, String payload) throws JsonParseException, JsonMappingException, IOException{
-		log.debug("generateReport: "+surveyId);
+		log.debug("generateReport:: "+surveyId);
 		
 		Survey o=Survey.findById(surveyId);
 		if (null==o) throw new RuntimeException("Survey ID doesn't exist! :"+surveyId);
@@ -270,7 +270,7 @@ public class SurveyController{
 
 	private void updatePageTransitionMetrics(Survey s, String visitorId, String YYMMM, String pageId){
 		// Removing the visitor ID for the time being because, the cookie lasts 30 days, but if someone took the assessment mid month1, then it wouldnt register until after mid month2 if we had a cookie/page check
-		log.debug("onPageChange:: incrementing monthly page counter for [visitorId="+visitorId+", pageId="+pageId+"]");
+//		log.debug("onPageChange:: incrementing monthly page counter for [visitorId="+visitorId+", pageId="+pageId+"]");
 		new MetricsDecorator(s.getMetrics()).increment(1, "pageTransitionsByMonth", YYMMM, pageId);
 	}
 	
@@ -286,12 +286,12 @@ public class SurveyController{
 		MetricsDecorator m=new MetricsDecorator(s.getMetrics());
 		new AnswerProcessor(false){
 			@Override public void onStringAnswer(String questionId, String answerId, Integer score){ // radiobuttons
-				log.debug("Reports: Adding answers for question '"+questionId+"' to metrics");
+				log.debug("Updating answer distrib metrics for question '"+questionId+"'");
 				m.increment(1, "answerDistribution", YYMMM, questionId, answerId);
 			}
 			@Override
 			public void onArrayListAnswer(String questionId, List<Answer> answerList, Integer averageScore){ // multi-checkboxes
-				log.debug("Reports: Adding answers for question '"+questionId+"' to metrics");
+				log.debug("Updating answer distrib metrics for question '"+questionId+"'");
 				for (Answer answer:answerList){
 					// Increment the metrics for each item selected
 					m.increment(1, "answerDistribution", YYMMM, questionId, answer.id);

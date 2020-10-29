@@ -499,3 +499,18 @@ input,button{
         grid-template-columns: repeat(1,1fr);
     }
 }
+
+/* ERRORS - highlight mandatory boxes with a red shadows border */
+input.sv_q_text_root.undefined,
+.sv_q_dropdown_control.undefined
+{
+		box-shadow: 0px 0px 5px #CC0000;
+}
+.sv_q_erbox.sv_qstn_error_top{
+		display: none;
+}
+.sv_q.sv_qstn{
+		min-height: 63px;
+}
+
+/* /ERRORS */
