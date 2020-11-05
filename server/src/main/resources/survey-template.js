@@ -368,7 +368,7 @@ var navProgBar = document.createElement("ul");
 navProgBar.className = "navigationProgressbar";
 navProgBarDiv.appendChild(navProgBar);
 
-
+var initialVisibility={};
 var navTitlesUniqueSet=[];
 var liEls = {};
 for (var i = 0; i < survey.PageCount; i++) {
@@ -383,24 +383,36 @@ for (var i = 0; i < survey.PageCount; i++) {
     pageTitle.innerText=!survey.pages[i].navigationTitle?
     		pageTitle.innerText = survey.pages[i].name:
     		pageTitle.innerText = survey.pages[i].navigationTitle;
+	pageTitle.id=pageTitle.innerText;
     
+	// BUG:: this needs changing to "if ALL pages with the same pageTitle are not visible then set 'pageNotVisible' class"
+	if (undefined==initialVisibility[pageTitle.innerText]) initialVisibility[pageTitle.innerText]=[]
+	initialVisibility[pageTitle.innerText].push(survey.pages[i].isVisible);
     
+	
     // logic to group question pages in progress panel
     if (navTitlesUniqueSet.includes(pageTitle.innerText)) continue;
     navTitlesUniqueSet.push(pageTitle.innerText);
     
-    pageTitle.className = "pageTitle";
+    //pageTitle.className = "pageTitle";
+    pageTitle.classList.add("pageTitle");
     
-    if (survey.pages[i].isVisible!=true)
-    	pageTitle.classList.toggle("pageNotVisible");
+    
+//    if (survey.pages[i].isVisible!=true)
+//    	pageTitle.classList.add("pageNotVisible");
     
 	navProgBar.appendChild(pageTitle);
 	navProgBar.appendChild(liEl);
 	
 	pageTitle.classList.add("_"+survey.pages[i].name.replace(/ /g,"_").toLowerCase());
     liEls[undefined!=survey.pages[i].navigationTitle?survey.pages[i].navigationTitle:survey.pages[i].name]=liEl;
-
 }
+// visible if "any" pages are initially visible
+for (var k in initialVisibility){
+	var visible=initialVisibility[k].some(x => x);
+	if (!visible) document.getElementById(k).classList.add("pageNotVisible");
+}
+
 
 function setConsentAgreement(countryCode){
 	if (undefined==countryCode) return;
