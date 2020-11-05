@@ -292,19 +292,38 @@ survey
 
 		survey.data["language"]=languageCode;
     	
-    	Http.httpPost(env.server+"/api/surveys/"+surveyId+"/generateReport?pageId="+page.name+"&visitorId="+Cookie.get("rh_cat_visitorId"), buildPayload(page, true), function(response){
-			if (response.status==200){
-				// navigate to a results page
-				
-				console.log("Completed posting results to server");
-				
-				var resultId=response.responseText;
-				window.location.assign("/results.html?surveyId="+surveyId+"&resultId="+resultId);
-				
-			}else{
-				// Handle the error scenario
-			}
-    	});
+		
+		// only generate a report page if they didnt trigger a shortcut
+		// check all triggers, if any eval to true then it most likely fired and therefore no report should be generated
+		var surveyTriggerFired=false;
+		//for (i in survey.triggers){
+		//	if (survey.triggers[i].expression!=""){
+		//		surveyTriggerFired=surveyTriggerFired || survey.triggers[i].conditionRunner.run();
+		//	}
+		//}
+		// Unfortunately I cant seem to determine if a trigger has fired, or to check the expression of a trigger, so I'm going to assume that if we're not on the last page then a trigger musve fired
+		if (survey.isCompleted && survey.pages[survey.pages.length-1].name!=survey.currentPage.name){
+			//trigger probably fired
+			surveyTriggerFired=true;
+		}else{
+			
+		}
+		
+		if (!surveyTriggerFired){
+			Http.httpPost(env.server+"/api/surveys/"+surveyId+"/generateReport?pageId="+page.name+"&visitorId="+Cookie.get("rh_cat_visitorId"), buildPayload(page, true), function(response){
+				if (response.status==200){
+					// navigate to a results page
+					
+					console.log("Completed posting results to server");
+					
+					var resultId=response.responseText;
+					window.location.assign("/results.html?surveyId="+surveyId+"&resultId="+resultId);
+					
+				}else{
+					// Handle the error scenario
+				}
+			});
+		}
     	
     });
 
@@ -437,7 +456,7 @@ survey
 	.add(function (sender, options) {
 		console.log("onPageVisibleChanged");
 		var pageName=options.page.name;
-		var visible=options.visible;
+		var visible=options.page.visible;
 		var navTitle=options.page.navigationTitle?options.page.navigationTitle:options.page.name;
 		
 		var pageTitle=$("._"+pageName.replace(/ /g,"_").toLowerCase()).get()[0];
@@ -519,7 +538,7 @@ LocalStorage.loadState(survey);
 //survey.navigateToUrl="/results.html?surveyId="+surveyId+"&visitorId="+visitorId;
 
 
-survey.completedHtml="<h2>Analyzing responses and generating <br/>your report - please wait a moment...</h2><br/><br/>";
+//survey.completedHtml="<h2>Analyzing responses and generating <br/>your report - please wait a moment...</h2><br/><br/>";
 
 //survey.locale = languageCode;
 survey.render();

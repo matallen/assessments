@@ -191,7 +191,9 @@ public class Survey{
 	}
 	@JsonIgnore
 	private File getResourcesRoot(){
-		return new File(Surveys.getStorageRoot()+File.separator+id+File.separator+"resources");
+		File resourcesFolder=new File(Surveys.getStorageRoot()+File.separator+id+File.separator+"resources");
+		if (!resourcesFolder.exists()) resourcesFolder.mkdirs();
+		return resourcesFolder;
 	}
 	public File getResource(String name){
 		File result=new File(getResourcesRoot(), name);
