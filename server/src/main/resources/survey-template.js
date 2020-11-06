@@ -305,6 +305,7 @@ survey
 		if (survey.isCompleted && survey.pages[survey.pages.length-1].name!=survey.currentPage.name){
 			//trigger probably fired
 			surveyTriggerFired=true;
+			LocalStorage.saveFlag("lastAssessmentCompleted", "true");
 		}else{
 			
 		}
