@@ -110,7 +110,7 @@ public class CleanupController{
 			@QueryParam("date") String pTargetDate, 
 			@QueryParam("testMode") String pTestMode,
 			
-			@QueryParam("fields") String fields,
+			@QueryParam("fields") String fieldsList,
 			@QueryParam("filters") String filtersList
 			
 			) throws ParseException, IOException{
@@ -118,8 +118,8 @@ public class CleanupController{
 		Pair<Boolean,Date> checks=getParametersForPurge(pTestMode, pTargetDate, sdf);
 		Boolean testMode=checks.getFirst();
 		Date targetDate=checks.getSecond();
-		List<String> filters=Stream.of(filtersList.split(",")).map(String::trim).collect(Collectors.toList());
-		
+		List<String> filters=(filtersList!=null && !"".equals(filtersList))?Stream.of(filtersList.split(",")).map(String::trim).collect(Collectors.toList()):Lists.newArrayList();
+		List<String> fields=(fieldsList!=null && !"".equals(fieldsList))?Stream.of(fieldsList.split(",")).map(String::trim).collect(Collectors.toList()):Lists.newArrayList();
 		
 		Survey s=Survey.findById(surveyId);
 		Map<String, Object> results=s.getResults();
@@ -172,9 +172,10 @@ public class CleanupController{
 		return result;
 	}
 	
-	public Map<String,String> reducedResults(String fieldsCommaSep, String id, Map<String,Object> results){
+	public Map<String,String> reducedResults(List<String> fields, String id, Map<String,Object> results){
 //		try{
-			List<String> fields=Stream.of(fieldsCommaSep.split(",")).map(String::trim).collect(Collectors.toList());
+//		if ()
+//			List<String> fields=Stream.of(fieldsCommaSep.split(",")).map(String::trim).collect(Collectors.toList());
 //			Map<String,Object> results=Json.toObject((String)o, new TypeReference<Map<String,Object>>(){});
 			
 			Map<String,String> result=new LinkedHashMap<>();
