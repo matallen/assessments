@@ -5,10 +5,13 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -23,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
@@ -104,41 +108,96 @@ public class CleanupController{
 	public Response purgeReports(
 			@PathParam("surveyId") String surveyId, 
 			@QueryParam("date") String pTargetDate, 
-			@QueryParam("testMode") String pTestMode
+			@QueryParam("testMode") String pTestMode,
+			
+			@QueryParam("fields") String fields,
+			@QueryParam("filters") String filtersList
+			
 			) throws ParseException, IOException{
 		SimpleDateFormat sdf=new SimpleDateFormat("yy-MMM");
 		Pair<Boolean,Date> checks=getParametersForPurge(pTestMode, pTargetDate, sdf);
 		Boolean testMode=checks.getFirst();
 		Date targetDate=checks.getSecond();
+		List<String> filters=Stream.of(filtersList.split(",")).map(String::trim).collect(Collectors.toList());
+		
 		
 		Survey s=Survey.findById(surveyId);
 		Map<String, Object> results=s.getResults();
 		List<String> toPurgeKeys=new ArrayList<>();
+		Map<String, Object> toPurgeObjects=new HashMap<String, Object>();
 		log.debug("results.size()="+results.size());
 		for (Entry<String, Object> e:results.entrySet()){
 			String resultId=e.getKey();
+			Map<String,Object> surveyResults=Json.toObject((String)e.getValue(), new TypeReference<Map<String,Object>>(){});
 			
+			// if it has a date embedded in the resultId (most should now), then ignore it if the date is outside the date filter
 			if (resultId.matches("[0-9]{6}.+")){ // check that the resultId contains the timestamp at the start
 				Date resultDate=new SimpleDateFormat("yyMM").parse(resultId.substring(0,4));
 				
-				log.debug("check: is '"+sdf.format(resultDate)+"' before or equal to '"+sdf.format(targetDate)+"' ? "+ (resultDate.equals(targetDate) || resultDate.before(targetDate)));
-				if (resultDate.equals(targetDate) || resultDate.before(targetDate)){
-					toPurgeKeys.add(resultId);
+				//log.debug("check: is '"+sdf.format(resultDate)+"' before or equal to '"+sdf.format(targetDate)+"' ? "+ (resultDate.equals(targetDate) || resultDate.before(targetDate)));
+				if (!(resultDate.equals(targetDate) || resultDate.before(targetDate))){ // it's outside the dates, ignore it
+					continue;
 				}
-				
-			}else{
-				toPurgeKeys.add(resultId); // if resultId doesnt start with a datestamp then it's legacy and can be purged
 			}
+			
+			// check the other (non-date) filters to find included results
+			if (satisfiedFilters(filters, surveyResults)){
+				toPurgeKeys.add(resultId); // if resultId doesnt start with a datestamp then it's legacy and can be purged
+				toPurgeObjects.put(resultId, reducedResults(fields, e.getKey(), surveyResults));
+			}
+			
 		}
 		
 		for(String toPurge:toPurgeKeys){
 			log.debug("[testMode="+testMode+"] purging "+s.id+".Results."+toPurge+"");
-			if (!testMode)
+			if (!testMode){
 				results.remove(toPurge);
+			}
 		}
 		s.saveResults();
 		
-		return Response.ok().entity(Json.toJson(toPurgeKeys)).build();
+		return Response.ok().entity(Json.toJson(toPurgeObjects)).build();
+	}
+	
+	private boolean satisfiedFilters(List<String> filters, Map<String, Object> surveyResults){
+		boolean result=true;
+		for (String filter:filters){
+			List<String> filterNameValue=Stream.of(filter.split("=")).map(String::trim).collect(Collectors.toList());
+			String filterName=filterNameValue.get(0);
+			String filterValue=filterNameValue.get(1);
+//			System.out.println("applying filter "+filterName+"="+filterValue+" === "+filterValue.equals(surveyResults.get(filterName)) +" ("+surveyResults.get(filterName)+") ");
+			
+			result=result && filterValue.equals(surveyResults.get(filterName));
+		}
+		return result;
+	}
+	
+	public Map<String,String> reducedResults(String fieldsCommaSep, String id, Map<String,Object> results){
+//		try{
+			List<String> fields=Stream.of(fieldsCommaSep.split(",")).map(String::trim).collect(Collectors.toList());
+//			Map<String,Object> results=Json.toObject((String)o, new TypeReference<Map<String,Object>>(){});
+			
+			Map<String,String> result=new LinkedHashMap<>();
+			for (String field:fields){
+				result.put(field, (String)results.get(field));
+			}
+			return result;
+			
+//			System.out.println("o="+o);
+//			return new MapBuilder<String,String>()
+////				.put("id",id)
+//					.put("timestamp", (String)results.get("_timestamp"))
+//					.put("country", (String)results.get("_Country"))
+//					.put("industry", (String)results.get("_Industry"))
+//					.put("company", (String)results.get("_Company"))
+//					
+//					.build();
+			
+//		}catch(Exception e){
+//			System.out.println("o was "+o);
+//			e.printStackTrace();
+//			return new MapBuilder<String,String>().build();
+//		}
 	}
 	
 	private Pair<Boolean,Date> getParametersForPurge(String pTestMode, String pTargetDate, SimpleDateFormat sdf) throws ParseException{
