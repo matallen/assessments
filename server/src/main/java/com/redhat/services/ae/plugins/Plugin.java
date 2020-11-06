@@ -90,11 +90,13 @@ public abstract class Plugin{
 	public void removeAnswerProperties(Map<String, Object> surveyResults, List<String> answerPropertiesToRemove){
 		if (null!=surveyResults){
 			for (Entry<String, Object> e:surveyResults.entrySet()){
-				if (Map.class.isAssignableFrom(e.getValue().getClass())){ // to prevent things like _reportId causing an exception
-					Map<String,String> answerData=(Map<String,String>)e.getValue();
-					for(String answerKey:Lists.newArrayList(answerData.keySet())){
-						if (answerPropertiesToRemove.contains(answerKey))
-							answerData.remove(answerKey);
+				if (null!=e.getValue()){
+					if (Map.class.isAssignableFrom(e.getValue().getClass())){ // to prevent things like _reportId causing an exception
+						Map<String,String> answerData=(Map<String,String>)e.getValue();
+						for(String answerKey:Lists.newArrayList(answerData.keySet())){
+							if (answerPropertiesToRemove.contains(answerKey))
+								answerData.remove(answerKey);
+						}
 					}
 				}
 			}
