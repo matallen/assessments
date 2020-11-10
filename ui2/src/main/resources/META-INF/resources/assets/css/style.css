@@ -413,10 +413,12 @@ span.sv_q_required_text{
   border-color: #D40000;
   text-decoration: none;
 }
+.sv_imgsel div label{
+	margin-bottom: initial !important;
+}
+
 fieldset div label {
-	/*
   margin-bottom: 0.6rem !important;
-	*/
 }
 
 .sv_q_radiogroup>label {
@@ -587,6 +589,11 @@ input,button{
 		#survey-wrapper{
 			min-width: 375px;
 		}
+		
+		fieldset div label {
+		  margin-bottom: initial !important;
+		}
+
 		
 }
 
