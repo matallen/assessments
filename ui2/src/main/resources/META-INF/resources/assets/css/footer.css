@@ -43,3 +43,13 @@ footer.footerStyle p{
     color: #D2D2D2;
     opacity: 1;
 }
+
+/* to align the Red Hat footer better on mobile devices */
+@media only screen and (max-width: 600px) {
+    footer.footerStyle nav a {
+			padding: 8px 14px;
+    }
+    .col-md-3{
+    	width: inherit;
+    }
+}
