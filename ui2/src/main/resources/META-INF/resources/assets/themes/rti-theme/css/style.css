@@ -27,6 +27,7 @@
 .sv_q_imgsel.checked{
     opacity: 1;
 }
+/*
 .sv_imgsel_grid{
     display: grid;
     grid-gap: 30px;
@@ -37,6 +38,7 @@
     height: 294px;
     width: 100% !important;
 }
+*/
 
 
 
