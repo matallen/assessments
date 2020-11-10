@@ -27,19 +27,6 @@
 .sv_q_imgsel.checked{
     opacity: 1;
 }
-/*
-.sv_imgsel_grid{
-    display: grid;
-    grid-gap: 30px;
-    grid-template-columns: repeat(2,1fr);
-}
-.sv-q-col-2{
-    padding-right: 0em !important;
-    height: 294px;
-    width: 100% !important;
-}
-*/
-
 
 
 

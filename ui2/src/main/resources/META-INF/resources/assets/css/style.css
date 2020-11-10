@@ -485,17 +485,85 @@ input,button{
 
 
 @media only screen and (max-width: 600px) {
+    /*
     .sv_p_container>div:nth-of-type(3) {
         display: grid;
         grid-gap: 15px;
-        grid-template-columns: repeat(1,1fr);
+        grid-template-columns: repeat(2,1fr);
     }
-
+    */
+		.sv_p_container>div:nth-of-type(3){ /* contact page*/
+			display: block;
+		}
     .sv_imgsel_grid{
         display: grid;
-        grid-gap: 30px;
-        grid-template-columns: repeat(1,1fr);
+        grid-gap: 10px 0px;
+        grid-template-columns: repeat(2,1fr);
     }
+    .surveyStyle{
+    	padding-left: 0px;
+    	padding-right: 0px;
+    }
+    .sv_q_imgsel_description{
+    	font-size: 1em;
+    }
+    .sv_imgpicker_inner{
+			width: 173px;
+	    height: 188px;
+	    padding: 0px 0px;
+    }
+    .sv_q_imgsel_title{
+    	font-size: 1.4em;
+    	top: 10px !important;
+ 	    margin-top: 5px;
+    	margin-bottom: 10px;
+    	line-height: 18px;
+    }
+    .sv_q_imgsel_description{
+    	top: 10px !important;
+    	line-height: 15px;
+    	
+    }
+    .sv_imgpicker_inner img{
+    	width:  50px;
+    	height: 50px;
+    	top: 10px;
+    }
+    .sv_qstn>div:nth-child(2){
+    	padding: 0px;
+    }
+    .sv_page_title{
+    	font-size: 1.6em;
+    }
+    .sv_page_description{
+    	font-size: 0.8em;
+    }
+    .surveyStyle{
+    	margin: 30px auto auto auto;
+    }
+    .sv_row{
+    	margin: 15px 25px;
+    }
+    .sv_q_title{
+    	font-size: 1em;
+    }
+    fieldset div label{
+    	font-size: 0.8em;
+    }
+    .sv_qstn .sv_imgsel{
+	    padding-left: 0px !important;
+	    padding-top: 10px !important;
+    }
+    .sv_qstn fieldset{
+	    padding-left: 17px !important;
+	    padding-top:  10px !important;
+    }
+    fieldset div label{
+    	margin-bottom: 0.2rem !important;
+    }
+    .sv_rh_btn {
+		    font-size: 0.8em;
+		}
 }
 
 @media only screen and (device-width: 768px) {

@@ -85,7 +85,9 @@
 }
 .surveyStyle{
     margin: 80px auto auto auto;
+    /*
     padding-left: 50px;
+    */
 }
 
 @media only screen and (max-width: 600px) {

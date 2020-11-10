@@ -142,3 +142,30 @@ div.tab-pane table tbody tr td.level2{
 .links tr td:nth-child(2){
 	padding-left: 10px;
 }
+
+
+@media only screen and (max-width: 600px) {
+	.tab-content{
+		padding-top: 10px;
+    padding-left: 0px;
+    padding-right: 0px;
+	}
+	.progress-chart{
+		width: 100%;
+	}
+	.print-panel{
+    width: 100%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    text-align: center;
+	}
+	.results_header{
+		font-size: 0.7em;
+	}
+	h1,.results_title{
+		font-size: 1.8em;
+	}
+	h2{
+		font-size: 1.6em;
+	}
+}
