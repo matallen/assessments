@@ -20,6 +20,7 @@
 /* Applying even spacing for the image selection boxes (interest areas) */
 .sv_q_imgsel {
     opacity: 0.6;
+    width: 100% !important;
 }
 .sv_q_imgsel.checked label>div{
     box-shadow: 1px 2px #ccc;

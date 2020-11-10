@@ -414,7 +414,9 @@ span.sv_q_required_text{
   text-decoration: none;
 }
 fieldset div label {
+	/*
   margin-bottom: 0.6rem !important;
+	*/
 }
 
 .sv_q_radiogroup>label {
@@ -483,6 +485,16 @@ input,button{
 }
 */
 
+.sv_imgsel_grid{
+    display: grid;
+    grid-gap: 10px 10px;
+    grid-template-columns: repeat(2,1fr);
+}
+
+.sv_qstn fieldset .sv-q-col-2{
+	padding-right: 0em;
+	width: 100%;
+}
 
 @media only screen and (max-width: 600px) {
     /*
@@ -495,11 +507,13 @@ input,button{
 		.sv_p_container>div:nth-of-type(3){ /* contact page*/
 			display: block;
 		}
+		/*
     .sv_imgsel_grid{
         display: grid;
-        grid-gap: 10px 0px;
+        grid-gap: 10px 10px;
         grid-template-columns: repeat(2,1fr);
     }
+		*/
     .surveyStyle{
     	padding-left: 0px;
     	padding-right: 0px;
@@ -508,8 +522,11 @@ input,button{
     	font-size: 1em;
     }
     .sv_imgpicker_inner{
+    /*
 			width: 173px;
 	    height: 188px;
+    */
+	    height: 210px;
 	    padding: 0px 0px;
     }
     .sv_q_imgsel_title{
@@ -549,6 +566,10 @@ input,button{
     }
     fieldset div label{
     	font-size: 0.8em;
+    	margin: 0px;
+    	/*
+    	margin-bottom: 0.2rem !important;
+    	*/
     }
     .sv_qstn .sv_imgsel{
 	    padding-left: 0px !important;
@@ -558,13 +579,17 @@ input,button{
 	    padding-left: 17px !important;
 	    padding-top:  10px !important;
     }
-    fieldset div label{
-    	margin-bottom: 0.2rem !important;
-    }
     .sv_rh_btn {
-		    font-size: 0.8em;
+	    font-size: 0.8em;
 		}
+		
+
+		#survey-wrapper{
+			min-width: 375px;
+		}
+		
 }
+
 
 @media only screen and (device-width: 768px) {
     .sv_p_container>div:nth-of-type(3) {
