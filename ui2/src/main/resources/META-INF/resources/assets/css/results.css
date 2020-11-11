@@ -162,10 +162,13 @@ div.tab-pane table tbody tr td.level2{
 	.results_header{
 		font-size: 0.7em;
 	}
+  p,table.links{
+  	font-size: 0.9em !important;
+  }
 	h1,.results_title{
 		font-size: 1.8em;
 	}
 	h2{
-		font-size: 1.6em;
+		font-size: 1.5em;
 	}
 }

@@ -596,6 +596,12 @@ input,button{
 	    height: 210px;
 	    padding: 0px 0px;
     }
+    h2{
+    	
+    }
+    h1{
+    	
+    }
     h5{
     	font-size: 1.1em;
     }
@@ -622,23 +628,20 @@ input,button{
     .sv_page_title{
     	font-size: 1.6em;
     }
-    .sv_page_description{
+    p,.sv_page_description,.sv_rh_btn,fieldset div label{
     	font-size: 0.8em;
     }
     .surveyStyle{
     	margin: 30px auto auto auto;
     }
     .sv_row{
-    	margin: 15px 25px;
-	    margin-left: 0px;
-	    margin-right: 0px;
+    	margin: 15px 0px;
     }
     .
     .sv_q_title{
     	font-size: 1em;
     }
     fieldset div label{
-    	font-size: 0.8em;
     	margin: 0px;
     }
     .sv_qstn .sv_imgsel{
@@ -647,20 +650,12 @@ input,button{
     .sv_qstn fieldset{
 	    padding: 10px 17px !important;
     }
-    .sv_rh_btn {
-	    font-size: 0.8em;
-		}
-		
-
 		#survey-wrapper{
 			min-width: 375px;
 		}
-		
 		fieldset div label {
 		  margin-bottom: initial !important;
 		}
-
-		
 }
 
 
