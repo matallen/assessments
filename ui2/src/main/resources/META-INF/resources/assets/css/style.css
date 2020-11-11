@@ -507,115 +507,71 @@ input,button{
 }
 
 
+/* Scale fonts for various screen sizes */
+@media (max-width: 1200px){
+	.sv_imgpicker_inner     { padding: 5px; }
+	.sv_imgpicker_inner img { top: 15px; height: 90px; }
+}
+@media (max-width: 992px){
+	.sv_page_title          { font-size: 22pt; }
+	p,.sv_page_description,.sv_rh_btn,fieldset div label{ font-size: 10pt; }
+	.navigationContainer div,.navigationContainer h5{ font-size: 11pt; }
+	.sv_q_imgsel_title      { font-size: 16pt; }
+	.sv_q_imgsel_description{ font-size: 10pt; line-height: 20px; }
+}
+@media (max-width: 768px){
+	.sv_q_imgsel_title      { font-size: 14pt; }
+	.sv_q_imgsel_description{ font-size: 10pt; }
+}
+@media (max-width: 650px){
+	.sv_page_title          { font-size: 20pt; }
+	.sv_q_imgsel_title      { font-size: 16pt; }
+	.sv_q_imgsel_description{ font-size: 10pt; line-height: 18px; }
+}
+
+
+/* Override the default RH container sizing jumps */
 @media (min-width: 576px){
 	.sv_page_select_interests .sv_row{
-	    margin-left: 0px;
+	    margin-left:  0px;
 	    margin-right: 0px;
 	}
-	.container {
-  	  max-width: 576px;
-	}
+	.container { max-width: 576px; }
 }
 @media (min-width: 768px){
-	.sv_page_select_interests .sv_row{
-	    margin-left: 0px;
-	    margin-right: 0px;
-	}
-	.container {
-  	  max-width: 750px;
-	}
+	.container { max-width: 750px; }
 }	
 @media (min-width: 992px){
-	.sv_page_select_interests .sv_row{
-	    margin-left: 0px;
-	    margin-right: 0px;
-	}
-	.container {
-  	  max-width: 970px;
-	}
+	.container { max-width: 970px; }
 }
 @media (min-width: 1200px){
-	.container {
-	    max-width: 1170px;
-	}
+	.container { max-width: 1170px; }
 }
 
-
-/*
-@media (min-width: 992px){
-	.container{
-	    max-width: 98% !important;
-	}
-}
-@media (min-width: 576px){
-	.container{
-	    max-width: 98% !important;
-	}
-}
-@media (min-width: 768px){
-	.container{
-	    max-width: 98% !important;
-	}
-}
-*/
-	    /*
-	.container {
-	}
-	    */
-
+/* Screen changes for mobile phone devices */
 @media only screen and (max-width: 650px) {
-    /*
-    .sv_p_container>div:nth-of-type(3) {
-        display: grid;
-        grid-gap: 15px;
-        grid-template-columns: repeat(2,1fr);
-    }
-    */
 		.sv_p_container>div:nth-of-type(3){ /* contact page*/
 			display: block;
 		}
-		/*
-    .sv_imgsel_grid{
-        display: grid;
-        grid-gap: 10px 10px;
-        grid-template-columns: repeat(2,1fr);
-    }
-		*/
     .surveyStyle{
     	padding-left: 0px;
     	padding-right: 0px;
     }
-    .sv_q_imgsel_description{
-    	font-size: 1em;
-    }
     .sv_imgpicker_inner{
-    /*
-			width: 173px;
-	    height: 188px;
-    */
 	    height: 210px;
-	    padding: 0px 0px;
-    }
-    h2{
-    	
-    }
-    h1{
-    	
     }
     h5{
     	font-size: 1.1em;
     }
     .sv_q_imgsel_title{
     	font-size: 1.4em;
+    	line-height: 18px;
     	top: 10px !important;
  	    margin-top: 5px;
     	margin-bottom: 10px;
-    	line-height: 18px;
     }
     .sv_q_imgsel_description{
     	top: 10px !important;
-    	line-height: 15px;
-    	
     }
     .sv_imgpicker_inner img{
     	width:  50px;
@@ -624,12 +580,6 @@ input,button{
     }
     .sv_qstn>div:nth-child(2){
     	padding: 0px;
-    }
-    .sv_page_title{
-    	font-size: 1.6em;
-    }
-    p,.sv_page_description,.sv_rh_btn,fieldset div label{
-    	font-size: 0.8em;
     }
     .surveyStyle{
     	margin: 30px auto auto auto;
