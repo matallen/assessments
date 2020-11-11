@@ -596,6 +596,9 @@ input,button{
 	    height: 210px;
 	    padding: 0px 0px;
     }
+    h5{
+    	font-size: 1.1em;
+    }
     .sv_q_imgsel_title{
     	font-size: 1.4em;
     	top: 10px !important;
@@ -637,17 +640,12 @@ input,button{
     fieldset div label{
     	font-size: 0.8em;
     	margin: 0px;
-    	/*
-    	margin-bottom: 0.2rem !important;
-    	*/
     }
     .sv_qstn .sv_imgsel{
-	    padding-left: 0px !important;
-	    padding-top: 10px !important;
+	    padding: 0px 0px !important;
     }
     .sv_qstn fieldset{
-	    padding-left: 17px !important;
-	    padding-top:  10px !important;
+	    padding: 10px 17px !important;
     }
     .sv_rh_btn {
 	    font-size: 0.8em;
