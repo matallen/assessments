@@ -508,7 +508,7 @@ input,button{
 
 
 @media (min-width: 576px){
-	.sv_row{
+	.sv_page_select_interests .sv_row{
 	    margin-left: 0px;
 	    margin-right: 0px;
 	}
@@ -517,7 +517,7 @@ input,button{
 	}
 }
 @media (min-width: 768px){
-	.sv_row{
+	.sv_page_select_interests .sv_row{
 	    margin-left: 0px;
 	    margin-right: 0px;
 	}
@@ -526,7 +526,7 @@ input,button{
 	}
 }	
 @media (min-width: 992px){
-	.sv_row{
+	.sv_page_select_interests .sv_row{
 	    margin-left: 0px;
 	    margin-right: 0px;
 	}
