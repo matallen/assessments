@@ -518,6 +518,7 @@ input,button{
 	.navigationContainer div,.navigationContainer h5{ font-size: 11pt; }
 	.sv_q_imgsel_title      { font-size: 16pt; }
 	.sv_q_imgsel_description{ font-size: 10pt; line-height: 20px; }
+	.sv_q_image img { width: 100%; }
 }
 @media (max-width: 768px){
 	.sv_q_imgsel_title      { font-size: 14pt; }
@@ -526,7 +527,9 @@ input,button{
 @media (max-width: 650px){
 	.sv_page_title          { font-size: 20pt; }
 	.sv_q_imgsel_title      { font-size: 16pt; }
+	.sv_page_description    { line-height: 14pt; }
 	.sv_q_imgsel_description{ font-size: 10pt; line-height: 18px; }
+	.sv_page_contact_form .sv_qstn>div:nth-child(1) div { font-size: 10pt; }
 }
 
 
