@@ -278,6 +278,7 @@ div.elevate li.noColor{
 	/*
 	width: 294px;
 	*/
+		max-width: 326px;
     height: 294px;
     background-color: white;
     margin: 1px;
@@ -487,10 +488,17 @@ input,button{
 }
 */
 
+.sv_imgsel{
+    width: 90%;
+    margin: auto !important;
+}
+
 .sv_imgsel_grid{
     display: grid;
     grid-gap: 10px 10px;
     grid-template-columns: repeat(2,1fr);
+    max-width: 675px;
+    margin: auto;
 }
 
 .sv_qstn fieldset .sv-q-col-2{
@@ -498,7 +506,64 @@ input,button{
 	width: 100%;
 }
 
-@media only screen and (max-width: 600px) {
+
+@media (min-width: 576px){
+	.sv_row{
+	    margin-left: 0px;
+	    margin-right: 0px;
+	}
+	.container {
+  	  max-width: 576px;
+	}
+}
+@media (min-width: 768px){
+	.sv_row{
+	    margin-left: 0px;
+	    margin-right: 0px;
+	}
+	.container {
+  	  max-width: 750px;
+	}
+}	
+@media (min-width: 992px){
+	.sv_row{
+	    margin-left: 0px;
+	    margin-right: 0px;
+	}
+	.container {
+  	  max-width: 970px;
+	}
+}
+@media (min-width: 1200px){
+	.container {
+	    max-width: 1170px;
+	}
+}
+
+
+/*
+@media (min-width: 992px){
+	.container{
+	    max-width: 98% !important;
+	}
+}
+@media (min-width: 576px){
+	.container{
+	    max-width: 98% !important;
+	}
+}
+@media (min-width: 768px){
+	.container{
+	    max-width: 98% !important;
+	}
+}
+*/
+	    /*
+	.container {
+	}
+	    */
+
+@media only screen and (max-width: 650px) {
     /*
     .sv_p_container>div:nth-of-type(3) {
         display: grid;
@@ -562,7 +627,10 @@ input,button{
     }
     .sv_row{
     	margin: 15px 25px;
+	    margin-left: 0px;
+	    margin-right: 0px;
     }
+    .
     .sv_q_title{
     	font-size: 1em;
     }

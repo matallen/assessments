@@ -3,8 +3,14 @@
     width: 100%;
     max-width: 1100px;
     max-height: 110px;
+/*
     margin: 100px 0px auto 10px;
     position: absolute;
+    position: absolute;
+    margin: 100px 0px auto -15px;
+    */
+		position: relative;
+    top: 100px;
 }
 
 .navigationProgressbarImage {
@@ -104,6 +110,12 @@
     }
     .navigationContainer{
         margin-right: 10px;
+    }
+}
+@media only screen and (max-width: 768px) {
+    .navigationContainer{
+        margin: 100px 10px auto auto;
+        display: none;
     }
 }
 @media only screen and (device-width: 768px) {
