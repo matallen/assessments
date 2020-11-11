@@ -526,7 +526,7 @@ input,button{
 }
 @media (max-width: 650px){
 	.sv_page_title          { font-size: 20pt; }
-	.sv_q_imgsel_title      { font-size: 16pt; }
+	.sv_q_imgsel_title      { font-size: 16pt; line-height: 24px; }
 	.sv_page_description    { line-height: 14pt; }
 	.sv_q_imgsel_description{ font-size: 10pt; line-height: 18px; }
 	.sv_page_contact_form .sv_qstn>div:nth-child(1) div { font-size: 10pt; }
@@ -567,8 +567,6 @@ input,button{
     	font-size: 1.1em;
     }
     .sv_q_imgsel_title{
-    	font-size: 1.4em;
-    	line-height: 18px;
     	top: 10px !important;
  	    margin-top: 5px;
     	margin-bottom: 10px;
@@ -609,6 +607,12 @@ input,button{
 		fieldset div label {
 		  margin-bottom: initial !important;
 		}
+}
+@media (max-width: 450px){
+	.sv_imgpicker_inner img { top: 0px; }
+	.sv_q_imgsel_title      { font-size: 13pt; line-height: 20px; top: 0px !important;}
+	.sv_q_imgsel_description{ font-size: 9pt; line-height: 16px; top: 0px !important;}
+	.sv_q_imgsel_title      { margin-top: 0px; }
 }
 
 
