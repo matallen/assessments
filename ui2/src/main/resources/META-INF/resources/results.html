@@ -60,9 +60,9 @@
 				<h1 id="results_title"></h1>
 				<p id="results_header"></p>
 				<p>
-					<button type="button" class="rhbtn rhbtn-secondary" id="review_assessment">Edit my answers</button>
-					<button type="button" class="rhbtn rhbtn-primary" id="create_pdf">Print preview</button>
 					<span id="showAnswers"></span>
+					<button type="button" class="rhbtn rhbtn-secondary" style="display:none" id="review_assessment">Edit my answers</button>
+					<button type="button" class="rhbtn rhbtn-primary" id="create_pdf">Print preview</button>
 				</p>
 			</div>
 		</div>
@@ -191,8 +191,11 @@
 						displayResults(response);
 						
 						if (showAnswers){
-							$("#showAnswers").html(`<button type="button" class="rhbtn rhbtn-primary" id="showAnswersBtn" onclick="location.href=window.location.href.replace('results.html','index.html');">View Answers</button>`);
+							$("#showAnswers").html(`<button type="button" class="rhbtn rhbtn-secondary" id="showAnswersBtn" onclick="location.href=window.location.href.replace('results.html','index.html');">View answers</button>`);
+							//$("#review_assessment").hide();
 							displayAnswers(response);
+						}else{
+							$("#review_assessment").show();
 						}
 						
 					}else{
