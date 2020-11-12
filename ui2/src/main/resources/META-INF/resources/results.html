@@ -62,6 +62,7 @@
 				<p>
 					<button type="button" class="rhbtn rhbtn-secondary" id="review_assessment">Edit my answers</button>
 					<button type="button" class="rhbtn rhbtn-primary" id="create_pdf">Print preview</button>
+					<span id="showAnswers"></span>
 				</p>
 			</div>
 		</div>
@@ -190,6 +191,7 @@
 						displayResults(response);
 						
 						if (showAnswers){
+							$("#showAnswers").html(`<button type="button" class="rhbtn rhbtn-primary" id="showAnswersBtn" onclick="location.href=window.location.href.replace('results.html','index.html');">View Answers</button>`);
 							displayAnswers(response);
 						}
 						
@@ -484,7 +486,6 @@ $('#review_assessment').on('click', function() {
 	LocalStorage.save(surveyId, toStore);
 	window.location.href="/index.html?surveyId="+surveyId;
 });
-
 
 
 

@@ -129,17 +129,38 @@ $(document).ready(function() {
 		var surveyId;
 		var visitorId;
 		var surveyStarted=false;
+		var resultId;
 		
 		function startSurvey() {
 				loadSurvey();
+				if (Utils.getParameterByName("resultId")){
+					resultId=Utils.getParameterByName("resultId");
+					loadResults();
+				}
 		}
-
+		
 		function loadSurvey() {
 			var surveyJsUrl=env.server+"/api/surveys/"+surveyId+"/survey-config.js"; // request a new assessment
 			var surveyJSElement=document.createElement('script');
 			surveyJSElement.src=surveyJsUrl;
 			document.getElementsByTagName('head')[0].appendChild(surveyJSElement);
 			surveyStarted=true;
+		}
+		
+		function loadResults(){
+			console.log("loadResults:: resultId="+resultId);
+			if (typeof survey != 'undefined') {
+				console.log("loadResults:: found survey");
+				Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/results/"+resultId, function(status, answers){
+					survey.data=answers;
+					survey.mode='display';
+					$(".sv_page_title").prepend("<span style='color:#c10000'>Read-only view of provided answers</span><br/><br/>");
+				});
+	    }else{
+	    	console.log("loadResults:: survey not loaded yet");
+        setTimeout(loadResults, 1000);
+	    }
+			
 		}
 		
 	</script>
