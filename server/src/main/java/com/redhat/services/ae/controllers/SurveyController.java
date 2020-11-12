@@ -58,7 +58,6 @@ public class SurveyController{
 	public Response getSurveyJavascript(@PathParam("surveyId") String surveyId, 
 			@DefaultValue("application/json") @QueryParam("responseContentType") String responseContentType,
 			@DefaultValue("false") @QueryParam("questionsOnly") String questionsOnly) throws IOException{
-		String surveyName=surveyId+".json";
 		log.debug("serving survey-config.js : "+surveyId);
 		
 		String templateName="survey-template.js";

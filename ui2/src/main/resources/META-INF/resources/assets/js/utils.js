@@ -10,6 +10,11 @@ Utils = {
 		return decodeURIComponent(results[2].replace(/\+/g, " "));
 	},
 	
+	getBooleanParameterByName: function(name, url){
+		var paramValue=Utils.getParameterByName(name);
+		return undefined!=paramValue || "true"==paramValue;
+	},
+	
 	findAncestor: function findAncestor (el, cls) {
 		while ((el = el.parentElement) && !el.classList.contains(cls));
 		return el;

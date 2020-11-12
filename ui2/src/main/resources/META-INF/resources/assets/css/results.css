@@ -143,6 +143,10 @@ div.tab-pane table tbody tr td.level2{
 	padding-left: 10px;
 }
 
+ul.answer li label{
+	padding-left: 5px;
+  font-weight: 500;
+}
 
 @media only screen and (max-width: 600px) {
 	.tab-content{

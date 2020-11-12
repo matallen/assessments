@@ -58,13 +58,7 @@
 		<div class="row">
 			<div class="container print-panel">
 				<h1 id="results_title"></h1>
-				<!--
-				Ready-to-Accelerate results
-				-->
 				<p id="results_header"></p>
-				<!--
-				With a holistic strategy, organizations can implement environment, development, and operational changes needed to keep pace with growing business demands.
-				-->
 				<p>
 					<button type="button" class="rhbtn rhbtn-secondary" id="review_assessment">Edit my answers</button>
 					<button type="button" class="rhbtn rhbtn-primary" id="create_pdf">Print preview</button>
@@ -157,24 +151,13 @@
 
 <div id="results_footer" class="print-panel-container">
 </div>
-<!--
-	<div class="container">
-		<div class="row">
-			<div class="container print-panel">
-				<h1>Let’s get started with a discovery session</h1>
-				<p>The best way to accelerate your transformation journey is with a discovery session. Red Hat experts provide a complimentary, personalized session to review your organization’s goals and identify business challenges and viable solutions.</p>
-				<p>Take the first step towards accelerating your innovation today with a no-cost Red Hat Consulting discovery session.</p>
-				<a class="rhbtn btn-lg rhbtn-red rhbtn-large" href="https://www.redhat.com/en/services/consulting#GatedFormContainer" target="_new">Talk to a Red Hat expert</a>
-			</div>
-		</div>
-	</div>
--->
 
 	<script>
 		var surveyId=Utils.getParameterByName("surveyId");
 		var visitorId=Utils.getParameterByName("visitorId");
 		var resultId=Utils.getParameterByName("resultId");
-		var isDebug="true"==Utils.getParameterByName("debug");
+		var isDebug=Utils.getBooleanParameterByName("debug");
+		var showAnswers=Utils.getBooleanParameterByName("showAnswers");
 		
 		var timerId;
 		var intervalInSeconds=1;
@@ -205,8 +188,13 @@
 						}
 						
 						displayResults(response);
+						
+						if (showAnswers){
+							displayAnswers(response);
+						}
+						
 					}else{
-						// say "Sorry no results have been found." xxxx
+						// say "Sorry no results have been found."
 						if (retries>(maxRetries/4) && retries<maxRetries){
 							$("#tabsContent").html("<center>Still looking for your results...</center>");
 						}
@@ -218,6 +206,7 @@
 				});
 				
 			}, intervalInSeconds*1000);
+			
 			
 		});
 		
@@ -242,6 +231,80 @@
 			});
 		}
 		
+		function displayAnAnswer(question, answers){
+			var html="";
+			var questionName=question["name"];
+			
+			var htmlChoices="<ul class='answer' style='list-style:none;'>";
+
+			if(question["type"]=="text"){
+				htmlChoices+=`<li><input id="`+questionName+`" type="text" disabled value="`+answers[questionName]+`"></li>`;
+			}else if(question["type"]=="dropdown"){
+				htmlChoices+=`<li><input id="`+questionName+`" type="text" disabled value="`+answers[questionName]+`"></li>`;
+			}else{
+				
+				for(var iii in question["choices"]){
+					var choice=question["choices"][iii];
+					var choiceText=choice["text"];
+					var choiceValue=choice["value"];
+					if (question["type"]=="imagepicker"){
+						var checked=answers[questionName] && answers[questionName].includes(choiceValue);
+						htmlChoices+=`<li><input id="`+choiceValue+`" `+(checked?`checked`:``)+` disabled type="checkbox"><label for="`+choiceValue+`">`+choiceText+`</label></li>`;
+					}else if(question["type"]=="radiogroup"){
+						var checked=answers[questionName] && choiceValue==answers[questionName];
+						htmlChoices+=`<li><input id="`+choiceValue+`" `+(checked?`checked`:``)+` disabled type="radio"><label for="`+choiceValue+`">`+choiceText+`</label></li>`;
+					}else if(question["type"]=="checkbox"){
+						var checked=answers[questionName] && answers[questionName].includes(choiceValue);
+						htmlChoices+=`<li><input id="`+choiceValue+`" `+(checked?`checked`:``)+` disabled type="checkbox"><label for="`+choiceValue+`">`+choiceText+`</label></li>`;
+					}
+				}
+			}
+
+			htmlChoices+="</ul>";
+			
+			if (answers[questionName])
+				html+=`<tr><td style='vertical-align:top;'>`+(question["title"]?question["title"]:question["name"])+`</td><td>`+htmlChoices+`</td></tr>`;
+			
+			return html;
+		}
+		
+		function displayAnswers(answers){
+			//init(jsonResponse);
+			
+			Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/questions", function(status, questions){
+				
+				var html=`<div id="tabcontent_answers" class="tab-pane fade in"><table>`;
+				
+				for(var i in questions["pages"]){
+					var page=questions["pages"][i];
+					for(var ii in page["elements"]){
+						var question=page["elements"][ii];
+						if (question["type"]=="panel"){
+							for(var iii in question["elements"]){
+								html+=displayAnAnswer(question["elements"][iii], answers);
+							}
+						}else{
+							html+=displayAnAnswer(question, answers);
+						}
+						
+					}
+				}
+				$("#tabsContent").append(html+`</table></div>`); // end tab
+				
+				$("#tabs").append(`<li><a data-toggle="tab" id="tab_answers" href="#tabcontent_answers">Answers</a></li>`);
+				//var html=`<div id="tabcontent_answers" class="tab-pane fade in">`;
+				//for(var answer in answers){
+				//	html+=`<table>`;
+				//	if (!answer.startsWith("_")){
+				//		html+=`<tr><td>`+answer+`=`+answers[answer]+`</td></tr>`;
+				//	}
+				//	html+=`</table>`;
+				//}
+				//$("#tabsContent").append(html+`</div>`); // end tab
+				
+			});
+			
+		}
 		
 		function displayResults(jsonResponse){
 			

@@ -43,4 +43,21 @@ public class RemoveReportPropertiesPluginTest{
 		StringSubstitutor substitutor=new StringSubstitutor(answers);
 		System.out.println(substitutor.replace("${_value1} - ${_value2} - ${_value3}"));
 	}
+	
+	@Test
+	public void test3(){
+//		String.format("%-7s", "").replaceAll(" ", "*")
+		System.out.println(new RemoveReportPropertiesPlugin().obfuscate("a"));
+		System.out.println(new RemoveReportPropertiesPlugin().obfuscate("ab"));
+		System.out.println(new RemoveReportPropertiesPlugin().obfuscate("abc"));
+		System.out.println(new RemoveReportPropertiesPlugin().obfuscate("abcd"));
+		System.out.println(new RemoveReportPropertiesPlugin().obfuscate("abcde"));
+		System.out.println(new RemoveReportPropertiesPlugin().obfuscate("abcdef"));
+		System.out.println(new RemoveReportPropertiesPlugin().obfuscate("abcdefg"));
+		System.out.println(new RemoveReportPropertiesPlugin().obfuscate("abcdefgh"));
+		System.out.println(new RemoveReportPropertiesPlugin().obfuscate("a@redhat.com"));
+		System.out.println(new RemoveReportPropertiesPlugin().obfuscate("abc@redhat.com"));
+		System.out.println(new RemoveReportPropertiesPlugin().obfuscate("abcdefgh@redhat.com"));
+		System.out.println(new RemoveReportPropertiesPlugin().obfuscate("abcdefghijklmno@redhat.com"));
+	}
 }

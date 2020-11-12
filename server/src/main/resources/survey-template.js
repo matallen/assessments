@@ -208,7 +208,7 @@ if (undefined==geoInfo){
 	  console.log("GeoInfo:: Identified country: " + json.country);
     },
     error: function(err){
-      console.log("GeoInfo Failed: " + err);
+      console.log("GeoInfo:: Failed: " + err);
     }});
 }
 
@@ -291,6 +291,16 @@ survey
 		$("#surveyNavigation").hide();
 
 		survey.data["language"]=languageCode;
+		
+		// Pass on TacticIds for Eloqua (internal is the referrer [site it came from before this one], external is the source [email, social ad etc..])
+		if (typeof Http !== 'undefined'){
+			if (Http.getCookie("rh_omni_itc")) survey.data["_intTacticId"]=Http.getCookie("rh_omni_itc");
+			if (Http.getCookie("rh_omni_tc"))  survey.data["_extTacticId"]=Http.getCookie("rh_omni_tc");
+		}
+		if (typeof Utils !== 'undefined'){
+			if (Utils.getParameterByName("intcmp")) survey.data["_intTacticId"]=Utils.getParameterByName("intcmp");
+			if (Utils.getParameterByName("sc_cid")) survey.data["_extTacticId"]=Utils.getParameterByName("sc_cid");
+		}
     	
 		
 		// only generate a report page if they didnt trigger a shortcut
@@ -357,61 +367,60 @@ $("#surveyElement").Survey({
 
 // Top Nav
 var navTopEl = document.querySelector("#surveyNavigation");
-navTopEl.className = "navigationContainer";
-var textDiv = document.createElement("h5");
-textDiv.className = "textProgress"
-textDiv.innerText = "Progress";
-navTopEl.appendChild(textDiv);
-var navProgBarDiv = document.createElement("div");
-navProgBarDiv.className = "navigationProgressbarDiv";
-navTopEl.appendChild(navProgBarDiv);
-var navProgBar = document.createElement("ul");
-navProgBar.className = "navigationProgressbar";
-navProgBarDiv.appendChild(navProgBar);
-
-var initialVisibility={};
-var navTitlesUniqueSet=[];
-var liEls = {};
-for (var i = 0; i < survey.PageCount; i++) {
-    var liEl = document.createElement("li");
-   if (survey.currentPageNo == i) {
-       liEl
-           .classList
-           .add("current");
-   }
-
-    var pageTitle = document.createElement("div");
-    pageTitle.innerText=!survey.pages[i].navigationTitle?
-    		pageTitle.innerText = survey.pages[i].name:
-    		pageTitle.innerText = survey.pages[i].navigationTitle;
-	pageTitle.id=pageTitle.innerText;
-    
-	// BUG:: this needs changing to "if ALL pages with the same pageTitle are not visible then set 'pageNotVisible' class"
-	if (undefined==initialVisibility[pageTitle.innerText]) initialVisibility[pageTitle.innerText]=[]
-	initialVisibility[pageTitle.innerText].push(survey.pages[i].isVisible);
-    
+if (undefined!=navTopEl){
+	navTopEl.className = "navigationContainer";
+	var textDiv = document.createElement("h5");
+	textDiv.className = "textProgress"
+	textDiv.innerText = "Progress";
+	navTopEl.appendChild(textDiv);
+	var navProgBarDiv = document.createElement("div");
+	navProgBarDiv.className = "navigationProgressbarDiv";
+	navTopEl.appendChild(navProgBarDiv);
+	var navProgBar = document.createElement("ul");
+	navProgBar.className = "navigationProgressbar";
+	navProgBarDiv.appendChild(navProgBar);
 	
-    // logic to group question pages in progress panel
-    if (navTitlesUniqueSet.includes(pageTitle.innerText)) continue;
-    navTitlesUniqueSet.push(pageTitle.innerText);
-    
-    //pageTitle.className = "pageTitle";
-    pageTitle.classList.add("pageTitle");
-    
-    
-//    if (survey.pages[i].isVisible!=true)
-//    	pageTitle.classList.add("pageNotVisible");
-    
-	navProgBar.appendChild(pageTitle);
-	navProgBar.appendChild(liEl);
+	var initialVisibility={};
+	var navTitlesUniqueSet=[];
+	var liEls = {};
+	for (var i = 0; i < survey.PageCount; i++) {
+		var liEl = document.createElement("li");
+		if (survey.currentPageNo == i) {
+			liEl
+			.classList
+			.add("current");
+		}
+		
+		var pageTitle = document.createElement("div");
+		pageTitle.innerText=!survey.pages[i].navigationTitle?
+				pageTitle.innerText = survey.pages[i].name:
+					pageTitle.innerText = survey.pages[i].navigationTitle;
+				pageTitle.id=pageTitle.innerText;
+				
+				// BUG:: this needs changing to "if ALL pages with the same pageTitle are not visible then set 'pageNotVisible' class"
+				if (undefined==initialVisibility[pageTitle.innerText]) initialVisibility[pageTitle.innerText]=[]
+				initialVisibility[pageTitle.innerText].push(survey.pages[i].isVisible);
+				
+				
+				// logic to group question pages in progress panel
+				if (navTitlesUniqueSet.includes(pageTitle.innerText)) continue;
+				navTitlesUniqueSet.push(pageTitle.innerText);
+				
+				//pageTitle.className = "pageTitle";
+				pageTitle.classList.add("pageTitle");
+				
+				navProgBar.appendChild(pageTitle);
+				navProgBar.appendChild(liEl);
+				
+				pageTitle.classList.add("_"+survey.pages[i].name.replace(/ /g,"_").toLowerCase());
+				liEls[undefined!=survey.pages[i].navigationTitle?survey.pages[i].navigationTitle:survey.pages[i].name]=liEl;
+	}
+	// visible if "any" pages are initially visible
+	for (var k in initialVisibility){
+		var visible=initialVisibility[k].some(x => x);
+		if (!visible) document.getElementById(k).classList.add("pageNotVisible");
+	}
 	
-	pageTitle.classList.add("_"+survey.pages[i].name.replace(/ /g,"_").toLowerCase());
-    liEls[undefined!=survey.pages[i].navigationTitle?survey.pages[i].navigationTitle:survey.pages[i].name]=liEl;
-}
-// visible if "any" pages are initially visible
-for (var k in initialVisibility){
-	var visible=initialVisibility[k].some(x => x);
-	if (!visible) document.getElementById(k).classList.add("pageNotVisible");
 }
 
 
@@ -427,30 +436,25 @@ function setConsentAgreement(countryCode){
 			consent=consent.filter(e => e !== "by Phone");
 		survey.setValue("_ConsentAgreement", consent);
 	}
-	// In case the consent info cannot be deferred from the country code
-//	if (consentInfo==undefined || consentInfo["optInEmail"]==undefined || consentInfo["optInPhone"]==undefined)
-//		consent.push("No consent info found for country code "+countryCode);
-//	
-//	survey.setValue("_ConsentAgreement", consent);
 }
 
-
-var markDownConverter = new showdown.Converter();
-var markdownEnabled=true;
-survey
-    .onTextMarkdown
-    .add(function (survey, options) {
-        //convert all question and answer text into html (ie. to accept html elements)
-        var str=options.text;
-        if (markdownEnabled){
-        	var str = markDownConverter.makeHtml(options.text);
-        	//remove root paragraphs <p></p>
-        	str = str.substring(3);
-        	str = str.substring(0, str.length - 4);
-        }
-        options.html = str;
-        //set html
-    });
+if (typeof showdown !== 'undefined'){
+	var markDownConverter = new showdown.Converter();
+	var markdownEnabled=true;
+	survey
+	.onTextMarkdown
+	.add(function (survey, options) {
+		//convert all question and answer text into html (ie. to accept html elements)
+		var str=options.text;
+		if (markdownEnabled){
+			var str = markDownConverter.makeHtml(options.text);
+			//remove root paragraphs <p></p>
+			str = str.substring(3);
+			str = str.substring(0, str.length - 4);
+		}
+		options.html = str;
+	});
+}
 
 survey
 	.onValueChanged
