@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
@@ -138,10 +139,9 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 		}
 		
 		// Mat - TODO: review putting this here, it would be nice to have surveyId etc... available to all plugins
-		Map<String,String> answers=new HashMap<>();
-		for (Entry<String, Object> e:surveyResults.entrySet())
-			if (e.getKey().startsWith("_") && String.class.isAssignableFrom(e.getValue().getClass()))
-				answers.put(e.getKey(), (String)e.getValue());
+		Map<String,String> answers=surveyResults.entrySet().stream()
+				.filter(map->map.getKey().startsWith("_"))
+				.collect(Collectors.toMap(map->map.getKey(),map->(String)map.getValue()));
 		answers.putAll(extractedAnswers);
 		answers.put("_surveyId", surveyId);
 		answers.put("_reportId", (String)surveyResults.get("_reportId"));
