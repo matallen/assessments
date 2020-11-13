@@ -114,7 +114,8 @@ public abstract class EnrichAnswersPluginBase extends Plugin{
 			String questionId=e.getKey();
 //			System.out.println("looking up page for question: "+questionId +"("+e.getValue().getClass().getSimpleName()+")");
 			
-			if ("language".equalsIgnoreCase(questionId)){
+			if ("_language".equalsIgnoreCase(questionId) || questionId.matches(".*[T|t]acticI[d|D].*")){
+				result.put(questionId, e.getValue());
 				continue;
 			}
 			

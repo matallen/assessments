@@ -11,6 +11,7 @@ Http = {
 			uri.includes("/resources") ||
 			uri.includes("/config") ||
 			uri.includes("/geoInfo") ||
+			uri.includes("/questions") ||
 			uri.includes("/customfield/")){
 		}else{
 			xhr.setRequestHeader('Authorization','Bearer '+ Http.getCookie("rh_cat_jwt"));

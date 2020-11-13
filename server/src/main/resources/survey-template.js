@@ -289,17 +289,18 @@ survey
 		
 		// Hide the survey Navigation pane
 		$("#surveyNavigation").hide();
-
-		survey.data["language"]=languageCode;
+		var surveydata=survey.data;
+		
+		surveydata["_language"]=languageCode;
 		
 		// Pass on TacticIds for Eloqua (internal is the referrer [site it came from before this one], external is the source [email, social ad etc..])
 		if (typeof Http !== 'undefined'){
-			if (Http.getCookie("rh_omni_itc")) survey.data["_intTacticId"]=Http.getCookie("rh_omni_itc");
-			if (Http.getCookie("rh_omni_tc"))  survey.data["_extTacticId"]=Http.getCookie("rh_omni_tc");
+			if (Http.getCookie("rh_omni_itc")) surveydata["_intTacticId"]=Http.getCookie("rh_omni_itc");
+			if (Http.getCookie("rh_omni_tc"))  surveydata["_extTacticId"]=Http.getCookie("rh_omni_tc");
 		}
 		if (typeof Utils !== 'undefined'){
-			if (Utils.getParameterByName("intcmp")) survey.data["_intTacticId"]=Utils.getParameterByName("intcmp");
-			if (Utils.getParameterByName("sc_cid")) survey.data["_extTacticId"]=Utils.getParameterByName("sc_cid");
+			if (Utils.getParameterByName("intcmp")) surveydata["_intTacticId"]=Utils.getParameterByName("intcmp");
+			if (Utils.getParameterByName("sc_cid")) surveydata["_extTacticId"]=Utils.getParameterByName("sc_cid");
 		}
     	
 		
@@ -321,14 +322,17 @@ survey
 		}
 		
 		if (!surveyTriggerFired){
-			Http.httpPost(env.server+"/api/surveys/"+surveyId+"/generateReport?pageId="+page.name+"&visitorId="+Cookie.get("rh_cat_visitorId"), buildPayload(page, true), function(response){
+			Http.httpPost(env.server+"/api/surveys/"+surveyId+"/generateReport?pageId="+page.name+"&visitorId="+Cookie.get("rh_cat_visitorId"), buildPayload(page, surveydata), function(response){
 				if (response.status==200){
 					// navigate to a results page
 					
 					console.log("Completed posting results to server");
 					
 					var resultId=response.responseText;
-					window.location.assign("/results.html?surveyId="+surveyId+"&resultId="+resultId);
+					window.location.assign("/results.html?surveyId="+surveyId+"&resultId="+resultId
+							+(Utils.getParameterByName("intcmp")?"&intcmp="+Utils.getParameterByName("intcmp"):"") // retain internal tacticID if it exists
+							+(Utils.getParameterByName("sc_cid")?"&sc_cid="+Utils.getParameterByName("sc_cid"):"") // retain external tacticID if it exists
+					);
 					
 				}else{
 					// Handle the error scenario
@@ -338,7 +342,7 @@ survey
     	
     });
 
-function buildPayload(page, includeData){
+function buildPayload(page, surveydata){
 	var payload={};
 	payload["_page"]={};
 	payload["_page"]["visitorId"]=Cookie.get("rhae-visitorId");
@@ -350,8 +354,8 @@ function buildPayload(page, includeData){
 	}else{
 		console.log("Error: Unable to obtain geo information");
 	}
-	if (includeData){
-		payload["_data"]=survey.data;
+	if (surveydata){
+		payload["_data"]=surveydata;
 	}
 	return payload;
 }

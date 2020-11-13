@@ -47,7 +47,7 @@ public class RemoveReportPropertiesPlugin extends Plugin{
 	@Override
 	public Map<String, Object> execute(String surveyId, String visitorId, Map<String, Object> surveyResults) throws Exception{
 		
-		log.debug("obfuscating the following answers:");
+		log.debug("obfuscating answers:");
 		if (!StringUtils.isAllBlank(fieldsToObfuscateRegEx)){
 			
 			for(Entry<String, Object> e:surveyResults.entrySet()){
@@ -60,7 +60,7 @@ public class RemoveReportPropertiesPlugin extends Plugin{
 			}
 		}
 		
-		log.debug("removing the following answers:");
+		log.debug("removing answers:");
 		Predicate<String> removeRegExPredicate=new Predicate<String>(){public boolean apply(@Nullable String str){
 			return !"_sectionScore".equals(str) && !str.startsWith("_report") && str.matches(fieldsToRemoveRegEx);
 		}};

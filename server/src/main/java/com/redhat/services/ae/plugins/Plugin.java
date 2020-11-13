@@ -68,7 +68,7 @@ public abstract class Plugin{
 			try{
 				Object eval=MVEL.eval(disabledIfExpression, surveyResults);
 				disabledIfResult=disabledIfResult || (eval instanceof Boolean && (boolean)eval);
-				log.debug(this.getClass().getSimpleName()+":: 'disabledIfResult' is "+disabledIfResult);
+				log.debug(this.getClass().getSimpleName()+":: 'disabledIfResult' evaluating '"+disabledIfExpression+"' is "+disabledIfResult);
 			}catch(Exception ex){
 				log.error(this.getClass().getSimpleName()+":: Not disabling, however an expression error occured: "+ex.getMessage());
 				ex.printStackTrace();

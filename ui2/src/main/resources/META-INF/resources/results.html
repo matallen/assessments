@@ -192,8 +192,7 @@
 						
 						if (showAnswers){
 							$("#showAnswers").html(`<button type="button" class="rhbtn rhbtn-secondary" id="showAnswersBtn" onclick="location.href=window.location.href.replace('results.html','index.html');">View answers</button>`);
-							//$("#review_assessment").hide();
-							displayAnswers(response);
+							//displayAnswersInTab(response);
 						}else{
 							$("#review_assessment").show();
 						}
@@ -273,8 +272,7 @@
 			return html;
 		}
 		
-		function displayAnswers(answers){
-			//init(jsonResponse);
+		function displayAnswersInTab(answers){
 			
 			Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/questions", function(status, questions){
 				
@@ -297,15 +295,6 @@
 				$("#tabsContent").append(html+`</table></div>`); // end tab
 				
 				$("#tabs").append(`<li><a data-toggle="tab" id="tab_answers" href="#tabcontent_answers">Answers</a></li>`);
-				//var html=`<div id="tabcontent_answers" class="tab-pane fade in">`;
-				//for(var answer in answers){
-				//	html+=`<table>`;
-				//	if (!answer.startsWith("_")){
-				//		html+=`<tr><td>`+answer+`=`+answers[answer]+`</td></tr>`;
-				//	}
-				//	html+=`</table>`;
-				//}
-				//$("#tabsContent").append(html+`</div>`); // end tab
 				
 			});
 			
@@ -479,7 +468,10 @@ v 1.4
 <script>
 
 $('#retake_assessment').on('click', function() {
-	window.location.href="/index.html?surveyId="+surveyId;
+	window.location.href="/index.html?surveyId="+surveyId
+			+(Utils.getParameterByName("intcmp")?"&intcmp="+Utils.getParameterByName("intcmp"):"")
+			+(Utils.getParameterByName("sc_cid")?"&sc_cid="+Utils.getParameterByName("sc_cid"):"")
+			;
 });
 $('#review_assessment').on('click', function() {
 	LocalStorage.removeFlag("lastAssessmentCompleted");
@@ -487,7 +479,10 @@ $('#review_assessment').on('click', function() {
 	surveyData.currentPageNo=0;
 	var toStore=JSON.stringify(surveyData);
 	LocalStorage.save(surveyId, toStore);
-	window.location.href="/index.html?surveyId="+surveyId;
+	window.location.href="/index.html?surveyId="+surveyId
+			+(Utils.getParameterByName("intcmp")?"&intcmp="+Utils.getParameterByName("intcmp"):"")
+			+(Utils.getParameterByName("sc_cid")?"&sc_cid="+Utils.getParameterByName("sc_cid"):"")
+			;
 });
 
 

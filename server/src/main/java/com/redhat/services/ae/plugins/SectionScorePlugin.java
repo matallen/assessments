@@ -43,6 +43,8 @@ public class SectionScorePlugin extends Plugin{
 		for (Entry<String, Object> e:surveyResults.entrySet()){
 			String questionId=e.getKey();
 			
+			if (questionId.startsWith("_")) continue;
+			
 			Map<String,Object> value=(Map<String,Object>)e.getValue();
 			
 			if (value.containsKey("score")){

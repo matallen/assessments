@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
 import org.mvel2.MVEL;
 import org.slf4j.Logger;
@@ -138,6 +139,9 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 		
 		// Mat - TODO: review putting this here, it would be nice to have surveyId etc... available to all plugins
 		Map<String,String> answers=new HashMap<>();
+		for (Entry<String, Object> e:surveyResults.entrySet())
+			if (e.getKey().startsWith("_") && String.class.isAssignableFrom(e.getValue().getClass()))
+				answers.put(e.getKey(), (String)e.getValue());
 		answers.putAll(extractedAnswers);
 		answers.put("_surveyId", surveyId);
 		answers.put("_reportId", (String)surveyResults.get("_reportId"));
@@ -155,7 +159,8 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 					Object eval=MVEL.eval(e.getValue(), answers);
 					eloquaFields.put(e.getKey(), eval.toString());
 				}catch(Exception ex){
-					ex.printStackTrace();
+					log.warn("expression error with '"+e.getValue()+"': "+ex.getMessage());
+//					ex.printStackTrace();
 				}
 			}
 		}
@@ -163,7 +168,8 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 		// Eloqua:: send literal values (+ replacement variables where configured)
 		StringSubstitutor substitutor=new StringSubstitutor(answers); // replaces ${name} placeholders
 		for(Entry<String, String> e:values.entrySet()){
-			eloquaFields.put(e.getKey(), substitutor.replace(e.getValue()));
+			String value=substitutor.replace(e.getValue());
+				eloquaFields.put(e.getKey(), value);
 		}
 		
 		// execute mvel expression (ie. WorkEmail contains @redhat.com) then disabledIfResult becomes True
@@ -171,7 +177,7 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 			Object eval=MVEL.eval(disabledIfExpression, answers);
 			disabledIfResult=disabledIfResult || (eval instanceof Boolean && (boolean)eval);
 		}catch(Exception ex){
-			log.error("Not disabling eloqua plugin, however an expression error occured: "+ex.getMessage());
+			log.warn("Not disabling eloqua plugin, however an expression error occured: "+ex.getMessage());
 			ex.printStackTrace();
 		}
 		if (disabledIfResult){
