@@ -139,9 +139,30 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 		}
 		
 		// Mat - TODO: review putting this here, it would be nice to have surveyId etc... available to all plugins
-		Map<String,String> answers=surveyResults.entrySet().stream()
-				.filter(map->map.getKey().startsWith("_"))
-				.collect(Collectors.toMap(map->map.getKey(),map->(String)map.getValue()));
+		
+		// Mat! TODO: FIX! this breaks got OCP migration!
+//		Map<String,String> answers=surveyResults.entrySet().stream()
+//				.filter(map->map.getKey().startsWith("_"))
+//				.collect(Collectors.toMap(map->map.getKey(),map->(String)map.getValue()));
+		
+		Map<String,String> answers=new HashMap<>();
+		try{
+//			answers.putAll(surveyResults.entrySet().stream()
+//					.filter(map->map.getKey().startsWith("_"))
+//					.collect(Collectors.toMap(map->map.getKey(),map->(String)map.getValue()))
+//						);
+			for (Entry<String, Object> e:surveyResults.entrySet()){
+				if (e.getKey().startsWith("_")){
+					if (String.class.isAssignableFrom(e.getValue().getClass())){
+						answers.put(e.getKey(), (String)e.getValue());
+					}
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		
 		answers.putAll(extractedAnswers);
 		answers.put("_surveyId", surveyId);
 		answers.put("_reportId", (String)surveyResults.get("_reportId"));
