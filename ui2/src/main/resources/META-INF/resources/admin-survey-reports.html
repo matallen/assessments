@@ -55,6 +55,7 @@ function refresh(){
 
 		refreshGraph(graphId, type, graphUrl, processor);
 	});
+	refreshAnswerDistribution("answerDistribution");
 }
 
 function round(num){
@@ -268,12 +269,11 @@ var surveyId=Utils.getParameterByName("id");
 setMenu("Reports");
 $(document).ready(function() {
 	
-	document.getElementById("monthswrapper").innerHTML=generateDateRangeSelect("", "Current Month");
+	document.getElementById("monthswrapper").innerHTML=generateDateRangeSelect("", "Current Quarter");
 	
 	if (undefined!=surveyId){
 	
 		refresh();
-		refreshAnswerDistribution("answerDistribution");
 		
 	}else{
 		// Throw error message to page saying survey doesnt exist
