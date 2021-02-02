@@ -4,15 +4,19 @@ Http = {
 		xhr.open(action, uri, true);
 		//if (undefined!=Http.getCookie("rh_cat_jwt") && uri.includes("admin"))
 		
-		// TODO: BUG: This condition is in place of a suspected defect in Quarkus where if you send the token in validates EVEN if the api doesn't require validation
-		if (uri.includes("/onPageChange") ||
-			uri.includes("/generateReport") ||	
-			uri.includes("/results/") ||
-			uri.includes("/resources") ||
-			uri.includes("/config") ||
-			uri.includes("/geoInfo") ||
-			uri.includes("/questions") ||
-			uri.includes("/customfield/")){
+		// TODO: BUG: This condition is in place of a suspected defect in Quarkus where if you send the token it validates EVEN if the api doesn't require validation
+		var noAuthHeader=
+		uri.includes("/onPageChange") ||
+		uri.includes("/generateReport") ||	
+		uri.includes("/results/") ||
+		(uri.includes("/resources") && action=="GET") ||
+		uri.includes("/config") ||
+		uri.includes("/geoInfo") ||
+		(uri.includes("/questions") && action=="GET") ||
+		uri.includes("/customfield/");
+		
+		if (noAuthHeader){
+			// No action
 		}else{
 			xhr.setRequestHeader('Authorization','Bearer '+ Http.getCookie("rh_cat_jwt"));
 		}

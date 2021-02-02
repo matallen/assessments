@@ -196,7 +196,7 @@ public class SurveyAdminController{
 	public Response getResource(@PathParam("surveyId") String surveyId, @PathParam("name") String name) throws IOException{
 		File resource=Survey.findById(surveyId).getResource(name);
 		if (!resource.exists())
-			return Response.status(401).build();
+			return Response.status(404).build();
 		
 		return Response.ok(new FileInputStream(resource)).build();
 	}
