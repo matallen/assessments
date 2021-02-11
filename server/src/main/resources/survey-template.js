@@ -435,15 +435,12 @@ if (undefined!=navTopEl){
 	
 }
 
-
 function setConsentAgreement(surveyData, countryCode){
 	if (undefined==countryCode) return;
 	var consentInfo=countryNameValue[countryCode];
 	
-	var consent=["by Email","by Phone"];
-	if (undefined!=surveyData["_ConsentAgreement"]){
-		// consent info has already been populated in the survey.data, so leave it alone to render (and retain the old values)
-	}else{
+	if (undefined==surveyData || undefined==surveyData["_ConsentAgreement"]){
+		var consent=["by Email","by Phone"];
 		// set DEFAULT consent info, if it doesnt exist in the survey.data already
 		if (undefined!=consentInfo){
 			if (consentInfo["optInEmail"]!=undefined && consentInfo["optInEmail"].includes("opt-in"))
@@ -452,6 +449,8 @@ function setConsentAgreement(surveyData, countryCode){
 				consent=consent.filter(e => e !== "by Phone");
 			survey.setValue("_ConsentAgreement", consent);
 		}
+	}else{
+		// consent info has already been populated in the survey.data, so leave it alone to render (and retain the old values)
 	}
 }
 
@@ -480,7 +479,7 @@ survey
 		LocalStorage.saveState(survey);
 		
 		if (options.name=="_Country"){
-			setConsentAgreement(survey.data, options.value);
+			setConsentAgreement(undefined, options.value);
 		}
 		
 });
