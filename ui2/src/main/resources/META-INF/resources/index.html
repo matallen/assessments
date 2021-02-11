@@ -156,23 +156,25 @@ $(document).ready(function() {
 					survey.mode='display';
 					$(".sv_page_title").prepend("<span style='color:#c10000'>Read-only view of provided answers</span><br/><br/>");
 				});
-	    }else{
-	    	console.log("loadResults:: survey not loaded yet");
-        setTimeout(loadResults, 1000);
-	    }
-			
+			}else{
+				console.log("loadResults:: survey not loaded yet");
+				setTimeout(loadResults, 1000);
+			}
 		}
 		
 	</script>
 
 <div id="footer">
+	<script>
+	$(document).ready(function(){ $("#copyright-year").html(new Date().getFullYear()); });
+	</script>
 	<footer class="footerStyle">
 		<div class="container">
 			<div class="row">
 				<div class="col-md-3"><a href="//www.redhat.com/" target="_blank" ><img alt="Red Hat" class="img-fluid" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg" style="height: 34px !important;" href="//www.redhat.com/"></a></div>
 
 				<div class="col-md-3 copyrightStyle">
-					<p>Copyright © 2020&nbsp;<span class="text-nowrap">Red Hat, Inc.</span></p>
+					<p>Copyright © <span id="copyright-year">2020</span>&nbsp;<span class="text-nowrap">Red Hat, Inc.</span></p>
 				</div>
 
 				<div class="col-md">
