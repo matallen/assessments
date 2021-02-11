@@ -275,6 +275,14 @@ survey
 	});
 
 survey
+	.onUpdateQuestionCssClasses
+	.add(function(sender, options){
+		var classes = options.cssClasses;
+		// add error class so we can draw attn to the question with an error
+		classes.hasError += " has-error";
+	});
+
+survey
     .onComplete
     .add(function (result) {
     	var page=result.currentPageValue;
