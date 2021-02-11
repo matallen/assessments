@@ -227,7 +227,7 @@ survey.onLoadChoicesFromServer.add(function(survey, options) {
 		for(i in options.serverResult){
 			countryNameValue[options.serverResult[i]["alpha2Code"]]={"name": options.serverResult[i]["name"], "optInEmail": options.serverResult[i]["optInEmail"], "optInPhone": options.serverResult[i]["optInPhone"]};
 		}
-		setConsentAgreement(options.question.value);
+		setConsentAgreement(survey.data, options.question.value);
 	}
 	// END OF CONSENT AGREEMENT LOGIC
 	
@@ -436,17 +436,22 @@ if (undefined!=navTopEl){
 }
 
 
-function setConsentAgreement(countryCode){
+function setConsentAgreement(surveyData, countryCode){
 	if (undefined==countryCode) return;
 	var consentInfo=countryNameValue[countryCode];
 	
 	var consent=["by Email","by Phone"];
-	if (undefined!=consentInfo){
-		if (consentInfo["optInEmail"]!=undefined && consentInfo["optInEmail"].includes("opt-in"))
-			consent=consent.filter(e => e !== "by Email");
-		if (consentInfo["optInPhone"]!=undefined && consentInfo["optInPhone"].includes("opt-in"))
-			consent=consent.filter(e => e !== "by Phone");
-		survey.setValue("_ConsentAgreement", consent);
+	if (undefined!=surveyData["_ConsentAgreement"]){
+		// consent info has already been populated in the survey.data, so leave it alone to render (and retain the old values)
+	}else{
+		// set DEFAULT consent info, if it doesnt exist in the survey.data already
+		if (undefined!=consentInfo){
+			if (consentInfo["optInEmail"]!=undefined && consentInfo["optInEmail"].includes("opt-in"))
+				consent=consent.filter(e => e !== "by Email");
+			if (consentInfo["optInPhone"]!=undefined && consentInfo["optInPhone"].includes("opt-in"))
+				consent=consent.filter(e => e !== "by Phone");
+			survey.setValue("_ConsentAgreement", consent);
+		}
 	}
 }
 
@@ -475,7 +480,7 @@ survey
 		LocalStorage.saveState(survey);
 		
 		if (options.name=="_Country"){
-			setConsentAgreement(options.value);
+			setConsentAgreement(survey.data, options.value);
 		}
 		
 });
