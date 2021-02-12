@@ -22,7 +22,6 @@ public class RequestFilters{
 			if (rc.request().path().contains("/onPageChange"))   removeAuth=true;
 			if (rc.request().path().contains("/generateReport")) removeAuth=true;
 			if (rc.request().path().contains("/results/"))       removeAuth=true;
-			if (rc.request().path().contains("/config"))         removeAuth=true;
 			if (rc.request().path().contains("/geoInfo"))        removeAuth=true;
 			if (rc.request().path().contains("/customfield/"))   removeAuth=true;
 			
@@ -30,6 +29,7 @@ public class RequestFilters{
 			if ("GET".equals(rc.request().method().name())){
 				if (rc.request().path().contains("/resources/"))   removeAuth=true;
 				if (rc.request().path().contains("/questions/"))   removeAuth=true;
+				if (rc.request().path().contains("/config"))         removeAuth=true;
 			}
 			
 			if (removeAuth){
