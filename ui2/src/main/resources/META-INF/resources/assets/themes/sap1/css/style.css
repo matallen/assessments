@@ -1,0 +1,17 @@
+/* GREY BACKGROUND LOOK */
+div[class*="sv_page_contact"] .sv_p_container{
+	background-color: #f0f0f0 !important;
+  border: 0px solid #ccc;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+
+.sv_row{border: 1px solid #f0f0f0 !important;}
+
+.sv_p_container .sv_row{
+	margin:0px;
+}
+
+.sv_completed_page{
+	background-color: #f1f1f1 !important;
+}

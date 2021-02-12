@@ -18,6 +18,7 @@ public class SectionScorePlugin extends Plugin{
 	private String scoreStrategy="average";
 	private String scoreBy="section";
 	private String sectionTitle="navigationTitle";
+	private String defaultQuestionScore="0";
 	
 	@Override
 	public Plugin setConfig(Map<String, Object> config){
@@ -25,6 +26,7 @@ public class SectionScorePlugin extends Plugin{
 		scoreStrategy=getConfigValueAsString(config, "scoreStrategy", "average");
 		scoreBy=getConfigValueAsString(config, "scoreBy", "section");
 		sectionTitle=getConfigValueAsString(config, "sectionTitle", "navigationTitle");
+		defaultQuestionScore=getConfigValueAsString(config, "defaultQuestionScore", "0");
 		
 		if (!Lists.newArrayList("average","sum").contains(scoreStrategy))
 			throw new RuntimeException("property 'scoreStrategy' must contain either 'average' or 'sum'");
@@ -47,43 +49,55 @@ public class SectionScorePlugin extends Plugin{
 			
 			Map<String,Object> value=(Map<String,Object>)e.getValue();
 			
-			if (value.containsKey("score")){
-				
-				String sectionName="survey";
-				int score=0;
-				if ("section".equalsIgnoreCase(scoreBy)){
-					if (value.containsKey(sectionTitle)){
-						sectionName=(String)value.get(sectionTitle);
-						
-					}else{
-						log.error("Question ("+questionId+") has a score ("+value.get("score")+"), and scoreBy is 'section' but the question doesnt have a '"+sectionTitle+"' property to group by  ("+value.containsKey(sectionTitle)+"). It's score is being omitted");
-						continue;
-					}
-				}else{ // score the whole assessment together
-					sectionName=scoreBy;
-				}
-				
+			// determine question score
+			int score=Integer.parseInt(defaultQuestionScore); // default score to plugin default, or 0 if no default specified
+			if (value.containsKey("score"))
 				score=Integer.class.isAssignableFrom(value.get("score").getClass())?(Integer)value.get("score"):0; // it must be an integer score, I dont want to deal with string conversions
-				log.debug(questionId+"::Adding score "+score+" to section ["+sectionName+"]");
-				sectionTotals.put(sectionName, sectionTotals.containsKey(sectionName)?sectionTotals.get(sectionName)+score:score);
-				sectionCounts.put(sectionName, sectionCounts.containsKey(sectionName)?sectionCounts.get(sectionName)+1:1);
-				sectionAverages.put(sectionName, sectionTotals.get(sectionName)/sectionCounts.get(sectionName));
-				
-				
-//				if (value.containsKey("navigationTitle") || value.containsKey("pageId")){
-//					String sectionName=(String)(value.containsKey("navigationTitle")?value.get("navigationTitle"):value.get("pageId"));
-//					int score=Integer.class.isAssignableFrom(value.get("score").getClass())?(Integer)value.get("score"):0; // it must be an integer score, I dont want to deal with string conversions
-//					
-//					log.debug(questionId+"::Adding score "+score+" to section ["+sectionName+"]");
-//					
-//					sectionTotals.put(sectionName, sectionTotals.containsKey(sectionName)?sectionTotals.get(sectionName)+score:score);
-//					sectionCounts.put(sectionName, sectionCounts.containsKey(sectionName)?sectionCounts.get(sectionName)+1:1);
-//					sectionScores.put(sectionName, sectionTotals.get(sectionName)/sectionCounts.get(sectionName));
-//					
-//				}else{
-//					log.error("This question ("+questionId+") has a score ("+value.get("score")+"), so it should have a navigationTitle too to know which section to add it to ("+value.containsKey("navigationTitle")+"). It's score is being omitted");
-//				}
+			
+			// determine which section to attribute the score to
+			String sectionName="survey";
+			if ("section".equalsIgnoreCase(scoreBy)){
+				if (value.containsKey(sectionTitle)){
+					sectionName=(String)value.get(sectionTitle);
+				}else{
+					log.error("Question ("+questionId+") has a score ("+score+"), and scoreBy is 'section' but the question doesnt have a '"+sectionTitle+"' property to group by  ("+value.containsKey(sectionTitle)+"). It's score is being omitted");
+					continue;
+				}
+			}else{ // score the whole assessment together
+				sectionName=scoreBy;
 			}
+			
+			// Perform the scoring & assignment
+//			score=Integer.class.isAssignableFrom(value.get("score").getClass())?(Integer)value.get("score"):0; // it must be an integer score, I dont want to deal with string conversions
+			log.debug(questionId+"::Adding score "+score+" to section ["+sectionName+"]");
+			sectionTotals.put(sectionName, sectionTotals.containsKey(sectionName)?sectionTotals.get(sectionName)+score:score);
+			sectionCounts.put(sectionName, sectionCounts.containsKey(sectionName)?sectionCounts.get(sectionName)+1:1);
+			sectionAverages.put(sectionName, sectionTotals.get(sectionName)/sectionCounts.get(sectionName));
+			
+			
+//			if (value.containsKey("score")){
+//				
+//				String sectionName="survey";
+//				int score=0;
+//				if ("section".equalsIgnoreCase(scoreBy)){
+//					if (value.containsKey(sectionTitle)){
+//						sectionName=(String)value.get(sectionTitle);
+//						
+//					}else{
+//						log.error("Question ("+questionId+") has a score ("+value.get("score")+"), and scoreBy is 'section' but the question doesnt have a '"+sectionTitle+"' property to group by  ("+value.containsKey(sectionTitle)+"). It's score is being omitted");
+//						continue;
+//					}
+//				}else{ // score the whole assessment together
+//					sectionName=scoreBy;
+//				}
+//				
+//				score=Integer.class.isAssignableFrom(value.get("score").getClass())?(Integer)value.get("score"):0; // it must be an integer score, I dont want to deal with string conversions
+//				log.debug(questionId+"::Adding score "+score+" to section ["+sectionName+"]");
+//				sectionTotals.put(sectionName, sectionTotals.containsKey(sectionName)?sectionTotals.get(sectionName)+score:score);
+//				sectionCounts.put(sectionName, sectionCounts.containsKey(sectionName)?sectionCounts.get(sectionName)+1:1);
+//				sectionAverages.put(sectionName, sectionTotals.get(sectionName)/sectionCounts.get(sectionName));
+//				
+//			}
 			
 		}
 		
@@ -95,7 +109,7 @@ public class SectionScorePlugin extends Plugin{
 		
 		if (sectionAverages.size()<=0){
 			log.error(this.getClass().getSimpleName()+":: Likely error -> no scores detected therefore no section average scores!");
-			log.debug("surveyResults as of ERROR (it's looking for 'score' property of each question, then sumby 'navigationTitle'):/n"+Json.toJson(surveyResults));
+			log.error("surveyResults at time of ERROR (it's looking for 'score' property of each question, then sum-by 'navigationTitle'):/n"+Json.toJson(surveyResults));
 		}
 		
 		log.debug("SectionScores = "+Json.toJson(sectionAverages));

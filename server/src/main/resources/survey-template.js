@@ -216,8 +216,8 @@ if (undefined==geoInfo){
 //survey.showTimerPanelMode = 'page';
 survey.startTimer();
 survey.showTimerPanel = 'none'; //bottom
-survey.completeText = 'View my results';
-
+//survey.completeText = 'View my results'; // configurable @ page level in question editor
+//survey.completeText=("Complete"==survey.completeText?"View my results":survey.completeText);
 
 var countryNameValue={};
 survey.onLoadChoicesFromServer.add(function(survey, options) {

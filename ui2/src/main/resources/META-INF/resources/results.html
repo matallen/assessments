@@ -72,7 +72,10 @@
 	<script>
 	
 	function buildOverviewGraphic(title, rating, thresholds){
-		return overviewGraphicHeader_tabular(title, rating) + overviewGraphicProgress_svg(title, rating, thresholds);
+		if (rating>=1){
+			return overviewGraphicHeader_tabular(title, rating) + overviewGraphicProgress_svg(title, rating, thresholds);
+		}else
+			return ""; // no rating? then don't display a title or graphic
 	}
 	
 	function overviewGraphicHeader_tabular(title, rating){
@@ -309,10 +312,10 @@
 			if (report["thresholds"]) thresholds=report["thresholds"];
 			
 			// if it contains overviews for an overviews tab, then drill in for the content, and extract the overviews
-			if (report["overviews"]){
+			if (report["overviews"])
 				var overviews=report["overviews"];
-				report=report["tabs"];
-			}
+			
+			report=report["tabs"];
 			var scores=jsonResponse["_sectionScore"];
 			var c=0,max=0;
 			
@@ -425,13 +428,16 @@
 		}
 	</style>
 	<div id="footer">
+		<script>
+		$(document).ready(function(){ $("#copyright-year").html(new Date().getFullYear()); });
+		</script>
 		<footer class="footerStyle">
 			<div class="container">
 				<div class="row">
 					<div class="col-md-3"><a href="//www.redhat.com/" target="_blank" ><img alt="Red Hat" class="img-fluid" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg" style="height: 34px !important;" href="//www.redhat.com/"></a></div>
 	
 					<div class="col-md-3 copyrightStyle">
-						<p>Copyright © 2020&nbsp;<span class="text-nowrap">Red Hat, Inc.</span></p>
+						<p>Copyright © <span id="copyright-year">2020</span>&nbsp;<span class="text-nowrap">Red Hat, Inc.</span></p>
 					</div>
 	
 					<div class="col-md">

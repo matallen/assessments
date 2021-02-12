@@ -8,7 +8,11 @@ import java.util.Map.Entry;
 
 
 public class ResultsBuilderTabsOverview{
-
+	private boolean includeOverviewTab=true;
+	
+	public ResultsBuilderTabsOverview includeOverviewTab(boolean value){
+		this.includeOverviewTab=value; return this;
+	}
 	
 	public Object build(List<DroolsRecommendation> recommendations, Map<String, Integer> sectionScores, Map<String, Integer> thresholds){
 //		Map<String,Map<String,Map<String,List<String>>>> tabs=new TreeMap<String,Map<String,Map<String,List<String>>>>();
@@ -37,15 +41,13 @@ public class ResultsBuilderTabsOverview{
 			String title=first.getKey();
 			List<String> texts=first.getValue();
 			
-			
 			overviews.put(section, new LinkedHashMap<>());
 			overviews.get(section).put(title, texts);
 		}
 		
-		
-		
 		Map<Object,Object> result=new LinkedHashMap<>();
-		result.put("overviews", overviews);
+		if (includeOverviewTab)
+			result.put("overviews", overviews);
 		result.put("tabs", tabs);
 		result.put("thresholds", thresholds);
 		return result;

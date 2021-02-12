@@ -51,7 +51,7 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 	boolean extraDebug=false;
 	private String configSheetName;
 	private String thresholdSection;
-	
+	private boolean includeOverviewTab;
 	
 //	@Inject
 //  private KieRuntimeBuilder runtimeBuilder;
@@ -72,6 +72,7 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 		thresholdSection=getConfigValueAsString(config, "thresholdSection", null);
 		configSheetName=getConfigValueAsString(config, "configSheetName", null);
 		extraDebug=hasExtraDebug(config, "extraDebug");
+		includeOverviewTab=getBooleanFromConfig(config, "includeOverviewTab", true);
 		
 		if (null==configSheetName) throw new RuntimeException("'configSheetName' in "+this.getClass().getSimpleName()+" plugin must be set");
 		if (null==thresholdSection) throw new RuntimeException("'thresholdSection' in "+this.getClass().getSimpleName()+" plugin must be set");
@@ -221,7 +222,7 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 			// build a map of question/value for string replacement in the recommendations
 			Map<String,String> kvReplacement=new HashMap<String, String>();
 			
-			String language=surveyResults.containsKey("language")?(String)surveyResults.get("language"):"en";
+			String language=surveyResults.containsKey("language")?(String)surveyResults.get("language"):"en"; // default to en
 			
 			Map<String,Integer> sectionScores=new HashMap<>();
 			
@@ -232,6 +233,8 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 				
 				
 				if (key.startsWith("_") || key.startsWith("C_")){
+					
+					// Insert section scores into drools session
 					if (key.equalsIgnoreCase("_sectionScore")){
 						Map<String, Integer> values=(Map<String, Integer>)val;
 						for(Entry<String, Integer> e2:values.entrySet()){
@@ -246,6 +249,7 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 					
 				}else{
 					
+					// Insert answer scores into drools session
 					if (Map.class.isAssignableFrom(val.getClass())){
 						Map<String, Object> value=(Map<String, Object>)val;
 						if (value.containsKey("score")){
@@ -293,7 +297,9 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 			
 			Map<String,Integer> thresholds=getThresholdRanges(decisionTableId);
 			
-			Object resultSections=new ResultsBuilderTabsOverview().build(recommendations, sectionScores, thresholds);
+			Object resultSections=new ResultsBuilderTabsOverview()
+					.includeOverviewTab(includeOverviewTab)
+					.build(recommendations, sectionScores, thresholds);
 			
 			
 			// add recommendations to the results

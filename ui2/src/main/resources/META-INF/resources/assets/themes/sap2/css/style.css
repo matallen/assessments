@@ -1,0 +1,25 @@
+/* WHITE BACKGROUND LOOK */
+div[class*="sv_page_contact"] .sv_p_container{
+	background-color: transparent !important;
+  border: 0px solid #ccc;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+
+.sv_row{border: 1px solid transparent !important;}
+
+.sv_p_container .sv_row{
+	margin:0px;
+}
+
+.sv_p_root, .sv_row, .sv_nav, #survey-wrapper{
+	background-color: #FFF !important
+}
+
+.sv_qstn>div:nth-child(1),.sv_qstn>div:nth-child(2){
+	border: 1px solid transparent;
+}
+
+.sv_p_root, .sv_row, .sv_nav, #survey-wrapper{
+	background-color: #fff;
+}

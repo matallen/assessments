@@ -300,6 +300,8 @@ div.elevate li.noColor{
     padding: 0 5px;
 }
 
+/* if errors produce a red gloaw but the bottom is cut off then enable this css to fix it */
+input{margin: 3px 0px !important;}
 
 .sv_row{
     border: 1px solid #ccc;
@@ -309,6 +311,9 @@ div.elevate li.noColor{
 	margin-bottom: 0;
 }
 
+.sv_main.sv_default_css .sv_p_root > .sv_row:nth-child(2n) {
+	border-color: #f0f0f0;
+}
 
 span.sv_q_required_text{
 	color: #E00;
@@ -636,9 +641,14 @@ input.sv_q_text_root.undefined,
 /**/
 .sv_q_erbox.sv_qstn_error_top{
 		display: none;
+		/*
+		TODO: may want to activate this css so we can display the error text at some points
+		color: red;
+    margin-bottom: 20px;
+    */
 }
 .sv_q.sv_qstn{
-		min-height: 63px;
+		min-height: 43px;
 }
 
 /* /ERRORS */
