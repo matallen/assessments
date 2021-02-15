@@ -8,6 +8,10 @@ div[class*="sv_page_contact"] .sv_p_container{
 
 .sv_row{border: 1px solid #f0f0f0 !important;}
 
+.sv_container{
+	background-color: #f0f0f0;
+}
+
 .sv_p_container .sv_row{
 	margin:0px;
 }

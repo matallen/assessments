@@ -119,7 +119,10 @@ public abstract class EnrichAnswersPluginBase extends Plugin{
 				continue;
 			}
 			
-			if (!questionsMapping.containsKey(questionId)) throw new RuntimeException("Found answers for questions ("+questionId+") that dont exist - config issue?");
+			// tTODO: his could happen if the answer contains an "other" answer manually entered by the end user, so we need to support that
+			//   - the -Comment exception prevents the exception, but fails to handle the "other" data
+			if (!questionId.endsWith("-Comment") && !questionsMapping.containsKey(questionId)) throw new RuntimeException("Found answers for questions ("+questionId+") that dont exist - config issue?");
+//			if (!questionsMapping.containsKey(questionId)) throw new RuntimeException("Found answers for questions ("+questionId+") that dont exist - config issue?");
 				
 			
 			if (String.class.isAssignableFrom(e.getValue().getClass())){
