@@ -230,8 +230,8 @@ public class SurveyController{
 		for(Plugin plugin:activePlugins){
 			try{
 				surveyData=plugin.execute(surveyId, visitorId, surveyData); // after each plugin, keep the changes to the data (similar to the concept of Tomcat filters)
-//				System.out.println("_reportId="+surveyData.get("_reportId"));
-				log.debug("After plugin ["+plugin.getClass().getSimpleName()+"]: "+Json.toJson(surveyData));
+//				WARNING: THIS IS HEAVY DEBUGGING
+//				log.debug("After plugin ["+plugin.getClass().getSimpleName()+"]: "+Json.toJson(surveyData));
 				
 			}catch(Exception e){
 				e.printStackTrace();

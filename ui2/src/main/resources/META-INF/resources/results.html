@@ -231,10 +231,12 @@
 		// this should load the header and footer for the results page from the assessment config
 		function loadHeaderFooter(){
 			Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/config", function(status, config){
+				console.log("Results Config:");
 				console.log(config);
-				if (undefined!=config["results_title"]) $("#results_title").html(config["results_title"]);
+				if (undefined!=config["results_title"])  $("#results_title").html(config["results_title"]);
 				if (undefined!=config["results_header"]) $("#results_header").html(config["results_header"]);
 				if (undefined!=config["results_footer"]) $("#results_footer").html(config["results_footer"]);
+				if (undefined!=config["results_hide_print_button"] && "on"==config["results_hide_print_button"]) $("#create_pdf").hide(); 
 			});
 		}
 		
