@@ -56,15 +56,16 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 	}
 	
 	private Answer findInQuestions(List<Json> questionChoices, String answerProvided){
-		Answer result=new Answer(null,-1);
+//		Answer result=new Answer(null,-1);
 //		result.score=-1;
 		for (Json ans:questionChoices){
-			if (ans.isString()) break;  // this is for surveyjs choicesFromUrl questions that have a null string in the choices
+			if (ans.isString() && "null".equals(ans.asString())) return new Answer(answerProvided, -1);  // this is for surveyjs choicesFromUrl questions that have a null string in the choices
 			if (ans.has("value") && ans.has("text")){
 				String qValue=ans.at("value").asString();
 				String qText=ans.at("text").asString();
 				
 				if (answerProvided.equals(qValue)){
+					Answer result=new Answer(null,-1);
 					if (ans.has("score"))
 						result.score=Integer.parseInt(ans.at("score").asString());
 					result.value=qValue;
@@ -73,11 +74,10 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 				}
 			}
 		}
-		return result;
+		return null;
 	}
 	
 	private Answer getAnswerScore(String answer, Json question){
-		
 		
 		if (answer.contains("#")){ // get the score embedded in the answer. ie. "10#answer text"
 			return splitThis((String)answer);
@@ -119,16 +119,18 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 		List<String> newAnswers=new ArrayList<>();
 		for (String answerString:answers){
 			Answer answerSplit=getAnswerScore(answerString, question);
-			
-			if (answerSplit.score>=0){
-				if ("sum".equalsIgnoreCase(scoreStrategy)){
-					if (score==-1) score=0; // this is so we can use -1 as "unset", but that += doesnt start counting at -1
-					score+=answerSplit.score;
-				}else{ // by default take the highest
-					score=Math.max(answerSplit.score, score);
+			if (null!=answerSplit){ // currently, this excludes "other" answers entirely, so they are not scored or passed into the resulting answer payload
+				if (answerSplit.score>=0){
+					if ("sum".equalsIgnoreCase(scoreStrategy)){
+						if (score==-1) score=0; // this is so we can use -1 as "unset", but that += doesnt start counting at -1
+						score+=answerSplit.score;
+					}else{ // by default take the highest
+						score=Math.max(answerSplit.score, score);
+					}
 				}
+				newAnswers.add(answerSplit.value);
 			}
-			newAnswers.add(answerSplit.value);
+					
 		}
 		
 		Map<String,Object> answerData=new MapBuilder<String,Object>().put("answers", newAnswers).build();

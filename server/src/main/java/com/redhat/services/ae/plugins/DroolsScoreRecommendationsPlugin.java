@@ -41,6 +41,7 @@ import com.redhat.services.ae.plugins.droolsscore.DroolsRecommendation;
 import com.redhat.services.ae.plugins.droolsscore.DroolsSurveyAnswer;
 import com.redhat.services.ae.plugins.droolsscore.DroolsSurveySection;
 import com.redhat.services.ae.plugins.droolsscore.ResultsBuilderTabsOverview;
+import com.redhat.services.ae.utils.Json;
 
 public class DroolsScoreRecommendationsPlugin extends Plugin{
 	public static final Logger log=LoggerFactory.getLogger(DroolsScoreRecommendationsPlugin.class);
@@ -206,6 +207,8 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 	public Map<String, Object> execute(String surveyId, String visitorId, Map<String, Object> surveyResults) throws Exception{
 		try{
 			
+			log.debug("DroolsScorePlugin: data = "+Json.toJson(surveyResults));
+			
 			KieSession kSession=newKieSession(decisionTableId);
 			
 			// DEBUG ONLY - make sure we have some rule packages to execute
@@ -257,16 +260,24 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 							log.debug("Inserting fact: "+a);//(String.format("Answer: id=%s, page=%s, lang=%s, score=%s, text=%s", e.getKey(), language, (Integer)value.get("score"), (String)value.get("title") )));
 							kSession.insert(a);
 						}
-						if (value.containsKey("answer") && String.class.isAssignableFrom(value.get("answer").getClass()))
-							kvReplacement.put(e.getKey(), (String)value.get("answer"));
 						
-						if (value.containsKey("answers") && List.class.isAssignableFrom(value.get("answers").getClass()))
-							kvReplacement.put(e.getKey(), Joiner.on(",").join((List)value.get("answers")));
+						try{
+							if (value.containsKey("answer") && String.class.isAssignableFrom(value.get("answer").getClass()))
+								kvReplacement.put(e.getKey(), (String)value.get("answer"));
+							
+							if (value.containsKey("answers") && List.class.isAssignableFrom(value.get("answers").getClass()))
+								kvReplacement.put(e.getKey(), Joiner.on(",").join((List)value.get("answers")));
+							
+						}catch(Exception sink){
+							log.error("Error with: "+Json.toJson(val));
+							throw sink;
+						}
+						
 						
 					}else{// if (Integer.class.isAssignableFrom(val.getClass())){
 						
 					}
-					
+					 
 				}
 				
 			}

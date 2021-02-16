@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
@@ -187,6 +188,46 @@ public class SectionScorePluginTest extends TestBase{
 		
 	}
 	
+	@Test
+	public void testOther() throws Exception{
+		
+		String answersJson=
+				// other field
+				"    {                                                                             "+
+				"      \"os_in_use\": [\"Solaris\",\"other\"]                                      "+
+				"    },                                                                            "+
+				"    \"os_in_use-Comment\": \"test\"                                               "+
+				"";
+		Survey s=Survey.builder().id("test1").name("Test Survey").build();
+		String questionsJson=IOUtils.toString(this.getClass().getClassLoader().getResource("sap-test-questions-1.json"), "UTF-8");
+		s.setQuestionsAsString(questionsJson);
+		s.saveQuestions();
+		s.save();
+		
+		Map<String,Object> answers=Json.toObject(answersJson, new TypeReference<HashMap<String,Object>>(){});
+		System.out.println("from:"+Json.toJson(answers));
+		answers=new AddTitleAndScorePlugin().setConfig(new MapBuilder<String,Object>()
+				.put("addQuestionFields", new MapBuilder<String,Object>()
+						.put("pageId", "page/name")
+						.build())
+				.build())
+				.execute("test1", "TEST_VISITOR_ID", answers);
+		
+		
+		SectionScorePlugin test=new SectionScorePlugin();
+		test.setConfig(new MapBuilder<String,Object>()
+				.put("scoreStrategy", "average")
+				.put("scoreBy", "MyAssessment")
+				.put("sectionTitle", "pageId")
+				.put("defaultQuestionScore", "0")
+				.build());
+		answers=test.execute("test1", "TEST_VISITOR_ID", answers);
+		System.out.println("to:"+Json.toJson(answers));
+		
+		
+		Assert.assertEquals(0, ((Map)answers.get("_sectionScore")).get("MyAssessment"));
+		
+	}
 	
 	
 	

@@ -27,9 +27,9 @@ public class RequestFilters{
 			
 			
 			if ("GET".equals(rc.request().method().name())){
-				if (rc.request().path().contains("/resources/"))   removeAuth=true;
+				if (rc.request().path().contains("/resources"))    removeAuth=true;
 				if (rc.request().path().contains("/questions/"))   removeAuth=true;
-				if (rc.request().path().contains("/config"))         removeAuth=true;
+				if (rc.request().path().contains("/config"))       removeAuth=true;
 			}
 			
 			if (removeAuth){

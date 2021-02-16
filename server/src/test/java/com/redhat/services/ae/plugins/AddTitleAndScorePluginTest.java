@@ -1,10 +1,9 @@
 package com.redhat.services.ae.plugins;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.redhat.services.ae.Database;
 import com.redhat.services.ae.MapBuilder;
 import com.redhat.services.ae.controllers.TestBase;
 import com.redhat.services.ae.model.Survey;
@@ -288,6 +286,60 @@ public class AddTitleAndScorePluginTest extends TestBase{
 		Assert.assertEquals(30, readAnswer(newData, "q2", "score"));
 		Assert.assertEquals("page1", readAnswer(newData, "q2", "pageId"));
 		Assert.assertEquals("this is a checkbox question", readAnswer(newData, "q2", "title"));
+		
+	}
+	
+	
+	@Test
+	public void testOther() throws Exception{
+		
+		Map<String,Object> config=new MapBuilder<String,Object>()
+				.put("scoreStrategy", "highest")
+				.build();
+		
+		String answersJson=IOUtils.toString(this.getClass().getClassLoader().getResource("addtitlescore-sap-answers.json"), "UTF-8");
+		
+		
+		Survey s=Survey.builder().id("test1").name("Test Survey").build();
+		String questionsJson=IOUtils.toString(this.getClass().getClassLoader().getResource("sap-test-questions-1.json"), "UTF-8");
+		s.setQuestionsAsString(questionsJson);
+		s.saveQuestions();
+		s.save();
+		
+		Map<String,Object> answers=Json.toObject(answersJson, new TypeReference<HashMap<String,Object>>(){});
+		System.out.println("from:"+Json.toJson(answers));
+		Map<String, Object> newData=new AddTitleAndScorePlugin().setConfig(config).execute("test1", "TEST_VISITOR_ID", answers);
+		System.out.println("to:"+Json.toJson(newData));
+		
+		// result we want is to strip the "other" answer for now so it doesnt cause exceptions, but doesnt get scored either
+		
+		Map<String, Object> osInUse=(Map<String, Object>)newData.get("os_in_use");
+		List<String> resultAnswers=(List<String>)osInUse.get("answers");
+		Assert.assertTrue(resultAnswers.contains("Solaris"));
+		Assert.assertTrue(resultAnswers.size()==1);
+		
+	}
+	
+	@Test
+	public void testRTA() throws Exception{
+		
+		Map<String,Object> config=new MapBuilder<String,Object>()
+				.put("scoreStrategy", "highest")
+				.build();
+		
+		String answersJson=IOUtils.toString(this.getClass().getClassLoader().getResource("addtitlescore-rta-answers.json"), "UTF-8");
+		
+		Survey s=Survey.builder().id("test1").name("Test Survey").build();
+		String questionsJson=IOUtils.toString(this.getClass().getClassLoader().getResource("addtitlescore-rta-questions.json"), "UTF-8");
+		s.setQuestionsAsString(questionsJson);
+		s.saveQuestions();
+		s.save();
+		
+		Map<String,Object> answers=Json.toObject(answersJson, new TypeReference<HashMap<String,Object>>(){});
+		System.out.println("from:"+Json.toJson(answers));
+		Map<String, Object> newData=new AddTitleAndScorePlugin().setConfig(config).execute("test1", "TEST_VISITOR_ID", answers);
+		System.out.println("to:"+Json.toJson(newData));
+		
 		
 	}
 	

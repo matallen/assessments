@@ -170,7 +170,7 @@ public class SurveyController{
 		
 		// Metrics:: Update "cardinality of which answers selected" metrics
 		Map<String, Object> surveyData=payloadObj.get("_data");
-		log.debug("generateReport:: data="+Json.toJson(surveyData));
+		log.debug("generateReport:: data before any plugin processing = "+Json.toJson(surveyData));
 		
 		// TODO: Move this to plugins so we can configure under what conditions it fires
 //		updateAnswerMetrics(o, YYMMM, surveyData);
@@ -231,7 +231,7 @@ public class SurveyController{
 			try{
 				surveyData=plugin.execute(surveyId, visitorId, surveyData); // after each plugin, keep the changes to the data (similar to the concept of Tomcat filters)
 //				System.out.println("_reportId="+surveyData.get("_reportId"));
-//				System.out.println("After '"+plugin.getClass().getSimpleName()+"': "+Json.toJson(surveyData));
+				log.debug("After plugin ["+plugin.getClass().getSimpleName()+"]: "+Json.toJson(surveyData));
 				
 			}catch(Exception e){
 				e.printStackTrace();

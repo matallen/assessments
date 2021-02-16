@@ -26,7 +26,9 @@ public class RemoveReportPropertiesPlugin extends Plugin{
 	}
 	
 
-	
+	public static boolean looksLikeAnEmail(String value){
+		return value.matches(".+@.+\\..+");
+	}
 	private String chr(String c, int len){
 		return String.format("%-"+len+"s", "").replaceAll(" ", c);
 	}

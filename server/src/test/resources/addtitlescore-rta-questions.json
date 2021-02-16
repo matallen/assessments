@@ -1,0 +1,1533 @@
+{
+ "completedHtml": "<h2>Analyzing responses and generating <br/>your report - please wait a moment...</h2><br/><br/>",
+ "pages": [
+  {
+   "name": "Select Interests",
+   "elements": [
+    {
+     "type": "imagepicker",
+     "name": "interests",
+     "descriptionLocation": "underTitle",
+     "isRequired": true,
+     "choices": [
+      {
+       "value": "platforms",
+       "text": "Modernizing platforms",
+       "imageLink": "/api/surveys/RTA001/resources/modernizing_platforms_black.png",
+       "description": "Ensure your organization is poised to provide the platform flexibility and scalability to manage demand."
+      },
+      {
+       "value": "apps",
+       "text": "Modernizing applications",
+       "imageLink": "/api/surveys/RTA001/resources/modernizing_applications_black.png",
+       "description": "Understand how you can modernize your development and address the best choices for future deployment."
+      },
+      {
+       "value": "automation",
+       "text": "Automating IT",
+       "imageLink": "/api/surveys/RTA001/resources/automating_it_black.png",
+       "description": "Determine the level of effort required to expand and integrate automation in your organization."
+      },
+      {
+       "value": "transformation",
+       "text": "Transformation",
+       "imageLink": "/api/surveys/RTA001/resources/transformation_black.png",
+       "description": "Learn about safeguarding your organization’s longevity through continuous innovation."
+      }
+     ],
+     "colCount": 2,
+     "imageHeight": 100,
+     "imageWidth": 100,
+     "showLabel": true,
+     "multiSelect": true
+    }
+   ],
+   "title": "Your Ready-to-Accelerate Assessment begins here",
+   "description": "<br/>Select each area that applies to your business goals.<br/>The estimated time to complete each section is 8-10 minutes.",
+   "navigationTitle": "Select interests"
+  },
+  {
+   "name": "p_platforms_1_env",
+   "elements": [
+    {
+     "type": "radiogroup",
+     "name": "platforms_env_q1",
+     "title": "What is your department’s / organization’s main responsibility?",
+     "choices": [
+      {
+       "value": "Infrastructure delivery",
+       "text": "Infrastructure delivery",
+       "score": "10"
+      },
+      {
+       "value": "Software Engineering",
+       "text": "Software Engineering",
+       "score": "20"
+      },
+      {
+       "value": "Operations and software/infrastructure  support",
+       "text": "Operations and software/infrastructure  support",
+       "score": "30"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "platforms_env_q2",
+     "title": "What is the size of your department?",
+     "choices": [
+      {
+       "value": "1-20",
+       "text": "1-20"
+      },
+      {
+       "value": "21-50",
+       "text": "21-50"
+      },
+      {
+       "value": "51-100",
+       "text": "51-100"
+      },
+      {
+       "value": "100+",
+       "text": "100+"
+      }
+     ]
+    },
+    {
+     "type": "checkbox",
+     "name": "platforms_env_q3",
+     "title": "Which of the following practices/methodologies are implemented in your organization?",
+     "description": "Select all that apply.",
+     "choices": [
+      {
+       "value": "0#Waterfall",
+       "text": "Waterfall"
+      },
+      {
+       "value": "40#Agile",
+       "text": "Agile"
+      },
+      {
+       "value": "60#DevOps",
+       "text": "DevOps"
+      },
+      {
+       "value": "100#DevSecOps",
+       "text": "DevSecOps"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "platforms_env_q4",
+     "title": "How is software and infrastructure deployed in your organization?",
+     "choices": [
+      {
+       "value": "0#Manual",
+       "text": "Manually"
+      },
+      {
+       "value": "10#We have some basic automation (e.g: scripts)",
+       "text": "With some basic automation (e.g., scripts)"
+      },
+      {
+       "value": "40#Automation (e.g: Ansible, Terraform, Puppet, Chef, etc.)",
+       "text": "With automation (e.g., Ansible, Terraform, Puppet, Chef)"
+      },
+      {
+       "value": "100#Advanced automation using IaC principles (e.g: Ansible + CI/CD)",
+       "text": "With advanced automation using infrastructure-as-code principles (e.g., Ansible + CI/CD)"
+      }
+     ]
+    }
+   ],
+   "visibleIf": "{interests} contains ['platforms']",
+   "title": "Modernizing platforms",
+   "description": "Page 1/3: Environment",
+   "navigationTitle": "Modernizing platforms"
+  },
+  {
+   "name": "p_platforms_2_dev",
+   "elements": [
+    {
+     "type": "checkbox",
+     "name": "platforms_dev_q1",
+     "title": "On which of the following does your development process allow you to run workloads?",
+     "description": "(select all that apply)",
+     "choices": [
+      {
+       "value": "0#IaaS / VM only",
+       "text": "IaaS (Infrastructure-as-a-Service) / Virtual Machine (VM) only"
+      },
+      {
+       "value": "40#PaaS / container platform",
+       "text": "PaaS (Platform-as-a-Service) / container platform"
+      },
+      {
+       "value": "60#SaaS (Software-as-a-Service)",
+       "text": "SaaS (Software-as-a-Service)"
+      },
+      {
+       "value": "60#FaaS (Function-as-a-Service)",
+       "text": "FaaS (Function-as-a-Service)"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "platforms_dev_q2",
+     "title": "Which option best describes your current testing process? ",
+     "choices": [
+      {
+       "value": "0#Manual",
+       "text": "Manual"
+      },
+      {
+       "value": "20#Automated builds / continuous integration",
+       "text": "Automated builds / continuous integration"
+      },
+      {
+       "value": "40#Continuous deployment",
+       "text": "Continuous deployment"
+      },
+      {
+       "value": "100#Test-driven development",
+       "text": "Test-driven development"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "platforms_dev_q3",
+     "title": "Do you have influence on the development platforms your company purchases or uses?",
+     "choices": [
+      {
+       "value": "item1",
+       "text": "I have little to no influence."
+      },
+      {
+       "value": "item2",
+       "text": "I have some influence."
+      },
+      {
+       "value": "item3",
+       "text": "I am part of the decision making team."
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "platforms_dev_q4",
+     "title": "How fast can you get code from development to production?",
+     "choices": [
+      {
+       "value": "100#Minutes",
+       "text": "Minutes"
+      },
+      {
+       "value": "60#Hours",
+       "text": "Hours"
+      },
+      {
+       "value": "40#Days",
+       "text": "Days"
+      },
+      {
+       "value": "0#A week or longer",
+       "text": "A week or longer"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "platforms_dev_q5",
+     "title": "What is your typical application release cycle?",
+     "choices": [
+      {
+       "value": "100#Daily",
+       "text": "Daily"
+      },
+      {
+       "value": "60#Weekly",
+       "text": "Weekly"
+      },
+      {
+       "value": "40#Monthly",
+       "text": "Monthly"
+      },
+      {
+       "value": "10#Quarterly",
+       "text": "Quarterly"
+      },
+      {
+       "value": "0#Longer cycles",
+       "text": "Longer cycles"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "platforms_dev_q6",
+     "title": "Where is the development platform that you use most often for your company?",
+     "choices": [
+      {
+       "value": "0#Laptop",
+       "text": "Laptop"
+      },
+      {
+       "value": "10#VDI (virtual desktop infrastructure)",
+       "text": "VDI (virtual desktop infrastructure)"
+      },
+      {
+       "value": "100#Cloud-based IDE",
+       "text": "Cloud-based integrated development environment (IDE)"
+      }
+     ]
+    }
+   ],
+   "visibleIf": "{interests} contains ['platforms']",
+   "title": "Modernizing platforms",
+   "description": "Page 2/3: Development",
+   "navigationTitle": "Modernizing platforms"
+  },
+  {
+   "name": "p_platforms_3_ops",
+   "elements": [
+    {
+     "type": "radiogroup",
+     "name": "platforms_ops_q1",
+     "title": "How many clouds (private, public) does your organization currently use? ",
+     "choices": [
+      {
+       "value": "0#None",
+       "text": "None"
+      },
+      {
+       "value": "40#1 to 2",
+       "text": "1 to 2"
+      },
+      {
+       "value": "60#3 or more",
+       "text": "3 or more"
+      }
+     ]
+    },
+    {
+     "type": "checkbox",
+     "name": "platforms_ops_q2",
+     "title": "How are you managing your cloud(s) resources?",
+     "description": "(select all that apply)",
+     "choices": [
+      {
+       "value": "0#Not applicable",
+       "text": "Not applicable"
+      },
+      {
+       "value": "10#Using the cloud vendor's web UI",
+       "text": "Using the cloud vendor's web UI"
+      },
+      {
+       "value": "20#Consuming the cloud vendor's API",
+       "text": "Consuming the cloud vendor's API"
+      },
+      {
+       "value": "40#Using a centralized cloud management platform (CMP)",
+       "text": "Using a centralized cloud management platform (CMP)"
+      },
+      {
+       "value": "100#Fully automated, so no user-to-cloud interaction needed",
+       "text": "Fully automated, so no user-to-cloud interaction needed"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "platforms_ops_q3",
+     "title": "What is your lead time for change?",
+     "description": "(For example, how long does it take to add capacity?)",
+     "choices": [
+      {
+       "value": "100#Hours",
+       "text": "Hours"
+      },
+      {
+       "value": "40#Days",
+       "text": "Days"
+      },
+      {
+       "value": "10#Weeks",
+       "text": "Weeks"
+      },
+      {
+       "value": "0#Months",
+       "text": "Months"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "platforms_ops_q4",
+     "title": "What is your strategy to migrate in-house workloads to the cloud?",
+     "choices": [
+      {
+       "value": "0#We have no strategy.",
+       "text": "We have no strategy."
+      },
+      {
+       "value": "10#We’re re-platforming (moving pockets into the cloud—private or public cloud).",
+       "text": "We’re re-platforming (moving pockets into the cloud—private or public cloud)."
+      },
+      {
+       "value": "20#Our primary strategy is to run a private cloud.",
+       "text": "Our primary strategy is to run a private cloud."
+      },
+      {
+       "value": "40#We intend to move as much as possible to the public cloud.",
+       "text": "We intend to move as much as possible to the public cloud."
+      },
+      {
+       "value": "60#We intend to operate in a hybrid cloud model.",
+       "text": "We intend to operate in a hybrid cloud model."
+      }
+     ]
+    }
+   ],
+   "visibleIf": "{interests} contains ['platforms']",
+   "title": "Modernizing platforms",
+   "description": "Page 3/3: Operations",
+   "navigationTitle": "Modernizing platforms"
+  },
+  {
+   "name": "p_apps_1_env",
+   "elements": [
+    {
+     "type": "radiogroup",
+     "name": "appdev_env_1",
+     "title": "How are software projects organized and delivered? ",
+     "choices": [
+      {
+       "value": "0#Follow a sequential process of analysis, design, implementation, testing, and release",
+       "text": "Follow a sequential process of analysis, design, implementation, testing, and release"
+      },
+      {
+       "value": "20#Some iterative practices within specific teams, supporting delivery of larger programs",
+       "text": "Some iterative practices within specific teams, supporting delivery of larger programs"
+      },
+      {
+       "value": "40#An iterative delivery approach with a product backlog, definition of done, and retrospectives, with a hand-off to operations that is largely independent of software development",
+       "text": "An iterative delivery approach with a product backlog, definition of done, and retrospectives, with a hand-off to operations that is largely independent of software development"
+      },
+      {
+       "value": "60#Business, application development, and delivery have aligned agile practices, ownership of production is within a cross-functional application team",
+       "text": "Business, application development, and delivery have aligned agile practices, ownership of production is within a cross-functional application team"
+      },
+      {
+       "value": "100#Agile process with quantifiable metrics based on systems in production, fast feedback loops, designed to verify and quantify strategic goals and desired business outcomes",
+       "text": "Agile process with quantifiable metrics based on systems in production, fast feedback loops, designed to verify and quantify strategic goals and desired business outcomes"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "appdev_env_2",
+     "title": "What best describes the level of governance and control within your organization?",
+     "choices": [
+      {
+       "value": "0#No commonly implemented change policy, new changes can be introduced at any point through software delivery life cycle",
+       "text": "No commonly implemented change policy, new changes can be introduced at any point through software delivery life cycle"
+      },
+      {
+       "value": "10#Change policy is sometimes bypassed for expediency, or change seen as critical to success",
+       "text": "Change policy is sometimes bypassed for expediency, or change seen as critical to success"
+      },
+      {
+       "value": "20#Standard processes and architectures have developed over time, with addendums to support some new technologies and capabilities, but lack of ownership has led to complications and a low understanding of the rationale in some cases",
+       "text": "Standard processes and architectures have developed over time, with addendums to support some new technologies and capabilities, but lack of ownership has led to complications and a low understanding of the rationale in some cases"
+      },
+      {
+       "value": "60#Common approaches support the delivery and architecture across the software delivery life cycle, incorporating good levels of transparency and adaptability",
+       "text": "Common approaches support the delivery and architecture across the software delivery life cycle, incorporating good levels of transparency and adaptability"
+      },
+      {
+       "value": "100#Processes in place allow measurement of the business value of multiple software versions running simultaneously in production, coupled with team-level authority to make end-of-life decisions on specific versions",
+       "text": "Processes in place allow measurement of the business value of multiple software versions running simultaneously in production, coupled with team-level authority to make end-of-life decisions on specific versions"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "appdev_env_3",
+     "title": "What best describes the process of determining and implementing change to software systems?",
+     "choices": [
+      {
+       "value": "0#Future changes driven by immediate issues, faults and customer requirements with no consideration of the market",
+       "text": "Future changes driven by immediate issues, faults, and customer requirements with no consideration of the market"
+      },
+      {
+       "value": "10#Changes aligned to a product roadmap driven by a common understanding of the potential market",
+       "text": "Changes aligned to a product roadmap driven by a common understanding of the potential market"
+      },
+      {
+       "value": "20#Introduction of experimental changes designed to test market response",
+       "text": "Introduction of experimental changes designed to test market response"
+      },
+      {
+       "value": "40#An evolutionary product roadmap defined around a researched view of market needs",
+       "text": "An evolutionary product roadmap defined around a researched view of market needs"
+      },
+      {
+       "value": "100#Bold introductions of new features, tackling established use cases in innovative new ways",
+       "text": "Bold introductions of new features, tackling established use cases in innovative new ways"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "appdev_env_4",
+     "title": "How do you manage work in progress? ",
+     "choices": [
+      {
+       "value": "0#New work items tackled somewhat reactively, with significant new work requiring project managers to negotiate and secure necessary resources and people",
+       "text": "New work items tackled somewhat reactively, with significant new work requiring project managers to negotiate and secure necessary resources and people"
+      },
+      {
+       "value": "10#Individual teams operate their own prioritized product backlogs, task and issue tracking. Engineers are frequently assigned to production support issues. Multiple systems used to track software and production issues.",
+       "text": "Individual teams operate their own prioritized product backlogs, task and issue tracking. Engineers are frequently assigned to production support issues. Multiple systems used to track software and production issues."
+      },
+      {
+       "value": "20#Application support roles incorporated within development teams and working from a shared backlog and issue register. Planned development iterations frequently deliver fewer than expected changes, typically due to priority production issues taking focus.",
+       "text": "Application support roles incorporated within development teams and working from a shared backlog and issue register. Planned development iterations frequently deliver fewer than expected changes, typically due to priority production issues taking focus."
+      },
+      {
+       "value": "100#Product owners have tight control over backlogs and have an effective prioritization and estimation mechanism that directly aligns the business. All stakeholders accept that work in progress needs to be actively restricted to achieve quality. Features are now prioritized toward meeting strategic goals.",
+       "text": "Product owners have tight control over backlogs and have an effective prioritization and estimation mechanism that directly aligns the business. All stakeholders accept that work in progress needs to be actively restricted to achieve quality. Features are now prioritized toward meeting strategic goals."
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "appdev_env_5",
+     "title": "What is your organization’s approach to technical debt ***(i.e., the implied cost of additional rework caused by choosing an easy, limited solution now instead of using a better approach that would take longer)***?",
+     "choices": [
+      {
+       "value": "0#High technical debt, with lack of urgency or very little progress of reducing it",
+       "text": "High technical debt, with lack of urgency or very little progress of reducing it."
+      },
+      {
+       "value": "10#Technical debt recognized and is occasionally included with work plans",
+       "text": "Technical debt recognized and is occasionally included with work plans."
+      },
+      {
+       "value": "60#Technical debt being actively managed",
+       "text": "Technical debt being actively managed."
+      },
+      {
+       "value": "40#Low technical debt but does block fully automated continuous delivery",
+       "text": "Low technical debt but does block fully automated continuous delivery."
+      },
+      {
+       "value": "100#Anything that interferes with agility is regarded as technical debt and actively removed as a matter of priority.",
+       "text": "Anything that interferes with agility is regarded as technical debt and actively removed as a matter of priority."
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "appdev_env_6",
+     "title": "Do you report any key performance indicators on software development and delivery? ",
+     "choices": [
+      {
+       "value": "0#Reports on software delivery performance are not habitually created, but instead generated through occasional auditing processes.",
+       "text": "Reports on software delivery performance are not habitually created, but instead generated through occasional auditing processes."
+      },
+      {
+       "value": "10#Some common metrics covering aspects of the software delivery process and runtime software behavior are generally reported within teams, but not necessarily reported across teams as a matter of course.",
+       "text": "Some common metrics covering aspects of the software delivery process and runtime software behavior are generally reported within teams, but not necessarily reported across teams as a matter of course."
+      },
+      {
+       "value": "40#Common metrics are aggregated and used to report specific performance of application life-cycle stages.",
+       "text": "Common metrics are aggregated and used to report specific performance of application life-cycle stages."
+      },
+      {
+       "value": "60#Software delivery performance is consistently, automatically measured across all applications teams, with full visibility to all stakeholders.",
+       "text": "Software delivery performance is consistently, automatically measured across all applications teams, with full visibility to all stakeholders."
+      },
+      {
+       "value": "100#There is continuous tracking of software delivery performance measures factored into future planning, supporting continuous improvement.",
+       "text": "There is continuous tracking of software delivery performance measures factored into future planning, supporting continuous improvement."
+      }
+     ]
+    }
+   ],
+   "visibleIf": "{interests} contains ['apps']",
+   "title": "Modernizing applications",
+   "description": "Page 1/3: Environment",
+   "navigationTitle": "Modernizing applications"
+  },
+  {
+   "name": "p_apps_2_dev",
+   "elements": [
+    {
+     "type": "radiogroup",
+     "name": "appdev_dev_1",
+     "title": "Do multiple teams within your organization create and share development standards in a consistent, standardized manner?",
+     "choices": [
+      {
+       "value": "0#It’s difficult to find information or necessary contacts within our organization.",
+       "text": "It’s difficult to find information or necessary contacts within our organization."
+      },
+      {
+       "value": "10#Knowledge sharing within teams is good, but there’s low visibility into other areas, with a tendency to reinvent solutions to common problems.",
+       "text": "Knowledge sharing within teams is good, but there’s low visibility into other areas, with a tendency to reinvent solutions to common problems."
+      },
+      {
+       "value": "20#Although limited, there’s a general willingness to cooperate across silos.",
+       "text": "Although limited, there’s a general willingness to cooperate across silos."
+      },
+      {
+       "value": "40#There is an emergence of collaboration, meritocracy, transparency, and open exchange of ideas.",
+       "text": "There is an emergence of collaboration, meritocracy, transparency, and open exchange of ideas."
+      },
+      {
+       "value": "100#Our organization actively cultivates and encourages open exchange with external parties.",
+       "text": "Our organization actively cultivates and encourages open exchange with external parties."
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "appdev_dev_2",
+     "title": "Which best describes how your organization begins building new applications?",
+     "choices": [
+      {
+       "value": "0#No common approach; we typically develop new approaches across teams, or for new apps, sometimes using existing work as a basis using a copy and paste method.There is a commonly shared understanding of software development stages, with some common components being reused to support specifics. Manual intervention is needed to promote build artifacts across life-cycle stages.",
+       "text": "No common approach; we typically develop new approaches across teams, or for new apps, sometimes use existing work as a basis using a copy and paste method. There is a commonly shared understanding of software development stages, with some common components being reused to support specifics. Manual intervention is needed to promote build artifacts across life-cycle stages. "
+      },
+      {
+       "value": "10#There are examples of some application teams introducing significant amounts of automation within their build and delivery pipelines, but these examples are not widespread and have low adoption.",
+       "text": "There are examples of some application teams introducing significant amounts of automation within their build and delivery pipelines, but these examples are not widespread and have low adoption. "
+      },
+      {
+       "value": "40#There is a centrally defined process with supporting services and tools supporting high levels of build and delivery automation across development, testing, and production that is commonly adopted and adhered to within the development community. There are few opportunities for teams to customize the process, or introduce different technologies (for example, different programming languages) without breaking away from the standard mechanisms.",
+       "text": "There is a centrally defined process with supporting services and tools supporting high levels of build and delivery automation across development, testing, and production that is commonly adopted and adhered to within the development community. There are few opportunities for teams to customize the process, or introduce different technologies (for example, different programming languages) without breaking away from the standard mechanisms. "
+      },
+      {
+       "value": "100#There is a modular and extensible, reusable, and highly automated, standard approach for software builds and delivery that allows for specific application customization and targeted improvements.",
+       "text": "There is a modular and extensible, reusable, and highly automated, standard approach for software builds and delivery that allows for specific application customization and targeted improvements. "
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "appdev_dev_3",
+     "title": "Which best describes your application development architecture?",
+     "choices": [
+      {
+       "value": "0#Ad hoc choice of application platforms and tooling, limited understanding of contemporary architectural approaches",
+       "text": "Ad hoc choice of application platforms and tooling, limited understanding of contemporary architectural approaches."
+      },
+      {
+       "value": "10#Selected vendor technology roadmap, initial understanding of new architectures and designs",
+       "text": "Selected vendor technology roadmap, initial understanding of new architectures and designs."
+      },
+      {
+       "value": "20#Iterative development of existing applications, limited legacy strategy, and beginnings of new development architectures",
+       "text": "Iterative development of existing applications, limited legacy strategy, and beginnings of new development architectures."
+      },
+      {
+       "value": "60#Focus on new application platforms and limited legacy platforms, well-defined architecture for new development projects and operating models",
+       "text": "Focus on new application platforms and limited legacy platforms, well-defined architecture for new development projects and operating models."
+      },
+      {
+       "value": "100#Holistic and defined overall development strategy, good designs and architectures in place and under regular review",
+       "text": "Holistic and defined overall development strategy, good designs and architectures in place and under regular review."
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "appdev_dev_4",
+     "title": "What level of maturity is your source code management?",
+     "choices": [
+      {
+       "value": "0#Changes are not controlled by a version control system.",
+       "text": "Changes are not controlled by a version control system."
+      },
+      {
+       "value": "10#Version controlled change management requires significant effort to merge for new release candidates; merges are difficult and require specialized and experienced team members to perform.",
+       "text": "Version controlled change management requires significant effort to merge for new release candidates; merges are difficult and require specialized and experienced team members to perform."
+      },
+      {
+       "value": "20#Code, configuration, and associated build and packaging instructions are version controlled.",
+       "text": "Code, configuration, and associated build and packaging instructions are version controlled."
+      },
+      {
+       "value": "40#Change merges are more straightforward, but may require high levels of coordination with external work streams that on occasion delay releases.",
+       "text": "Change merges are more straightforward, but may require high levels of coordination with external work streams that on occasion delay releases."
+      },
+      {
+       "value": "100#Code and configuration merges for upcoming releases are compact and incremental. Changes can be performed by all appropriate team members without being blocked by other work streams.",
+       "text": "Code and configuration merges for upcoming releases are compact and incremental. Changes can be performed by all appropriate team members without being blocked by other work streams."
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "appdev_dev_5",
+     "title": "How would you describe your organization's approach to software testing?",
+     "choices": [
+      {
+       "value": "0#All tests are performed manually.",
+       "text": "All tests are performed manually."
+      },
+      {
+       "value": "10#Some testing is automated; for example, partial unit tests coverage.",
+       "text": "Some testing is automated; for example, partial unit tests coverage."
+      },
+      {
+       "value": "20#Answer 2 and Automation of different kinds of testing is emerging; for example: unit, integration, regression, security, availability, and performance.",
+       "text": "Automation of different kinds of testing is emerging; for example: unit, integration, regression, security, availability, and performance."
+      },
+      {
+       "value": "60#Answer 3 and Quality gateways and fast feedback loops exist.",
+       "text": "Quality gateways and fast feedback loops exist."
+      },
+      {
+       "value": "100#Answer 4 and Defects in production are replicated via repeatable tests and added to the pipeline.",
+       "text": "Defects in production are replicated via repeatable tests and added to the pipeline."
+      }
+     ]
+    }
+   ],
+   "visibleIf": "{interests} contains ['apps']",
+   "title": "Modernizing applications",
+   "description": "Page 2/3: Development",
+   "navigationTitle": "Modernizing applications"
+  },
+  {
+   "name": "p_apps_3_ops",
+   "elements": [
+    {
+     "type": "radiogroup",
+     "name": "appdev_ops_1",
+     "title": "How would you describe the way you work with your peers and other technology specialists?",
+     "choices": [
+      {
+       "value": "0#Tasks are generally worked on exclusively by individuals, and collaboration is generally low or between team members fulfilling very similar roles.",
+       "text": "Tasks are generally worked on exclusively by individuals, and collaboration is generally low or between team members fulfilling very similar roles."
+      },
+      {
+       "value": "10#Siloed functions are still evident, such as development, storage, networking, virtualization, security, and compliance.",
+       "text": "Siloed functions are still evident, such as development, storage, networking, virtualization, security, and compliance."
+      },
+      {
+       "value": "20#There are some examples of cross-functional collaboration within teams.",
+       "text": "There are some examples of cross-functional collaboration within teams."
+      },
+      {
+       "value": "60#Knowledge is habitually shared across technology and specialties within teams.",
+       "text": "Knowledge is habitually shared across technology and specialties within teams."
+      },
+      {
+       "value": "100#There are self-directed and empowered cross-functional teams.",
+       "text": "There are self-directed and empowered cross-functional teams."
+      }
+     ]
+    },
+    {
+     "type": "checkbox",
+     "name": "appdev_ops_2",
+     "title": "How is software prepared for distribution and deployment?",
+     "description": "(select all that apply)",
+     "choices": [
+      {
+       "value": "Distributable packages created manually on users' personal devices",
+       "text": "Distributable packages created manually on users' personal devices"
+      },
+      {
+       "value": "0#Automated build process from version controlled changes but may be reliant on special environmental configuration and libraries",
+       "text": "Automated build process from version controlled changes but may be reliant on special environmental configuration and libraries"
+      },
+      {
+       "value": "40#Independent build process that can be run anywhere with access to declared dependencies and resources",
+       "text": "Independent build process that can be run anywhere with access to declared dependencies and resources"
+      },
+      {
+       "value": "60#Packages built once, and once only, with a commonly understood versioning schema and with controlled access to third-party build artifacts and dependencies",
+       "text": "Packages built once, and once only, with a commonly understood versioning schema and with controlled access to third-party build artifacts and dependencies"
+      },
+      {
+       "value": "100#Packages include consistent trackable metadata that can be used to verify configuration state of a particular runtime environment",
+       "text": "Packages include consistent trackable metadata that can be used to verify configuration state of a particular runtime environment"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "appdev_ops_3",
+     "title": "Which best describes your organization's approach to software deployment?",
+     "choices": [
+      {
+       "value": "0#Manual configuration and/or deployment of applications and services",
+       "text": "Manual configuration and/or deployment of applications and services"
+      },
+      {
+       "value": "10#Some automation, but promoting between delivery stages (dev to test, test to prod, for example) done manually",
+       "text": "Some automation, but promoting between delivery stages (dev to test, test to prod, for example) done manually"
+      },
+      {
+       "value": "20#Some examples of automated deployment processes, but created on a case-by-case basis with little reuse between applications",
+       "text": "Some examples of automated deployment processes, but created on a case-by-case basis with little reuse between applications"
+      },
+      {
+       "value": "60#Standardized tooling used to promote applications to production",
+       "text": "Standardized tooling used to promote applications to production"
+      },
+      {
+       "value": "100#Software releases independent of deployment into production, allowing canary or blue/green releases",
+       "text": "Software releases independent of deployment into production, allowing canary or blue/green releases"
+      }
+     ]
+    },
+    {
+     "type": "checkbox",
+     "name": "appdev_ops_4",
+     "title": "How do you monitor and track operational performance and potential issues of applications?",
+     "description": "(select all that apply)",
+     "choices": [
+      {
+       "value": "item1",
+       "text": "Ad hoc logging and manual monitoring of solution resources"
+      },
+      {
+       "value": "item2",
+       "text": "Standardizing logging and capturing common operational metrics"
+      },
+      {
+       "value": "item3",
+       "text": "Reacting to issues triggered by predefined alerting thresholds"
+      },
+      {
+       "value": "item4",
+       "text": "Core capabilities of the solution able to adapt and recover from failure"
+      },
+      {
+       "value": "item5",
+       "text": "Proactively testing in production including verifying potential failure states"
+      }
+     ]
+    }
+   ],
+   "visibleIf": "{interests} contains ['apps']",
+   "title": "Modernizing applications",
+   "description": "Page 3/3: Operations",
+   "navigationTitle": "Modernizing applications"
+  },
+  {
+   "name": "p_automation_1_env",
+   "elements": [
+    {
+     "type": "radiogroup",
+     "name": "q_automation_1",
+     "title": "When building new I.T. processes, is automation a before or after thought?",
+     "choices": [
+      {
+       "value": "60#Before",
+       "text": "Before"
+      },
+      {
+       "value": "40#During",
+       "text": "During"
+      },
+      {
+       "value": "0#After",
+       "text": "After"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "q_automation_2",
+     "title": "How are technology decisions made in your organization?",
+     "choices": [
+      {
+       "value": "10#Technology decisions are always solely within the department",
+       "text": "Technology decisions are always solely within a department."
+      },
+      {
+       "value": "40#Technology decisions are sometimes made solely within the department",
+       "text": "Technology decisions are sometimes made within a department and sometimes made across departments."
+      },
+      {
+       "value": "60#Technology decisions are typically made across departments",
+       "text": "Technology decisions are solely made across departments."
+      }
+     ]
+    },
+    {
+     "type": "checkbox",
+     "name": "q_automation_3",
+     "title": "What best describes your current approach to automating tasks?",
+     "choices": [
+      {
+       "value": "0#Processes are changed in siloes.",
+       "text": "Processes are changed in siloes."
+      },
+      {
+       "value": "10#DevOps team changes processes.",
+       "text": "DevOps team changes processes."
+      },
+      {
+       "value": "40#Automation teams across the organization change processes.",
+       "text": "Cross-organizational teams change processes."
+      },
+      {
+       "value": "60#Multiple teams automate change processes for their components and contribute to a central repository.",
+       "text": "Multiple teams automate change processes for their components and contribute to a central repository."
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "q_automation_4",
+     "title": "Which of these best describes your security practices?",
+     "choices": [
+      {
+       "value": "0#1",
+       "text": "No automation used; security requirements are applied manually."
+      },
+      {
+       "value": "10#2",
+       "text": "Scheduling the change window and taking things offline are implemented manually; scripts are deployed to secure systems."
+      },
+      {
+       "value": "20#3",
+       "text": "Some automation is used to secure some things (e.g., OS hardening/patching)."
+      },
+      {
+       "value": "40#4",
+       "text": "Validation is done with automation; security processes are defined in a workflow."
+      },
+      {
+       "value": "100#5",
+       "text": "All security items are applied using automation; complete with end-to-end workflow of security functions including validation."
+      }
+     ]
+    },
+    {
+     "type": "boolean",
+     "name": "q_automation_6",
+     "title": "Do multiple teams within your organization create and share automation content in a consistent, standardized manner?",
+     "valueTrue": "40#Yes",
+     "valueFalse": "0#No"
+    },
+    {
+     "type": "radiogroup",
+     "name": "q_automation_5",
+     "title": "How much automation has your organization deployed?",
+     "choices": [
+      {
+       "value": "0#no automation used",
+       "text": "No automation is used."
+      },
+      {
+       "value": "10#teams of people writing ad-hoc scripts for automation",
+       "text": "Teams of people write ad hoc scripts for automation."
+      },
+      {
+       "value": "20#standardized on an automation platform; beginning to automate processes",
+       "text": "We’ve standardized on an automation platform, and we’re beginning to automate processes."
+      },
+      {
+       "value": "40#able to auotmate all of your day 2 tasks",
+       "text": "We are able to automate all of our Day 2 tasks."
+      },
+      {
+       "value": "100#all applications deployed; monitoring alerts and other IT day-to-day are automated",
+       "text": "All applications are deployed, and monitoring alerts and other IT day-to-day tasks are automated."
+      }
+     ]
+    }
+   ],
+   "visibleIf": "{interests} contains ['automation']",
+   "title": "Automating IT",
+   "description": "Page 1/3: Environment",
+   "navigationTitle": "Automating IT"
+  },
+  {
+   "name": "p_automation_2_dev",
+   "elements": [
+    {
+     "type": "radiogroup",
+     "name": "q_automation_7",
+     "title": "Overall, how would you describe the level of IT automation for application development and deployment in your environment?",
+     "choices": [
+      {
+       "value": "0#Level 1 Many manual steps throughout the SDLC including testing, patching, configuration, release and deployment.",
+       "text": "__Level 1__: Many manual steps throughout the software development life cycle (SDLC) including testing, patching, configuration, release, and deployment"
+      },
+      {
+       "value": "10#Level 2 Overall processes manually coordinated, but with the emergence of scripting for simplifying repeated steps.",
+       "text": "__Level 2__: Overall processes manually coordinated, but with the emergence of scripting for simplifying repeated steps"
+      },
+      {
+       "value": "40#Level 3 Automation coordinating the processes, with some automated testing, and the emergence of declarative configuration implementation.",
+       "text": "__Level 3__: Automation coordinating the processes, with some automated testing, and the emergence of declarative configuration implementation"
+      },
+      {
+       "value": "60#Level 4 Significant reuse of delivery automation and automated testing now including operational concerns, but release frequency somewhat impeded by complexity of application code and configuration.",
+       "text": "__Level 4__: Significant reuse of delivery automation and automated testing now including operational concerns, but release frequency somewhat impeded by complexity of application code and configuration"
+      },
+      {
+       "value": "100#Level 5 Software deployed to production before a managed release, with production issues being resolved through a test driven approach. Self service infrastructure with zero or little manual intervention required.",
+       "text": "__Level 5__: Software deployed to production before a managed release, with production issues being resolved through a test-driven approach; self-service infrastructure with zero or little manual intervention required"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "q_automation_8",
+     "title": "How automated is your application deployment rolling out ***new*** applications?",
+     "choices": [
+      {
+       "value": "0#1",
+       "text": "Manual deployment, no process or automation"
+      },
+      {
+       "value": "10#2",
+       "text": "Minimal deployment with ad-hoc scripting, not repeatable "
+      },
+      {
+       "value": "40#3",
+       "text": "Baseline continuous integration (CI) processing (unit tests, manual testing) "
+      },
+      {
+       "value": "60#4",
+       "text": "Advanced CI, greater than 90% automated testing, pipelines, approval gateways"
+      },
+      {
+       "value": "100#5",
+       "text": "Full continuous integration / continuous delivery (CI/CD) from development into production (greater than 90%)"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "q_automation_9",
+     "title": "How automated is your application deployment rolling out ***legacy*** application updates?",
+     "choices": [
+      {
+       "value": "0#1",
+       "text": "Manual deployment, no process or automation"
+      },
+      {
+       "value": "10#2",
+       "text": "Minimal deployment with ad-hoc scripting, not repeatable "
+      },
+      {
+       "value": "40#3",
+       "text": "Baseline continuous integration (CI) processing (unit tests, manual testing) "
+      },
+      {
+       "value": "60#4",
+       "text": "Advanced CI, greater than 90% automated testing, pipelines, approval gateways"
+      },
+      {
+       "value": "100#5",
+       "text": "Full continuous integration / continuous delivery (CI/CD) from development into production (greater than 90%)"
+      }
+     ]
+    }
+   ],
+   "visibleIf": "{interests} contains ['automation']",
+   "title": "Automating IT",
+   "description": "Page 2/3: Development",
+   "navigationTitle": "Automating IT"
+  },
+  {
+   "name": "p_automation_3_ops",
+   "elements": [
+    {
+     "type": "radiogroup",
+     "name": "q_automation_10",
+     "title": "Which best describes your current automation operations process?",
+     "choices": [
+      {
+       "value": "0#Core build for operating system (OS), only basic (manual) provisioning",
+       "text": "Core build for operating system (OS), only basic (manual) provisioning"
+      },
+      {
+       "value": "10#Patch and release management (OS) ",
+       "text": "Patch and release management (OS) "
+      },
+      {
+       "value": "20#Automated quality assurance (QA) staging process (standard operating environment, SOE)",
+       "text": "Automated quality assurance (QA) staging process (standard operating environment, SOE)"
+      },
+      {
+       "value": "40#Automated OS builds",
+       "text": "Automated OS builds"
+      },
+      {
+       "value": "100#Automatically managed and provisioned infrastructure through self-service",
+       "text": "Automatically managed and provisioned infrastructure through self-service"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "q_automation_11",
+     "title": "Which best describes your current process for creating and deploying IT automation content (scripts, code, configuration files, etc.)?",
+     "choices": [
+      {
+       "value": "0#Manual deployment, no process or automation, or unknown",
+       "text": "Manual deployment, no process or automation, or unknown"
+      },
+      {
+       "value": "10#Minimal deployment with ad-hoc scripting, not repeatable ",
+       "text": "Minimal deployment with ad-hoc scripting, not repeatable "
+      },
+      {
+       "value": "40#Baseline continuous integration (CI) processing (unit tests, manual testing) ",
+       "text": "Baseline continuous integration (CI) processing (unit tests, manual testing) "
+      },
+      {
+       "value": "60#Advanced CI, greater than 90% automated testing, pipelines, approval gateways",
+       "text": "Advanced CI, greater than 90% automated testing, pipelines, approval gateways"
+      },
+      {
+       "value": "100#Full continuous integration / continuous delivery (CI/CD) from development into production (greater than 90%)",
+       "text": "Full continuous integration / continuous delivery (CI/CD) from development into production (greater than 90%)"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "q_automation_12",
+     "title": "Which best describes how automation is used to remediate your technology outages?",
+     "choices": [
+      {
+       "value": "0#All of the mediation is done manually, or unknown",
+       "text": "All of the mediation is done manually, or unknown."
+      },
+      {
+       "value": "10#Automation is used for alerts",
+       "text": "Automation is used for alerts."
+      },
+      {
+       "value": "40#Automation is used for alerts and is able to fetch logs pertaining to the issue",
+       "text": "Automation is used for alerts and is able to fetch logs pertaining to the issue."
+      },
+      {
+       "value": "60#Automation is used for alerts and is able to fetch logs pertaining to the issue, and is able to offer remediating steps",
+       "text": "Automation is used for alerts and is able to fetch logs pertaining to the issue, and is able to offer remediating steps."
+      },
+      {
+       "value": "100#Automation is used for alerts and is able to fetch logs pertaining to the issue, is able to offer remediating steps, and able to auto-remediate the issue ",
+       "text": "Automation is used for alerts and is able to fetch logs pertaining to the issue, is able to offer remediating steps, and able to auto-remediate the issue."
+      }
+     ]
+    }
+   ],
+   "visibleIf": "{interests} contains ['automation']",
+   "title": "Automating IT",
+   "description": "Page 3/3: Operations",
+   "navigationTitle": "Automating IT"
+  },
+  {
+   "name": "p_transformation_1_env",
+   "elements": [
+    {
+     "type": "radiogroup",
+     "name": "q_transformation_1",
+     "title": "Which best describes your leadership’s current state of transformation?",
+     "choices": [
+      {
+       "value": "0#Autocratic leadership: Top-down decisions, central authorization, strong silos, information hiding, blameful culture",
+       "text": "__Autocratic leadership__: Top-down decisions, strong silos, information hiding, blameful culture"
+      },
+      {
+       "value": "10#Getting started: Understanding constraints, see the whole system, invite inquiry, encourage sharing, Cross functional alignment",
+       "text": "__Getting started__: Understanding constraints, systems thinking, invite inquiry, encourage sharing"
+      },
+      {
+       "value": "20#Early open leadership: See the work, sponsored feedback, encourage direct action, bridging silos, aligned goals/metrics",
+       "text": "__Early open leadership__: Sponsored feedback, encourage direct action, bridging silos, aligned goals/metrics"
+      },
+      {
+       "value": "40#Intermediate open leadership: Organizational visibility, shorten feedback, decentralized decisions, ambient information, celebrate learning",
+       "text": "__Intermediate open leadership__: Visibility, shorten feedback, decentralized decisions, celebrate learning"
+      },
+      {
+       "value": "60#Advanced open leadership: empowered individuals, unified purpose, cultivated context, shared risk, psychological safety",
+       "text": "__Advanced open leadership__: empowered individuals, unified purpose, shared risk, psychological safety"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "q_transformation_2",
+     "title": "Which best describes your current product management process?",
+     "choices": [
+      {
+       "value": "0#Project management: Waterfall, all requirements defined at start, the program backlog does not exist or is not shared",
+       "text": "__Project management__: Waterfall, all requirements defined at start"
+      },
+      {
+       "value": "10#Getting started: Ideas are defined as epics, features are incomplete and prioritization is an afterthought, creates requirements in large batches, customer or dev collaboration rare",
+       "text": "__Getting started__: Ideas are defined as epics, features are incomplete and prioritization is an afterthought, customer or dev collaboration rare"
+      },
+      {
+       "value": "20#Early product: Hypothesis statements with measurable outcome, collaborates with business and DevOps experts, features have a definition of done, features have a definition of ready and agreed with the team",
+       "text": "__Early product__: Hypothesis statements with measurable outcome, collaborates with business and DevOps experts, features have a definition of ready and done and agreed with the team"
+      },
+      {
+       "value": "40#Intermediate product: Most hypothesis statements with measurable outcomes and include an MVPs; features that are viable in the marketplace, feasible to build, and usable by customers (BDD); weighted shortest job first (WSJF) prioritization; agile release trains (ARTs)",
+       "text": "__Intermediate product__: Measurable outcomes include an MVP; features that are viable in the marketplace, feasible to build, and usable by customers; prioritization"
+      },
+      {
+       "value": "60#Advanced product: WSJ model used to sequence jobs to produce maximum economic benefit, validate the original hypothesis and inform pivot-or-persevere decisions, cost of delay estimated, the program backlog is a collection of minimum marketable features",
+       "text": "__Advanced product__: Validate the original hypothesis and inform pivot-or-persevere decisions, cost of delay estimated, the program backlog is a collection of minimum marketable features"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "q_transformation_3",
+     "title": "How do you feel about this statement: I understand the vision and strategy of my company and my role in supporting its success?",
+     "choices": [
+      {
+       "value": "0#Not aware of any strategy",
+       "text": "Not aware of any strategy"
+      },
+      {
+       "value": "10#Have heard of a strategy; unsure of my involvement",
+       "text": "Have heard of a strategy; unsure of my involvement"
+      },
+      {
+       "value": "20#Aware of a strategy; have an idea of how I can be involved",
+       "text": "Aware of a strategy; have an idea of how I can be involved"
+      },
+      {
+       "value": "40#Aware of a strategy; understand how my role impacts its success",
+       "text": "Aware of a strategy; understand how my role impacts its success"
+      },
+      {
+       "value": "60#Contributed to the strategy",
+       "text": "Contributed to the strategy"
+      }
+     ]
+    }
+   ],
+   "visibleIf": "{interests} contains ['transformation']",
+   "title": "Transformation",
+   "description": "Page 1/3: Environment",
+   "navigationTitle": "Transformation"
+  },
+  {
+   "name": "p_transformation_2_dev",
+   "elements": [
+    {
+     "type": "radiogroup",
+     "name": "q_transformation_4",
+     "title": "Which statement best describes your organization's DevOps methodology maturity level? ",
+     "choices": [
+      {
+       "value": "0#Traditional development: Waterfall, siloed QA team, manual testing, separate workstream for bug fixes",
+       "text": "__Traditional development__: Waterfall, siloed QA team, manual testing, separate workstream for bug fixes"
+      },
+      {
+       "value": "10#Getting started: Continuous integration, basic unit tests, distributed version control",
+       "text": "__Getting started__: Continuous integration, basic unit tests, distributed version control"
+      },
+      {
+       "value": "40#Early development: Short lived feature branches, integration environments, feature teams also resolve bugs, consistent developer workstation configuration, code review process",
+       "text": "__Early development__: Short-lived feature branches, integration environments, feature teams resolve bugs, consistent developer environments, code review process"
+      },
+      {
+       "value": "60#Intermediate development: Continuous delivery, trunk-based development, developers on call for their products/services, development workstations match production, pair programming",
+       "text": "__Intermediate development__: Continuous delivery, trunk-based development, developers on call, development environments match production, pair programming"
+      },
+      {
+       "value": "100#Advanced development: Feature flags, complete parity between monitoring and testing",
+       "text": "__Advanced development__: Feature flags, complete parity between monitoring and testing, blue-green deployments supported"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "q_transformation_5",
+     "title": "Which statement best describes your DevOps development environment?",
+     "choices": [
+      {
+       "value": "0#Traditional programming techniques in a heavily segmented structure",
+       "text": "Traditional programming techniques in a heavily segmented structure"
+      },
+      {
+       "value": "20#Sporadic agile adoption with limited cross-team collaboration",
+       "text": "Sporadic agile adoption with limited cross-team collaboration"
+      },
+      {
+       "value": "40#Multi-team collaboration through formalized communication channels",
+       "text": "Multi-team collaboration through formalized communication channels"
+      },
+      {
+       "value": "100#100% DevOps collaborative culture with energized cross-functional teams and constant improvement",
+       "text": "100% DevOps collaborative culture with energized cross-functional teams and constant improvement"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "q_transformation_6",
+     "title": "Which statement best describes the way your organization creates and shares information or ideas?",
+     "choices": [
+      {
+       "value": "0#Difficult to find information or necessary contacts within an organization.",
+       "text": "It is difficult to create or share or to find contacts in the organization who know."
+      },
+      {
+       "value": "10#Knowledge sharing within teams is good, but low visibility of other areas of organisation, and a tendency to reinvent solutions to common problems.",
+       "text": "Creating or sharing between teams exists, but with low visibility into other areas, and reinvention of solutions for common problems."
+      },
+      {
+       "value": "20#Although limited, a general willingness to cooperate across silos exists.",
+       "text": "Creating & sharing is limited, with a willingness to begin collaborating across teams."
+      },
+      {
+       "value": "40#Emergence of collaboration, meritocracy, transparency, open exchange of ideas.",
+       "text": "Cross-team creation & sharing is emerging with a focus on an open exchange, meritocracy, and transparency."
+      },
+      {
+       "value": "60#Organisation actively cultivates and encourages open exchange with external parties.",
+       "text": "Cross-team creation & sharing is actively encouraged and cultivated with a focus on open exchange."
+      }
+     ]
+    }
+   ],
+   "visibleIf": "{interests} contains ['transformation']",
+   "title": "Transformation",
+   "description": "Page 2/3: Development",
+   "navigationTitle": "Transformation"
+  },
+  {
+   "name": "p_transformation_3_ops",
+   "elements": [
+    {
+     "type": "radiogroup",
+     "name": "q_transformation_7",
+     "title": "Which statement best describes your current architecture maturity?",
+     "choices": [
+      {
+       "value": "0#Legacy architecture: Waterfall, long-lived changes, large releases, monolithic, tightly coupled, focused on compliance",
+       "text": "__Legacy architecture__: Waterfall, large releases, monolithic, tightly coupled, focused on compliance"
+      },
+      {
+       "value": "20#Getting started: Strangler pattern, on-demand infrastructure, automation to reduce toil (i.e., repetitive, predictable, constant stream of tasks related to maintaining a service)",
+       "text": "__Getting started__: Strangler pattern, on-demand infrastructure, automation to reduce manual and repetitive tasks."
+      },
+      {
+       "value": "40#Early architecture: Enables agile operations & development practices, hybrid monolithic / microservices architecture, security addressed early",
+       "text": "__Early architecture__: Enables DevOps practices, hybrid monolithic / microservices architecture, governance addressed early"
+      },
+      {
+       "value": "60#Intermediate architecture: Release on demand, few dependencies between components, versioned APIs",
+       "text": "__Intermediate architecture__: Release on demand, few dependencies between components, versioned APIs"
+      },
+      {
+       "value": "100#Design patterns of enterprise application architecture: Microservices-based, loosely coupled, continuous delivery, enables experimentation, enables policy compliance",
+       "text": "__Design patterns of enterprise application architecture__: Microservices-based, loosely coupled, continuous delivery, enables experimentation, enables governance"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "q_transformation_8",
+     "title": "Which statement best describes your current operations environment?",
+     "choices": [
+      {
+       "value": "0#Traditional ops: Toil (i.e., repetitive, predictable, constant stream of tasks related to maintaining a service) is not measured, engagement is via ticketing systems, metrics/measurement not tied to service-level objectives (SLOs)",
+       "text": "__Traditional ops__: Manual tasks are not measured, engagement is via ticketing systems, service-level objectives (SLOs) are not defined"
+      },
+      {
+       "value": "20#Getting started: Some initial SLOs defined, blameless postmortems introduced, incident response process exists",
+       "text": "__Getting started__: Some initial SLOs defined, blameless postmortems introduced, incident response process exists"
+      },
+      {
+       "value": "40#Early SRE teams: Release process is documented and automated, including appropriate rollbacks and canaries, site reliability engineering (SRE) team plans and executes project work, SRE team charter has been reviewed by appropriate leadership, project planning and execution is done jointly by developers and SRE",
+       "text": "__Early SRE teams__: Release process is documented and automated, including rollbacks and canaries, site reliability engineering (SRE) team charter has been defined, planning and execution is done jointly by developers and SRE"
+      },
+      {
+       "value": "60#Intermediate SRE teams: Periodic review of SRE project work and impact with business leaders, periodic review of service-level indicators (SLIs) and SLOs with business leaders, escalation policy tied to SLO violations (error budgets, etc), toil is measured",
+       "text": "__Intermediate SRE teams__: Periodic review of SRE work, along with service-level indicators (SLIs) and SLOs with business leaders, escalation policy tied to SLO violations (error budgets, etc.), manual tasks are measured"
+      },
+      {
+       "value": "100#Advanced: A reasonable goal for amount of toil is set and achieved (generally no more than 50%), most service alerts are based on SLOs, SRE team can identify major positive impact on a business impact beyond firefighting/operational concerns",
+       "text": "__Advanced__: A goal for amount of manual tasks is set and achieved, service alerts are based on SLOs, SRE team can identify major positive impact on the business"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "q_transformation_9",
+     "title": "Which statement best describes your incident response methodology?",
+     "choices": [
+      {
+       "value": "0#No standard incident response process: No on-call rotations, incidents are worked by whomever discovers them, incidents are not tracked, no postmortem/after-incident review process",
+       "text": "__No standard incident response process__: No on-call rotations, incidents are worked by whomever discovers them, incidents are not tracked, no postmortem/after-incident review process"
+      },
+      {
+       "value": "10#Getting started: Alerting on monitoring systems exists, but no process for managing/running the process of restoring service",
+       "text": "__Getting started__: Alerting on monitoring systems exists, but no process for managing/running the process of restoring service"
+      },
+      {
+       "value": "20#Traditional incident response: Incident alerts are sent to a central on-call person or a network operations center (NOC); on-call engineer/NOC performs first-level attempts at service restoration according to standard playbooks, which may include Incident Managers as a position inside the organization for large-scale incidents; feature teams are not involved in on-call / incident response; postmortems/incident reviews are focused on explaining the outage/reporting to stakeholders",
+       "text": "__Traditional incident response__: Incident alerts are sent to a central on-call person or a network operations center (NOC) who attempts service restoration according to playbooks, Incident Managers may be a formal position for large-scale incidents; feature teams are not involved in on-call / incident response; incident reviews are focused on stakeholder explanation"
+      },
+      {
+       "value": "60#Intermediate incident response: Consistent process for service restoration during an incident (using something akin to the Incident Command System), application and feature teams are on call for their functions and brought into incident response efforts as needed, developers are part of on-call rotations for their features/services",
+       "text": "__Intermediate incident response__: Response process uses Incident Command System or similar, developers are part of on-call rotation and incident response for their features/services"
+      },
+      {
+       "value": "100#Advanced incident response: Incident response process is practiced with regularity, many trained Incident Commanders across multiple teams/functions in the organization, focus on learning from incidents and a blameless and learning focus on postmortems, a postmortem is done for every incident not only major incidents.",
+       "text": "__Advanced incident response__: Response process is practiced with regularity, Incident Commanders exist across multiple teams/functions, focus on learning from incidents and a blameless approach, a post-incident review is done for every incident regardless of size."
+      }
+     ]
+    }
+   ],
+   "visibleIf": "{interests} contains ['transformation']",
+   "title": "Transformation",
+   "description": "Page 3/3: Operations",
+   "navigationTitle": "Transformation"
+  },
+  {
+   "name": "Contact Form",
+   "elements": [
+    {
+     "type": "image",
+     "name": "question1",
+     "imageLink": "/assets/images/Ready-to-AcceleratePages.png",
+     "imageHeight": 300,
+     "imageWidth": 650
+    },
+    {
+     "type": "html",
+     "name": "question2",
+     "html": "<p>See how your organization measures up to the industry and walk away with next steps to begin addressing the challenges and opportunities that face your business.</p>\n\n\n<p>Complete this form to access your Ready-to-Accelerate results:\n</p>"
+    },
+    {
+     "type": "panel",
+     "name": "panel1",
+     "elements": [
+      {
+       "type": "text",
+       "name": "_FirstName",
+       "title": "First name",
+       "isRequired": true
+      },
+      {
+       "type": "text",
+       "name": "_LastName",
+       "title": "Last name",
+       "isRequired": true
+      },
+      {
+       "type": "text",
+       "name": "_WorkEmail",
+       "title": "Work email",
+       "isRequired": true,
+       "inputType": "email"
+      },
+      {
+       "type": "text",
+       "name": "_WorkPhone",
+       "title": "Work phone",
+       "isRequired": true,
+       "inputType": "tel"
+      },
+      {
+       "type": "text",
+       "name": "_Company",
+       "title": "Company name",
+       "isRequired": true
+      },
+      {
+       "type": "dropdown",
+       "name": "_Industry",
+       "title": "Industry / field",
+       "isRequired": true,
+       "choicesByUrl": {
+        "url": "$server/api/surveys/$surveyId/customfield/industries"
+       }
+      },
+      {
+       "type": "dropdown",
+       "name": "_Department",
+       "title": "Department",
+       "isRequired": true,
+       "choicesByUrl": {
+        "url": "$server/api/surveys/$surveyId/customfield/departments"
+       }
+      },
+      {
+       "type": "dropdown",
+       "name": "_JobRole",
+       "title": "Job role",
+       "enableIf": "{_Department} notempty",
+       "isRequired": true,
+       "choices": [
+        "null"
+       ],
+       "choicesByUrl": {
+        "url": "$server/api/surveys/$surveyId/customfield/jobroles/{_Department}"
+       }
+      },
+      {
+       "type": "dropdown",
+       "name": "_Country",
+       "title": "Country/region",
+       "isRequired": true,
+       "choicesByUrl": {
+        "url": "$server/api/surveys/$surveyId/customfield/countries",
+        "valueName": "alpha2Code",
+        "titleName": "name"
+       }
+      }
+     ]
+    },
+    {
+     "type": "checkbox",
+     "name": "_ConsentAgreement",
+     "visibleIf": "{_Country} notempty",
+     "title": "Red Hat may use your personal data to inform you about its products, services, and events",
+     "defaultValue": [
+      "item1"
+     ],
+     "choices": [
+      {
+       "value": "by Email",
+       "text": "by email"
+      },
+      {
+       "value": "by Phone",
+       "text": "by telephone"
+      }
+     ]
+    },
+    {
+     "type": "html",
+     "name": "question3",
+     "visibleIf": "{_Country} notempty",
+     "html": "You can stop receiving marketing emails by clicking the unsubscribe link in each email or withdraw your consent at any time in the <a href=\"https://engage.redhat.com/Global-Preference-Center#unsubscribe_here\">preference center</a>. See <a href=\"https://www.redhat.com/footer/privacy-policy.html\">Privacy Statement</a> for details"
+    }
+   ],
+   "title": "Get your results",
+   "description": "Find out how advanced your organization is in their innovation.",
+   "navigationTitle": "Get your results"
+  }
+ ],
+ "showProgressBar": "hidden",
+ "progressBarType": "questions",
+ "completeText": "View my results"
+}

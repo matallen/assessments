@@ -119,39 +119,42 @@ public abstract class EnrichAnswersPluginBase extends Plugin{
 				continue;
 			}
 			
-			// tTODO: his could happen if the answer contains an "other" answer manually entered by the end user, so we need to support that
+			// TODO: his could happen if the answer contains an "other" answer manually entered by the end user, so we need to support that
 			//   - the -Comment exception prevents the exception, but fails to handle the "other" data
 			if (!questionId.endsWith("-Comment") && !questionsMapping.containsKey(questionId)) throw new RuntimeException("Found answers for questions ("+questionId+") that dont exist - config issue?");
 //			if (!questionsMapping.containsKey(questionId)) throw new RuntimeException("Found answers for questions ("+questionId+") that dont exist - config issue?");
 				
 			
-			if (String.class.isAssignableFrom(e.getValue().getClass())){
-				String answer=(String)e.getValue();
-				
-				Map<String,Object> questionData=OnSingleStringAnswer(questionId, answer, questionsMapping.get(questionId));
-				
+			mjson.Json questionMapping=questionsMapping.get(questionId);
+			if (null!=questionMapping){ //i.e if no question was found (for example the Other answers)
+				if (String.class.isAssignableFrom(e.getValue().getClass())){
+					String answer=(String)e.getValue();
+					
+					Map<String,Object> questionData=OnSingleStringAnswer(questionId, answer, questionMapping);
+					
 //				Map<String,Object> answerMap=new MapBuilder<String, Object>().put("title", questionsToTitleMapping.get(questionId)).put("answer", answer).build();
-				result.put(questionId, questionData);
-				
-			}else if (ArrayList.class.isAssignableFrom(e.getValue().getClass())){
-				ArrayList<String> answerList=(ArrayList<String>)e.getValue();
-				
-				Map<String, Object> answerData=OnMultipleStringAnswers(questionId, answerList, questionsMapping.get(questionId));
-				
+					result.put(questionId, questionData);
+					
+				}else if (ArrayList.class.isAssignableFrom(e.getValue().getClass())){
+					ArrayList<String> answerList=(ArrayList<String>)e.getValue();
+					
+					Map<String, Object> answerData=OnMultipleStringAnswers(questionId, answerList, questionMapping);
+					
 //				List<Map<String,Object>> answers=new ArrayList<>();
 //				for (String answerString:answerList){
 //					Map<String,Object> answerMap=new MapBuilder<String, Object>().put("answer", answerString).build();
 //					answers.add(answerMap);
 //				}
 //				result.put(questionId, new MapBuilder<String,Object>().put("title", questionsToTitleMapping.get(questionId)).put("answers", answers).build());
-				result.put(questionId, answerData);
-				
-			}else if (Map.class.isAssignableFrom(e.getValue().getClass())){
-				// assume it's a panel with sub-questions
-				//for(Entry<String, String> e2: ((Map<String,String>)e.getValue()).entrySet()){
-				//	result.put(e2.getKey(), new MapBuilder<String, Object>().put("title", questionsToTitleMapping.get(questionId)).put("answer", (String)e.getValue()).build());
-				//}
-				
+					result.put(questionId, answerData);
+					
+				}else if (Map.class.isAssignableFrom(e.getValue().getClass())){
+					// assume it's a panel with sub-questions
+					//for(Entry<String, String> e2: ((Map<String,String>)e.getValue()).entrySet()){
+					//	result.put(e2.getKey(), new MapBuilder<String, Object>().put("title", questionsToTitleMapping.get(questionId)).put("answer", (String)e.getValue()).build());
+					//}
+					
+				}
 			}
 		}
 		
