@@ -1,0 +1,708 @@
+{
+ "logo": "/api/surveys/DBDBLE/resources/redhat-sap.png",
+ "logoWidth": 200,
+ "logoHeight": "",
+ "logoPosition": "right",
+ "completedHtml": "<br/><h2>We are processing your submission.<br/>\nPlease wait a few more moments...</h2>\n<br/><br/><br/>",
+ "pages": [
+  {
+   "name": "Welcome",
+   "elements": [
+    {
+     "type": "html",
+     "name": "question6",
+     "visible": false,
+     "html": "<table>\n<tr>\n<td style=\"width:50%\">\n<br/><div><b>How ready are you to embrace the SAP Intelligent Enterprise with open platform technologies? Want to optimise your platform strategy?</b></div><br/>\n\n<div>Help us understand how best to guide you on the path to efficient platforms that support SAP transformation by completing this brief questionnaire. We will offer some insights specific to your situation on how we can work together to accelerate your journey to SAP Intelligent Enterprise. </div><br/>\n\n<div>The estimated time to complete it is about five to eight minutes.</div><br/>\n\n</td>\n<td style=\"width:50%\">\n<img style=\"width:70%\" class=\"rh-image-embed-img\" src=\"https://www.redhat.com/cms/managed-files/styles/max_size/s3/OrganizationLeaderTakingAssessment-768.jpg?itok=qmONTEZM\" alt=\"Organization leaders taking assessment \">\n</td>\n</tr>\n\n "
+    },
+    {
+     "type": "html",
+     "name": "question1",
+     "html": "<br/><div><b>How ready are you to embrace the SAP Intelligent Enterprise with open platform technologies? Want to optimise your platform strategy?</b></div><br/>\n\n<div>Help us understand how best to guide you on the path to efficient platforms that support SAP transformation by completing this brief questionnaire. We will offer some insights specific to your situation on how we can work together to accelerate your journey to SAP Intelligent Enterprise. </div><br/>\n\n<div>The estimated time to complete it is about five to eight minutes.</div><br/>\n"
+    }
+   ],
+   "title": "Embracing the SAP Intelligent Enterprise",
+   "description": "Accelerate your SAP transformation - just five minutes to start your journey"
+  },
+  {
+   "name": "Landscape",
+   "elements": [
+    {
+     "type": "checkbox",
+     "name": "sap_apps_in_use",
+     "title": "Which SAP applications do you use?",
+     "description": "Select all that apply.",
+     "isRequired": true,
+     "requiredErrorText": "Other: please add details",
+     "choices": [
+      {
+       "value": "SAP S/4HANA",
+       "text": "SAP S/4HANA"
+      },
+      {
+       "value": "SAP ECC",
+       "text": "SAP ECC"
+      },
+      {
+       "value": "SAP HANA",
+       "text": "SAP HANA"
+      },
+      {
+       "value": "SAP BW - BW4HANA - Data Warehouse Cloud",
+       "text": "SAP BW - BW4HANA - Data Warehouse Cloud"
+      },
+      {
+       "value": "SAP Data Intelligence",
+       "text": "SAP Data Intelligence"
+      }
+     ],
+     "otherPlaceHolder": "Please add details"
+    },
+    {
+     "type": "checkbox",
+     "name": "os_in_use",
+     "title": "Which operating systems are you using for your SAP applications and database?",
+     "description": "Select all that apply.",
+     "isRequired": true,
+     "requiredErrorText": "Other: please add details",
+     "choices": [
+      {
+       "value": "Windows",
+       "text": "Windows"
+      },
+      {
+       "value": "Red Hat Enterprise Linux",
+       "text": "Red Hat Enterprise Linux"
+      },
+      {
+       "value": "other Linux vendor",
+       "text": "other Linux vendor"
+      },
+      {
+       "value": "AIX",
+       "text": "AIX"
+      },
+      {
+       "value": "Solaris",
+       "text": "Solaris"
+      },
+      {
+       "value": "HPUX",
+       "text": "HPUX"
+      }
+     ],
+     "hasOther": true,
+     "otherPlaceHolder": "Please add details"
+    },
+    {
+     "type": "radiogroup",
+     "name": "db_in_use",
+     "title": "Which database do you currently use with SAP?",
+     "description": "Select one.",
+     "isRequired": true,
+     "requiredErrorText": "Other: please add details",
+     "choices": [
+      {
+       "value": "HANA",
+       "text": "HANA"
+      },
+      {
+       "value": "DB2",
+       "text": "DB2"
+      },
+      {
+       "value": "Oracle",
+       "text": "Oracle"
+      }
+     ],
+     "hasOther": true,
+     "otherPlaceHolder": "Please add details"
+    },
+    {
+     "type": "checkbox",
+     "name": "sap_hosting",
+     "title": "How do you host your SAP workloads?",
+     "description": "Select all that apply.",
+     "isRequired": true,
+     "choices": [
+      {
+       "value": "Dedicated on premise",
+       "text": "Dedicated on-premise"
+      },
+      {
+       "value": "Private cloud",
+       "text": "Private cloud"
+      },
+      {
+       "value": "Public cloud: AWS",
+       "text": "Public cloud: AWS"
+      },
+      {
+       "value": "Public cloud: Azure",
+       "text": "Public cloud: Azure"
+      },
+      {
+       "value": "Public cloud: Google",
+       "text": "Public cloud: Google"
+      },
+      {
+       "value": "Hybrid cloud or multicloud (per above selections)",
+       "text": "Hybrid cloud or multicloud (per above selections)"
+      }
+     ]
+    },
+    {
+     "type": "checkbox",
+     "name": "implementation_partner",
+     "title": "Who do you partner with for implementation?",
+     "description": "Select all that apply.",
+     "isRequired": true,
+     "requiredErrorText": "Other: please add details",
+     "choices": [
+      {
+       "value": "In-house",
+       "text": "In-house"
+      },
+      {
+       "value": "SAP",
+       "text": "SAP"
+      },
+      {
+       "value": "Accenture",
+       "text": "Accenture"
+      },
+      {
+       "value": "Atos",
+       "text": "Atos"
+      },
+      {
+       "value": "Capgemini",
+       "text": "Capgemini"
+      },
+      {
+       "value": "Cognizant",
+       "text": "Cognizant"
+      },
+      {
+       "value": "IBM",
+       "text": "IBM"
+      },
+      {
+       "value": "TCS",
+       "text": "TCS"
+      },
+      {
+       "value": "Wipro",
+       "text": "Wipro"
+      }
+     ],
+     "hasOther": true,
+     "otherPlaceHolder": "Please add other details"
+    }
+   ],
+   "title": " Tell us about your SAP application landscape.",
+   "description": "*******you could put some text here*******"
+  },
+  {
+   "name": "Plans",
+   "elements": [
+    {
+     "type": "radiogroup",
+     "name": "migration_timeline",
+     "title": "What are your plans to start migrating to S/4HANA?",
+     "description": "Select one.",
+     "isRequired": true,
+     "choices": [
+      {
+       "value": "Investigating",
+       "text": "Still investigating timelines"
+      },
+      {
+       "value": "Starting next 12 months",
+       "text": "Starting within the next 12 months"
+      },
+      {
+       "value": "starting next 24 months",
+       "text": "Starting within the next 24 months"
+      }
+     ]
+    },
+    {
+     "type": "radiogroup",
+     "name": "migration_strategy",
+     "title": "What is your SAP S/4HANA migration approach?",
+     "description": "Select one.",
+     "isRequired": true,
+     "choices": [
+      {
+       "value": "Greenfield",
+       "text": "Greenfield"
+      },
+      {
+       "value": "Brownfield",
+       "text": "Brownfield"
+      },
+      {
+       "value": "Not sure",
+       "text": "Not sure"
+      }
+     ]
+    }
+   ],
+   "title": "Tell us about your future plans for SAP",
+   "description": "*******you could put some text here*******"
+  },
+  {
+   "name": "Development",
+   "elements": [
+    {
+     "type": "boolean",
+     "name": "using_custom_code",
+     "title": "Do you have custom code in your current SAP instances?",
+     "isRequired": true
+    },
+    {
+     "type": "boolean",
+     "name": "external_apps",
+     "title": "Do you have external applications interfacing with SAP?",
+     "isRequired": true
+    },
+    {
+     "type": "checkbox",
+     "name": "external_apps_developed_by",
+     "visibleIf": "{external_apps} = true",
+     "title": "Who developed these external applications?",
+     "description": "Select all that apply.",
+     "isRequired": true,
+     "requiredErrorText": "Other: please add details",
+     "choices": [
+      {
+       "value": "In-house",
+       "text": "In-house team"
+      },
+      {
+       "value": "Implementation partner",
+       "text": "Implementation partner"
+      },
+      {
+       "value": "Don't know",
+       "text": "I don't know"
+      }
+     ],
+     "hasOther": true,
+     "otherPlaceHolder": "Please add details"
+    },
+    {
+     "type": "checkbox",
+     "name": "dev_approach",
+     "title": " What development approach do you use?",
+     "description": "Select all that apply.",
+     "isRequired": true,
+     "requiredErrorText": "Other: please add details",
+     "choices": [
+      {
+       "value": "Internal",
+       "text": "Internal (in-app extensions - coded in ABAP)"
+      },
+      {
+       "value": "External apps integrated",
+       "text": "External applications integrated with SAP instances"
+      },
+      {
+       "value": "Don't know",
+       "text": "I don't know"
+      }
+     ],
+     "hasOther": true,
+     "otherPlaceHolder": "Please add details"
+    },
+    {
+     "type": "radiogroup",
+     "name": "containerization_strategy",
+     "title": "Do you have a containerization strategy (in either an SAP or a non-SAP context)?",
+     "isRequired": true,
+     "choices": [
+      {
+       "value": "Yes",
+       "text": "Yes"
+      },
+      {
+       "value": "No",
+       "text": "No"
+      },
+      {
+       "value": "Don't know",
+       "text": "I don't know"
+      }
+     ]
+    },
+    {
+     "type": "checkbox",
+     "name": "development_platforms",
+     "title": " What development platform do you use?",
+     "description": "Select all that apply.",
+     "isRequired": true,
+     "requiredErrorText": "Other: please add details",
+     "choices": [
+      {
+       "value": "SAP Cloud Platform",
+       "text": "SAP Cloud Platform"
+      },
+      {
+       "value": "OpenShift",
+       "text": "Red Hat OpenShift"
+      },
+      {
+       "value": "Other Kubernetes",
+       "text": "Other Kubernetes platform"
+      },
+      {
+       "value": "Non-containerized app dev",
+       "text": "Non-containerized standalone application development"
+      },
+      {
+       "value": "Don't know",
+       "text": "I don't know"
+      }
+     ],
+     "hasOther": true,
+     "otherPlaceHolder": "Please add details"
+    },
+    {
+     "type": "boolean",
+     "name": "solutions_sap_or_3rd_party",
+     "title": "Are you using SAP's cloud solutions or third party SAP integrated solutions?",
+     "isRequired": true
+    },
+    {
+     "type": "checkbox",
+     "name": "which_solutions",
+     "visibleIf": "{solutions_sap_or_3rd_party} = true",
+     "title": "Which SAP cloud solutions or third party SAP integrated solutions are you using?",
+     "description": "Select all that apply.",
+     "isRequired": true,
+     "requiredErrorText": "Other: please add details",
+     "choices": [
+      {
+       "value": "Ariba",
+       "text": "Ariba"
+      },
+      {
+       "value": "Concur",
+       "text": "Concur"
+      },
+      {
+       "value": "FieldGlass",
+       "text": "FieldGlass"
+      },
+      {
+       "value": "Hybris",
+       "text": "Hybris"
+      },
+      {
+       "value": "Success Factors",
+       "text": "Success Factors"
+      },
+      {
+       "value": "Third party",
+       "text": "Third party"
+      },
+      {
+       "value": "Don't know",
+       "text": "I don't know"
+      }
+     ],
+     "hasOther": true,
+     "otherPlaceHolder": "Please add details"
+    }
+   ],
+   "title": "SAP application development platform",
+   "description": "*******you could put some text here*******"
+  },
+  {
+   "name": "Management",
+   "elements": [
+    {
+     "type": "checkbox",
+     "name": "who_manages",
+     "title": "Who is managing your SAP landscape?",
+     "description": "Select all that apply.",
+     "isRequired": true,
+     "requiredErrorText": "Other: please add details",
+     "choices": [
+      {
+       "value": "In-house",
+       "text": "In-house"
+      },
+      {
+       "value": "Managed service provider",
+       "text": "Managed service provider"
+      }
+     ],
+     "hasOther": true,
+     "otherPlaceHolder": "Please add details"
+    },
+    {
+     "type": "boolean",
+     "name": "using_automation_tools",
+     "title": "Are you using any automation platforms or tools within the landscape?",
+     "isRequired": true
+    },
+    {
+     "type": "checkbox",
+     "name": "automation_tools_which_ones",
+     "visibleIf": "{using_automation_tools} = true",
+     "title": "Which automation platforms or tools are you using?",
+     "description": "Select all that apply.",
+     "isRequired": true,
+     "requiredErrorText": "Other: please add details",
+     "choices": [
+      {
+       "value": "Ansible",
+       "text": "Ansible"
+      },
+      {
+       "value": "Chef",
+       "text": "Chef"
+      },
+      {
+       "value": "Puppet",
+       "text": "Puppet"
+      },
+      {
+       "value": "Salt",
+       "text": "Salt"
+      },
+      {
+       "value": "Don't know",
+       "text": "I don't know"
+      }
+     ],
+     "hasOther": true,
+     "otherPlaceHolder": "Please add details"
+    },
+    {
+     "type": "radiogroup",
+     "name": "automation_use_cases",
+     "visibleIf": "{using_automation_tools} = true",
+     "title": "How would you describe the current automation use cases?",
+     "description": "Select one.",
+     "isRequired": true,
+     "choices": [
+      {
+       "value": "Initial provisioning",
+       "text": "Initial provisioning"
+      },
+      {
+       "value": "Day2 operations",
+       "text": "Ongoing (day 2) operations (e.g. system copies, patching, DB operations etc.)"
+      },
+      {
+       "value": "Holistic automation",
+       "text": "Holistic automation - beyond SAP landscape infrastructure (SAP and non-SAP)"
+      },
+      {
+       "value": "Don't know",
+       "text": "I don't know"
+      }
+     ]
+    }
+   ],
+   "title": " SAP landscape management & operations",
+   "description": "*******you could put some text here*******"
+  },
+  {
+   "name": "Contact form1",
+   "elements": [
+    {
+     "type": "boolean",
+     "name": "current_red_hat_customer",
+     "title": "Is your organization a current Red Hat customer?",
+     "isRequired": true
+    },
+    {
+     "type": "checkbox",
+     "name": "red_hat_products_using",
+     "visibleIf": "{current_red_hat_customer} = true",
+     "title": "Which Red Hat products are in use?",
+     "description": "Select all that apply.",
+     "isRequired": true,
+     "requiredErrorText": "Other: please add details",
+     "choices": [
+      {
+       "value": "RHEL",
+       "text": "Red Hat Enterprise Linux (RHEL)"
+      },
+      {
+       "value": "Ansible",
+       "text": "Red Hat Ansible"
+      },
+      {
+       "value": "Satellite",
+       "text": "Red Hat Satellite"
+      },
+      {
+       "value": "OpenShift",
+       "text": "Red Hat OpenShift"
+      },
+      {
+       "value": "Middleware",
+       "text": "Red Hat Middleware"
+      },
+      {
+       "value": "Middleware: Integration",
+       "text": "Red Hat Middleware - Integration"
+      },
+      {
+       "value": "RHEV",
+       "text": "Red Hat Virtualization"
+      }
+     ],
+     "hasOther": true,
+     "otherPlaceHolder": "Please add details"
+    },
+    {
+     "type": "boolean",
+     "name": "using_red_hat_with_sap",
+     "visibleIf": "{current_red_hat_customer} = true",
+     "title": "Are you using any of the above Red Hat products in combination with SAP?",
+     "isRequired": true
+    },
+    {
+     "type": "checkbox",
+     "name": "question5",
+     "visibleIf": "{using_red_hat_with_sap} = true",
+     "title": "Which solutions specifically are you using with SAP?",
+     "description": "Select all that apply.",
+     "isRequired": true,
+     "requiredErrorText": "Other: please add details",
+     "choices": [
+      {
+       "value": "RHEL for SAP Apps",
+       "text": "RHEL for SAP Applications"
+      },
+      {
+       "value": "RHEL for SAP Solutions",
+       "text": "RHEL for SAP Solutions"
+      }
+     ],
+     "hasOther": true,
+     "otherPlaceHolder": "Please add details"
+    },
+    {
+     "type": "html",
+     "name": "question2",
+     "html": "<p>Please tell us a little about yourself.</p>\n\n\n<p>One of our Red Hat experts for SAP solutions will get in touch with you shortly.\n</p>"
+    },
+    {
+     "type": "panel",
+     "name": "panel1",
+     "elements": [
+      {
+       "type": "text",
+       "name": "_FirstName",
+       "title": "First name",
+       "isRequired": true
+      },
+      {
+       "type": "text",
+       "name": "_LastName",
+       "title": "Last name",
+       "isRequired": true
+      },
+      {
+       "type": "text",
+       "name": "_WorkEmail",
+       "title": "Work email",
+       "isRequired": true,
+       "inputType": "email"
+      },
+      {
+       "type": "text",
+       "name": "_WorkPhone",
+       "title": "Work phone",
+       "isRequired": true,
+       "inputType": "tel"
+      },
+      {
+       "type": "text",
+       "name": "_Company",
+       "title": "Company name",
+       "isRequired": true
+      },
+      {
+       "type": "dropdown",
+       "name": "_Industry",
+       "title": "Industry / field",
+       "isRequired": true,
+       "choicesByUrl": {
+        "url": "$server/api/surveys/$surveyId/customfield/industries"
+       }
+      },
+      {
+       "type": "dropdown",
+       "name": "_Department",
+       "title": "Department",
+       "isRequired": true,
+       "choicesByUrl": {
+        "url": "$server/api/surveys/$surveyId/customfield/departments"
+       }
+      },
+      {
+       "type": "dropdown",
+       "name": "_JobRole",
+       "title": "Job role",
+       "enableIf": "{_Department} notempty",
+       "isRequired": true,
+       "choices": [
+        "null"
+       ],
+       "choicesByUrl": {
+        "url": "$server/api/surveys/$surveyId/customfield/jobroles/{_Department}"
+       }
+      },
+      {
+       "type": "dropdown",
+       "name": "_Country",
+       "title": "Country/region",
+       "isRequired": true,
+       "choicesByUrl": {
+        "url": "$server/api/surveys/$surveyId/customfield/countries",
+        "valueName": "alpha2Code",
+        "titleName": "name"
+       }
+      }
+     ]
+    },
+    {
+     "type": "checkbox",
+     "name": "_ConsentAgreement",
+     "visibleIf": "{_Country} notempty",
+     "title": "Red Hat may use your personal data to inform you about its products, services, and events",
+     "defaultValue": [
+      "item1"
+     ],
+     "choices": [
+      {
+       "value": "by Email",
+       "text": "by email"
+      },
+      {
+       "value": "by Phone",
+       "text": "by telephone"
+      }
+     ]
+    },
+    {
+     "type": "html",
+     "name": "question3",
+     "visibleIf": "{_Country} notempty",
+     "html": "You can stop receiving marketing emails by clicking the unsubscribe link in each email or withdraw your consent at any time in the <a href=\"https://engage.redhat.com/Global-Preference-Center#unsubscribe_here\">preference center</a>. See <a href=\"https://www.redhat.com/footer/privacy-policy.html\">Privacy Statement</a> for details"
+    }
+   ],
+   "title": "You're almost there",
+   "description": "Tell us a few more things about you",
+   "navigationTitle": "About yourself"
+  }
+ ],
+ "completeText": "Submit my responses"
+}

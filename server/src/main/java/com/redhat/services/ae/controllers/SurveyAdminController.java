@@ -25,6 +25,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.SecurityContext;
 
 import org.apache.commons.io.IOUtils;
@@ -194,9 +195,11 @@ public class SurveyAdminController{
 	@PermitAll
 	@Path("/{surveyId}/resources/{name}")
 	public Response getResource(@PathParam("surveyId") String surveyId, @PathParam("name") String name) throws IOException{
-		File resource=Survey.findById(surveyId).getResource(name);
-		if (!resource.exists())
-			return Response.status(404).build();
+		Survey survey=Survey.findById(surveyId);
+		if (null==survey) return Response.status(Status.NOT_FOUND).build();
+		
+		File resource=survey.getResource(name);
+		if (!resource.exists()) return Response.status(Status.NOT_FOUND).build();
 		
 		return Response.ok(new FileInputStream(resource)).build();
 	}

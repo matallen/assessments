@@ -11,7 +11,10 @@ import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.google.api.client.util.Lists;
 import com.redhat.services.ae.MapBuilder;
 import com.redhat.services.ae.controllers.TestBase;
 import com.redhat.services.ae.model.Survey;
@@ -343,6 +346,68 @@ public class AddTitleAndScorePluginTest extends TestBase{
 		
 	}
 	
+	
+	// Expectation is that "other" answers are not used for scoring, and dont impact the pipeline execution since they cannot be mapped
+	@SuppressWarnings({"unchecked", "unused"})
+	@Test
+	public void testQuestionsWithOther() throws Exception{
+		String surveyId="TestOther1";
+		
+		Map<String,Object> config=new MapBuilder<String,Object>()
+				.put("scoreStrategy", "highest")
+				.build();
+		
+		String answersJson=IOUtils.toString(this.getClass().getClassLoader().getResource("addtitlescore-sap-answers-2.json"), "UTF-8");
+		String questionsJson=IOUtils.toString(this.getClass().getClassLoader().getResource("addtitlescore-sap-questions-2.json"), "UTF-8");
+		
+		Survey s=createSurvey(surveyId, questionsJson);
+		
+		Map<String,Object> answers=Json.toObject(answersJson, new TypeReference<HashMap<String,Object>>(){});
+		
+		Assert.assertTrue("other".equals(answers.get("db_in_use")));
+		Assert.assertTrue(((List<String>)answers.get("who_manages")).size()==2);
+		Assert.assertTrue(((List<String>)answers.get("who_manages")).contains("other"));
+		
+		answers=new Pipeline()
+		.add(new AddTitleAndScorePlugin().setConfig(config))
+		.execute(surveyId, answers);
+		
+		Map<String, Object> checkOnlyOther=(Map<String, Object>)answers.get("db_in_use");
+		Assert.assertTrue(((List<String>)checkOnlyOther.get("answers")).size()==0);
+//		Assert.assertTrue(((List<String>)checkOnlyOther.get("answers")).contains("other"));
+		
+		Map<String, Object> checkOtherWithOtherSelection=(Map<String, Object>)answers.get("who_manages");
+		Assert.assertTrue(((List<String>)checkOtherWithOtherSelection.get("answers")).size()==1);
+//		Assert.assertTrue(((List<String>)checkOtherWithOtherSelection.get("answers")).contains("other"));
+		
+	}
+	
+
+	
+	// ###########################
+	// ##### utility methods #####
+	// ###########################
+	
+	private class Pipeline{
+		List<Plugin> pipeline=Lists.newArrayList();
+		public Pipeline add(Plugin p){pipeline.add(p); return this;}
+		public Map<String,Object> execute(String surveyId, Map<String,Object> answers) throws Exception{
+			System.out.println("Before pipeline:"+Json.toJson(answers));
+			for(Plugin p:pipeline){
+				answers=p.execute(surveyId, "VISITOR_ID", answers);
+				System.out.println("After["+p.getClass().getSimpleName()+"]:"+Json.toJson(answers));
+			}
+			return answers;
+		}
+	}
+	
+	private Survey createSurvey(String idName, String questionsJson) throws JsonParseException, JsonMappingException, IOException{
+		Survey s=Survey.builder().id(idName).name(idName).build();
+		s.setQuestionsAsString(questionsJson);
+		s.saveQuestions();
+		s.save();
+		return s;
+	}
 	
 	
 }

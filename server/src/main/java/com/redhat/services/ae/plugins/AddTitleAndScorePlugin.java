@@ -55,7 +55,7 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 		return null;
 	}
 	
-	private Answer findInQuestions(List<Json> questionChoices, String answerProvided){
+	private Answer findInChoices(List<Json> questionChoices, String answerProvided){
 //		Answer result=new Answer(null,-1);
 //		result.score=-1;
 		for (Json ans:questionChoices){
@@ -87,13 +87,20 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 //			System.out.println("looking in question "+question.at("name").asString());
 			
 			if (question.has("choices")){
-				return findInQuestions(question.at("choices").asJsonList(), answer);
+				// radiobuttons, checkboxes, choicesFromUrl and "other" field handling
+				Answer a=findInChoices(question.at("choices").asJsonList(), answer);
+				if ("other".equalsIgnoreCase(answer) || null==a){ // then it's an "other" so needs to return a score of -1
+					return new Answer(answer, -1);
+				}else{
+					return a;
+				}
+				
 			}else{
+				// textbox field
 				log.warn(question.at("name").asString()+":: Unable to determine score (no # delimiter, nor score field)");
-//				log.warn("Answer no # score delimiter found, AND question has no 'choices', cant determine score for: "+question.at("name").asString()+" ");
-//				throw new RuntimeException("Question has no 'choices' -> "+question.asString()+" ");
 				return new Answer(answer,-1);
 			}
+			
 		}
 	}
 	
@@ -101,13 +108,18 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 	public Map<String, Object> OnSingleStringAnswer(String questionId, String answer, Json question){
 		
 		Answer answerSplit=getAnswerScore(answer, question);
-		
-		Map<String,Object> answerData=new MapBuilder<String,Object>().put("answer", answerSplit.value).build();
-		
-		if (null==question) return answerData;
-
-		common(answerSplit.score, question, answerData);
-		
+		Map<String,Object> answerData;
+		if ("other".equalsIgnoreCase(answerSplit.value)){
+			// this case is for selections with "Other" option, but ONLY "other" was selected. Basically convert this to a MultipleStringAnswer so it's consistent with when "Other" option is selected with another dropdown item
+			return OnMultipleStringAnswers(questionId, Lists.newArrayList(answerSplit.value), question);
+			
+		}else{
+			// this case is for text boxes and other single string answers
+			answerData=new MapBuilder<String,Object>().put("answer", answerSplit.value).build();
+			if (null==question) return answerData; // for "{questionId}-Other" fields that we dont care about in terms of score or capture for rules processing
+			common(answerSplit.score, question, answerData);
+			
+		}
 		return answerData;
 	}
 
@@ -118,6 +130,8 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 		
 		List<String> newAnswers=new ArrayList<>();
 		for (String answerString:answers){
+			if ("other".equalsIgnoreCase(answerString)) continue; // this removes "other" from the answer string list entirely
+			
 			Answer answerSplit=getAnswerScore(answerString, question);
 			if (null!=answerSplit){ // currently, this excludes "other" answers entirely, so they are not scored or passed into the resulting answer payload
 				if (answerSplit.score>=0){
