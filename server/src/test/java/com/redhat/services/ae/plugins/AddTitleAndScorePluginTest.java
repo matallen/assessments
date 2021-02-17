@@ -373,7 +373,8 @@ public class AddTitleAndScorePluginTest extends TestBase{
 		.execute(surveyId, answers);
 		
 		Map<String, Object> checkOnlyOther=(Map<String, Object>)answers.get("db_in_use");
-		Assert.assertTrue(((List<String>)checkOnlyOther.get("answers")).size()==0);
+		Assert.assertTrue("other".equals(checkOnlyOther.get("answer")));
+//		Assert.assertTrue(((List<String>)checkOnlyOther.get("answers")).size()==0);
 //		Assert.assertTrue(((List<String>)checkOnlyOther.get("answers")).contains("other"));
 		
 		Map<String, Object> checkOtherWithOtherSelection=(Map<String, Object>)answers.get("who_manages");

@@ -110,8 +110,11 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 		Answer answerSplit=getAnswerScore(answer, question);
 		Map<String,Object> answerData;
 		if ("other".equalsIgnoreCase(answerSplit.value)){
-			// this case is for selections with "Other" option, but ONLY "other" was selected. Basically convert this to a MultipleStringAnswer so it's consistent with when "Other" option is selected with another dropdown item
-			return OnMultipleStringAnswers(questionId, Lists.newArrayList(answerSplit.value), question);
+			
+			// this case is for radiobuttons with "Other" option. radio button have a string answer, not a string list (i did consider converting radio into a checkbox-like string list)
+//			return OnMultipleStringAnswers(questionId, Lists.newArrayList(answerSplit.value), question);
+			answerData=new MapBuilder<String,Object>().put("answer", answerSplit.value).build();
+			common(answerSplit.score, question, answerData);
 			
 		}else{
 			// this case is for text boxes and other single string answers
@@ -130,7 +133,7 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 		
 		List<String> newAnswers=new ArrayList<>();
 		for (String answerString:answers){
-			if ("other".equalsIgnoreCase(answerString)) continue; // this removes "other" from the answer string list entirely
+			if ("other".equalsIgnoreCase(answerString)) continue; // this removes "other" from the answer string list entirely. It handles checkboxes with the "other" option (since checkboxes are a list of answers)
 			
 			Answer answerSplit=getAnswerScore(answerString, question);
 			if (null!=answerSplit){ // currently, this excludes "other" answers entirely, so they are not scored or passed into the resulting answer payload
