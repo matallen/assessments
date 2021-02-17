@@ -3,9 +3,13 @@ package com.redhat.services.ae.model;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.api.client.util.Maps;
 
 public class MetricsDecorator{
+	public static final Logger log=LoggerFactory.getLogger(MetricsDecorator.class);
 	private Map<String, Object> data;
 
 	public MetricsDecorator(Map<String, Object> data){
@@ -19,11 +23,17 @@ public class MetricsDecorator{
 		Map<String,Object> data=this.data;
 		for(String category:levels){
 			c=c+1;
+			if (null==category){ // code to discover an exception
+				log.error("Cant put a null key in a map if it's going to be written to Json - aborting metrics increment here");
+				return;
+			}
 			if (c==max){
 				putValue(data, category, incrementBy);
+				
 			}else{
 				if (!data.containsKey(category)) 
 					data.put(category, new LinkedHashMap<String,Object>());
+				
 				data=(Map<String,Object>)data.get(category);
 			}
 		}

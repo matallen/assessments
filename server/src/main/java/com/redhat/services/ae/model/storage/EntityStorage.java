@@ -6,11 +6,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.redhat.services.ae.utils.Json;
 
 public abstract class EntityStorage<T>{
+	public static final Logger log=LoggerFactory.getLogger(EntityStorage.class);
+	
 	private long lastModified=-1;
 
 	public File getStorageRoot(){
@@ -80,8 +85,12 @@ public abstract class EntityStorage<T>{
 //			System.out.println("Saving to: "+saveTo.getAbsolutePath());
 			IOUtils.write(json, new FileOutputStream(saveTo), "UTF-8");
 			lastModified=saveTo.lastModified(); // save the modified date so when it's next accessed it doesnt force a reload after each save
-		}catch(IOException e){
-			e.printStackTrace();
+		}catch(JsonMappingException sinkButDontStop){
+			log.error("Unable to write metrics, printing trace but continuing - check the data structure: "+data);
+			sinkButDontStop.printStackTrace();
+		}catch(IOException sinkButDontStop){
+			log.error("Unable to write metrics, printing trace but continuing - check the data structure: "+data);
+			sinkButDontStop.printStackTrace();
 		}
 	}
 }
