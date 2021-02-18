@@ -48,7 +48,8 @@ public class SectionScorePlugin extends Plugin{
 			if (questionId.startsWith("_")) continue;
 			
 			if (!Map.class.isAssignableFrom(e.getValue().getClass())){
-				log.error("Expecting a set of map values for ("+e.getKey()+"), but received the following: "+Json.toJson(e.getValue()));
+				log.error("Skipping scoring for ("+e.getKey()+") - expecting a set of map values, but received the following: "+Json.toJson(e.getValue()));
+				continue;
 			}
 			Map<String,Object> value=(Map<String,Object>)e.getValue();
 			
