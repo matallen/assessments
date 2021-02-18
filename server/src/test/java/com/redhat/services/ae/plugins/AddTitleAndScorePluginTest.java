@@ -20,6 +20,7 @@ import com.redhat.services.ae.controllers.TestBase;
 import com.redhat.services.ae.model.Survey;
 import com.redhat.services.ae.utils.Json;
 
+@SuppressWarnings({"unchecked", "unused"})
 public class AddTitleAndScorePluginTest extends TestBase{
 
 	@BeforeEach
@@ -325,37 +326,28 @@ public class AddTitleAndScorePluginTest extends TestBase{
 	
 	@Test
 	public void testRTA() throws Exception{
-		
-		Map<String,Object> config=new MapBuilder<String,Object>()
-				.put("scoreStrategy", "highest")
-				.build();
-		
 		String answersJson=IOUtils.toString(this.getClass().getClassLoader().getResource("addtitlescore-rta-answers.json"), "UTF-8");
-		
-		Survey s=Survey.builder().id("test1").name("Test Survey").build();
 		String questionsJson=IOUtils.toString(this.getClass().getClassLoader().getResource("addtitlescore-rta-questions.json"), "UTF-8");
-		s.setQuestionsAsString(questionsJson);
-		s.saveQuestions();
-		s.save();
+		Survey s=createSurvey("test1", questionsJson);
 		
 		Map<String,Object> answers=Json.toObject(answersJson, new TypeReference<HashMap<String,Object>>(){});
 		System.out.println("from:"+Json.toJson(answers));
-		Map<String, Object> newData=new AddTitleAndScorePlugin().setConfig(config).execute("test1", "TEST_VISITOR_ID", answers);
+		Map<String, Object> newData=new AddTitleAndScorePlugin().setConfig(new MapBuilder<String,Object>()
+				.put("scoreStrategy", "highest")
+				.build()).execute("test1", "TEST_VISITOR_ID", answers);
 		System.out.println("to:"+Json.toJson(newData));
 		
-		
+		Assert.assertTrue(((String)((Map<String, Object>)newData.get("platforms_env_q2")).get("answer")).equals("21-50"));
+		Assert.assertTrue(((String)((Map<String, Object>)newData.get("platforms_env_q2")).get("navigationTitle")).equals("Modernizing platforms"));
+		Assert.assertTrue(((String)((Map<String, Object>)newData.get("platforms_env_q2")).get("title")).equals("What is the size of your department?"));
+		Assert.assertTrue(((String)((Map<String, Object>)newData.get("platforms_env_q2")).get("pageId")).equals("p_platforms_1_env"));
 	}
 	
 	
 	// Expectation is that "other" answers are not used for scoring, and dont impact the pipeline execution since they cannot be mapped
-	@SuppressWarnings({"unchecked", "unused"})
 	@Test
 	public void testQuestionsWithOther() throws Exception{
 		String surveyId="TestOther1";
-		
-		Map<String,Object> config=new MapBuilder<String,Object>()
-				.put("scoreStrategy", "highest")
-				.build();
 		
 		String answersJson=IOUtils.toString(this.getClass().getClassLoader().getResource("addtitlescore-sap-answers-2.json"), "UTF-8");
 		String questionsJson=IOUtils.toString(this.getClass().getClassLoader().getResource("addtitlescore-sap-questions-2.json"), "UTF-8");
@@ -369,7 +361,9 @@ public class AddTitleAndScorePluginTest extends TestBase{
 		Assert.assertTrue(((List<String>)answers.get("who_manages")).contains("other"));
 		
 		answers=new Pipeline()
-		.add(new AddTitleAndScorePlugin().setConfig(config))
+		.add(new AddTitleAndScorePlugin().setConfig(new MapBuilder<String,Object>()
+				.put("scoreStrategy", "highest")
+				.build()))
 		.execute(surveyId, answers);
 		
 		Map<String, Object> checkOnlyOther=(Map<String, Object>)answers.get("db_in_use");
