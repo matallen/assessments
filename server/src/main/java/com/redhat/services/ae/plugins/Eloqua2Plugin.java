@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
 import org.mvel2.MVEL;
+import org.mvel2.PropertyAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -179,6 +180,8 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 				try{
 					Object eval=MVEL.eval(e.getValue(), answers);
 					eloquaFields.put(e.getKey(), eval.toString());
+				}catch(PropertyAccessException ex){
+					// sink, it's because the property doesnt exist... and that's ok
 				}catch(Exception ex){
 					log.warn("expression error with '"+e.getValue()+"': "+ex.getMessage());
 //					ex.printStackTrace();
