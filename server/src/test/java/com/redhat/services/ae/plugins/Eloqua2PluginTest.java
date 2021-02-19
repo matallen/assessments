@@ -55,12 +55,18 @@ public class Eloqua2PluginTest extends TestBase{
 	
 	@Test
 	public void mvelTest2(){
+		try{
+			
 		Map<String,Object> empty=new MapBuilder<String,Object>().build();
 		Map<String,Object> vars=new MapBuilder<String,Object>()
 				.put("_intTacticId", "12345")
 				.build();
 		System.out.println(MVEL.eval("_intTacticId", vars));
 		System.out.println(MVEL.eval("_intTacticId == null", empty)); 
+		}catch(Exception e){
+			e.printStackTrace();;
+		}
+			
 	}
 	
 	@Test
