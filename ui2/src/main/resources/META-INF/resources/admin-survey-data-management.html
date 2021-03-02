@@ -1,0 +1,426 @@
+<html lang="EN">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Admin @ Assessments | Red Hat Inc</title>
+	<meta name="description" content="Red Hat Assessment Platform">
+	<meta name="robots" content="noindex">
+	<meta name="viewport" content="width=device-width, initial scale= 1.0">
+	<meta property="og:title" content="Assessments | Red Hat Inc">
+	<meta property="og:description" content="">
+  <link rel="preload" href="/assets/fonts/RedHatText/RedHatText-Regular.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="/assets/fonts/RedHatText/RedHatText-Medium.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="/assets/fonts/RedHatDisplay/RedHatDisplay-Regular.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="/assets/fonts/RedHatDisplay/RedHatDisplay-Medium.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="/assets/fonts/RedHatDisplay/RedHatDisplay-Bold.woff" as="font" type="font/woff" crossorigin>
+  <link type="text/css" rel="stylesheet" href="/assets/fonts/red-hat-font.css" media="all" />
+  <link rel="icon" href="https://www.redhat.com/profiles/rh/themes/redhatdotcom/favicon.ico">
+	<style id="customStyles">
+	@import "https://go.redhat.com/hubfs/css/styles.min.css";
+	</style>
+	
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script>
+	$(function(){
+	  jQuery.each($('[data-include]'), function(){
+	    var file = 'components/' + $(this).data('include') + '.html';
+	    $(this).load(file);
+	  });
+	});
+	</script>
+	<script src="assets/js/http.js"></script>
+	<script src="assets/js/utils.js"></script>
+	<script src="assets/js/env.js"></script>
+	<script src="assets/js/feedback-alert.js"></script>
+	<link rel="stylesheet" href="assets/css/header.css">
+	<link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+
+	<!-- Header (+Logo) -->
+	<div id="header">
+		<div class="navbar-container">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-3" >
+						<a class="navbar-brand" href="//www.redhat.com/" title="Red Hat"><img alt="Red Hat" class="img-fluid navbar-logo" data-alt-text="Red Hat" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg?t=1537976200708" title="Red Hat" data-image-state="ready"> </a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Breadcrumb Menu -->
+	<div class="elevate" style="height: 27px">
+		<ul style="float:left" class="menu menu_horizontal">
+			<li><a href="admin.html">Surveys</a></li>
+			<li class="noColor divider">/</li>
+			<li class="noColor menu_needsId _id"><span style="color:white;">UNSET</span></li>
+			<li class="noColor divider">|</li>
+			<li class="menu_needsId"><a href="admin-survey-details.html?id=">Details</a></li>
+			<li class="menu_needsId"><a href="admin-survey-reports.html?id=">Reports</a></li>
+			<!--li class="menu_needsId"><a href="admin-survey-questions.html?id=">Questions</a></li-->
+			<li class="menu_needsId"><a href="admin-survey-questions-embedded.html?id=">Questions</a></li>
+			<!--li class="menu_needsId"><a href="admin-survey-eloqua.html?id=">Eloqua</a></li-->
+			<li class="menu_needsId"><a href="admin-survey-plugins.html?id=">Plugins</a></li>
+			<li class="menu_needsId"><a href="admin-survey-resources.html?id=">Resources</a></li>
+			<li class="menu_needsId"><a href="admin-survey-results.html?id=">Results</a></li>
+			<li class="menu_needsId"><a href="admin-survey-data-management.html?id=">Data</a></li>
+			<li class="menu_needsId"><a href="admin-survey-settings.html?id=">Settings</a></li>
+		</ul>
+		<ul style="float:right" class="menu menu_horizontal">
+			<li><a id="logout" href="/logout">Logout</a></li>
+		</ul>
+		<script>
+			$(document).ready(function() {
+				$("a[id=logout]").attr("href", env.server+$("a[id=logout]").attr("href")+"?onSuccess="+document.location.origin+"/login.html");
+			});	
+		</script>
+	</div>
+	
+	<!-- success/error message --> 
+	<div class="alert alert-success" id="feedback-alert" style="display:none">
+    <button type="button" class="close" data-dismiss="alert">x</button>
+    <span id="feedback-alert-text">&nbsp;</span>
+	</div>
+	
+	<!-- Main Content -->
+	<div class="container py-1">
+		<table class="elevate">
+			<tbody id="content">
+				<tr>
+					<td class=" section graph">
+						<h3 class="graph_header center">Data Management - Customer Results</h3>
+						<!--h5 class="center">Subtitle</span></h5-->
+						<div>
+							<table class="section_content">
+								<!--
+								<tr>
+									<td>
+										<script>
+										
+								    var monthNames2 =["Jan","Feb","Mar","Apr",
+								                      "May","Jun","Jul","Aug",
+								                      "Sep", "Oct","Nov","Dec"];
+										Date.prototype.toLongForm=function() {
+										    var day=''+this.getDate();
+										    var monthIndex=this.getMonth();
+										    var monthNumeral=''+(monthIndex+1);
+										    //var monthName=monthNames[monthIndex];
+										    var year=this.getFullYear();
+										    
+										    if (day.length<2) day='0'+day;
+										    if (monthNumeral.length<2) monthNumeral='0'+monthNumeral;
+										    
+										    return `${year}-${monthNumeral}-${day}T23:59`;
+										}
+											
+										$(document).ready(function() {
+											var initialDate=new Date().toLongForm();
+											console.log("initialDate="+initialDate);
+											$("#purgeBeforeDate").prop("value", initialDate);
+										});
+											
+										function purgeBefore(o){
+											var url=o.dataset.href;
+											var purgeBeforeDate=$("#purgeBeforeDate").prop("value");
+											var yearLong=purgeBeforeDate.split("-")[0];
+											var year=yearLong.substring(2);
+											var monthNumeral=purgeBeforeDate.split("-")[1];
+											var month=monthNames2[parseInt(monthNumeral)-1];
+											var yymmm=year+"-"+month;
+											//var url="SERVER/api/purge/surveys/SURVEYID/metrics/purgeOlderThan?date=PURGEDATE&testMode=true";
+											url=url.replace("SERVER", env.server);
+											url=url.replace("SURVEYID", surveyId);
+											url=url.replace("PURGEDATE", yymmm);
+											
+											window.open(
+											  url,
+											  '_blank' // <- This is what makes it open in a new window.
+											);
+											
+										}
+										</script>
+										<label for="purgeBeforeDate">Date (YY-MMM) to purge prior to</label>
+										<input id="purgeBeforeDate" max="2020-09-29T23:59"  type="datetime-local"/>
+										<br/>
+										<label for="test">Test Mode (can be removed to execute later)</label>
+										<input type="checkbox" id="test" disabled checked/>
+									</td>
+								</tr>
+								
+								
+								<tr>
+									<td class="graph_containerx" style="">
+										<a class="btn rh-btn" onclick="purgeBefore(this);return false;" data-href="SERVER/api/purge/surveys/SURVEYID/metrics/purgeOlderThan?date=PURGEDATE&testMode=true">Purge metrics</a>
+									</td>
+								</tr>
+								<tr>
+									<td class="graph_containerx" style="">
+										<a class="btn rh-btn" onclick="purgeBefore(this);return false;" data-href="SERVER/api/purge/surveys/SURVEYID/results/purgeOlderThan?date=PURGEDATE&fields=_Country,_Industry,_Company,_timestamp&filters=&testMode=true">Purge Customer results</a>
+									</td>
+								</tr>
+								
+								-->
+								
+								
+								
+							</table>
+						</div>
+					</td>
+				</tr>
+				
+				
+				
+				
+				<tr>
+					<td>
+						<script>
+						function deleteSelected(){
+							var ids=[];
+							$("input[type=checkbox]:not([selectAll])").each(function(){
+								if (this.checked)
+									ids.push(this.id);
+							});
+							Http.httpDelete(env.server+"/api/purge/surveys/"+surveyId+"/results", ids, function(response, status){
+								$('#search').DataTable().destroy();
+								refreshDatatable(JSON.parse(response.response));
+							});
+						}
+//						function selectAll(){
+//							$("input[type=checkbox]").each(function(){
+//								if (this.checked){
+//									this.checked=false;
+//								}else
+//									this.checked=true;
+//							});
+//						}
+						</script>
+						<input type="button" value="Delete Selected" onClick="return deleteSelected();"/>
+						<input type="button" value="Select All" onClick="return selectAll();"/>
+						
+						<script src="http://code.jquery.com/jquery-2.0.3.min.js" data-semver="2.0.3" data-require="jquery"></script>
+				  	<script data-require="jqueryui@*" data-semver="1.10.0" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.0/jquery-ui.js"></script>
+						<!--
+				    <script src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.js" data-semver="1.9.4" data-require="datatables@*"></script>
+						-->
+						<script src="assets/js/jquery.dataTables.min.js"></script>
+						
+						
+						<style>
+						#ui-datepicker-div{
+						    background-color: #efefef;
+						    border: 1px solid;
+						    padding: 5px;
+					    }
+					    .ui-icon-circle-triangle-e{
+					    float:right;
+					    }
+						</style>
+						
+						<script>
+						var dtable;
+						$(document).ready(function() {
+							
+							// Display Data
+							Http.httpGetObject(env.server+"/api/purge/surveys/"+surveyId+"/results", function(status, items){
+								refreshDatatable(items);
+								dataPicker();
+								createSelectAll();
+							//  // Turn off the Datatables event and use our own
+							//  $('.dataTables_filter input')
+							//    .off()
+							//    .on('keyup', function() {
+							//        // Draw the table to execute the search plugin
+							//        dtable.draw();
+							//     }); 
+							//	
+							});
+							//
+							//// Search Plugin
+							//$.fn.dataTable.ext.search.push(
+						  //  function (settings, searchData, index, rowData, counter) {
+						  //    
+						  //    // Get global search input val as lower case
+						  //    var val = $('.dataTables_filter input').val().toLowerCase();
+              //
+						  //    // Return all rows if search is blank
+						  //    if (val === '') {
+						  //      return true;
+						  //    }
+						  //    
+						  //    // Otherwise if row has Edinburgh return it always
+						  //    if (searchData[2] === 'Edinburgh') {
+						  //      return true;
+						  //    }
+						  //    
+						  //    // Join row data as string and return it if there is a "Smart" match
+						  //    var row = searchData.join('').toLowerCase();
+						  //    if (row.includes(val)) {
+						  //      return true;
+						  //    }
+						  //    
+						  //    return false
+						  //    
+						  //  }
+						  //);
+						});
+						
+						
+						// Date range filter
+						minDateFilter = "";
+						maxDateFilter = "";
+						function dataPicker(){
+							$("#datepicker_from").datepicker({
+								dateFormat: 'yy-mm-dd',
+								showOn: "button",
+								buttonImage: "assets/images/calendar-small.png",
+								buttonImageOnly: false,
+								"onSelect": function(date) {
+									minDateFilter = new Date(date).getTime();
+									//dtable.fnDraw();
+									dtable.draw();
+								}
+							}).keyup(function() {
+								minDateFilter = new Date(this.value).getTime();
+								//dtable.fnDraw();
+								dtable.draw();
+							});
+
+							$("#datepicker_to").datepicker({
+								showOn: "button",
+								buttonImage: "assets/images/calendar-small.png",
+								buttonImageOnly: false,
+								"onSelect": function(date) {
+									maxDateFilter = new Date(date).getTime();
+									//dtable.fnDraw();
+									dtable.draw();
+								}
+							}).keyup(function() {
+								maxDateFilter = new Date(this.value+" 23:59:59").getTime();
+								//dtable.fnDraw();
+								dtable.draw();
+							});
+							
+							$.fn.dataTableExt.afnFiltering.push(
+								function(oSettings, aData, iDataIndex) {
+									if (typeof aData._date == 'undefined') {
+										aData._date = new Date(aData[2]).getTime(); // index 2 is the Timestamp/date field
+									}
+
+									if (minDateFilter && !isNaN(minDateFilter)) {
+										if (aData._date < minDateFilter) {
+											return false;
+										}
+									}
+
+									if (maxDateFilter && !isNaN(maxDateFilter)) {
+										if (aData._date > maxDateFilter) {
+											return false;
+										}
+									}
+
+									return true;
+								}
+							);
+						}
+						
+						function createSelectAll(){
+							dtable.column(0).header().innerHTML=`<input type="checkbox" id="selectAll" onclick="selectAll();"/>`;
+						}
+						function selectAll(){
+							$("input[type=checkbox]").each(function(){
+								this.checked=$("input#selectAll").prop("checked");
+							});
+						}
+						function refreshDatatable(items){
+							// Ensure the mandatory fields exist for the DT
+							for (var i in items){
+								if (items[i]["_WorkEmail"]==undefined) items[i]["_WorkEmail"]="Removed";
+								if (items[i]["_report"]!=undefined)
+									delete items[i]["_report"];
+							}
+							dtable=$('#search').DataTable( {
+								"data": items,
+								//"ajax": env.server+"/api/purge/surveys/"+surveyId+"/results",
+								"scrollY":				"1300px",
+								"scrollCollapse": true,
+								
+//								"bFilter": false,
+//								"bInfo": false,
+//								"bLengthChange": true,
+//								"oLanguage": {
+//									"sLengthMenu": "_MENU_"
+//								},
+//								"sEmptyTable": "No results",
+//								"bPaginate": false,
+								
+								"paging":				 false,
+								"lengthMenu": [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]], // page entry options
+								"pageLength" : 5, // default page entries
+								"info" : false,
+								"columns": [
+									{ "data": "id" },
+									{ "data": "id",				 "className": "idColumn" },
+									{ "data": "_timestamp", "className": "tsColumn" },
+									{ "data": "_Country",	 "className": "countryColumn"},
+									{ "data": "_Industry",	"className": "industryColumn"},
+									{ "data": "_Company",	 "className": "companyColumn"},
+									{ "data": "_WorkEmail", "className": "emailColumn"}
+								],
+								"columnDefs":[
+									{ "targets": 0, "render": function (data,type,row){
+										return "<input type='checkbox' id='"+data+"'/>";
+									}},
+									{ "targets": 1, "render": function (data,type,row){
+											return "<label for='"+data+"'>"+data+"</lable>";
+									}},
+									{ "targets": 2, "render": function (data,type,row){
+										return data.replace("T"," ");
+									}}
+								]
+							});
+						}
+						</script>
+						
+						<p id="date_filter">
+						    <span id="date-label-from" class="date-label">From: </span><input class="date_range_filter date" type="text" id="datepicker_from" />
+						    <span id="date-label-to" class="date-label"></span>To:<input class="date_range_filter date" type="text" id="datepicker_to" />
+						</p>
+						<table id="search">
+								<thead>
+										<tr class="headerRow">
+												<th align="left"></th>
+												<th align="left">ID</th>
+												<th align="left">Timestamp</th>
+												<th align="left">Country</th>
+												<th align="left">Industry</th>
+												<th align="left">Company</th>
+												<th align="left">Email</th>
+										</tr>
+								</thead>
+						</table>
+					
+					</td>
+				</tr>
+				
+			</tbody>
+		</table>
+	</div>
+		
+		
+	
+	<script>
+
+var surveyId=Utils.getParameterByName("id");
+setMenu("Data");
+$(document).ready(function() {
+	$("#feedback-alert").hide();
+	
+});
+
+	</script>
+
+</body>
+</html>

@@ -67,6 +67,7 @@
 			<li class="menu_needsId"><a href="admin-survey-plugins.html?id=">Plugins</a></li>
 			<li class="menu_needsId"><a href="admin-survey-resources.html?id=">Resources</a></li>
 			<li class="menu_needsId"><a href="admin-survey-results.html?id=">Results</a></li>
+			<li class="menu_needsId"><a href="admin-survey-data-management.html?id=">Data</a></li>
 			<li class="menu_needsId"><a href="admin-survey-settings.html?id=">Settings</a></li>
 		</ul>
 		<ul style="float:right" class="menu menu_horizontal">
@@ -92,12 +93,12 @@
 	  <script src="/assets/js/tinymce.min.js"></script>
 		<script src="https://cdn.tiny.cloud/1/kqjorf16lbrjslj3o5d6t1or1fffjsa43hhp3s5kaoeyt1ir/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>		
 		-->
-	  <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
 		<!--
-	  <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+	  <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
 	  <script src="/assets/js/tinymce-4.js"></script>
-	  <script src="https://cdn.tiny.cloud/1/zgiryb2ntve6qb475f3q1xy7vm6yg7p6q9n4k8e9k75sp3z1/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+	  <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
 		-->
+	  <script src="https://cdn.tiny.cloud/1/zgiryb2ntve6qb475f3q1xy7vm6yg7p6q9n4k8e9k75sp3z1/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
 	  
 	  <!--script src="http://cdn.tinymce.com/4/plugins/advcode/plugin.min.js"></script-->
 		<script>
@@ -150,10 +151,6 @@
 	
 <script>
 
-//$(document).ajaxStop(function () {
-//
-//});
-
 var surveyId=Utils.getParameterByName("id");
 setMenu("Results");
 $(document).ready(function() {
@@ -167,7 +164,19 @@ $(document).ready(function() {
 				tiny_content_css+=(tiny_content_css.length>0?",":"")+ resources[i]["path"];
 			}
 		}
+		Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/config", function(status, survey){
+			for (key in survey){
+				if ($("#_"+key).is("textarea")){
+					$("#_"+key).html(survey[key]);
+				}else if ($("#_"+key).attr("type")=="checkbox"){
+					$("#_"+key).prop("checked", survey[key]=="on")
+				}else{
+					$("#_"+key).val(survey[key]);
+				}
+			}
+		});
 		
+		// for tinyMCE 5, set the content into the textarea BEFORE initializing tinymce
 		tinymce.init({
 			  selector: 'textarea',  // change this value according to your HTML
 			  plugins: 'code,autoresize,fullpage',
@@ -178,32 +187,10 @@ $(document).ready(function() {
 			  content_css: tiny_content_css
 		});
 		
-		Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/config", function(status, survey){
-			for (key in survey){
-				
-				if ($("#_"+key).is("textarea")){
-					// check it's not a tinymce editor, if it is then initialise it
-					//var tinymceeditor=tinymce.get('_'+key);
-					var t=tinymce.get("_"+key);
-					if (null!=t)
-						t.setContent(survey[key]);
-						//$(tinymce.get('_'+key).getBody()).html(survey[key]);
-				
-				}else if ($("#_"+key).attr("type")=="checkbox"){
-					$("#_"+key).prop("checked", survey[key]=="on")
-				}else{
-					$("#_"+key).val(survey[key]);
-				}
-				
-			}
-			return;
-		});
-		
 	});
 	
-	
-	
 });
+
 
 //function nullToEmpty(v){ if (undefined!=v) return v; else return "";}
 function newData(){

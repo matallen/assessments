@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -25,8 +26,10 @@ import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
@@ -48,7 +51,6 @@ public class CleanupController{
 	
 	// TODO: add dataformat to the params so we can take some complexity out the front end
 	// TOO: add exclusions, so we can purge metrics EXCEPT the industry averages for example
-	
 	
 	@GET
 	@Path("/{surveyId}/metrics/purgeOlderThan")
@@ -102,6 +104,49 @@ public class CleanupController{
 		
 		return Response.ok().entity(Json.toJson(result)).build();
 	}
+	
+	
+	@DELETE
+	@Path("/{surveyId}/results")
+	public Response deleteResults(@PathParam("surveyId") String surveyId, String payloadJson) throws JsonParseException, JsonMappingException, IOException, ParseException{
+		System.out.println("deleteResults:: payload="+payloadJson);
+		Survey s=Survey.findById(surveyId);
+		List<String> resultIdsToDelete=Json.toObject(payloadJson, new TypeReference<ArrayList<String>>(){});
+		for (String id:resultIdsToDelete){
+			s.getResults().remove(id);
+			System.out.println("deletResults:: delete result with id "+id);
+		}
+		s.save();
+		return listResults(surveyId);
+	}
+	
+	@GET
+	@Path("/{surveyId}/results")
+	public Response listResults(
+			@PathParam("surveyId") String surveyId
+//			@QueryParam("fields") String fieldsList,
+//			@QueryParam("dateRange") String pDateRange
+			) throws ParseException, IOException{
+		
+		Survey s=Survey.findById(surveyId);
+		Map<String, Object> results=s.getResults();
+		
+		List<Map<String,Object>> result=new ArrayList<>();
+		for (Entry<String, Object> e:results.entrySet()){
+			Map<String,Object> entry=new HashMap<>();
+			entry.put("id", e.getKey());
+			Map<String,Object> surveyResults=Json.toObject((String)e.getValue(), new TypeReference<Map<String,Object>>(){});
+			for(Entry<String, Object> f:surveyResults.entrySet()){
+				if (f.getKey().startsWith("_"))
+					entry.put(f.getKey(), f.getValue());
+			}
+			result.add(entry);
+		}
+		
+		return Response.ok().entity(Json.toJson(result)).build();
+	}
+	
+	
 	
 	@GET
 	@Path("/{surveyId}/results/purgeOlderThan")
