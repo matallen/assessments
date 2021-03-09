@@ -188,17 +188,8 @@
 								refreshDatatable(JSON.parse(response.response));
 							});
 						}
-//						function selectAll(){
-//							$("input[type=checkbox]").each(function(){
-//								if (this.checked){
-//									this.checked=false;
-//								}else
-//									this.checked=true;
-//							});
-//						}
 						</script>
 						<input type="button" value="Delete Selected" onClick="return deleteSelected();"/>
-						<input type="button" value="Select All" onClick="return selectAll();"/>
 						
 						<script src="http://code.jquery.com/jquery-2.0.3.min.js" data-semver="2.0.3" data-require="jquery"></script>
 				  	<script data-require="jqueryui@*" data-semver="1.10.0" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.0/jquery-ui.js"></script>
@@ -213,6 +204,7 @@
 						    background-color: #efefef;
 						    border: 1px solid;
 						    padding: 5px;
+						    display:none;
 					    }
 					    .ui-icon-circle-triangle-e{
 					    float:right;
