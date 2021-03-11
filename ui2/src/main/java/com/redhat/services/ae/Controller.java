@@ -40,7 +40,11 @@ public class Controller{
 	@GET
 	@Path("/assets/js/env.js")
 	public Response getEnvJavascript(){
-		return Response.ok("var env={server:"+(System.getenv("SERVER")!=null?"\""+System.getenv("SERVER")+"\"":"undefined")+"}", "application/javascript").build();
+		String isLive="isLive:"+("true".equalsIgnoreCase(System.getenv("LIVE"))?"true":"false")+"";
+		String server="server:"+(System.getenv("SERVER")!=null?"\""+System.getenv("SERVER")+"\"":"undefined")+"";
+		return Response.ok("var env={"+server+","+isLive+"}").build();
+		
+//		return Response.ok("var env={server:"+(System.getenv("SERVER")!=null?"\""+System.getenv("SERVER")+"\"":"undefined")+"}", "application/javascript").build();
 	}
 	
 	
