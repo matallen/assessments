@@ -230,6 +230,8 @@ function populate(obj){ // html fields to javascript object
 			// no value? lets see if it's a tinyMCE rich editor
 			obj[key]=tinymce.get("_"+key).getContent({format : 'raw'})
 			//obj[key]=obj[key].replaceAll("\n","");
+		}else if ($("#_"+key).is("input") && $("#_"+key).prop("type")=="checkbox"){
+			obj[key]=$.trim($("#_"+key).prop("checked"));
 		}else{
 			obj[key]=$.trim($("#_"+key).val());
 		}
