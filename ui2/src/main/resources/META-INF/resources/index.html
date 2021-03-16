@@ -1,5 +1,13 @@
 <html lang="EN">
 <head>
+	
+	<script type="text/javascript">
+		var isLive=location.hostname.includes("assessments.redhat.com");
+		//document.write(`<script src="//static.redhat.com/libs/redhat/marketing/latest/trustarc/`+(isLive?`trustarc.js`:`trustarc.stage.js`)+`" type="text/javascript"> <\/script>`);
+		document.write(`<script id="dpal" src="https://www.redhat.com/ma/`+(isLive?`dpal.js`:`dpal-staging.js`)+`" type="text/javascript"> <\/script>`);
+		console.log("DPAL "+(isLive?"PROD!":"DEV/STAGING"));
+	</script>
+	
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>Assessments | Red Hat Inc</title>
@@ -8,15 +16,16 @@
 	<meta name="viewport" content="width=device-width, initial scale= 1.0">
 	<meta property="og:title" content="Assessments | Red Hat Inc">
 	<meta property="og:description" content="">
-  <link rel="preload" href="/assets/fonts/RedHatText/RedHatText-Regular.woff" as="font" type="font/woff" crossorigin>
-  <link rel="preload" href="/assets/fonts/RedHatText/RedHatText-Medium.woff" as="font" type="font/woff" crossorigin>
-  <link rel="preload" href="/assets/fonts/RedHatDisplay/RedHatDisplay-Regular.woff" as="font" type="font/woff" crossorigin>
-  <link rel="preload" href="/assets/fonts/RedHatDisplay/RedHatDisplay-Medium.woff" as="font" type="font/woff" crossorigin>
-  <link rel="preload" href="/assets/fonts/RedHatDisplay/RedHatDisplay-Bold.woff" as="font" type="font/woff" crossorigin>
-  <link type="text/css" rel="stylesheet" href="/assets/fonts/red-hat-font.css" media="all" />
-  <link rel="icon" href="https://www.redhat.com/profiles/rh/themes/redhatdotcom/favicon.ico">
+	<link rel="preload" href="/assets/fonts/RedHatText/RedHatText-Regular.woff" as="font" type="font/woff" crossorigin>
+	<link rel="preload" href="/assets/fonts/RedHatText/RedHatText-Medium.woff" as="font" type="font/woff" crossorigin>
+	<link rel="preload" href="/assets/fonts/RedHatDisplay/RedHatDisplay-Regular.woff" as="font" type="font/woff" crossorigin>
+	<link rel="preload" href="/assets/fonts/RedHatDisplay/RedHatDisplay-Medium.woff" as="font" type="font/woff" crossorigin>
+	<link rel="preload" href="/assets/fonts/RedHatDisplay/RedHatDisplay-Bold.woff" as="font" type="font/woff" crossorigin>
+	<link type="text/css" rel="stylesheet" href="/assets/fonts/red-hat-font.css" media="all" />
+	<link rel="icon" href="https://www.redhat.com/favicon.ico">
 	<style id="customStyles">
 	@import "https://go.redhat.com/hubfs/css/styles.min.css";
+	@import "https://www.redhat.com/ux/webdms/css/styles.min.css";
 	</style>
 	
 	<!-- markdown library -->
@@ -30,28 +39,16 @@
 	<script src="https://unpkg.com/jquery"></script>
 	<script src="https://surveyjs.azureedge.net/1.7.12/survey.jquery.js"></script>
 	<link href="https://surveyjs.azureedge.net/1.7.12/modern.css" type="text/css" rel="stylesheet"/>
-<!--
-	<script src="https://surveyjs.azureedge.net/1.7.26/survey.jquery.js"></script>
-	<link href="https://surveyjs.azureedge.net/1.7.26/modern.css" type="text/css" rel="stylesheet"/>
--->
+	
 	<link href="assets/css/survey-progress-panel.css" type="text/css" rel="stylesheet"/>
 	<link href="assets/css/header.css" type="text/css" rel="stylesheet"/>
 	<link href="assets/css/style.css" type="text/css" rel="stylesheet"/>
 	<link href="assets/css/footer.css" type="text/css" rel="stylesheet"/>
 
-  <!--
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.js"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/css/bootstrap-slider.css" rel="stylesheet"/>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.js"></script>
-  -->
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.js"></script>
-  
-  <link href="assets/css/bootstrap-slider-10.0.0.css" rel="stylesheet"/>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.js"></script>
+	<link href="assets/css/bootstrap-slider-10.0.0.css" rel="stylesheet"/>
 
-  <script src="assets/js/surveyjs-widgets-1.7.12.js"></script>
-  <!--
-  -->
+	<script src="assets/js/surveyjs-widgets-1.7.12.js"></script>
 </head>
 
 <body id="SurveyEngineBody" style="direction: inherit;">
@@ -60,14 +57,17 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-3" >
+					<a href="//www.redhat.com/" title="Red Hat"><img alt="Red Hat" data-alt-text="Red Hat" class="navbar-logo" src="/assets/images/red-hat_white.svg?t=1537976200708" title="Red Hat" > </a></div>
+					<!--
 					<a href="//www.redhat.com/" title="Red Hat"><img alt="Red Hat" data-alt-text="Red Hat" class="navbar-logo" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg?t=1537976200708" title="Red Hat" > </a></div>
+					-->
 				<div class="col-md ">
 					<!-- Language Selector (top right) -->
+					<!--
 					<div class="LanguageSelectorContainer float-right">
 						<select aria-label="Language" name="Q_lang" id="Q_lang" class="Q_lang" data-runtime-value="runtime.Selected">
 							<option value="DE" lang="DE" data-runtime-text="runtime.Language | property 'DE' | property 'DisplayName'">Deutsch</option>
 							<option value="EN" lang="EN" selected data-runtime-text="runtime.Language | property 'EN' | property 'DisplayName'">English</option>
-							<!--
 							<option value="ES-ES" lang="ES-ES" data-runtime-text="runtime.Language | property 'ES-ES' | property 'DisplayName'">Español</option>
 							<option value="FR" lang="FR" data-runtime-text="runtime.Language | property 'FR' | property 'DisplayName'">Français</option>
 							<option value="IT" lang="IT" data-runtime-text="runtime.Language | property 'IT' | property 'DisplayName'">Italiano</option>
@@ -75,12 +75,11 @@
 							<option value="KO" lang="KO" data-runtime-text="runtime.Language | property 'KO' | property 'DisplayName'">한국어</option>
 							<option value="JA" lang="JA" data-runtime-text="runtime.Language | property 'JA' | property 'DisplayName'">日本語</option>
 							<option value="ZH-S" lang="ZH-S" data-runtime-text="runtime.Language | property 'ZH-S' | property 'DisplayName'">简体中文</option>
-							-->
 						</select>
 					</div>
+					-->
 				</div>
 			</div>
-			
 			
 		</div>
 	</div>
@@ -109,7 +108,6 @@ function getVisitorId(key){
 	return Cookie.get(key);
 }
 
-
 $(document).ready(function() {
 	surveyId=Utils.getParameterByName("surveyId");
 	
@@ -126,9 +124,9 @@ $(document).ready(function() {
 </script>
 	
 	<div style="position:absolute; left: 0px;">
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
-      <script src="https://surveyjs.azureedge.net/1.7.15/survey.ko.js"></script>
-      <!--button onclick="$('#debug').html(JSON.stringify(survey.data, null, 2));">debug</button-->
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
+			<script src="https://surveyjs.azureedge.net/1.7.15/survey.ko.js"></script>
+			<!--button onclick="$('#debug').html(JSON.stringify(survey.data, null, 2));">debug</button-->
 		<pre id="debug" ></pre>
 	</div>
 
@@ -152,11 +150,11 @@ $(document).ready(function() {
 		var resultId;
 		
 		function startSurvey() {
-				loadSurvey();
-				if (Utils.getParameterByName("resultId")){
-					resultId=Utils.getParameterByName("resultId");
-					loadResults();
-				}
+			loadSurvey();
+			if (Utils.getParameterByName("resultId")){
+				resultId=Utils.getParameterByName("resultId");
+				loadResults();
+			}
 		}
 		
 		function loadSurvey() {
@@ -191,12 +189,13 @@ $(document).ready(function() {
 	<footer class="footerStyle">
 		<div class="container">
 			<div class="row">
+				<div class="col-md-3"><a href="//www.redhat.com/" target="_blank" ><img alt="Red Hat" class="img-fluid" src="/assets/images/red-hat_white.svg" style="height: 34px !important;" href="//www.redhat.com/"></a></div>
+				<!--
 				<div class="col-md-3"><a href="//www.redhat.com/" target="_blank" ><img alt="Red Hat" class="img-fluid" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg" style="height: 34px !important;" href="//www.redhat.com/"></a></div>
-
+				-->
 				<div class="col-md-3 copyrightStyle">
 					<p>Copyright © <span id="copyright-year">2020</span>&nbsp;<span class="text-nowrap">Red Hat, Inc.</span></p>
 				</div>
-
 				<div class="col-md">
 					<nav class="nav">
 						<a class="nav-link"  target="_blank" href="https://www.redhat.com/en/about/privacy-policy" >Privacy statement</a>
@@ -210,5 +209,16 @@ $(document).ready(function() {
 		</div>
 	</footer>
 </div>
+
+<span id="teconsent" style="line-height: 1.1;"></span>
+<div id="consent_blackbar" style="position: fixed;bottom: 0;width: 100%;z-index: 5;padding: 10px;"></div>  
+
+<!-- DPAL tracking -->
+<script type="text/javascript">
+	if (("undefined" !== typeof _satellite) && ("function" === typeof _satellite.pageBottom)) {
+		_satellite.pageBottom();
+	}
+</script>
+
 </body>
 </html>
