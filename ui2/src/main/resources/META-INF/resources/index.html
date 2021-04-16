@@ -107,16 +107,17 @@ function getVisitorId(key){
 $(document).ready(function() {
 	surveyId=Utils.getParameterByName("surveyId");
 	
-	if (undefined!=Utils.getParameterByName("dev_reset")){
-		console.log("Removing Cookie \"rh_cat_visitorId\"");
-		Cookie.remove("rh_cat_visitorId");
-	}
+//	if (undefined!=Utils.getParameterByName("dev_reset")){
+//		console.log("Removing Cookie \"rh_cat_visitorId\"");
+//		Cookie.remove("rh_cat_visitorId");
+//	}
 	
 	visitorId=getVisitorId("rh_cat_visitorId");
 	if (undefined!=surveyId)
 		startSurvey();
 	
 });
+
 </script>
 	
 	<div style="position:absolute; left: 0px;">

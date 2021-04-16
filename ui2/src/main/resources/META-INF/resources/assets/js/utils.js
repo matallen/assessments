@@ -18,7 +18,18 @@ Utils = {
 	findAncestor: function findAncestor (el, cls) {
 		while ((el = el.parentElement) && !el.classList.contains(cls));
 		return el;
+	},
+	isValidBase64: function(str){
+		if (undefined == str) return false;
+		if (str ==='' || str.trim() ==='')return false;
+		if (!str.endsWith("=")) return false;
+	   try {
+	     return btoa(atob(str)) == str;
+	   }catch(err){
+	     return false;
+	   }
 	}
+
 }
 
 HtmlUtils = {

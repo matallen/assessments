@@ -1,0 +1,200 @@
+<html lang="EN">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Admin @ Assessments | Red Hat Inc</title>
+	<meta name="description" content="Red Hat Assessment Platform">
+	<meta name="robots" content="noindex">
+	<meta name="viewport" content="width=device-width, initial scale= 1.0">
+	<meta property="og:title" content="Assessments | Red Hat Inc">
+	<meta property="og:description" content="">
+  <link rel="preload" href="/assets/fonts/RedHatText/RedHatText-Regular.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="/assets/fonts/RedHatText/RedHatText-Medium.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="/assets/fonts/RedHatDisplay/RedHatDisplay-Regular.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="/assets/fonts/RedHatDisplay/RedHatDisplay-Medium.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="/assets/fonts/RedHatDisplay/RedHatDisplay-Bold.woff" as="font" type="font/woff" crossorigin>
+  <link type="text/css" rel="stylesheet" href="/assets/fonts/red-hat-font.css" media="all" />
+  <link rel="icon" href="https://www.redhat.com/favicon.ico">
+	<style id="customStyles">
+	@import "https://www.redhat.com/ux/webdms/css/styles.min.css";
+	</style>
+	
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="assets/js/http.js"></script>
+	<script src="assets/js/utils.js"></script>
+	<script src="assets/js/env.js"></script>
+	<link rel="stylesheet" href="assets/css/header.css">
+	<link rel="stylesheet" href="assets/css/style.css">
+	<style>
+	section table.elevate{margin-top:15px;margin-bottom:15px;}
+	
+	</style>
+</head>
+<body>
+	
+	<div id="header">
+		<div class="navbar-container">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-3" >
+						<a class="navbar-brand" href="//www.redhat.com/" title="Red Hat"><img alt="Red Hat" class="img-fluid navbar-logo" data-alt-text="Red Hat" src="/assets/images/red-hat_white.svg?t=1537976200708" title="Red Hat" data-image-state="ready"> </a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="elevate" style="height: 27px">
+	</div>
+
+	<section class="admin container py-1">
+		<div class="row center">
+			<div class="button-bar" style="display:inline-flex;">
+			</div>
+			<h3>Generate Invitation Link</h3>
+			<p>
+				Here you can generate a personalized link for your client, which incorporates your email so you can be notified once your client completes the assessment 
+			</p>
+			<table class="elevate">
+				<tr>
+					<td>Your Email:</td>
+					<td><input id="email" name="email" type="text" placeholder="@redhat.com" pattern=".*@redhat.com" onkeyup="addRedHat(this);"/></td>
+				</tr>
+				<!--
+				<tr>
+					<td>Personalized message?:</td>
+					<td><textarea id="message" name="message" disabled></textarea></td>
+				</tr>
+				-->
+			</table>
+			
+			<table class="elevate">
+				<thead>
+					<tr>
+						<td>Survey ID</td>
+						<td>Survey Name</td>
+						<td></td>
+					</tr>
+				</thead>
+				<tbody id="surveys"></tbody>
+			</table>
+			
+			<table class="elevate">
+				<tr>
+					<td>Generated Link:</td>
+					<td>
+						<input id="link" name="link" type="text" style="width:80%;"></input>
+						<input type="button" onclick="return copyToClipboardFromInput('link')" value="Copy to Clipboard" />
+					</td>
+				</tr>
+			</table>
+			
+		</div>
+	</section>
+
+	<script>
+	$(document).ready(function() {
+		load();
+	});
+	
+	function addRedHat(t){
+		var lhs=t.value.split("@")[0];
+		t.value=lhs+"@redhat.com";
+		setCaretPosition("email", lhs.length);
+	}
+	
+	function setCaretPosition(elemId, caretPos) {
+	    var elem = document.getElementById(elemId);
+	    if(elem != null) {
+	        if(elem.createTextRange) {
+	            var range = elem.createTextRange();
+	            range.move('character', caretPos);
+	            range.select();
+	        }
+	        else {
+	            if(elem.selectionStart) {
+	                elem.focus();
+	                elem.setSelectionRange(caretPos, caretPos);
+	            }
+	            else
+	                elem.focus();
+	        }
+	    }
+	}
+	
+	function generate(surveyId, emailElementId){
+		//var survey=$("#surveys2").prop("value");
+		var email=$("#"+emailElementId).prop("value");
+		if (!email.includes("@redhat.com") || email.length<="@redhat.com".length){
+			alert("Please complete the 'Your Email' box before clicking 'Generate Link'")
+			return;
+		}
+		//alert(window.location.origin);
+		//alert(window.location.origin+"?surveyId="+surveyId+"&referrer="+btoa(email));
+		$("#link").prop("value", window.location.origin+"?surveyId="+surveyId+"&inviteFrom="+btoa(email));
+		copyToClipboardFromInput("link");
+		
+		// Copy with no textbox
+		//copyToClipboard(window.location.origin+"?surveyId="+surveyId+"&referrer="+btoa(email));
+	}
+	
+	function copyToClipboardFromInput(elementId){
+	  var copyText = document.getElementById(elementId);
+	  copyText.select();
+	  copyText.setSelectionRange(0, 99999); /* For mobile devices */
+	  document.execCommand("copy");
+	}
+	
+	function copyToClipboard(value){
+		var tempInput = document.createElement("input");
+	  tempInput.value = value;
+	  document.body.appendChild(tempInput);
+	  tempInput.select();
+	  tempInput.setSelectionRange(0, 99999);
+	  document.execCommand("copy");
+	  document.body.removeChild(tempInput);
+		
+		//var copyText = document.getElementById(elementId);
+		//copyText.select();
+	  //copyText.setSelectionRange(0, 99999); /* For mobile devices */
+	  //document.execCommand("copy");
+	  //alert("Copied the text: " + copyText.value);
+	}
+	
+	function load(){
+		$("#surveys").empty();
+		Http.httpGetObject(env.server+"/api/surveys/basic", function(status, surveys){
+			for(i in surveys){
+				var s=surveys[i];
+				$("#surveys").append(`
+						<tr>
+						<!--td><input type="checkbox" name="id" value="`+s['id']+`"/></td-->
+						<!--td><a href="admin-survey-details.html?id=`+s['id']+`">`+s['id']+`</a></td-->
+						<td>`+s['id']+`</td>
+						<td>`+s['name']+`</td>
+						<!--td>`+s['owner']+`</td-->
+						<td><a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" onclick="return generate('`+s['id']+`','email'); return false;" href="#">Generate Link</a></td>
+					</tr>
+					`);
+				$("#surveys2").append(`<option value='`+s["id"]+`'>`+s["name"]+`</option>`);
+			}
+		});
+	}
+	
+//	function deleteAllChecked(){
+//		var selected=[];
+//		$("input").each(function(){
+//			if ($(this).is(":checked")) {
+//				selected.push($(this).attr("value"));
+//			}
+//		});
+//		Http.httpDelete(env.server+"/api/surveys", selected, function(resp, status){
+//			load();
+//		});
+//	}
+	
+	</script>
+
+</body>
+</html>

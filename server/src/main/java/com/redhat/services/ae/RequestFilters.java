@@ -25,6 +25,8 @@ public class RequestFilters{
 			if (rc.request().path().contains("/geoInfo"))        removeAuth=true;
 			if (rc.request().path().contains("/customfield/"))   removeAuth=true;
 			
+			if (rc.request().path().contains("/basic"))   removeAuth=true;
+			
 			
 			if ("GET".equals(rc.request().method().name())){
 				if (rc.request().path().contains("/resources"))    removeAuth=true;

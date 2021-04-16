@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -36,6 +37,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.redhat.services.ae.MapBuilder;
 import com.redhat.services.ae.model.MetricsDecorator;
 import com.redhat.services.ae.model.Survey;
@@ -51,7 +53,19 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 @Produces(MediaType.APPLICATION_JSON)
 public class SurveyController{
 	public static final Logger log=LoggerFactory.getLogger(SurveyController.class);
-
+	
+	// unauthenticated request to list surveys, used in invitation/referrer feature (invitation.html)
+	@GET
+	@Path("/basic")
+	public Response getSurveys(){
+		List<Map<String,String>> result=Lists.newArrayList();
+		List<Survey> surveys=Survey.findAll();
+		for (Survey survey:surveys){
+			result.add(new MapBuilder<String,String>().put("id",survey.id).put("name",survey.name).build());
+		}
+		return Response.ok(result).build();
+	}
+	
 	@GET
 	@PermitAll
 	@Path("/{surveyId}/survey-config.js")

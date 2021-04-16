@@ -46,8 +46,11 @@ import com.redhat.services.ae.utils.Json;
 public class DroolsScoreRecommendationsPlugin extends Plugin{
 	public static final Logger log=LoggerFactory.getLogger(DroolsScoreRecommendationsPlugin.class);
 	
-	private static final int CACHE_EXPIRY_IN_MS=10000;
-	private static final GoogleDrive3 drive=new GoogleDrive3(CACHE_EXPIRY_IN_MS);
+//	private static final int CACHE_EXPIRY_IN_MS=10000;
+	private static final int DEFAULT_CACHE_EXPIRY_IN_MS=10000;
+//	private static final GoogleDrive3 drive=new GoogleDrive3(CACHE_EXPIRY_IN_MS);
+	private static final GoogleDrive3 drive=new GoogleDrive3(null!=System.getenv("GDRIVE_CACHE_EXPIRY_IN_MS")?Integer.parseInt(System.getenv("GDRIVE_CACHE_EXPIRY_IN_MS")):DEFAULT_CACHE_EXPIRY_IN_MS);
+	
 	private List<String> drls=null;
 	boolean extraDebug=false;
 	private String configSheetName;

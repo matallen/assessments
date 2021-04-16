@@ -310,7 +310,11 @@ survey
 			if (Utils.getParameterByName("intcmp")) surveydata["_intTacticId"]=Utils.getParameterByName("intcmp");
 			if (Utils.getParameterByName("sc_cid")) surveydata["_extTacticId"]=Utils.getParameterByName("sc_cid");
 		}
-    	
+		
+		// Invitation logic - If an account exec sends a link to a client with their encoded email, they system can notify the account exec once the customer has taken the assessment
+		if (Utils.isValidBase64(Utils.getParameterByName("inviteFrom")))
+			surveydata["_inviteFrom"]=atob(Utils.getParameterByName("inviteFrom"));
+
 		
 		// only generate a report page if they didnt trigger a shortcut
 		// check all triggers, if any eval to true then it most likely fired and therefore no report should be generated
