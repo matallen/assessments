@@ -25,7 +25,7 @@ public class Controller{
 	@GET
 	@Path("/surveys/{surveyId}/{lang}")
 	public Response getSurveys(@PathParam("lang") String lang, @PathParam("surveyId") String surveyId, @DefaultValue("text/html; charset=UTF-8") @QueryParam("responseContentType") String responseContentType) throws FileNotFoundException, IOException{
-		String templateName="META-INF/resources/index2.html";
+		String templateName="META-INF/resources/index.html";
 		String template=IOUtils.toString(new File("target/classes", templateName).exists()?new FileInputStream(new File("target/classes", templateName).getAbsolutePath()):getClass().getClassLoader().getResourceAsStream(templateName), "UTF-8");
 		
 		template=template.replaceAll("\\$SURVEY_ID", surveyId);
