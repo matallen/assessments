@@ -50,7 +50,7 @@ public class Survey{
 	public String description;
 	public String owner;
 	public String theme;
-	public Map<String,String> config;
+	public Map<String,Object> config;
 	
 	
 	@JsonIgnore
@@ -108,7 +108,7 @@ public class Survey{
 		questionsStorage.save(this.id);
 	}
 	
-	public Map<String,String> getConfig(){
+	public Map<String,Object> getConfig(){
 		if (null==config) config=new LinkedHashMap<>();
 		return config;
 	}
@@ -245,7 +245,7 @@ public class Survey{
 		public String getDescription(){return description;}   public Builder description(String v){description=v; return this;}
 		public String getOwner(){return owner;}						    public Builder owner(String v){owner=v; return this;}
 		public String getTheme(){return theme;}               public Builder theme(String v){theme=v; return this;}
-		public Map<String,String> getConfig(){return config;} public Builder config(Map<String,String> v){config=v; return this;}
+		public Map<String,Object> getConfig(){return config;} public Builder config(Map<String,Object> v){config=v; return this;}
 //		public String getExternalUrl(){return externalUrl;}   public Builder externalUrl(String v){externalUrl=v; return this;}
 //		public String getContent(){return content;}           public Builder content(String v){content=v; return this;}
 		

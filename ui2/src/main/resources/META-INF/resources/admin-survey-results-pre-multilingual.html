@@ -122,34 +122,24 @@
 		
 		<div class="elevate section">
 			<table><tr>
-					<td><label for="title">Language:</label></td>
-					<td>
-						<select id="_results_language" style="width:350px;" onchange="loadFromConfig();">
-							<option value="en">English</option>
-							<option value="de">Deutsch</option>
-						</select>
-					</td>
-					</tr><tr>
 					<td><label for="title">Results Page Title:</label></td>
-					<td><input id="_results_title" type="text" style="width:350px;" onblur="noop()"/></td>
+					<td><input id="_results_title" type="text" style="width:350px;"/></td>
 					</tr><tr>
 					<td><label for="title">Hide "Print Preview" button:</label></td>
 					<td><input id="_results_hide_print_button" type="checkbox" style="width:350px;"/></td>
-					</tr><tr>
-					<td><label for="title">"Print Preview" button text:</label></td>
-					<td><input id="_results_print_button_text" type="text" style="width:350px;"/></td>
-					</tr><tr>
-					<td><label for="title">"Edit my answers" button text:</label></td>
-					<td><input id="_results_edit_answers_button_text" type="text" style="width:350px;"/></td>
 					
 			</tr></table>
+		</div>
+		<div class="elevate section">
 			<table>
 					<tr><td><label for="title">Results Page Header:</label></td></tr>
-					<tr><td><textarea onblur="return doesNothing();" id="_results_header"></textarea></td></tr>
+					<tr><td><textarea onblur="return save();" id="_results_header"></textarea></td></tr>
 			</table>
+		</div>
+		<div class="elevate section">
 			<table>
 					<tr><td><label for="title">Results Page Footer:</label></td></tr>
-					<tr><td><textarea onblur="return doesNothing();" id="_results_footer"></textarea></td></tr>
+					<tr><td><textarea onblur="return save();" id="_results_footer"></textarea></td></tr>
 			</table>
 		</div>
 		
@@ -165,149 +155,54 @@ var surveyId=Utils.getParameterByName("id");
 setMenu("Results");
 $(document).ready(function() {
 	$("#feedback-alert").hide();
-	loadConfigFromServer();
-});
-
-var tiny_content_css=undefined;
-
-var config={};
-
-function loadFromConfig(){
-	var lang=$("#_results_language").val();
-	console.log(config[lang]);
 	
-	for (key in newData({})[lang]){
-		if ($("#_"+key).is("textarea")){
-			$("#_"+key).html("");
-			if (undefined!=tinymce.get('_'+key)){
-				tinymce.get('_'+key).setContent("");
+	Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/resources", function(status, resources){
+		var tiny_content_css="/assets/css/style.css";
+		for(i in resources){
+			if (resources[i]["path"].endsWith(".css")){
+				//$(this).load(resources[i]["path"]);
+				tiny_content_css+=(tiny_content_css.length>0?",":"")+ resources[i]["path"];
 			}
-		}else if ($("#_"+key).attr("type")=="checkbox"){
-			$("#_"+key).prop("checked", false)
-		}else{
-			$("#_"+key).val("");
 		}
-	}
-	//$('input[id^=\"_\"],textarea[id^=\"_\"]').each(function() {
-	//	this.value="";
-	//	if (undefined!=tinymce.get('_'+this.id))
-	//		tinymce.get('_'+this.id).setContent("");
-	//});
-	
-	for (key in config[lang]){
-		if ($("#_"+key).is("textarea")){
-			$("#_"+key).html(config[lang][key]);
-			if (undefined!=tinymce.get('_'+key)){
-				tinymce.get('_'+key).setContent(config[lang][key]);
-			}
-		}else if ($("#_"+key).attr("type")=="checkbox"){
-			$("#_"+key).prop("checked", config[lang][key]=="on" || config[lang][key]=="true")
-		}else{
-			$("#_"+key).val(config[lang][key]);
-		}
-	}
-}
-
-function loadConfigFromServer(){
-	if (undefined==tiny_content_css){
-		tiny_content_css="/assets/css/style.css";
-		Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/resources", function(status, resources){
-			for(i in resources){
-				if (resources[i]["path"].endsWith(".css")){
-					tiny_content_css+=(tiny_content_css.length>0?",":"")+ resources[i]["path"];
+		Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/config", function(status, survey){
+			for (key in survey){
+				if ($("#_"+key).is("textarea")){
+					$("#_"+key).html(survey[key]);
+				}else if ($("#_"+key).attr("type")=="checkbox"){
+					$("#_"+key).prop("checked", survey[key]=="on")
+				}else{
+					$("#_"+key).val(survey[key]);
 				}
 			}
-			
-			// for tinyMCE 5, set the content into the textarea BEFORE initializing tinymce
-			tinymce.init({
-				  selector: 'textarea',  // change this value according to your HTML
-				  plugins: 'code,autoresize,fullpage',
-				  toolbar: '', //code - this seems to disable all the other toolbars
-			// TODO: Need to find a better way to pull in resources in one call
-			//	  content_css: '/assets/css/style.css,/assets/css/survey-progress-panel.css,/assets/themes/rti-theme/css/style.css,/assets/themes/rti-theme/css/results.css'
-					// Info: https://www.tiny.cloud/docs-3x/reference/configuration/Configuration3x@content_css/
-				  content_css: tiny_content_css
-			});
-		});
-	}
-	
-//	Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/resources", function(status, resources){
-		
-//		for(i in resources){
-//			if (resources[i]["path"].endsWith(".css")){
-//				tiny_content_css+=(tiny_content_css.length>0?",":"")+ resources[i]["path"];
-//			}
-//		}
-		Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/config", function(status, survey){
-			
-			if (survey["en"]==undefined){
-				config["en"]=survey;
-			}else{
-				config=survey;
-			}
-			console.log(config);
-			
-			loadFromConfig();
-			
-			//for (lang in survey){
-			//	var language=lang;
-			//	for (key in survey){
-			//		if ($("#_"+key).is("textarea")){
-			//			$("#_"+key).html(survey[key]);
-			//			if (undefined!=tinymce.get('_'+key)){
-			//				tinymce.get('_'+key).setContent(survey[key]);
-			//			}
-			//		}else if ($("#_"+key).attr("type")=="checkbox"){
-			//			$("#_"+key).prop("checked", survey[key]=="on")
-			//		}else{
-			//			$("#_"+key).val(survey[key]);
-			//		}
-			//	}
-			//}
 		});
 		
 		// for tinyMCE 5, set the content into the textarea BEFORE initializing tinymce
-//		tinymce.init({
-//			  selector: 'textarea',  // change this value according to your HTML
-//			  plugins: 'code,autoresize,fullpage',
-//			  toolbar: '', //code - this seems to disable all the other toolbars
-//		// TODO: Need to find a better way to pull in resources in one call
-//		//	  content_css: '/assets/css/style.css,/assets/css/survey-progress-panel.css,/assets/themes/rti-theme/css/style.css,/assets/themes/rti-theme/css/results.css'
-//				// Info: https://www.tiny.cloud/docs-3x/reference/configuration/Configuration3x@content_css/
-//			  content_css: tiny_content_css
-//		});
+		tinymce.init({
+			  selector: 'textarea',  // change this value according to your HTML
+			  plugins: 'code,autoresize,fullpage',
+			  toolbar: '', //code - this seems to disable all the other toolbars
+		// TODO: Need to find a better way to pull in resources in one call
+		//	  content_css: '/assets/css/style.css,/assets/css/survey-progress-panel.css,/assets/themes/rti-theme/css/style.css,/assets/themes/rti-theme/css/results.css'
+				// Info: https://www.tiny.cloud/docs-3x/reference/configuration/Configuration3x@content_css/
+			  content_css: tiny_content_css
+		});
 		
-//	});
-}
+	});
+	
+});
 
 
 //function nullToEmpty(v){ if (undefined!=v) return v; else return "";}
-function newData(obj){
-	var lang=$("#_results_language").val();
-	if (!obj) obj=config;
-	if (!obj[lang]) obj[lang]={};
-//	var result={};
-//	result[lang]={};
+function newData(){
+	var result={};
 	$('input[id^=\"_\"],textarea[id^=\"_\"]').each(function() {
-	//$('input[id^=\"_\"],textarea[id^=\"_\"],select[id^=\"_\"]').each(function() {
-//		result[lang][this.id.substr(1)]=null;
-		obj[lang][this.id.substr(1)]=null;
+		result[this.id.substr(1)]=null;
 	});
-	return obj;
+	return result;
 }
-
-function noop(){
-	return false;
-}
-function update(){
+function save(){
 	var data=populate(newData());
 	data={"config":data}; // put it in a config object so it parses into a partial survey on the other end
-	console.log(data);
-	return data;
-}
-
-function save(){
-	data=update();
 	Http.send((undefined==surveyId?"POST":"PUT"), env.server+"/api/surveys"+(undefined==surveyId?"":"/"+surveyId+"/config"), data, function(resp, status){
 		//jsonToDisplay(resp.response);
 		var response=JSON.parse(resp.response);
@@ -329,17 +224,16 @@ function save(){
 	});
 }
 function populate(obj){ // html fields to javascript object
-	var lang=$("#_results_language").val();
-	for (key in obj[lang]){
+	for (key in obj){
 		
 		if ($("#_"+key).is("textarea")){
 			// no value? lets see if it's a tinyMCE rich editor
-			obj[lang][key]=tinymce.get("_"+key).getContent({format : 'raw'})
+			obj[key]=tinymce.get("_"+key).getContent({format : 'raw'})
 			//obj[key]=obj[key].replaceAll("\n","");
 		}else if ($("#_"+key).is("input") && $("#_"+key).prop("type")=="checkbox"){
-			obj[lang][key]=$.trim($("#_"+key).prop("checked"));
+			obj[key]=$.trim($("#_"+key).prop("checked"));
 		}else{
-			obj[lang][key]=$.trim($("#_"+key).val());
+			obj[key]=$.trim($("#_"+key).val());
 		}
 		
 	}

@@ -170,7 +170,6 @@
 		$(document).ready(function() {
 			
 			loadCssResources();
-			loadHeaderFooter();
 			
 			timerId = window.setInterval(function () {
 				
@@ -187,9 +186,10 @@
 						LocalStorage.saveFlag("lastAssessmentCompleted", "true");
 						
 						if (isDebug){
-							// raw output
 							$("#raw").html("<pre>"+JSON.stringify(response, undefined, 2)+"</pre>");
 						}
+						
+						loadHeaderFooter(response["_language"]?response["_language"]:"en"); // use the language from the results content, otherwise default to en
 						
 						displayResults(response);
 						
@@ -229,14 +229,19 @@
 		}
 		
 		// this should load the header and footer for the results page from the assessment config
-		function loadHeaderFooter(){
+		function loadHeaderFooter(languageCode){
 			Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/config", function(status, config){
-				console.log("Results Config:");
+				console.log("Results Config ("+languageCode+"):");
 				console.log(config);
-				if (undefined!=config["results_title"])  $("#results_title").html(config["results_title"]);
+				var config=config[languageCode]?config[languageCode]:config;
+				if (undefined!=config["results_title"])  $("#results_title").html( config["results_title"]);
 				if (undefined!=config["results_header"]) $("#results_header").html(config["results_header"]);
 				if (undefined!=config["results_footer"]) $("#results_footer").html(config["results_footer"]);
 				if (undefined!=config["results_hide_print_button"] && "true"==config["results_hide_print_button"]) $("#create_pdf").hide(); 
+				
+				if (undefined!=config["results_edit_answers_button_text"])  $("#review_assessment").html(config["results_edit_answers_button_text"]);
+				if (undefined!=config["results_print_button_text"])         $("#create_pdf").html(config["results_print_button_text"]);
+				
 			});
 		}
 		
