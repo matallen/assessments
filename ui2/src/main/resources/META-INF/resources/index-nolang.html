@@ -30,24 +30,24 @@
 	<!-- markdown library -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.6.4/showdown.min.js"></script>
 	
-	<script src="/assets/js/http.js"></script>
-	<script src="/assets/js/utils.js"></script>
-	<script src="/assets/js/cookies.js"></script>
-	<script src="/assets/js/env.js"></script>
+	<script src="assets/js/http.js"></script>
+	<script src="assets/js/utils.js"></script>
+	<script src="assets/js/cookies.js"></script>
+	<script src="assets/js/env.js"></script>
 	
 	<script src="https://unpkg.com/jquery"></script>
 	<script src="https://surveyjs.azureedge.net/1.7.12/survey.jquery.js"></script>
 	<link href="https://surveyjs.azureedge.net/1.7.12/modern.css" type="text/css" rel="stylesheet"/>
 	
-	<link href="/assets/css/survey-progress-panel.css" type="text/css" rel="stylesheet"/>
-	<link href="/assets/css/header.css" type="text/css" rel="stylesheet"/>
-	<link href="/assets/css/style.css" type="text/css" rel="stylesheet"/>
-	<link href="/assets/css/footer.css" type="text/css" rel="stylesheet"/>
+	<link href="assets/css/survey-progress-panel.css" type="text/css" rel="stylesheet"/>
+	<link href="assets/css/header.css" type="text/css" rel="stylesheet"/>
+	<link href="assets/css/style.css" type="text/css" rel="stylesheet"/>
+	<link href="assets/css/footer.css" type="text/css" rel="stylesheet"/>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/11.0.2/bootstrap-slider.js"></script>
-	<link href="/assets/css/bootstrap-slider-10.0.0.css" rel="stylesheet"/>
+	<link href="assets/css/bootstrap-slider-10.0.0.css" rel="stylesheet"/>
 
-	<script src="/assets/js/surveyjs-widgets-1.7.12.js"></script>
+	<script src="assets/js/surveyjs-widgets-1.7.12.js"></script>
 </head>
 
 <body id="SurveyEngineBody" style="direction: inherit;">
@@ -61,10 +61,8 @@
 					<!-- Language Selector (top right) -->
 					<div class="LanguageSelectorContainer float-right">
 						<select aria-label="Language" name="Q_lang" id="Q_lang" class="Q_lang" data-runtime-value="runtime.Selected">
-						<!--
 							<option value="DE" lang="DE" data-runtime-text="runtime.Language | property 'DE' | property 'DisplayName'">Deutsch</option>
 							<option value="EN" lang="EN" selected data-runtime-text="runtime.Language | property 'EN' | property 'DisplayName'">English</option>
-						-->
 					<!--
 							<option value="ES-ES" lang="ES-ES" data-runtime-text="runtime.Language | property 'ES-ES' | property 'DisplayName'">Español</option>
 							<option value="FR" lang="FR" data-runtime-text="runtime.Language | property 'FR' | property 'DisplayName'">Français</option>
@@ -76,18 +74,6 @@
 					-->
 						</select>
 					</div>
-					<script>
-					var languageOptions=[{code:"en",text:"English"},{code:"de",text:"Deutsch"}]
-					//var languageOptions=[{code:"EN",text:"English",def:true},{code:"DE",text:"Deutsch"}]
-					//var qLang="";
-					////var defLang="$LANG_ID";
-					////if (defLang="") defLang="EN";
-					//for(i in languageOptions){
-					//	qLang+=`<option value="`+languageOptions[i].code+`" lang="`+languageOptions[i].code+`" data-runtime-text="runtime.Language | property '`+languageOptions[i].code+`' | property 'DisplayName'">`+languageOptions[i].text+`</option>`;
-					//}
-					//$("#Q_lang").html(qLang);
-					
-					</script>
 				</div>
 			</div>
 			
@@ -119,27 +105,16 @@ function getVisitorId(key){
 }
 
 $(document).ready(function() {
-	surveyId="$SURVEY_ID";
-	languageCode="$LANGUAGE_CODE";
-	if (surveyId.includes("SURVEY_ID")) surveyId=Utils.getParameterByName("surveyId");
-	if (languageCode.includes("LANGUAGE_CODE")) languageCode=Utils.getParameterByName("lang");
-	if (""==languageCode) languageCode="en"; // default language code
+	surveyId=Utils.getParameterByName("surveyId");
 	
-	
-	var qLang="";
-	for(i in languageOptions){
-		qLang+=`<option value="`+languageOptions[i].code+`" lang="`+languageOptions[i].code+`" `+(languageCode==languageOptions[i].code?"selected":"")+` data-runtime-text="runtime.Language | property '`+languageOptions[i].code+`' | property 'DisplayName'">`+languageOptions[i].text+`</option>`;
-	}
-	$("#Q_lang").html(qLang);
-	
-	//surveyId=Utils.getParameterByName("surveyId");
+//	if (undefined!=Utils.getParameterByName("dev_reset")){
+//		console.log("Removing Cookie \"rh_cat_visitorId\"");
+//		Cookie.remove("rh_cat_visitorId");
+//	}
 	
 	visitorId=getVisitorId("rh_cat_visitorId");
-	if (undefined!=surveyId){
+	if (undefined!=surveyId)
 		startSurvey();
-	}else{
-		$("#surveyElement").html("<center><h3>Unable to display an assessment</h3>No assessment ID provided - please check the URL<br/><br/></center>");
-	}
 	
 });
 

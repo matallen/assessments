@@ -133,7 +133,7 @@ var config=SURVEY_CONFIG;
 
 // Page theme
 if (undefined!=config.theme && ""!=config.theme)
-	loadCSS("assets/themes/"+config.theme+"/css/style.css");
+	loadCSS("/assets/themes/"+config.theme+"/css/style.css");
 
 //console.log("Config theme" +config.theme);
 var defaultThemeColors = Survey
@@ -255,7 +255,7 @@ survey
 		var page=options.oldCurrentPage;
 		var timeTaken=page.survey.koTimerInfoText();
 		if (""==timeTaken) return;
-		var expr= /.+spent (.+?) on this page and (.+?) in total./g;
+		var expr= / ([0-9]+) .+ ([0-9]+) /g;
 		var match=expr.exec(timeTaken);
 		timeInfo[page.name]=match[1];
 		console.log("Metrics:: sending page message: page "+ page.name+" - "+timeInfo[page.name]);
@@ -290,7 +290,7 @@ survey
     	
 		var timeTaken=result.currentPageValue.survey.koTimerInfoText();
 		if (""==timeTaken) return;
-		var expr= /.+spent (.+?) on this page and (.+?) in total./g;
+		var expr= / ([0-9]+) .+ ([0-9]+) /g;
 		var match=expr.exec(timeTaken);
 		timeInfo[page.name]=match[1];
 		console.log("Metrics:: sending page message: page "+ page.name+" - "+timeInfo[page.name]);
@@ -577,6 +577,7 @@ LocalStorage.loadState(survey);
 
 //survey.completedHtml="<h2>Analyzing responses and generating <br/>your report - please wait a moment...</h2><br/><br/>";
 
-//survey.locale = languageCode;
+if (""!=languageCode)
+	survey.locale = languageCode;
 survey.render();
 

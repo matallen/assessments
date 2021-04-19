@@ -1,21 +1,38 @@
 package com.redhat.services.ae;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
+
+import org.apache.commons.io.IOUtils;
 
 
 @Path("/")
 public class Controller{
 	
+	@GET
+	@Path("/surveys/{surveyId}/{lang}")
+	public Response getSurveys(@PathParam("lang") String lang, @PathParam("surveyId") String surveyId, @DefaultValue("text/html; charset=UTF-8") @QueryParam("responseContentType") String responseContentType) throws FileNotFoundException, IOException{
+		String templateName="META-INF/resources/index2.html";
+		String template=IOUtils.toString(new File("target/classes", templateName).exists()?new FileInputStream(new File("target/classes", templateName).getAbsolutePath()):getClass().getClassLoader().getResourceAsStream(templateName), "UTF-8");
+		
+		template=template.replaceAll("\\$SURVEY_ID", surveyId);
+		template=template.replaceAll("\\$LANGUAGE_CODE", lang);
+		
+		return Response.ok(template, null==responseContentType?"text/html; charset=UTF-8":responseContentType).build();
+	}
 	
 	// Resource proxy
 	@GET
