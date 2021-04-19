@@ -381,62 +381,73 @@ $("#surveyElement").Survey({
 });
 
 
-// Top Nav
-var navTopEl = document.querySelector("#surveyNavigation");
-if (undefined!=navTopEl){
-	navTopEl.className = "navigationContainer";
-	var textDiv = document.createElement("h5");
-	textDiv.className = "textProgress"
-	textDiv.innerText = "Progress";
-	navTopEl.appendChild(textDiv);
-	var navProgBarDiv = document.createElement("div");
-	navProgBarDiv.className = "navigationProgressbarDiv";
-	navTopEl.appendChild(navProgBarDiv);
-	var navProgBar = document.createElement("ul");
-	navProgBar.className = "navigationProgressbar";
-	navProgBarDiv.appendChild(navProgBar);
-	
-	var initialVisibility={};
-	var navTitlesUniqueSet=[];
-	var liEls = {};
-	for (var i = 0; i < survey.PageCount; i++) {
-		var liEl = document.createElement("li");
-		if (survey.currentPageNo == i) {
-			liEl
-			.classList
-			.add("current");
+var liEls = {};
+generateNavigation("en"); // generate an en nav by default
+
+function generateNavigation(languageCode){
+	console.log("languageCode in survey-template is "+languageCode);
+	// Top Nav
+		var navTopEl = document.querySelector("#surveyNavigation");
+		navTopEl.innerText="";
+		if (undefined!=navTopEl){
+			navTopEl.className = "navigationContainer";
+			var textDiv = document.createElement("h5");
+			textDiv.className = "textProgress"
+			textDiv.innerText = "Progress";
+			navTopEl.appendChild(textDiv);
+			var navProgBarDiv = document.createElement("div");
+			navProgBarDiv.className = "navigationProgressbarDiv";
+			navTopEl.appendChild(navProgBarDiv);
+			var navProgBar = document.createElement("ul");
+			navProgBar.className = "navigationProgressbar";
+			navProgBarDiv.appendChild(navProgBar);
+			
+			var initialVisibility={};
+			var navTitlesUniqueSet=[];
+			for (var i = 0; i < survey.PageCount; i++) {
+				var liEl = document.createElement("li");
+				if (survey.currentPageNo == i) {
+					liEl
+					.classList
+					.add("current");
+				}
+				
+				var pageTitle = document.createElement("div");
+				
+				if (languageCode=="en") languageCode="default"; // just because surveyJS question editor has en as default
+				
+				var navTitleLoc = survey.pages[i].localizableStrings.navigationTitle.values[languageCode];
+				
+				pageTitle.innerText=!survey.pages[i].navigationTitle?
+						pageTitle.innerText = survey.pages[i].name:
+						pageTitle.innerText = survey.pages[i].navigationTitle;
+						
+						pageTitle.id=pageTitle.innerText;
+						
+						// BUG:: this needs changing to "if ALL pages with the same pageTitle are not visible then set 'pageNotVisible' class"
+						if (undefined==initialVisibility[pageTitle.innerText]) initialVisibility[pageTitle.innerText]=[]
+						initialVisibility[pageTitle.innerText].push(survey.pages[i].isVisible);
+						
+						
+						// logic to group question pages in progress panel
+						if (navTitlesUniqueSet.includes(pageTitle.innerText)) continue;
+						navTitlesUniqueSet.push(pageTitle.innerText);
+						
+						pageTitle.classList.add("pageTitle");
+						
+						navProgBar.appendChild(pageTitle);
+						navProgBar.appendChild(liEl);
+						
+						pageTitle.classList.add("_"+survey.pages[i].name.replace(/ /g,"_").toLowerCase());
+						liEls[undefined!=survey.pages[i].navigationTitle?survey.pages[i].navigationTitle:survey.pages[i].name]=liEl;
+			}
+			// visible if "any" pages are initially visible
+			for (var k in initialVisibility){
+				var visible=initialVisibility[k].some(x => x);
+				if (!visible) document.getElementById(k).classList.add("pageNotVisible");
+			}
+			
 		}
-		
-		var pageTitle = document.createElement("div");
-		pageTitle.innerText=!survey.pages[i].navigationTitle?
-				pageTitle.innerText = survey.pages[i].name:
-					pageTitle.innerText = survey.pages[i].navigationTitle;
-				pageTitle.id=pageTitle.innerText;
-				
-				// BUG:: this needs changing to "if ALL pages with the same pageTitle are not visible then set 'pageNotVisible' class"
-				if (undefined==initialVisibility[pageTitle.innerText]) initialVisibility[pageTitle.innerText]=[]
-				initialVisibility[pageTitle.innerText].push(survey.pages[i].isVisible);
-				
-				
-				// logic to group question pages in progress panel
-				if (navTitlesUniqueSet.includes(pageTitle.innerText)) continue;
-				navTitlesUniqueSet.push(pageTitle.innerText);
-				
-				//pageTitle.className = "pageTitle";
-				pageTitle.classList.add("pageTitle");
-				
-				navProgBar.appendChild(pageTitle);
-				navProgBar.appendChild(liEl);
-				
-				pageTitle.classList.add("_"+survey.pages[i].name.replace(/ /g,"_").toLowerCase());
-				liEls[undefined!=survey.pages[i].navigationTitle?survey.pages[i].navigationTitle:survey.pages[i].name]=liEl;
-	}
-	// visible if "any" pages are initially visible
-	for (var k in initialVisibility){
-		var visible=initialVisibility[k].some(x => x);
-		if (!visible) document.getElementById(k).classList.add("pageNotVisible");
-	}
-	
 }
 
 function setConsentAgreement(surveyData, countryCode){
@@ -527,21 +538,23 @@ survey
         var newIndex = options.newCurrentPage.navigationTitle!=undefined?options.newCurrentPage.navigationTitle:options.newCurrentPage.name;
         if (oldIndex==newIndex) return;
         
-        if (undefined!=liEls[oldIndex])
-	        liEls[oldIndex].classList.remove("current");
-        // change li color once transitioned beyond it
-        if (newIndexI > oldIndexI) {
-            for (var i = oldIndexI; i < newIndexI; i++) {
-                if (sender.visiblePages[i].hasErrors(true, true)) 
-                    break;
-                if (!liEls[sender.visiblePages[i].navigationTitle!=null?sender.visiblePages[i].navigationTitle:sender.visiblePages[i].name].classList.contains("completed")) {
-                    liEls[sender.visiblePages[i].navigationTitle!=null?sender.visiblePages[i].navigationTitle:sender.visiblePages[i].name].classList.add("completed");
-                }
-            }
+        if (undefined!=liEls){
+        	if (undefined!=liEls[oldIndex])
+        		liEls[oldIndex].classList.remove("current");
+        	// change li color once transitioned beyond it
+        	if (newIndexI > oldIndexI) {
+        		for (var i = oldIndexI; i < newIndexI; i++) {
+        			if (sender.visiblePages[i].hasErrors(true, true)) 
+        				break;
+        			if (!liEls[sender.visiblePages[i].navigationTitle!=null?sender.visiblePages[i].navigationTitle:sender.visiblePages[i].name].classList.contains("completed")) {
+        				liEls[sender.visiblePages[i].navigationTitle!=null?sender.visiblePages[i].navigationTitle:sender.visiblePages[i].name].classList.add("completed");
+        			}
+        		}
+        	}
+        	// highlight current
+        	if (undefined!=liEls[newIndex])
+        		liEls[newIndex].classList.add("current");
         }
-        // highlight current
-        if (undefined!=liEls[newIndex])
-	        liEls[newIndex].classList.add("current");
         
         
     });
@@ -577,7 +590,9 @@ LocalStorage.loadState(survey);
 
 //survey.completedHtml="<h2>Analyzing responses and generating <br/>your report - please wait a moment...</h2><br/><br/>";
 
-if (""!=languageCode)
+if (""!=languageCode){
 	survey.locale = languageCode;
+	generateNavigation(languageCode);
+}
 survey.render();
 

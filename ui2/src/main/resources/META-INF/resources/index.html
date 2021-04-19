@@ -104,6 +104,7 @@ $("#Q_lang").change(function(sender) {
 	if (surveyStarted){
 		survey.locale = languageCode;
 		survey.render();
+		generateNavigation(languageCode); // function is located in survey-template.js
 	}
 });
 
@@ -124,7 +125,6 @@ $(document).ready(function() {
 	if (surveyId.includes("SURVEY_ID")) surveyId=Utils.getParameterByName("surveyId");
 	if (languageCode.includes("LANGUAGE_CODE")) languageCode=Utils.getParameterByName("lang");
 	if (""==languageCode) languageCode="en"; // default language code
-	
 	
 	var qLang="";
 	for(i in languageOptions){
