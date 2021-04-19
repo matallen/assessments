@@ -417,6 +417,7 @@ function generateNavigation(languageCode){
 				if (languageCode=="en") languageCode="default"; // just because surveyJS question editor has en as default
 				
 				var navTitleLoc = survey.pages[i].localizableStrings.navigationTitle.values[languageCode];
+				//if (""==navTitleLoc) survey.pages[i].navigationTitle; // catch-all in case there is no localized string.
 				
 				pageTitle.innerText=!survey.pages[i].navigationTitle?
 						pageTitle.innerText = survey.pages[i].name:
