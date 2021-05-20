@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="EN">
 <head>
 	
@@ -78,15 +79,6 @@
 					</div>
 					<script>
 					var languageOptions=[{code:"en",text:"English"},{code:"de",text:"Deutsch"}]
-					//var languageOptions=[{code:"EN",text:"English",def:true},{code:"DE",text:"Deutsch"}]
-					//var qLang="";
-					////var defLang="$LANG_ID";
-					////if (defLang="") defLang="EN";
-					//for(i in languageOptions){
-					//	qLang+=`<option value="`+languageOptions[i].code+`" lang="`+languageOptions[i].code+`" data-runtime-text="runtime.Language | property '`+languageOptions[i].code+`' | property 'DisplayName'">`+languageOptions[i].text+`</option>`;
-					//}
-					//$("#Q_lang").html(qLang);
-					
 					</script>
 				</div>
 			</div>
@@ -119,18 +111,44 @@ function getVisitorId(key){
 	return Cookie.get(key);
 }
 
+function loadLanguageOptionsControl(questionConfig){
+	var languageConfigOptions={
+			"default":{code:"en",text:"English"},
+			"de":{code:"de",text:"Deutsch"},
+			"es":{code:"es",text:"Español"}
+	};
+	// load language options here?
+	var questionLanguages=questionConfig["completedHtml"]?questionConfig["completedHtml"]:questionConfig["completeText"];
+	if (questionLanguages["default"]){ // then we have languages we need to parse
+		var languageOptions=[];
+		for (lang in questionLanguages) languageOptions.push(languageConfigOptions[lang]);
+		var qLang="";
+		for(i in languageOptions){
+			qLang+=`<option value="`+languageOptions[i].code+`" lang="`+languageOptions[i].code+`" `+(languageCode==languageOptions[i].code?"selected":"")+` data-runtime-text="runtime.Language | property '`+languageOptions[i].code+`' | property 'DisplayName'">`+languageOptions[i].text+`</option>`;
+		}
+		$("#Q_lang").html(qLang);
+
+	}else{
+		// no languages, remove the control
+		$("#Q_lang").remove();
+	}
+}
+
 $(document).ready(function() {
 	surveyId="$SURVEY_ID";
-	languageCode="$LANGUAGE_CODE";
 	if (surveyId.includes("SURVEY_ID")) surveyId=Utils.getParameterByName("surveyId");
+	
+	// determine language code (template, then parameter, then revert to default)
+	languageCode="$LANGUAGE_CODE";
 	if (languageCode.includes("LANGUAGE_CODE")) languageCode=Utils.getParameterByName("lang");
 	if (""==languageCode) languageCode="en"; // default language code
 	
-	var qLang="";
-	for(i in languageOptions){
-		qLang+=`<option value="`+languageOptions[i].code+`" lang="`+languageOptions[i].code+`" `+(languageCode==languageOptions[i].code?"selected":"")+` data-runtime-text="runtime.Language | property '`+languageOptions[i].code+`' | property 'DisplayName'">`+languageOptions[i].text+`</option>`;
-	}
-	$("#Q_lang").html(qLang);
+	// display language options
+//	var qLang="";
+//	for(i in languageOptions){
+//		qLang+=`<option value="`+languageOptions[i].code+`" lang="`+languageOptions[i].code+`" `+(languageCode==languageOptions[i].code?"selected":"")+` data-runtime-text="runtime.Language | property '`+languageOptions[i].code+`' | property 'DisplayName'">`+languageOptions[i].text+`</option>`;
+//	}
+//	$("#Q_lang").html(qLang);
 	
 	//surveyId=Utils.getParameterByName("surveyId");
 	
@@ -146,8 +164,8 @@ $(document).ready(function() {
 </script>
 	
 	<div style="position:absolute; left: 0px;">
-			<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js"></script>
-			<script src="https://surveyjs.azureedge.net/1.7.15/survey.ko.js"></script>
+			<script src="/assets/js/knockout-3.4.0-min.js"></script>
+			<script src="/assets/js/survey.ko-1.7.15.js"></script>
 			<!--button onclick="$('#debug').html(JSON.stringify(survey.data, null, 2));">debug</button-->
 		<pre id="debug" ></pre>
 	</div>
@@ -212,11 +230,8 @@ $(document).ready(function() {
 		<div class="container">
 			<div class="row">
 				<div class="col-md-3"><a href="//www.redhat.com/" target="_blank" ><img alt="Red Hat" class="img-fluid" src="/assets/images/red-hat_white.svg" style="height: 34px !important;" href="//www.redhat.com/"></a></div>
-				<!--
-				<div class="col-md-3"><a href="//www.redhat.com/" target="_blank" ><img alt="Red Hat" class="img-fluid" src="https://go.redhat.com/hubfs/images/logos/red-hat_white.svg" style="height: 34px !important;" href="//www.redhat.com/"></a></div>
-				-->
 				<div class="col-md-3 copyrightStyle">
-					<p>Copyright © <span id="copyright-year">2020</span>&nbsp;<span class="text-nowrap">Red Hat, Inc.</span></p>
+					<p>Copyright &#169; <span id="copyright-year">2020</span>&nbsp;<span class="text-nowrap">Red Hat, Inc.</span></p>
 				</div>
 				<div class="col-md">
 					<nav class="nav">

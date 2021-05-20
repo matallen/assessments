@@ -191,6 +191,10 @@ Survey.ChoicesRestfull.onBeforeSendRequest = function(sender, options) {
 
 var json = SURVEY_CONTENT;
 
+// load the lanugage options from the question config in the selector control
+loadLanguageOptionsControl(json);
+
+
 window.survey = new Survey.Model(json);
 
 
@@ -262,6 +266,16 @@ survey
     	
 		LocalStorage.saveState(survey);
 		
+		console.log("Adobe: Sending 'pageChange' event: "+page.name);
+		sendAdobeEvent({
+			'event': 'pageChange',
+				"page":{
+					"surveyId": surveyId,
+					"name": page.name
+				}
+		});// tell Adobe tracking that the page changed
+		//sendAdobeEvent(surveyId+".pageChanged."+page.name); 
+		
 		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onPageChange?visitorId="+Cookie.get("rh_cat_visitorId"), buildPayload(page));
 		
 		
@@ -300,6 +314,9 @@ survey
 		var surveydata=survey.data;
 		
 		surveydata["_language"]=languageCode;
+		
+		// Save again here so we get the language in the saved payload
+		LocalStorage.saveState(survey);
 		
 		// Pass on TacticIds for Eloqua (internal is the referrer [site it came from before this one], external is the source [email, social ad etc..])
 		if (typeof Http !== 'undefined'){
@@ -393,7 +410,7 @@ function generateNavigation(languageCode){
 			navTopEl.className = "navigationContainer";
 			var textDiv = document.createElement("h5");
 			textDiv.className = "textProgress"
-			textDiv.innerText = "Progress";
+			textDiv.innerText = ""; // removed "Progress" as it's hard-coded in Englist, so doesn't support translations well
 			navTopEl.appendChild(textDiv);
 			var navProgBarDiv = document.createElement("div");
 			navProgBarDiv.className = "navigationProgressbarDiv";
@@ -596,4 +613,22 @@ if (""!=languageCode){
 	generateNavigation(languageCode);
 }
 survey.render();
+
+
+
+// For Adobe DPAL tracking
+function sendAdobeEvent(evt) {
+  if (document.createEvent && document.body.dispatchEvent) {
+    var myEvent = document.createEvent('Event');
+    myEvent.initEvent(evt, true, true); // can bubble, and is cancellable
+    document.body.dispatchEvent(myEvent);
+    // @ts-ignore
+  } else if (window.CustomEvent && document.body.dispatchEvent) {
+    // @ts-ignore
+    var event = new CustomEvent(evt,
+      { bubbles: true, cancelable: true }
+    );
+    document.body.dispatchEvent(event);
+  }
+}
 
