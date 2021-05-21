@@ -197,7 +197,6 @@ loadLanguageOptionsControl(json);
 
 window.survey = new Survey.Model(json);
 
-
 var timeInfo=[];
 
 
@@ -238,8 +237,8 @@ survey.onLoadChoicesFromServer.add(function(survey, options) {
   });
 
 survey
-      .onAfterRenderPage
-      .add(function(result, options){
+	.onAfterRenderPage
+	.add(function(result, options){
 			// Change button text on specific pages (Start on page 1 &
 //			$(".sv_rh_next_btn").prop("value", "Next");
 			
@@ -251,7 +250,9 @@ survey
 //			if (survey.currentPageNo==survey.pages.length){
 //				$(".sv_rh_next_btn").prop("value", "Start");
 //			}
-      })
+		// dont know why but this fires many time per page, so it's no real use
+		//console.log("onAfterRenderPage:: "+options.page.name);
+	})
 
 survey
 	.onCurrentPageChanged
@@ -263,18 +264,18 @@ survey
 		var match=expr.exec(timeTaken);
 		timeInfo[page.name]=match[1];
 		console.log("Metrics:: sending page message: page "+ page.name+" - "+timeInfo[page.name]);
-    	
+		
 		LocalStorage.saveState(survey);
 		
-		console.log("Adobe: Sending 'pageChange' event: "+page.name);
-		sendAdobeEvent({
-			'event': 'pageChange',
-				"page":{
-					"surveyId": surveyId,
-					"name": page.name
-				}
-		});// tell Adobe tracking that the page changed
-		//sendAdobeEvent(surveyId+".pageChanged."+page.name); 
+		AdobeUtils.sendAdobeEvent({"event": "Page Load Started", 
+			"page": {
+				  "detailedPageName": "Red Hat Assessments - "+ surveyId +" - "+ options.newCurrentPage.name,
+				  "pageType": "assessments",
+				  "siteLanguage": survey.locale,
+				  "cms": "RH CMS 2020.14.0"
+			}
+		});
+		AdobeUtils.sendAdobeEvent({ "event": "Page Load Completed" });
 		
 		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onPageChange?visitorId="+Cookie.get("rh_cat_visitorId"), buildPayload(page));
 		
@@ -297,20 +298,20 @@ survey
 	});
 
 survey
-    .onComplete
-    .add(function (result) {
-    	var page=result.currentPageValue;
-    	console.log("Metrics:: sending survey complete message");
-    	
+	.onComplete
+	.add(function (result) {
+		var page=result.currentPageValue;
+		
+		// Hide the survey Navigation pane
+		$("#surveyNavigation").hide();
+		
+		// extract time spent on page info
 		var timeTaken=result.currentPageValue.survey.koTimerInfoText();
 		if (""==timeTaken) return;
 		var expr= / ([0-9]+) .+ ([0-9]+) /g;
 		var match=expr.exec(timeTaken);
 		timeInfo[page.name]=match[1];
-		console.log("Metrics:: sending page message: page "+ page.name+" - "+timeInfo[page.name]);
 		
-		// Hide the survey Navigation pane
-		$("#surveyNavigation").hide();
 		var surveydata=survey.data;
 		
 		surveydata["_language"]=languageCode;
@@ -331,7 +332,6 @@ survey
 		// Invitation logic - If an account exec sends a link to a client with their encoded email, they system can notify the account exec once the customer has taken the assessment
 		if (Utils.isValidBase64(Utils.getParameterByName("inviteFrom")))
 			surveydata["_inviteFrom"]=atob(Utils.getParameterByName("inviteFrom"));
-
 		
 		// only generate a report page if they didnt trigger a shortcut
 		// check all triggers, if any eval to true then it most likely fired and therefore no report should be generated
@@ -351,6 +351,7 @@ survey
 		}
 		
 		if (!surveyTriggerFired){
+			console.log("Metrics:: sending survey complete message: page "+ page.name+" - "+timeInfo[page.name]);
 			Http.httpPost(env.server+"/api/surveys/"+surveyId+"/generateReport?pageId="+page.name+"&visitorId="+Cookie.get("rh_cat_visitorId"), buildPayload(page, surveydata), function(response){
 				if (response.status==200){
 					// navigate to a results page
@@ -399,10 +400,10 @@ $("#surveyElement").Survey({
 
 
 var liEls = {};
-generateNavigation("en"); // generate an en nav by default
+generateNavigation("en"); // generate an en nav by default, so you have something in the liEls
 
 function generateNavigation(languageCode){
-	console.log("languageCode in survey-template is "+languageCode);
+	//console.log("languageCode in survey-template is "+languageCode);
 	// Top Nav
 		var navTopEl = document.querySelector("#surveyNavigation");
 		navTopEl.innerText="";
@@ -423,11 +424,8 @@ function generateNavigation(languageCode){
 			var navTitlesUniqueSet=[];
 			for (var i = 0; i < survey.PageCount; i++) {
 				var liEl = document.createElement("li");
-				if (survey.currentPageNo == i) {
-					liEl
-					.classList
-					.add("current");
-				}
+				if (survey.currentPageNo == i)
+					liEl.classList.add("current");
 				
 				var pageTitle = document.createElement("div");
 				
@@ -440,24 +438,24 @@ function generateNavigation(languageCode){
 						pageTitle.innerText = survey.pages[i].name:
 						pageTitle.innerText = survey.pages[i].navigationTitle;
 						
-						pageTitle.id=pageTitle.innerText;
-						
-						// BUG:: this needs changing to "if ALL pages with the same pageTitle are not visible then set 'pageNotVisible' class"
-						if (undefined==initialVisibility[pageTitle.innerText]) initialVisibility[pageTitle.innerText]=[]
-						initialVisibility[pageTitle.innerText].push(survey.pages[i].isVisible);
-						
-						
-						// logic to group question pages in progress panel
-						if (navTitlesUniqueSet.includes(pageTitle.innerText)) continue;
-						navTitlesUniqueSet.push(pageTitle.innerText);
-						
-						pageTitle.classList.add("pageTitle");
-						
-						navProgBar.appendChild(pageTitle);
-						navProgBar.appendChild(liEl);
-						
-						pageTitle.classList.add("_"+survey.pages[i].name.replace(/ /g,"_").toLowerCase());
-						liEls[undefined!=survey.pages[i].navigationTitle?survey.pages[i].navigationTitle:survey.pages[i].name]=liEl;
+				pageTitle.id=pageTitle.innerText;
+				
+				// BUG:: this needs changing to "if ALL pages with the same pageTitle are not visible then set 'pageNotVisible' class"
+				if (undefined==initialVisibility[pageTitle.innerText]) initialVisibility[pageTitle.innerText]=[]
+				initialVisibility[pageTitle.innerText].push(survey.pages[i].isVisible);
+				
+				
+				// logic to group question pages in progress panel
+				if (navTitlesUniqueSet.includes(pageTitle.innerText)) continue;
+				navTitlesUniqueSet.push(pageTitle.innerText);
+				
+				pageTitle.classList.add("pageTitle");
+				
+				navProgBar.appendChild(pageTitle);
+				navProgBar.appendChild(liEl);
+				
+				pageTitle.classList.add("_"+survey.pages[i].name.replace(/ /g,"_").toLowerCase());
+				liEls[undefined!=survey.pages[i].navigationTitle?survey.pages[i].navigationTitle:survey.pages[i].name]=liEl;
 			}
 			// visible if "any" pages are initially visible
 			for (var k in initialVisibility){
@@ -514,13 +512,22 @@ survey
 		if (options.name=="_Country"){
 			setConsentAgreement(undefined, options.value);
 		}
+
+//		if (options.name=="interests"){
+//				sendAdobeEvent({"event": "User click", 
+//					"page": {
+//						"question": options.name
+//						"answer": options.value
+//					}
+//				});
+//		}
 		
 });
 
 survey
 	.onPageVisibleChanged
 	.add(function (sender, options) {
-		console.log("onPageVisibleChanged");
+		//console.log("onPageVisibleChanged");
 		var pageName=options.page.name;
 		var visible=options.page.visible;
 		var navTitle=options.page.navigationTitle?options.page.navigationTitle:options.page.name;
@@ -582,23 +589,11 @@ survey
 
 
 
-// State saving feature (+ timed saving)
-//var timerId=0;
-var saveIntervalInSeconds=20;
-
-
-//save data every x seconds
-//timerId = window.setInterval(function () {
-//    LocalStorage.saveState(survey);
-//}, saveIntervalInSeconds*1000);
-
 if (LocalStorage.getFlag("lastAssessmentCompleted")=="true"){ // This means the report page has been displayed so we can remove the prior answers
 	LocalStorage.clearState(); // remove answers from localstorage. We cant do this on the results page just in case they want to retake the assessment
 	LocalStorage.removeFlag("lastAssessmentCompleted");
 }
 LocalStorage.loadState(survey);
-// /State saving feature
-
 
 
 //survey.showPreviewBeforeComplete = 'showAnsweredQuestions';
@@ -608,27 +603,21 @@ LocalStorage.loadState(survey);
 
 //survey.completedHtml="<h2>Analyzing responses and generating <br/>your report - please wait a moment...</h2><br/><br/>";
 
-if (""!=languageCode){
+if (languageCode){
 	survey.locale = languageCode;
 	generateNavigation(languageCode);
 }
+
+AdobeUtils.sendAdobeEvent({"event": "Page Load Started", 
+	"page": {
+		"detailedPageName": "Red Hat Assessments - "+ surveyId +" - "+ survey.currentPage.name,
+		"pageType": "assessments",
+		"siteLanguage": survey.locale, //languageCode, // "English"
+		"cms": "RH CMS 2020.14.0"
+	}
+});
+AdobeUtils.sendAdobeEvent({ "event": "Page Load Completed" });
+
 survey.render();
 
-
-
-// For Adobe DPAL tracking
-function sendAdobeEvent(evt) {
-  if (document.createEvent && document.body.dispatchEvent) {
-    var myEvent = document.createEvent('Event');
-    myEvent.initEvent(evt, true, true); // can bubble, and is cancellable
-    document.body.dispatchEvent(myEvent);
-    // @ts-ignore
-  } else if (window.CustomEvent && document.body.dispatchEvent) {
-    // @ts-ignore
-    var event = new CustomEvent(evt,
-      { bubbles: true, cancelable: true }
-    );
-    document.body.dispatchEvent(event);
-  }
-}
 

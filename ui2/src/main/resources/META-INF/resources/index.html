@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="EN">
 <head>
-	
 	<script type="text/javascript">
 		var isLive=location.hostname.includes("assessments.redhat.com");
 		document.write(`<script src="//static.redhat.com/libs/redhat/marketing/latest/trustarc/`+(isLive?`trustarc.js`:`trustarc.stage.js`)+`" type="text/javascript"> <\/script>`);
 		document.write(`<script id="dpal" src="https://www.redhat.com/ma/`+(isLive?`dpal.js`:`dpal-staging.js`)+`" type="text/javascript"> <\/script>`);
 		console.log("DPAL "+(isLive?"PROD!":"DEV/STAGING"));
 	</script>
-	
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>Assessments | Red Hat Inc</title>
@@ -88,7 +86,15 @@
 </div>
 	
 <script>
-var languageCode="en"; //default
+var languageCode="$LANGUAGE_CODE";
+if (languageCode.includes("LANGUAGE_CODE")) languageCode=Utils.getParameterByName("lang");
+if (undefined==languageCode || ""==languageCode) languageCode="en"; // default language code
+
+var languageConfigOptions={
+		"default":{code:"en",text:"English"},
+		"de":{code:"de",text:"Deutsch"},
+		"es":{code:"es",text:"Español"}
+};
 
 // Action Handlers
 $("#Q_lang").change(function(sender) {
@@ -112,11 +118,6 @@ function getVisitorId(key){
 }
 
 function loadLanguageOptionsControl(questionConfig){
-	var languageConfigOptions={
-			"default":{code:"en",text:"English"},
-			"de":{code:"de",text:"Deutsch"},
-			"es":{code:"es",text:"Español"}
-	};
 	// load language options here?
 	var questionLanguages=questionConfig["completedHtml"]?questionConfig["completedHtml"]:questionConfig["completeText"];
 	if (questionLanguages["default"]){ // then we have languages we need to parse
@@ -139,9 +140,9 @@ $(document).ready(function() {
 	if (surveyId.includes("SURVEY_ID")) surveyId=Utils.getParameterByName("surveyId");
 	
 	// determine language code (template, then parameter, then revert to default)
-	languageCode="$LANGUAGE_CODE";
-	if (languageCode.includes("LANGUAGE_CODE")) languageCode=Utils.getParameterByName("lang");
-	if (""==languageCode) languageCode="en"; // default language code
+	//languageCode="$LANGUAGE_CODE";
+//	if (languageCode.includes("LANGUAGE_CODE")) languageCode=Utils.getParameterByName("lang");
+//	if (undefined==languageCode || ""==languageCode) languageCode="en"; // default language code
 	
 	// display language options
 //	var qLang="";
@@ -252,9 +253,9 @@ $(document).ready(function() {
 
 <!-- DPAL tracking -->
 <script type="text/javascript">
-	if (("undefined" !== typeof _satellite) && ("function" === typeof _satellite.pageBottom)) {
-		_satellite.pageBottom();
-	}
+//	if (("undefined" !== typeof _satellite) && ("function" === typeof _satellite.pageBottom)) {
+//		_satellite.pageBottom();
+//	}
 </script>
 
 </body>

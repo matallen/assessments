@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="EN">
 <head>
+	<script type="text/javascript">
+		var isLive=location.hostname.includes("assessments.redhat.com");
+		document.write(`<script src="//static.redhat.com/libs/redhat/marketing/latest/trustarc/`+(isLive?`trustarc.js`:`trustarc.stage.js`)+`" type="text/javascript"> <\/script>`);
+		document.write(`<script id="dpal" src="https://www.redhat.com/ma/`+(isLive?`dpal.js`:`dpal-staging.js`)+`" type="text/javascript"> <\/script>`);
+		console.log("DPAL "+(isLive?"PROD!":"DEV/STAGING"));
+	</script>
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>Assessments | Red Hat Inc</title>
@@ -183,6 +189,18 @@
 				Http.httpGetObject(env.server+"/api/surveys/"+surveyId+"/results/"+resultId, function(status, response){
 					if (200==status && response!=""){
 						clearInterval(timerId);
+						
+						AdobeUtils.sendAdobeEvent({"event": "Page Load Started", 
+							"page": {
+								"detailedPageName": "Red Hat Assessments - "+ surveyId +" - Results Page",
+								"pageType": "assessments",
+								"siteLanguage": (response["_language"]?response["_language"]:"en"), // "English"
+								"cms": "RH CMS 2020.14.0"
+							}
+						});
+						
+						
+						
 						//LocalStorage.clearState(); // remove answers from localstorage once the report page has been received successfully
 						LocalStorage.saveFlag("lastAssessmentCompleted", "true");
 						
@@ -208,6 +226,9 @@
 						}
 						retries+=1;
 					}
+					
+					AdobeUtils.sendAdobeEvent({ "event": "Page Load Completed" });
+					
 				}, function(status){
 					// on error - sink it and wait
 					retries+=1;

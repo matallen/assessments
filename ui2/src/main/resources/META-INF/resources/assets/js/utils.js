@@ -42,6 +42,16 @@ HtmlUtils = {
 	}
 }
 
+AdobeUtils = {
+	sendAdobeEvent: function(evt){
+		try{
+			console.log("Adobe Event: '"+evt["event"]+"'"+ (evt["page"]?" - "+evt["page"]["detailedPageName"]+"("+evt["page"]["siteLanguage"]+")":""));
+			window.appEventData = window.appEventData || [];
+			appEventData.push(evt);
+		}catch(err){}
+	}
+}
+
 LocalStorage = {
 		storageName:"RHAssessmentPlatform_State",
 		saveFlag: function(key, value) {
