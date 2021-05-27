@@ -192,13 +192,12 @@
 						
 						AdobeUtils.sendAdobeEvent({"event": "Page Load Started", 
 							"page": {
-								"detailedPageName": "Red Hat Assessments - "+ surveyId +" - Results Page",
+								"detailedPageName": "Red Hat Assessments - "+ surveyId +" - Customer Report",
 								"pageType": "assessments",
 								"siteLanguage": (response["_language"]?response["_language"]:"en"), // "English"
 								"cms": "RH CMS 2020.14.0"
 							}
 						});
-						
 						
 						
 						//LocalStorage.clearState(); // remove answers from localstorage once the report page has been received successfully

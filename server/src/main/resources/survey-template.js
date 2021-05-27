@@ -351,7 +351,7 @@ survey
 		}
 		
 		if (!surveyTriggerFired){
-			console.log("Metrics:: sending survey complete message: page "+ page.name+" - "+timeInfo[page.name]);
+			console.log("Metrics:: sending survey complete/generate result request: page "+ page.name+" - "+timeInfo[page.name]);
 			Http.httpPost(env.server+"/api/surveys/"+surveyId+"/generateReport?pageId="+page.name+"&visitorId="+Cookie.get("rh_cat_visitorId"), buildPayload(page, surveydata), function(response){
 				if (response.status==200){
 					// navigate to a results page
