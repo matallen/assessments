@@ -59,7 +59,7 @@
 				<div class="col-md ">
 					<!-- Language Selector (top right) -->
 					<div class="LanguageSelectorContainer float-right">
-						<select aria-label="Language" name="Q_lang" id="Q_lang" class="Q_lang" data-runtime-value="runtime.Selected">
+						<select aria-label="Language" name="Q_lang" id="Q_lang" class="Q_lang" data-runtime-value="runtime.Selected" style="display:none">
 						<!--
 							<option value="DE" lang="DE" data-runtime-text="runtime.Language | property 'DE' | property 'DisplayName'">Deutsch</option>
 							<option value="EN" lang="EN" selected data-runtime-text="runtime.Language | property 'EN' | property 'DisplayName'">English</option>
@@ -75,9 +75,6 @@
 					-->
 						</select>
 					</div>
-					<script>
-					var languageOptions=[{code:"en",text:"English"},{code:"de",text:"Deutsch"}]
-					</script>
 				</div>
 			</div>
 			
@@ -128,6 +125,7 @@ function loadLanguageOptionsControl(questionConfig){
 			qLang+=`<option value="`+languageOptions[i].code+`" lang="`+languageOptions[i].code+`" `+(languageCode==languageOptions[i].code?"selected":"")+` data-runtime-text="runtime.Language | property '`+languageOptions[i].code+`' | property 'DisplayName'">`+languageOptions[i].text+`</option>`;
 		}
 		$("#Q_lang").html(qLang);
+		$("#Q_lang").show();
 
 	}else{
 		// no languages, remove the control
