@@ -58,6 +58,7 @@ h4{
 
 .py-0{
 	margin-bottom: auto;
+	min-height: calc(100vh - 130px);
 }
 
 .btn:disabled { opacity: 0.35; }

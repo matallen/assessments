@@ -3,7 +3,7 @@
 <head>
 	<script type="text/javascript">
 		var isLive=location.hostname.includes("assessments.redhat.com");
-		document.write(`<script src="//static.redhat.com/libs/redhat/marketing/latest/trustarc/`+(isLive?`trustarc.js`:`trustarc.stage.js`)+`" type="text/javascript"> <\/script>`);
+		//document.write(`<script src="//static.redhat.com/libs/redhat/marketing/latest/trustarc/`+(isLive?`trustarc.js`:`trustarc.stage.js`)+`" type="text/javascript"> <\/script>`);
 		document.write(`<script id="dpal" src="https://www.redhat.com/ma/`+(isLive?`dpal.js`:`dpal-staging.js`)+`" type="text/javascript"> <\/script>`);
 		console.log("DPAL "+(isLive?"PROD!":"DEV/STAGING"));
 	</script>
@@ -120,7 +120,7 @@ function getVisitorId(key){
 function loadLanguageOptionsControl(questionConfig){
 	// load language options here?
 	var questionLanguages=questionConfig["completedHtml"]?questionConfig["completedHtml"]:questionConfig["completeText"];
-	if (questionLanguages["default"]){ // then we have languages we need to parse
+	if (undefined!=questionLanguages && questionLanguages["default"]){ // then we have languages we need to parse
 		var languageOptions=[];
 		for (lang in questionLanguages) languageOptions.push(languageConfigOptions[lang]);
 		var qLang="";
