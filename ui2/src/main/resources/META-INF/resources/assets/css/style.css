@@ -58,7 +58,6 @@ h4{
 
 .py-0{
 	margin-bottom: auto;
-	min-height: calc(100vh - 130px);
 }
 
 .btn:disabled { opacity: 0.35; }
@@ -513,6 +512,7 @@ input,button{
 	width: 100%;
 }
 
+.py-0{min-height: calc(100vh - 130px);}
 
 /* Scale fonts for various screen sizes */
 @media (max-width: 1200px){
@@ -526,10 +526,12 @@ input,button{
 	.sv_q_imgsel_title      { font-size: 16pt; }
 	.sv_q_imgsel_description{ font-size: 10pt; line-height: 20px; }
 	.sv_q_image img { width: 100%; }
+	.py-0{min-height: calc(100vh - 152px);}
 }
 @media (max-width: 768px){
 	.sv_q_imgsel_title      { font-size: 14pt; }
 	.sv_q_imgsel_description{ font-size: 10pt; }
+	.py-0{min-height: calc(100vh - 198px);}
 }
 @media (max-width: 650px){
 	.sv_page_title          { font-size: 20pt; }
@@ -615,13 +617,14 @@ input,button{
 		  margin-bottom: initial !important;
 		}
 }
+
 @media (max-width: 450px){
 	.sv_imgpicker_inner img { top: 0px; }
 	.sv_q_imgsel_title      { font-size: 13pt; line-height: 20px; top: 0px !important;}
 	.sv_q_imgsel_description{ font-size: 9pt; line-height: 16px; top: 0px !important;}
 	.sv_q_imgsel_title      { margin-top: 0px; }
+	.py-0{min-height: inherit;}
 }
-
 
 @media only screen and (device-width: 768px) {
     .sv_p_container>div:nth-of-type(3) {
