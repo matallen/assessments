@@ -117,6 +117,7 @@ public class CleanupController{
 			System.out.println("deletResults:: delete result with id "+id);
 		}
 		s.save();
+		s.saveResults();
 		return listResults(surveyId);
 	}
 	

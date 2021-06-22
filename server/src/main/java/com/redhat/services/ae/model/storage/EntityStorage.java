@@ -4,13 +4,20 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.FileStore;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
+import org.apache.commons.io.FileSystemUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.redhat.services.ae.utils.ChatNotification;
+import com.redhat.services.ae.utils.ChatNotification.ChatEvent;
 import com.redhat.services.ae.utils.Json;
 
 public abstract class EntityStorage<T>{
@@ -43,7 +50,7 @@ public abstract class EntityStorage<T>{
 			if (null!=data && lastModified>=loadFrom.lastModified()) return data; // no need to read the file again, it's not been modified
 			lastModified=loadFrom.lastModified();
 			
-			System.out.println("Loading from: "+loadFrom.getAbsolutePath());
+			log.debug("Loading from (create? "+createIfNotFound+"): "+loadFrom.getAbsolutePath());
 			
 			if (loadFrom.exists()){
 				try{
@@ -55,6 +62,18 @@ public abstract class EntityStorage<T>{
 //					data.put(objectId, oJson);
 				}catch(Exception e){
 					e.printStackTrace();
+					new ChatNotification().send(ChatEvent.onSystemError, "Error:: Investigate immediately! EntityStorage unable to load data - "+loadFrom);
+					
+					try{
+						FileStore fs=Files.getFileStore(Paths.get(loadFrom.getAbsolutePath()));
+						log.error("FileStore Name: "+ fs.name());
+						long bytes = fs.getUsableSpace();
+						long sizeInMB = bytes / (1024 * 1024);
+						log.error("Usable Space: "+ sizeInMB +" MB");
+					}catch (IOException e1){
+						e1.printStackTrace();
+					}
+
 				}
 			}else{
 				

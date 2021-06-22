@@ -351,6 +351,17 @@ survey
 		}
 		
 		if (!surveyTriggerFired){
+			
+			// THIS IS CAPTURED IN ELOQUA, NOT ADOBE/EDDL
+			// Send hidden field (mostly contact data to Adobe
+//			var userInfo={};Object
+//			    .keys(survey.data)
+//			    .filter(function(k) {return /^_/i.test(k) && !/(email|phone|name)/i.test(k);}) 
+//			    .forEach(function(k) {userInfo[k]=survey.data[k];});
+//			AdobeUtils.sendAdobeEvent({"event": "User Contact form data", 
+//				"user": userInfo
+//			});
+			
 			console.log("Metrics:: sending survey complete/generate result request: page "+ page.name+" - "+timeInfo[page.name]);
 			Http.httpPost(env.server+"/api/surveys/"+surveyId+"/generateReport?pageId="+page.name+"&visitorId="+Cookie.get("rh_cat_visitorId"), buildPayload(page, surveydata), function(response){
 				if (response.status==200){
@@ -613,7 +624,7 @@ AdobeUtils.sendAdobeEvent({"event": "Page Load Started",
 		"detailedPageName": "Red Hat Assessments - "+ surveyId +" - "+ survey.currentPage.name,
 		"pageType": "assessments",
 		"siteLanguage": survey.locale, //languageCode, // "English"
-		"cms": "RH CMS 2020.14.0"
+		"cms": "Unused" // version of our assessments platform
 	}
 });
 AdobeUtils.sendAdobeEvent({ "event": "Page Load Completed" });
