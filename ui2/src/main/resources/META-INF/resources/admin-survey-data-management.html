@@ -173,7 +173,6 @@
 				
 				
 				
-				
 				<tr>
 					<td>
 						<script>
@@ -196,7 +195,15 @@
 						<!--
 				    <script src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.9.4/jquery.dataTables.js" data-semver="1.9.4" data-require="datatables@*"></script>
 						-->
+						
+
+<!-- These are custom combination libraries generated from here:  https://datatables.net/download/ -->		
+<!-- Selected options include: DataTables, Buttons, HTML5 export, Print view, CDN Minify & Concatenate -->				
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/ju/dt-1.10.25/b-1.7.1/b-html5-1.7.1/b-print-1.7.1/datatables.min.css"/>
+<script type="text/javascript" src="https://cdn.datatables.net/v/ju/dt-1.10.25/b-1.7.1/b-html5-1.7.1/b-print-1.7.1/datatables.min.js"></script>
+						<!--
 						<script src="assets/js/jquery.dataTables.min.js"></script>
+						-->
 						
 						
 						<style>
@@ -339,6 +346,10 @@
 								"scrollY":				"1300px",
 								"scrollCollapse": true,
 								
+								// these 2 lines add export buttons
+								"dom": 'Bfrtip',
+								"buttons": ['copy','csv'],
+								
 //								"bFilter": false,
 //								"bInfo": false,
 //								"bLengthChange": true,
@@ -354,9 +365,11 @@
 								"info" : false,
 								"columns": [
 									{ "data": "id" },
-									{ "data": "id",				 "className": "idColumn" },
+									//{ "data": "id",				 "className": "idColumn" },
+									{ "data": "_sectionScore",				 "className": "idColumn" },
 									{ "data": "_timestamp", "className": "tsColumn" },
 									{ "data": "_Country",	 "className": "countryColumn"},
+									{ "data": "_language",	 "className": "countryColumn"},
 									{ "data": "_Industry",	"className": "industryColumn"},
 									{ "data": "_Company",	 "className": "companyColumn"},
 									{ "data": "_WorkEmail", "className": "emailColumn"}
@@ -366,10 +379,19 @@
 										return "<input type='checkbox' id='"+data+"'/>";
 									}},
 									{ "targets": 1, "render": function (data,type,row){
-											return "<label for='"+data+"'>"+data+"</lable>";
+										var sectionList="";
+										for (i in data){
+											sectionList+=""!=sectionList?", ":"";
+											sectionList+=i+"("+data[i]+")";
+										}
+										return "<label for='"+row["id"]+"'>"+sectionList+"</lable>";
 									}},
 									{ "targets": 2, "render": function (data,type,row){
 										return data.replace("T"," ");
+									}}
+									,
+									{ "targets": 4, "render": function (data,type,row){
+										return null!=data?data:"";
 									}}
 								]
 							});
@@ -384,9 +406,10 @@
 								<thead>
 										<tr class="headerRow">
 												<th align="left"></th>
-												<th align="left">ID</th>
+												<th align="left">Sections</th>
 												<th align="left">Timestamp</th>
 												<th align="left">Country</th>
+												<th align="left">Language</th>
 												<th align="left">Industry</th>
 												<th align="left">Company</th>
 												<th align="left">Email</th>

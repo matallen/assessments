@@ -137,10 +137,15 @@ public class CleanupController{
 			Map<String,Object> entry=new HashMap<>();
 			entry.put("id", e.getKey());
 			Map<String,Object> surveyResults=Json.toObject((String)e.getValue(), new TypeReference<Map<String,Object>>(){});
+			// add all informational fields (ie. those starting with an underscore)
 			for(Entry<String, Object> f:surveyResults.entrySet()){
 				if (f.getKey().startsWith("_"))
 					entry.put(f.getKey(), f.getValue());
 			}
+			
+			// remove any unnecessary fields
+			entry.remove("_report");
+			
 			result.add(entry);
 		}
 		
