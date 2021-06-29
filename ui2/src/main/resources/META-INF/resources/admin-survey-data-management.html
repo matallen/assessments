@@ -197,7 +197,8 @@
 						-->
 						
 
-<!-- These are custom combination libraries generated from here:  https://datatables.net/download/ -->		
+<!-- These are custom combination libraries generated from here:  https://datatables.net/download/ -->
+<!-- https://datatables.net/extensions/buttons/examples/initialisation/export.html -->		
 <!-- Selected options include: DataTables, Buttons, HTML5 export, Print view, CDN Minify & Concatenate -->				
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/ju/dt-1.10.25/b-1.7.1/b-html5-1.7.1/b-print-1.7.1/datatables.min.css"/>
 <script type="text/javascript" src="https://cdn.datatables.net/v/ju/dt-1.10.25/b-1.7.1/b-html5-1.7.1/b-print-1.7.1/datatables.min.js"></script>
@@ -366,13 +367,13 @@
 								"columns": [
 									{ "data": "id" },
 									//{ "data": "id",				 "className": "idColumn" },
-									{ "data": "_sectionScore",				 "className": "idColumn" },
-									{ "data": "_timestamp", "className": "tsColumn" },
-									{ "data": "_Country",	 "className": "countryColumn"},
-									{ "data": "_language",	 "className": "countryColumn"},
-									{ "data": "_Industry",	"className": "industryColumn"},
-									{ "data": "_Company",	 "className": "companyColumn"},
-									{ "data": "_WorkEmail", "className": "emailColumn"}
+									{ "data": "_sectionScore", "className": "idColumn" },
+									{ "data": "_timestamp",    "className": "tsColumn" },
+									{ "data": "_Country",	     "className": "countryColumn"},
+									{ "data": "_language",	   "className": "countryColumn"},
+									{ "data": "_Industry",	   "className": "industryColumn"},
+									{ "data": "_Company",	     "className": "companyColumn"},
+									{ "data": "_WorkEmail",    "className": "emailColumn"}
 								],
 								"columnDefs":[
 									{ "targets": 0, "render": function (data,type,row){
@@ -382,7 +383,8 @@
 										var sectionList="";
 										for (i in data){
 											sectionList+=""!=sectionList?", ":"";
-											sectionList+=i+"("+data[i]+")";
+											//sectionList+=i+"("+data[i]+")";
+											sectionList+=i;
 										}
 										return "<label for='"+row["id"]+"'>"+sectionList+"</lable>";
 									}},

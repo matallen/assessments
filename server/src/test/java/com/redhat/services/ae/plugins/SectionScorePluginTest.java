@@ -81,6 +81,44 @@ public class SectionScorePluginTest extends TestBase{
 	}
 	
 	@Test
+	public void test2021RTAQuestions() throws Exception{
+		Survey s=Survey.builder().id("test1").name("Test Survey").build();
+		String questionsJson=IOUtils.toString(this.getClass().getClassLoader().getResource("2021-06-RTA-questions.json"), "UTF-8");
+		s.setQuestionsAsString(questionsJson);
+		s.saveQuestions();
+		s.save();
+		
+		// setup your raw answers here
+		Map<String,Object> rawAnswers=new MapBuilder<String,Object>()
+				.put("interests", "platforms,apps")
+				.put("platforms_env_q3", "40#Agile")
+				.build();
+
+		// first the "enrichment" plugin here so scoring can occur
+		Map<String,Object> answers=Json.toObject(Json.toJson(rawAnswers), new TypeReference<HashMap<String,Object>>(){});
+		System.out.println("from:"+Json.toJson(answers));
+		answers=new AddTitleAndScorePlugin().setConfig(new MapBuilder<String,Object>()
+				.put("addQuestionFields", new MapBuilder<String,Object>()
+						.put("pageId", "page/name")
+						.build())
+				.build())
+				.execute("test1", "TEST_VISITOR_ID", answers);
+		
+		// fire scoring plugin here
+		SectionScorePlugin test=new SectionScorePlugin();
+		test.setConfig(new MapBuilder<String,Object>()
+				.put("scoreStrategy", "average")
+				.put("scoreBy", "section")
+				.put("sectionTitle", "pageId")
+				.build());
+		answers=test.execute("test1", "TEST_VISITOR_ID", answers);
+		System.out.println("to:"+Json.toJson(answers));
+		
+		// do your assertions here
+	}
+	
+	
+	@Test
 	public void testAverageScoreBySection() throws Exception{
 
 		String answersJson=                                                                    
