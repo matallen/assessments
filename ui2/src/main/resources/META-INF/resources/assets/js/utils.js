@@ -42,14 +42,67 @@ HtmlUtils = {
 	}
 }
 
+// look in the 'appEventData' in javascript console to see these messages
 AdobeUtils = {
-	sendAdobeEvent: function(evt){
+	sendCustomEvent: function(evt){
 		try{
-			console.log("Adobe Event: '"+evt["event"]+"'"+ (evt["page"]?" - "+evt["page"]["detailedPageName"]+"("+evt["page"]["siteLanguage"]+")":""));
+			console.log("Adobe Event: '"+evt["event"]+"'"+ (evt["page"]?" - "+evt["page"]["pageName"]+"("+evt["page"]["siteLanguage"]+")":""));
 			window.appEventData = window.appEventData || [];
 			appEventData.push(evt);
 		}catch(err){}
-	}
+	},
+	sendEvent: function(appId, surveyId, pageName){
+		surveyId=surveyId!=undefined?surveyId.toLowerCase():surveyId;
+		pageName=pageName!=undefined?pageName.toLowerCase():pageName;
+		try{
+			var evt = {"event": "Page Load Started", 
+					"page": {
+						"pageName": appId+"|"+surveyId+"|"+pageName,
+//						"detailedPageName": "Red Hat Assessments - "+ surveyId +" - "+ options.newCurrentPage.name,
+						"pageType": "assessments",
+//						"offerID": ,
+						"siteLanguage": survey.locale!=""?survey.locale:languageCode,
+						"cms": "rh|"+appId+" unused"
+					}
+				};
+			
+//			var evtContactForm = {"event": "Form Viewed",
+//					"form": {
+//						"formID": "b73c6d09-eace-4abc-b7cf-287a3c23fdf6",
+//						"formName": "rhel-experience-e-book-7013a000003BiquAAC",
+//						"formTemplate": "Lead Generation",
+//						"formType": "LeadGen",
+//						"offerID": "7013a000003BiquAAC"
+//					}
+//				};
+			
+			console.log("EDDL Event: '"+evt["event"]+"'"+ (evt["page"]?" - "+evt["page"]["pageName"]+"("+evt["page"]["siteLanguage"]+")":""));
+			window.appEventData = window.appEventData || [];
+			appEventData.push(evt);
+//			if (pageName.match(/\.contact\.+/i)) appEventData.push(evtContactForm);
+			appEventData.push({ "event": "Page Load Completed" });
+		}catch(err){}
+	}, 
+}
+
+/* Not used yet, was considering changing survey-template to use this*/
+MarketingUtils = {
+		getInternalTacticId: function(){
+			if (typeof Utils !== 'undefined'){
+				if (Utils.getParameterByName("intcmp")) return Utils.getParameterByName("intcmp");
+			}
+			if (typeof Http !== 'undefined'){
+				if (Http.getCookie("rh_omni_itc")) return Http.getCookie("rh_omni_itc");
+			}
+		},
+		getExternalTacticId: function(){
+			if (typeof Utils !== 'undefined'){
+				if (Utils.getParameterByName("sc_cid")) return Utils.getParameterByName("sc_cid");
+			}
+			if (typeof Http !== 'undefined'){
+				if (Http.getCookie("rh_omni_tc")) return Http.getCookie("rh_omni_tc");
+			}
+		}
 }
 
 LocalStorage = {

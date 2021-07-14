@@ -267,15 +267,7 @@ survey
 		
 		LocalStorage.saveState(survey);
 		
-		AdobeUtils.sendAdobeEvent({"event": "Page Load Started", 
-			"page": {
-				  "detailedPageName": "Red Hat Assessments - "+ surveyId +" - "+ options.newCurrentPage.name,
-				  "pageType": "assessments",
-				  "siteLanguage": survey.locale,
-				  "cms": "RH CMS 2020.14.0"
-			}
-		});
-		AdobeUtils.sendAdobeEvent({ "event": "Page Load Completed" });
+		AdobeUtils.sendEvent("assessments", surveyId, options.newCurrentPage.name);
 		
 		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onPageChange?visitorId="+Cookie.get("rh_cat_visitorId"), buildPayload(page));
 		
@@ -619,15 +611,7 @@ if (languageCode){
 	generateNavigation(languageCode);
 }
 
-AdobeUtils.sendAdobeEvent({"event": "Page Load Started", 
-	"page": {
-		"detailedPageName": "Red Hat Assessments - "+ surveyId +" - "+ survey.currentPage.name,
-		"pageType": "assessments",
-		"siteLanguage": survey.locale, //languageCode, // "English"
-		"cms": "Unused" // version of our assessments platform
-	}
-});
-AdobeUtils.sendAdobeEvent({ "event": "Page Load Completed" });
+AdobeUtils.sendEvent("assessments", surveyId, survey.currentPage.name);
 
 survey.render();
 
