@@ -267,7 +267,7 @@ survey
 		
 		LocalStorage.saveState(survey);
 		
-		AdobeUtils.sendEvent("assessments", surveyId, options.newCurrentPage.name);
+		AdobeUtils.sendEvent("assessments", surveyId, options.newCurrentPage.name, survey.locale!=""?survey.locale:languageCode);
 		
 		Http.httpPost(env.server+"/api/surveys/"+surveyId+"/metrics/"+page.name+"/onPageChange?visitorId="+Cookie.get("rh_cat_visitorId"), buildPayload(page));
 		
@@ -611,7 +611,7 @@ if (languageCode){
 	generateNavigation(languageCode);
 }
 
-AdobeUtils.sendEvent("assessments", surveyId, survey.currentPage.name);
+AdobeUtils.sendEvent("assessments", surveyId, survey.currentPage.name, survey.locale!=""?survey.locale:languageCode);
 
 survey.render();
 

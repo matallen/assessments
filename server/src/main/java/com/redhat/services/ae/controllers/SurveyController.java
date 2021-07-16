@@ -78,6 +78,10 @@ public class SurveyController{
 		String template=IOUtils.toString(new File("target/classes", templateName).exists()?new FileInputStream(new File("target/classes", templateName).getAbsolutePath()):getClass().getClassLoader().getResourceAsStream(templateName), "UTF-8");
 		
 		Survey survey=Survey.findById(surveyId);
+		if (null==survey){
+			log.error("Survey ["+surveyId+"] not found");
+			return Response.status(404).build();
+		}
 		String questions=survey.getQuestionsAsString();
 		
 		String result;

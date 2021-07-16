@@ -190,14 +190,16 @@
 					if (200==status && response!=""){
 						clearInterval(timerId);
 						
-						AdobeUtils.sendAdobeEvent({"event": "Page Load Started", 
-							"page": {
-								"detailedPageName": "Red Hat Assessments - "+ surveyId +" - Customer Report",
-								"pageType": "assessments",
-								"siteLanguage": (response["_language"]?response["_language"]:"en"), // "English"
-								"cms": "Unused"
-							}
-						});
+						AdobeUtils.sendEvent("assessments", surveyId, "results", response["_language"]?response["_language"]:"en");
+						
+//						AdobeUtils.sendAdobeEvent({"event": "Page Load Started", 
+//							"page": {
+//								"pageName": "Red Hat Assessments - "+ surveyId +" - Customer Report",
+//								"pageType": "assessments",
+//								"siteLanguage": (response["_language"]?response["_language"]:"en"), // "English"
+//								"cms": "Unused"
+//							}
+//						});
 						
 						
 						//LocalStorage.clearState(); // remove answers from localstorage once the report page has been received successfully
@@ -226,7 +228,7 @@
 						retries+=1;
 					}
 					
-					AdobeUtils.sendAdobeEvent({ "event": "Page Load Completed" });
+//					AdobeUtils.sendAdobeEvent({ "event": "Page Load Completed" });
 					
 				}, function(status){
 					// on error - sink it and wait

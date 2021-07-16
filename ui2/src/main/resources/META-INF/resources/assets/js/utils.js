@@ -51,7 +51,7 @@ AdobeUtils = {
 			appEventData.push(evt);
 		}catch(err){}
 	},
-	sendEvent: function(appId, surveyId, pageName){
+	sendEvent: function(appId, surveyId, pageName, language){
 		surveyId=surveyId!=undefined?surveyId.toLowerCase():surveyId;
 		pageName=pageName!=undefined?pageName.toLowerCase():pageName;
 		try{
@@ -61,7 +61,7 @@ AdobeUtils = {
 //						"detailedPageName": "Red Hat Assessments - "+ surveyId +" - "+ options.newCurrentPage.name,
 						"pageType": "assessments",
 //						"offerID": ,
-						"siteLanguage": survey.locale!=""?survey.locale:languageCode,
+						"siteLanguage": language,
 						"cms": "rh|"+appId+" unused"
 					}
 				};
