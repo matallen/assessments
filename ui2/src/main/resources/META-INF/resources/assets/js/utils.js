@@ -51,31 +51,19 @@ AdobeUtils = {
 			appEventData.push(evt);
 		}catch(err){}
 	},
-	sendEvent: function(appId, surveyId, pageName, language){
+	sendEvent: function(surveyId, pageName, language){
 		surveyId=surveyId!=undefined?surveyId.toLowerCase():surveyId;
 		pageName=pageName!=undefined?pageName.toLowerCase():pageName;
 		try{
-			var evt = {"event": "Page Load Started", 
-					"page": {
-						"pageName": appId+"|"+surveyId+"|"+pageName,
+			var evt = {"event": "Page Load Started", "page": {
+						"pageName": surveyId+"|"+pageName,
 //						"detailedPageName": "Red Hat Assessments - "+ surveyId +" - "+ options.newCurrentPage.name,
-						"pageType": "assessments",
+						"pageType": "assessment",
 //						"offerID": ,
 						"siteLanguage": language,
-						"cms": "rh|"+appId+" unused"
+						"cms": "assessments.redhat.com v1.0 2021.07"
 					}
 				};
-			
-//			var evtContactForm = {"event": "Form Viewed",
-//					"form": {
-//						"formID": "b73c6d09-eace-4abc-b7cf-287a3c23fdf6",
-//						"formName": "rhel-experience-e-book-7013a000003BiquAAC",
-//						"formTemplate": "Lead Generation",
-//						"formType": "LeadGen",
-//						"offerID": "7013a000003BiquAAC"
-//					}
-//				};
-			
 			console.log("EDDL Event: '"+evt["event"]+"'"+ (evt["page"]?" - "+evt["page"]["pageName"]+"("+evt["page"]["siteLanguage"]+")":""));
 			window.appEventData = window.appEventData || [];
 			appEventData.push(evt);
@@ -83,6 +71,38 @@ AdobeUtils = {
 			appEventData.push({ "event": "Page Load Completed" });
 		}catch(err){}
 	}, 
+//	sendEventOld: function(appId, surveyId, pageName, language){
+//		surveyId=surveyId!=undefined?surveyId.toLowerCase():surveyId;
+//		pageName=pageName!=undefined?pageName.toLowerCase():pageName;
+//		try{
+//			var evt = {"event": "Page Load Started", 
+//					"page": {
+//						"pageName": appId+"|"+surveyId+"|"+pageName,
+////						"detailedPageName": "Red Hat Assessments - "+ surveyId +" - "+ options.newCurrentPage.name,
+//						"pageType": "assessments",
+////						"offerID": ,
+//						"siteLanguage": language,
+//						"cms": "rh|"+appId+" unused"
+//					}
+//				};
+//			
+////			var evtContactForm = {"event": "Form Viewed",
+////					"form": {
+////						"formID": "b73c6d09-eace-4abc-b7cf-287a3c23fdf6",
+////						"formName": "rhel-experience-e-book-7013a000003BiquAAC",
+////						"formTemplate": "Lead Generation",
+////						"formType": "LeadGen",
+////						"offerID": "7013a000003BiquAAC"
+////					}
+////				};
+//			
+//			console.log("EDDL Event: '"+evt["event"]+"'"+ (evt["page"]?" - "+evt["page"]["pageName"]+"("+evt["page"]["siteLanguage"]+")":""));
+//			window.appEventData = window.appEventData || [];
+//			appEventData.push(evt);
+////			if (pageName.match(/\.contact\.+/i)) appEventData.push(evtContactForm);
+//			appEventData.push({ "event": "Page Load Completed" });
+//		}catch(err){}
+//	}, 
 }
 
 /* Not used yet, was considering changing survey-template to use this*/
