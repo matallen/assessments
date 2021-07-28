@@ -22,9 +22,16 @@ import org.apache.commons.io.IOUtils;
 @Path("/")
 public class Controller{
 	
+	/* THIS NEEDS TESTING BEFORE COMMITTING! */
+	@GET
+	@Path("/{surveyId}/{lang}")
+	public Response serveAssessmentAlias2(@PathParam("lang") String lang, @PathParam("surveyId") String surveyId, @DefaultValue("text/html; charset=UTF-8") @QueryParam("responseContentType") String responseContentType) throws FileNotFoundException, IOException{
+		return serveAssessmentAlias1(lang, surveyId, responseContentType);
+	}
+	
 	@GET
 	@Path("/surveys/{surveyId}/{lang}")
-	public Response getSurveys(@PathParam("lang") String lang, @PathParam("surveyId") String surveyId, @DefaultValue("text/html; charset=UTF-8") @QueryParam("responseContentType") String responseContentType) throws FileNotFoundException, IOException{
+	public Response serveAssessmentAlias1(@PathParam("lang") String lang, @PathParam("surveyId") String surveyId, @DefaultValue("text/html; charset=UTF-8") @QueryParam("responseContentType") String responseContentType) throws FileNotFoundException, IOException{
 		String templateName="META-INF/resources/index.html";
 		String template=IOUtils.toString(new File("target/classes", templateName).exists()?new FileInputStream(new File("target/classes", templateName).getAbsolutePath()):getClass().getClassLoader().getResourceAsStream(templateName), "UTF-8");
 		

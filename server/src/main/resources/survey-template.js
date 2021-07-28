@@ -596,6 +596,28 @@ if (LocalStorage.getFlag("lastAssessmentCompleted")=="true"){ // This means the 
 	LocalStorage.clearState(); // remove answers from localstorage. We cant do this on the results page just in case they want to retake the assessment
 	LocalStorage.removeFlag("lastAssessmentCompleted");
 }
+// Load initial state from queryparam (if there is no state existing) - for example, {"currentPageNo":1, "data":{"interests":["platforms"]}} is data=eyJjdXJyZW50UGFnZU5vIjoxLCAiZGF0YSI6eyJpbnRlcmVzdHMiOlsicGxhdGZvcm1zIl19fQ==
+if (Utils.getParameterByName("data")!=undefined && !LocalStorage.hasState()){
+	var initialData=JSON.parse(unescape(atob(Utils.getParameterByName("data"))));
+	survey.data=initialData.data;
+	survey.currentPageNo=initialData.currentPageNo;
+}
+
+if (!LocalStorage.hasState()){
+	var parametersAsMap=Utils.getParametersAsMap();
+	for(key in parametersAsMap){
+		var value=parametersAsMap[key];
+		if (/^_/i.test(key)){
+			var data=survey.data;
+			data[key.substring(1)]=JSON.parse(unescape(value));
+			survey.data=data;
+		}
+	}
+	if (Utils.getParameterByName("pageNo")!=undefined){
+		survey.currentPageNo=Utils.getParameterByName("pageNo");
+	}
+}
+
 LocalStorage.loadState(survey);
 
 

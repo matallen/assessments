@@ -19,6 +19,7 @@ Utils = {
 		while ((el = el.parentElement) && !el.classList.contains(cls));
 		return el;
 	},
+	
 	isValidBase64: function(str){
 		if (undefined == str) return false;
 		if (str ==='' || str.trim() ==='')return false;
@@ -28,6 +29,17 @@ Utils = {
 	   }catch(err){
 	     return false;
 	   }
+	},
+	
+	getParametersAsMap: function(url){
+		if (!url) url = window.location.href;
+        var map = [], hash;
+        var hashes = url.slice(url.indexOf('?') + 1).split('&');
+        for(var i = 0; i < hashes.length; i++){
+            hash = hashes[i].split('=');
+            map[hash[0]] = hash[1];
+        }
+        return map;
 	}
 
 }
@@ -150,16 +162,19 @@ LocalStorage = {
 			console.log("LocalStorage:: Clearing state")
 			window.localStorage.removeItem(LocalStorage.storageName+"_"+surveyId);
 		},
+		hasState: function(){
+			var storageSt = window.localStorage.getItem(LocalStorage.storageName+"_"+surveyId) || "";
+			return ""!=storageSt;
+		},
 		loadState: function(survey) {
 			var storageSt = window.localStorage.getItem(LocalStorage.storageName+"_"+surveyId) || "";
 			console.log("loadState: "+storageSt);
-			var loaded=storageSt?JSON.parse(storageSt):{ currentPageNo: 0, data: {} };
-			if (loaded.data) 
-			    survey.data=loaded.data;
-			if (loaded.currentPageNo){
-				survey.currentPageNo=loaded.currentPageNo;
+			if (""!=storageSt){
+				var loaded=storageSt?JSON.parse(storageSt):{ currentPageNo: 0, data: {} };
+				if (loaded.data) survey.data=loaded.data;
+				if (loaded.currentPageNo) survey.currentPageNo=loaded.currentPageNo;
+				return loaded;
 			}
-			return loaded;
 		},
 		save: function(surveyId, toStore) {
 			console.log("LocalStorage:: Saving...");
