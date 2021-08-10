@@ -3,7 +3,12 @@
 <head>
 	<script type="text/javascript">
 		var isLive=location.hostname.includes("assessments.redhat.com");
-		document.write(`<script src="//static.redhat.com/libs/redhat/marketing/latest/trustarc/`+(isLive?`trustarc.js`:`trustarc.stage.js`)+`" type="text/javascript"> <\/script>`);
+		//document.write(`<script src="//static.redhat.com/libs/redhat/marketing/latest/trustarc/`+(isLive?`trustarc.js`:`trustarc.stage.js`)+`" type="text/javascript"> <\/script>`);
+		
+		// tell DPAL that we want to use EDDL instead of DOM load by sending it the name of the dataObject. This means _satellite.pageBottom() is not req'd either
+		window.appEventData = window.appEventData || [];
+		appEventData.push({"event":"Page Load Started", "page":{"dataObject":"appEventData"}});
+		
 		document.write(`<script id="dpal" src="https://www.redhat.com/ma/`+(isLive?`dpal.js`:`dpal-staging.js`)+`" type="text/javascript"> <\/script>`);
 		console.log("DPAL "+(isLive?"PROD!":"DEV/STAGING"));
 	</script>
@@ -28,7 +33,7 @@
 	
 	
 	<script src="assets/js/http.js"></script>
-	<script src="assets/js/utils.js"></script>
+	<script src="assets/js/utils.js?v3"></script>
 	<script src="assets/js/cookies.js"></script>
 	<script src="assets/js/env.js"></script>
 	
@@ -190,7 +195,7 @@
 					if (200==status && response!=""){
 						clearInterval(timerId);
 						
-						AdobeUtils.sendEvent("assessments", surveyId, "results", response["_language"]?response["_language"]:"en");
+						AdobeUtils.sendStartEvent(surveyId, "results", response["_language"]?response["_language"]:"en");
 						
 //						AdobeUtils.sendAdobeEvent({"event": "Page Load Started", 
 //							"page": {
@@ -228,7 +233,7 @@
 						retries+=1;
 					}
 					
-//					AdobeUtils.sendAdobeEvent({ "event": "Page Load Completed" });
+					AdobeUtils.sendEndEvent();
 					
 				}, function(status){
 					// on error - sink it and wait

@@ -56,32 +56,38 @@ HtmlUtils = {
 
 // look in the 'appEventData' in javascript console to see these messages
 AdobeUtils = {
-	sendCustomEvent: function(evt){
-		try{
-			console.log("Adobe Event: '"+evt["event"]+"'"+ (evt["page"]?" - "+evt["page"]["pageName"]+"("+evt["page"]["siteLanguage"]+")":""));
+	sendEndEvent: function(){
+		try{ 
 			window.appEventData = window.appEventData || [];
-			appEventData.push(evt);
-		}catch(err){}
+			appEventData.push({ "event": "Page Load Completed" });
+			console.log("Adobe Event: 'Page Load Completed'");
+		}catch(err){
+			console.log(err);
+		}
 	},
-	sendEvent: function(surveyId, pageName, language){
+	sendStartEvent: function(surveyId, pageName, language){
 		surveyId=surveyId!=undefined?surveyId.toLowerCase():surveyId;
 		pageName=pageName!=undefined?pageName.toLowerCase():pageName;
 		try{
 			var evt = {"event": "Page Load Started", "page": {
 						"pageName": surveyId+"|"+pageName,
-//						"detailedPageName": "Red Hat Assessments - "+ surveyId +" - "+ options.newCurrentPage.name,
-						"pageType": "assessment",
+						"pageType": "assessments",
 //						"offerID": ,
 						"siteLanguage": language,
-						"cms": "assessments.redhat.com v1.0 2021.07"
+						"cms": "rh|assessments.redhat.com v1.0 2021.07",
+						"contentID": surveyId,
+						"dataObject": "appEventData"
 					}
 				};
-			console.log("EDDL Event: '"+evt["event"]+"'"+ (evt["page"]?" - "+evt["page"]["pageName"]+"("+evt["page"]["siteLanguage"]+")":""));
 			window.appEventData = window.appEventData || [];
 			appEventData.push(evt);
-//			if (pageName.match(/\.contact\.+/i)) appEventData.push(evtContactForm);
-			appEventData.push({ "event": "Page Load Completed" });
+			console.log("Adobe Event: '"+evt["event"]+"'"+ (evt["page"]?" - "+evt["page"]["pageName"]+"("+evt["page"]["siteLanguage"]+")":""));
 		}catch(err){}
+	},
+	sendEvent: function(surveyId, pageName, language){
+		AdobeUtils.sendStartEvent(surveyId, pageName, language);
+		AdobeUtils.sendEndEvent();
+//			if (pageName.match(/\.contact\.+/i)) appEventData.push(evtContactForm);
 	}, 
 //	sendEventOld: function(appId, surveyId, pageName, language){
 //		surveyId=surveyId!=undefined?surveyId.toLowerCase():surveyId;

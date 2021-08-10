@@ -4,6 +4,11 @@
 	<script type="text/javascript">
 		var isLive=location.hostname.includes("assessments.redhat.com");
 		//document.write(`<script src="//static.redhat.com/libs/redhat/marketing/latest/trustarc/`+(isLive?`trustarc.js`:`trustarc.stage.js`)+`" type="text/javascript"> <\/script>`);
+		
+		// tell DPAL that we want to use EDDL instead of DOM load by sending it the name of the dataObject. This means _satellite.pageBottom() is not req'd either
+		window.appEventData = window.appEventData || [];
+		appEventData.push({"event":"Page Load Started", "page":{"dataObject":"appEventData"}});
+		
 		document.write(`<script id="dpal" src="https://www.redhat.com/ma/`+(isLive?`dpal.js`:`dpal-staging.js`)+`" type="text/javascript"> <\/script>`);
 		console.log("DPAL "+(isLive?"PROD!":"DEV/STAGING"));
 	</script>
@@ -30,7 +35,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.6.4/showdown.min.js"></script>
 	
 	<script src="/assets/js/http.js"></script>
-	<script src="/assets/js/utils.js?v2"></script>
+	<script src="/assets/js/utils.js?v3"></script>
 	<script src="/assets/js/cookies.js"></script>
 	<script src="/assets/js/env.js"></script>
 	
@@ -251,9 +256,9 @@ $(document).ready(function() {
 
 <!-- DPAL tracking -->
 <script type="text/javascript">
-	if (("undefined" !== typeof _satellite) && ("function" === typeof _satellite.pageBottom)) {
-		_satellite.pageBottom();
-	}
+//	if (("undefined" !== typeof _satellite) && ("function" === typeof _satellite.pageBottom)) {
+//		_satellite.pageBottom();
+//	}
 </script>
 
 </body>

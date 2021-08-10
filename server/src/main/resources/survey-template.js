@@ -597,12 +597,14 @@ if (LocalStorage.getFlag("lastAssessmentCompleted")=="true"){ // This means the 
 	LocalStorage.removeFlag("lastAssessmentCompleted");
 }
 // Load initial state from queryparam (if there is no state existing) - for example, {"currentPageNo":1, "data":{"interests":["platforms"]}} is data=eyJjdXJyZW50UGFnZU5vIjoxLCAiZGF0YSI6eyJpbnRlcmVzdHMiOlsicGxhdGZvcm1zIl19fQ==
+// Support for setting the whole data in an annonymous way (base64 encoded)
 if (Utils.getParameterByName("data")!=undefined && !LocalStorage.hasState()){
 	var initialData=JSON.parse(unescape(atob(Utils.getParameterByName("data"))));
 	survey.data=initialData.data;
 	survey.currentPageNo=initialData.currentPageNo;
 }
 
+// Support for _ params to initialise survey data. ie just straight into a specific section
 if (!LocalStorage.hasState()){
 	var parametersAsMap=Utils.getParametersAsMap();
 	for(key in parametersAsMap){
@@ -618,6 +620,7 @@ if (!LocalStorage.hasState()){
 	}
 }
 
+// Load the customer survey state if they've returned (or refreshed) the page/assessment
 LocalStorage.loadState(survey);
 
 
