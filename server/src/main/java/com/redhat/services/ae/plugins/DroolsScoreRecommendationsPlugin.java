@@ -158,9 +158,9 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 							.put("subSection", rows.get("Sub-section"))
 							.put("scoreLow", rows.get("Score >=")!=null?(int)Double.parseDouble(rows.get("Score >=")):null)
 							.put("scoreHigh", rows.get("Score <=")!=null?(int)Double.parseDouble(rows.get("Score <=")):null)
+							.put("answerValue", rows.get("Answer")!=null?rows.get("Answer"):null)
 							
 							.put("questionId", rows.get("Question ID"))
-							
 							
 							.put("resultLevel1", rows.get("Result Level 1"))
 							.put("resultLevel2", rows.get("Result Level 2"))
@@ -258,10 +258,16 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 					// Insert answer scores into drools session
 					if (Map.class.isAssignableFrom(val.getClass())){
 						Map<String, Object> value=(Map<String, Object>)val;
-						if (value.containsKey("score")){
-							DroolsSurveyAnswer a=new DroolsSurveyAnswer(e.getKey(), (String)value.get("pageId"), language, (Integer)value.get("score"), (String)value.get("title"));
+						if (value!=null){
+							Integer score=value!=null && null!=value.get("score")? (Integer)value.get("score"):-1;
+//							String pageId=value!=null && null!=value.get("pageId")?(String)value.get("pageId"):null;
+//							String title= value!=null && null!=value.get("title")?( String)value.get("title"):null;
+//							System.out.println("key="+e.getKey()+", pageId="+pageId+", lang="+language+", title="+title+", score="+score);
+							DroolsSurveyAnswer a=new DroolsSurveyAnswer(e.getKey(), null, language, score, null);
 							log.debug("Inserting fact: "+a);//(String.format("Answer: id=%s, page=%s, lang=%s, score=%s, text=%s", e.getKey(), language, (Integer)value.get("score"), (String)value.get("title") )));
 							kSession.insert(a);
+						}else{
+						  System.out.println("hmm. value was null!");
 						}
 						
 						try{

@@ -6,6 +6,7 @@ section
 questionId
 scoreLow
 scoreHigh
+answerValue
 resultLevel1
 resultLevel2
 resultText
@@ -23,11 +24,12 @@ template "question recommendations"
 rule "QuestionRule-@{row.rowNumber}: @{description}"
 salience @{salience}
 when
-	$ans : DroolsSurveyAnswer(
-		 language == "@{language}"
+	$ans : DroolsSurveyAnswer(true==true
+		,language == "@{language}"
 		,questionId == "@{questionId}"
 		,score >= @{scoreLow}
 		,score <= @{scoreHigh}
+		,answer contains "@{answerValue}"
 	)
 then
 	list.add(new DroolsRecommendation.Builder()

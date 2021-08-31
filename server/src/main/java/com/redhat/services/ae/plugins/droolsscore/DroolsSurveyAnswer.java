@@ -9,10 +9,10 @@ public class DroolsSurveyAnswer{
 	private String pageId;
 	private String questionId;
 	private String title;
-	private int score;
+	private Integer score;
 	private List<String> recommendations;
 
-	public DroolsSurveyAnswer(String questionId, String pageId, String language, int score, String title){
+	public DroolsSurveyAnswer(String questionId, String pageId, String language, Integer score, String title){
 		this.questionId=questionId;
 		this.pageId=pageId;
 		this.language=language;
@@ -59,7 +59,7 @@ public class DroolsSurveyAnswer{
 		return score;
 	}
 
-	public void setScore(int score){
+	public void setScore(Integer score){
 		this.score=score;
 	}
 
