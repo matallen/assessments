@@ -108,7 +108,6 @@ public class SurveyController{
 	public Response updateConfig(@PathParam("surveyId") String surveyId, String payload) throws IOException{
 		System.out.println("payload="+payload);
 		Survey s=Json.toObject(payload, Survey.class);
-		System.out.println("s="+s);
 		Survey entity=Survey.findById(surveyId);
 		if (null==entity) throw new WebApplicationException("Unable to find "+Survey.class.getSimpleName()+" with id "+surveyId);
 		entity=Survey.builder().populate(s, entity);
@@ -214,51 +213,57 @@ public class SurveyController{
 //				return false;
 //			}});
 		
-		Map<String, Map<String, Object>> activePluginMap=new LinkedHashMap<String, Map<String,Object>>();
-		// Plugins:: Add any mandatory plugins at the start of the plugin chain
-		if (!Iterables.any(o.getActivePlugins().values(), new Predicate<Map<String,Object>>(){public boolean apply(@Nullable Map<String,Object> pluginCfg){
-			return pluginCfg.get("className").equals(UpdateAnswerMetricsPlugin.class.getName());}})){
-			log.info("Adding default 'UpdateAnswerMetrics' since it was not found in plugin chain");
-			activePluginMap.put("UpdateAnswerMetrics", new MapBuilder<String,Object>().put("active", true).put("className",UpdateAnswerMetricsPlugin.class.getName()).build());
-		}
-		activePluginMap.putAll(o.getActivePlugins());
-		// Plugins:: Add any mandatory plugins at the end of the plugin chain
-//		if (!Iterables.any(activePluginMap.values(), new Predicate<Map<String,Object>>(){public boolean apply(@Nullable Map<String,Object> pluginCfg){
-//			return pluginCfg.get("className").equals(RemovePIIAnswersPlugin.class.getName());}})){
-//			activePluginMap.put("RemovePIIAnswers", new MapBuilder<String,Object>().put("active", true).put("className",RemovePIIAnswersPlugin.class.getName()).build());
+		
+		PluginPipelineExecutor pluginExecutor=new PluginPipelineExecutor();
+		List<Plugin> activePlugins=pluginExecutor.getActivePlugins(o, surveyData);
+		surveyData=pluginExecutor.execute(o, surveyData, visitorId, activePlugins);
+		
+		
+//		Map<String, Map<String, Object>> activePluginMap=new LinkedHashMap<String, Map<String,Object>>();
+//		// Plugins:: Add any mandatory plugins at the start of the plugin chain
+//		if (!Iterables.any(o.getActivePlugins().values(), new Predicate<Map<String,Object>>(){public boolean apply(@Nullable Map<String,Object> pluginCfg){
+//			return pluginCfg.get("className").equals(UpdateAnswerMetricsPlugin.class.getName());}})){
+//			log.info("Adding default 'UpdateAnswerMetrics' since it was not found in plugin chain");
+//			activePluginMap.put("UpdateAnswerMetrics", new MapBuilder<String,Object>().put("active", true).put("className",UpdateAnswerMetricsPlugin.class.getName()).build());
 //		}
-		
-
-		// Plugins:: Execute post-survey plugins
-		List<Plugin> activePlugins=new LinkedList<Plugin>();
-		Map<String,Object> originalSurveyData=new LinkedHashMap<>(surveyData);
-		// Plugins:: Create Plugin list
-		for(Entry<String, Map<String, Object>> pl:activePluginMap.entrySet()){
-			try{
-				Plugin plugin=(Plugin)Class.forName((String)pl.getValue().get("className")).newInstance();
-				plugin._setConfig(pl.getValue());
-				plugin.setOriginalSurveyResults(originalSurveyData);
-				activePlugins.add(plugin);
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-		}
-		
-		// Plugins:: Execute post-survey plugins
-		for(Plugin plugin:activePlugins){
-			try{
-				surveyData=plugin.execute(surveyId, visitorId, surveyData); // after each plugin, keep the changes to the data (similar to the concept of Tomcat filters)
-//				WARNING: THIS IS HEAVY DEBUGGING
-//				log.debug("After plugin ["+plugin.getClass().getSimpleName()+"]: "+Json.toJson(surveyData));
-				
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-		}
-		// Plugins:: Post-execution, cleanup
-		for(Plugin plugin:activePlugins){
-			plugin.onDestroy(surveyId, visitorId, surveyData);
-		}
+//		activePluginMap.putAll(o.getActivePlugins());
+//		// Plugins:: Add any mandatory plugins at the end of the plugin chain
+////		if (!Iterables.any(activePluginMap.values(), new Predicate<Map<String,Object>>(){public boolean apply(@Nullable Map<String,Object> pluginCfg){
+////			return pluginCfg.get("className").equals(RemovePIIAnswersPlugin.class.getName());}})){
+////			activePluginMap.put("RemovePIIAnswers", new MapBuilder<String,Object>().put("active", true).put("className",RemovePIIAnswersPlugin.class.getName()).build());
+////		}
+//		
+//
+//		// Plugins:: Execute post-survey plugins
+//		List<Plugin> activePlugins=new LinkedList<Plugin>();
+//		Map<String,Object> originalSurveyData=new LinkedHashMap<>(surveyData);
+//		// Plugins:: Create Plugin list
+//		for(Entry<String, Map<String, Object>> pl:activePluginMap.entrySet()){
+//			try{
+//				Plugin plugin=(Plugin)Class.forName((String)pl.getValue().get("className")).newInstance();
+//				plugin._setConfig(pl.getValue());
+//				plugin.setOriginalSurveyResults(originalSurveyData);
+//				activePlugins.add(plugin);
+//			}catch(Exception e){
+//				e.printStackTrace();
+//			}
+//		}
+//		
+//		// Plugins:: Execute post-survey plugins
+//		for(Plugin plugin:activePlugins){
+//			try{
+//				surveyData=plugin.execute(surveyId, visitorId, surveyData); // after each plugin, keep the changes to the data (similar to the concept of Tomcat filters)
+////				WARNING: THIS IS HEAVY DEBUGGING
+////				log.debug("After plugin ["+plugin.getClass().getSimpleName()+"]: "+Json.toJson(surveyData));
+//				
+//			}catch(Exception e){
+//				e.printStackTrace();
+//			}
+//		}
+//		// Plugins:: Post-execution, cleanup
+//		for(Plugin plugin:activePlugins){
+//			plugin.onDestroy(surveyId, visitorId, surveyData);
+//		}
 		
 		// Add a timestamp if it doesnt exist
 		if (!surveyData.containsKey("_timestamp"))

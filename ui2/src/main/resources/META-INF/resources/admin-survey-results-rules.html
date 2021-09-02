@@ -1,0 +1,214 @@
+<html lang="EN">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Admin @ Assessments | Red Hat Inc</title>
+	<meta name="description" content="Red Hat Assessment Platform">
+	<meta name="robots" content="noindex">
+	<meta name="viewport" content="width=device-width, initial scale= 1.0">
+	<meta property="og:title" content="Assessments | Red Hat Inc">
+	<meta property="og:description" content="">
+  <link rel="preload" href="/assets/fonts/RedHatText/RedHatText-Regular.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="/assets/fonts/RedHatText/RedHatText-Medium.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="/assets/fonts/RedHatDisplay/RedHatDisplay-Regular.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="/assets/fonts/RedHatDisplay/RedHatDisplay-Medium.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="/assets/fonts/RedHatDisplay/RedHatDisplay-Bold.woff" as="font" type="font/woff" crossorigin>
+  <link type="text/css" rel="stylesheet" href="/assets/fonts/red-hat-font.css" media="all" />
+  <link rel="icon" href="https://www.redhat.com/favicon.ico">
+	<style id="customStyles">
+	@import "https://www.redhat.com/ux/webdms/css/styles.min.css";
+	</style>
+	
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script>
+	$(function(){
+	  jQuery.each($('[data-include]'), function(){
+	    var file = 'components/' + $(this).data('include') + '.html';
+	    $(this).load(file);
+	  });
+	});
+	</script>
+	<script src="assets/js/http.js"></script>
+	<script src="assets/js/utils.js"></script>
+	<script src="assets/js/env.js"></script>
+	<script src="assets/js/feedback-alert.js"></script>
+	
+	<link rel="stylesheet" href="assets/css/header.css">
+	<link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+
+<body>
+	
+	<!-- Header (+Logo) -->
+	<div id="header">
+		<div class="navbar-container">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-3" >
+						<a class="navbar-brand" href="//www.redhat.com/" title="Red Hat"><img alt="Red Hat" class="img-fluid navbar-logo" data-alt-text="Red Hat" src="/assets/images/red-hat_white.svg?t=1537976200708" title="Red Hat" data-image-state="ready"> </a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Breadcrumb Menu -->
+	<div class="elevate" style="height: 27px">
+		<ul style="float:left" class="menu menu_horizontal">
+			<li><a href="admin.html">Surveys</a></li>
+			<li class="noColor divider">/</li>
+			<li class="noColor menu_needsId _id"><span style="color:white;">UNSET</span></li>
+			<li class="noColor divider">|</li>
+			<li class="menu_needsId"><a href="admin-survey-details.html?id=">Details</a></li>
+			<li class="menu_needsId"><a href="admin-survey-reports.html?id=">Reports</a></li>
+			<!--li class="menu_needsId"><a href="admin-survey-questions.html?id=">Questions</a></li-->
+			<li class="menu_needsId"><a href="admin-survey-questions-embedded.html?id=">Questions</a></li>
+			<!--li class="menu_needsId"><a href="admin-survey-eloqua.html?id=">Eloqua</a></li-->
+			<li class="menu_needsId"><a href="admin-survey-plugins.html?id=">Plugins</a></li>
+			<li class="menu_needsId"><a href="admin-survey-resources.html?id=">Resources</a></li>
+			<li class="menu_needsId"><a href="admin-survey-results-rules.html?id=">Results Rules</a></li>
+			<li class="menu_needsId"><a href="admin-survey-results.html?id=">Results Page</a></li>
+			<li class="menu_needsId"><a href="admin-survey-data-management.html?id=">Data</a></li>
+			<li class="menu_needsId"><a href="admin-survey-settings.html?id=">Settings</a></li>
+		</ul>
+		<ul style="float:right" class="menu menu_horizontal">
+			<li><a id="logout" href="/logout">Logout</a></li>
+		</ul>
+		<script>
+			$(document).ready(function() {
+				$("a[id=logout]").attr("href", env.server+$("a[id=logout]").attr("href")+"?onSuccess="+document.location.origin+"/login.html");
+			});	
+		</script>
+	</div>
+	
+	<!-- success/error message --> 
+	<div class="alert alert-success" id="feedback-alert" style="display:none">
+    <button type="button" class="close" data-dismiss="alert">x</button>
+    <span id="feedback-alert-text">&nbsp;</span>
+	</div>
+	
+	<script src="assets/js/prism.js"></script>
+	<link rel="stylesheet" href="assets/css/prism.css">
+	
+	<script src="assets/js/prism-live.js?load=css,html,javascript"></script>
+	<link rel="stylesheet" href="assets/css/prism-live.css">
+	
+	<!--
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js" integrity="sha512-axJX7DJduStuBB8ePC8ryGzacZPr3rdLaIDZitiEgWWk2gsXxEFlm4UW0iNzj2h3wp5mOylgHAzBzM4nRSvTZA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<link rel="stylesheet" href="https://raw.githubusercontent.com/PrismJS/live/master/prism-live.css">
+	<link rel="stylesheet" href="https://prismjs.com/themes/prism.css">
+	<script src="https://prismjs.com/prism.js"></script>
+	-->
+	<link rel="stylesheet" href="https://prismjs.com/plugins/line-numbers/prism-line-numbers.css">
+	<script src="https://prismjs.com/plugins/line-numbers/prism-line-numbers.js"></script>
+
+	<!--
+	<link rel="stylesheet" href="https://prismjs.com/plugins/line-numbers/prism-line-numbers.css">
+	<script src="https://prismjs.com/plugins/line-numbers/prism-line-numbers.js"></script>
+	-->
+	
+	
+	<!-- Main Content -->
+	<div class="container py-1">
+		<table class="elevate">
+			<tbody id="content">
+				<tr>
+					<td>
+						<textarea spellcheck="false" id="_content"  class="prism-live line-numbers language-drools fill match-braces" style="width: 100%;"></textarea>
+						<!--
+						<textarea id="_content" class="prism-live line-numbers language-drools fill" style="width: 100%; height: 800px;"></textarea>
+						-->
+						<br/>
+						<!--
+						Errors:
+						<textarea id="_errors"  class="xprism-live line-numbers language-drools fill" style="width: 100%;height:100px;"></textarea>
+						-->
+						<pre id="_messages" style="width:100%;"></pre>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+					<a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="#" onclick="save();">Save</a>
+					<a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="#" onclick="validate();">Validate</a>
+					<!--a style="line-height: 0.3 !important;" class="btn btn-outline-black mt-2 mb-1 btn-color-white" href="/admin.html">Cancel</a-->
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
+<script>
+$(window).bind('keydown', function(event) {
+    if (event.ctrlKey || event.metaKey) {
+        switch (String.fromCharCode(event.which).toLowerCase()) {
+        case 's': // ctrl-s pressed
+	        event.preventDefault(); save(); break;
+        }
+    }
+});
+
+var surveyId=Utils.getParameterByName("id");
+setMenu("Results Rules");
+$(document).ready(function() {
+	$("#feedback-alert").hide();
+	
+	if (undefined!=surveyId){
+		
+		Http.httpGet(env.server+"/api/surveys/"+surveyId+"/result/rules", function(status, response){
+			// on success
+			$("#_content").text(response);
+			Prism.highlightAll(); // perhaps this will force a resize?
+			
+		}, function(status){
+			// on error
+			alert("Error: response code was "+status);
+		});
+		
+	}else{
+		// Throw error message to page saying survey doesnt exist
+	}
+	
+});
+function nullToEmpty(v){ if (undefined!=v) return v; else return "";}
+
+function validate(){
+	$("#_messages").text("cleared");
+	var data=btoa($("#_content").val());
+//	console.log(data);
+	Http.send((undefined==surveyId?"POST":"PUT"), env.server+"/api/surveys/"+surveyId+"/result/rules/validate", data, function(resp, status){
+		$("#_messages").text(resp.response);
+		
+		// future feature: line-highligh -- parse for "line=<number>" and add the following data- attribute, "data-line=4-8" to highlight the error lines in the editor
+		// future feature: auto-linker -- https://prismjs.com/plugins/autolinker/
+		
+//		let errorsArea=document.querySelector("#_errors");
+//		Prism.highlightElement(errorsArea);
+		
+		showSuccess(200==status?"Saved Ok":"Save Error (Status: "+status+")");
+		//alert(200==status?"Saved Ok":"Save Error (Status: "+status+")");
+	});
+}
+function save(){
+	var data=btoa($("#_content").val());
+	Http.send((undefined==surveyId?"POST":"PUT"), env.server+"/api/surveys/"+surveyId+"/result/rules", data, function(resp, status){
+		$("#_content").text(resp.response);//prettyPrint(resp.response));
+		showSuccess(200==status?"Saved Ok":"Save Error (Status: "+status+")");
+		//alert(200==status?"Saved Ok":"Save Error (Status: "+status+")");
+	});
+}
+//function prettyPrint(jsonText){
+//	return JSON.stringify(JSON.parse(jsonText), null, 2);
+//}
+function populate(obj){ // html fields to javascript object
+	for (key in obj){
+		obj[key]=$("#_"+key).val();
+	}
+	return obj
+}
+
+	</script>
+
+</body>
+</html>

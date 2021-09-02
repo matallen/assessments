@@ -1,0 +1,25 @@
+package com.redhat.services.ae;
+
+import com.redhat.services.ae.recommendations.domain.Insight;
+import com.redhat.services.ae.recommendations.domain.Answer;
+import com.redhat.services.ae.recommendations.domain.Recommendation;
+
+rule "TechnicalInsightRule-0: Sentiment about OpenShift"
+when
+	Answer(question=="unhappyWithProducts", answer contains "OpenShift")
+then
+  insert(new Insight.builder().value("UnsatisfiedWithOpenShift").build());
+end
+
+rule "TechnicalRecommendationRule-0: RedHatSubscriptions"
+when
+	Answer(question=="subscriptions", answer contains "OpenShift")
+	and Answer(question=="subscriptions", answer not contains "ACS")
+//	Insight(value=="UnsatisfiedWithOpenShift")
+then
+  insert(new Recommendation.builder()
+	  		.section("Level1 - Basic")
+	  		.level1("Recommendations")
+	  		.text("Since the customer is not happy with Openshift but already has {subscriptions} subscriptions, perhaps there's a cross-sell opportunity to sell ACS with OpenShift?")
+	  .build());
+end

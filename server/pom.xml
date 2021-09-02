@@ -239,6 +239,7 @@
         <configuration>
           <systemProperties>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+            <java.util.logging.config.file>${projectDir}/src/test/resources/logging.properties</java.util.logging.config.file>
           </systemProperties>
         </configuration>
       </plugin>

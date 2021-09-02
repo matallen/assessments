@@ -32,6 +32,7 @@ import com.google.api.client.util.Lists;
 //import com.mongodb.BasicDBObject;
 //import com.mongodb.DBObject;
 import com.redhat.services.ae.Database;
+import com.redhat.services.ae.MapBuilder;
 import com.redhat.services.ae.Utils;
 import com.redhat.services.ae.model.storage.EntityStorage;
 import com.redhat.services.ae.model.storage.StorageFactory;
@@ -52,6 +53,7 @@ public class Survey{
 	public String theme;
 	public Map<String,Object> config;
 	
+	public String getSurveyId(){return id;}
 	
 	@JsonIgnore
 	private EntityStorage<Map<String,Object>> resultsStorage=new StorageFactory<Map<String,Object>>(){
@@ -68,6 +70,16 @@ public class Survey{
 		@Override public Map<String,Object> createNewT(){ return new LinkedHashMap<>();
 		}}.create("questions.json");
 	
+	@JsonIgnore
+	private EntityStorage<Map<String,Object>> rulesStorage=new StorageFactory<Map<String,Object>>(){
+		@Override public Map<String,Object> createNewT(){ return new LinkedHashMap<>();
+		}}.create("rules.drl");
+	@JsonIgnore
+	public String getRules(){ return (String)rulesStorage.load(this.id).get("rules"); }
+	public void setRules(String rules){ rulesStorage.data=new MapBuilder<String,Object>().put("rules", rules).build(); }
+	public void saveRules(){ rulesStorage.save(this.id); }
+			
+		
 	@JsonIgnore
 	public Map<String,Object> getMetrics(){
 		return metricsStorage.load(this.id);

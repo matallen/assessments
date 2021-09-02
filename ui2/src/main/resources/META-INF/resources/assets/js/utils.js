@@ -88,7 +88,11 @@ AdobeUtils = {
 		AdobeUtils.sendStartEvent(surveyId, pageName, language);
 		AdobeUtils.sendEndEvent();
 //			if (pageName.match(/\.contact\.+/i)) appEventData.push(evtContactForm);
-	}, 
+	},
+	sendFormSubmitEvent: function(surveyId, pageName, language){
+		// not yet implemented
+	},
+	
 //	sendEventOld: function(appId, surveyId, pageName, language){
 //		surveyId=surveyId!=undefined?surveyId.toLowerCase():surveyId;
 //		pageName=pageName!=undefined?pageName.toLowerCase():pageName;

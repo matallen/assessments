@@ -4,8 +4,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-//import java.util.TreeMap;
 
+import com.redhat.services.ae.recommendations.domain.Recommendation;
 
 public class ResultsBuilderTabsOverview{
 	private boolean includeOverviewTab=true;
@@ -14,8 +14,7 @@ public class ResultsBuilderTabsOverview{
 		this.includeOverviewTab=value; return this;
 	}
 	
-	public Object build(List<DroolsRecommendation> recommendations, Map<String, Integer> sectionScores, Map<String, Integer> thresholds){
-//		Map<String,Map<String,Map<String,List<String>>>> tabs=new TreeMap<String,Map<String,Map<String,List<String>>>>();
+	public Object build(List<Recommendation> recommendations, Map<String, Integer> sectionScores, Map<String, Integer> thresholds){
 		Map<String, Map<String,Object>> overviews=new LinkedHashMap<>();
 		
 // Example output for overviews:

@@ -323,7 +323,11 @@ public class GoogleDrive3 {
       int sheetIndex=0;
       if (null!=sheetName) sheetIndex=wb.getSheetIndex(sheetName);
       
-      if (sheetIndex<0) throw new RuntimeException("Unable to find sheet with name '"+sheetName+"'");
+      if (sheetIndex<0){
+      	log.warn("Unable to find sheet with name '"+sheetName+"'");
+      	return null;
+//      	throw new RuntimeException("Unable to find sheet with name '"+sheetName+"'");
+      }
       
       XSSFSheet s=wb.getSheetAt(sheetIndex);
       int maxColumns=20;

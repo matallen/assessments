@@ -23,11 +23,19 @@ import org.apache.commons.io.IOUtils;
 public class Controller{
 	
 	/* THIS NEEDS TESTING BEFORE COMMITTING! */
-	@GET
-	@Path("/{surveyId}/{lang}")
-	public Response serveAssessmentAlias2(@PathParam("lang") String lang, @PathParam("surveyId") String surveyId, @DefaultValue("text/html; charset=UTF-8") @QueryParam("responseContentType") String responseContentType) throws FileNotFoundException, IOException{
-		return serveAssessmentAlias1(lang, surveyId, responseContentType);
-	}
+//	@GET
+//	@Path("/{surveyId}/{lang}")
+//	public Response serveAssessmentAlias2(@PathParam("lang") String lang, @PathParam("surveyId") String surveyId, @DefaultValue("text/html; charset=UTF-8") @QueryParam("responseContentType") String responseContentType) throws FileNotFoundException, IOException{
+//		return serveAssessmentAlias1(lang, surveyId, responseContentType);
+//	}
+
+	
+//	@GET
+//	@Path("/0/{surveyId}/{lang}")
+//	public Response serveAssessmentAlias2(@PathParam("lang") String lang, @PathParam("surveyId") String surveyId, @DefaultValue("text/html; charset=UTF-8") @QueryParam("responseContentType") String responseContentType) throws FileNotFoundException, IOException{
+//		return serveAssessmentAlias1(lang, surveyId, responseContentType);
+//	}
+	
 	
 	@GET
 	@Path("/surveys/{surveyId}/{lang}")

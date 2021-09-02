@@ -32,22 +32,8 @@ public class DroolsRecommendation{
 	public String getLevel2(){
 		return level2;
 	}
-	public static RecommendationBuilder builder(){
-		return new RecommendationBuilder();
-	}
-	public static class RecommendationBuilder extends DroolsRecommendation{
-		public DroolsRecommendation build(){
-			return new DroolsRecommendation(section, level1, level2, text);
-		}
-		public RecommendationBuilder text(String value){
-			this.text=value; return this;
-		}
-		public RecommendationBuilder section(String value){
-			this.level1=value; return this;
-		}
-	}
 	public String toString(){
-		return "Recommendation: "+section+"->"+level1+"->"+level2+"->"+text+"";
+		return this.getClass().getSimpleName()+": "+section+"->"+level1+"->"+level2+"->"+text+"";
 	}
 	
 	public static class Builder extends DroolsRecommendation{
@@ -60,6 +46,8 @@ public class DroolsRecommendation{
 		}
 	}
 	public void doKeyValueReplacement(String key, String value){
-		text=text.replaceFirst("\\$"+key, value);		
+		text=text.replaceAll("\\$"+key, value);	
+//		text=text.replaceAll("\\$\\{.+\\}", value);
+//		text=text.replaceAll("\\{.+\\}", value);
 	}
 }

@@ -62,7 +62,7 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 			if (ans.isString() && "null".equals(ans.asString())) return new Answer(answerProvided, -1);  // this is for surveyjs choicesFromUrl questions that have a null string in the choices
 			if (ans.has("value") && ans.has("text")){
 				String qValue=ans.at("value").asString();
-				String qText=ans.at("text").asString();
+				String qText=ans.at("text").asString(); //  this fails in multilingual.. need to grab the "deafult" property if it exists 
 				
 				if (answerProvided.equals(qValue)){
 					Answer result=new Answer(null,-1);
@@ -169,7 +169,13 @@ public class AddTitleAndScorePlugin extends EnrichAnswersPluginBase{
 					if (pageJson.has(value)) answerData.put(e.getKey(), pageJson.at(value).asString());
 				}
 			}else{ // question level
-				if (question.has(e.getValue())) answerData.put(e.getKey(), question.at(e.getValue()).asString());		
+				if (question.has(e.getValue())){
+					if (question.at(e.getValue()).isString()){
+						answerData.put(e.getKey(), question.at(e.getValue()).asString()); // single language, means it just a string
+					}else if (!question.at(e.getValue()).isString() && question.at(e.getValue()).has("default")){
+						answerData.put(e.getKey(), question.at(e.getValue()).at("default").asString()); // multilanguage, pick the default language option
+					}
+				}
 			}
 		}
 		

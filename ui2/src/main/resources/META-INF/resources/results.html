@@ -357,11 +357,13 @@
 			
 			// count how many sections there are
 			for(var section in report) max=max+1;
+			
+			var doneActive=undefined!=overviews; // true in anticipation of the overview (if we have overviews), or else no so we active the first non-overview tab
 				
 			for(var section in report){ // section is Modernize Platforms etc...
 				
 				var tabName="tabcontent_"+section.replace(/ /g,"_").toLowerCase();
-				html=displaySection(report, section, scores, overviews, c, max, thresholds, undefined);
+				html=displaySection(report, section, scores, overviews, c, max, thresholds, undefined, doneActive);
 				
 				$("#tabsContent").append(html);
 				c=c+1;
@@ -408,10 +410,10 @@
 			
 		}
 		
-		function displaySection(report, section, scores, overviews, c, max, thresholds, overview){
+		function displaySection(report, section, scores, overviews, c, max, thresholds, overview, doneActive){
 			var tabName="tabcontent_"+section.replace(/ /g,"_").toLowerCase();
-			$("#tabs").append(`<li><a data-toggle="tab" id="tab_`+section.replace(/ /g,"_").toLowerCase()+`" href="#`+tabName+`">`+section+`</a></li>`);
-			
+			$("#tabs").append(`<li`+(!doneActive?` class="active"`:``)+`><a data-toggle="tab" id="tab_`+section.replace(/ /g,"_").toLowerCase()+`" href="#`+tabName+`">`+section+`</a></li>`);
+			doneActive=true; // so we dont highlight all the tabs, just the first one
 			var html=`
 				<div id="`+tabName+`" class="tab-pane fade in `+(c==max-1 && undefined==overviews?`active`:``)+`">
 					<table>

@@ -37,7 +37,7 @@ public class IndustryStatisticsPlugin extends Plugin{
 		monthFormat=(String)config.get("monthFormat");
 		groupByFieldName=(String)config.get("groupByFieldName");
 		disabledIfExpression=(String)config.get("disabledIf");
-		extraDebug=super.hasExtraDebug(config, "extraDebug");
+		extraDebug=getBooleanFromConfig(config, "extraDebug", false);
 		
 		if (null==metricsName) metricsName="IndustryScoresByMonth";
 		if (null==monthFormat) monthFormat="yy-MMM";

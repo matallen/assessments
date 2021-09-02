@@ -32,6 +32,7 @@ public class DroolsScoreRecommendationsPluginTest extends TestBase{
 	}
 
 	
+	@SuppressWarnings({"rawtypes", "unchecked"})
 	@Test
 	public void testAllRTIPlugins() throws Exception{
 		
@@ -65,6 +66,7 @@ public class DroolsScoreRecommendationsPluginTest extends TestBase{
 				.put("decisionTableLocation", "https://docs.google.com/spreadsheets/d/19d03Qi0mr-9mcfYp9__sjNkFJcGCx2zT4D26NYH1US4")
 				.put("configSheetName", "Config")
 				.put("thresholdSection", "Report Thresholds")
+				.put("extraDebug", true)
 				.build());
 		answers=test.execute(surveyId, visitorId, answers);
 		System.out.println("ScoreRecommendationsPlugin:: To:\n"+Json.toJson(answers));
@@ -76,8 +78,16 @@ public class DroolsScoreRecommendationsPluginTest extends TestBase{
 		Assert.assertEquals(true, Map.class.isAssignableFrom(answers.get("_report").getClass()));
 		Assert.assertEquals(true, ((Map)answers.get("_report")).size()>0);
 		
+		// assert that there was at 1 recommendation within the _report
+		Map<String,Object> tabs=(Map<String,Object>)((Map)answers.get("_report")).get("tabs");
+		Map<String,Object> mp=(Map<String,Object>)(tabs).get("Modernizing platforms");
+		Map<String,Object> topMenu=(Map<String,Object>)(mp).get(" ");
+		List<String> questionFindings=(List<String>)(topMenu).get("Question Findings");
 		
-		Assert.assertEquals(17, ((Map)answers.get("_sectionScore")).get("Modernizing Platforms"));
+		Assert.assertEquals(true, null!=tabs.get("Modernizing platforms"));
+		Assert.assertEquals(true, 2==questionFindings.size());
+		
+		Assert.assertEquals(17, ((Map)answers.get("_sectionScore")).get("Modernizing platforms"));
 		
 	}
 }

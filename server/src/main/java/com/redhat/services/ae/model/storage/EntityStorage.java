@@ -5,11 +5,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.FileStore;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import org.apache.commons.io.FileSystemUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,31 +76,30 @@ public abstract class EntityStorage<T>{
 			}else{
 				
 				if (createIfNotFound){
-//					data.put(objectId, createNew());
 					data=createNew();
 				}else
 					throw new RuntimeException("Entity '"+objectId+"' not found in file '"+loadFrom.getAbsolutePath()+"'");
 			}
 			
 			return data;
-//		}
-//		return data.get(objectId);
 	}
 	
 //	private File getStorage(String storageRoot, String objectId, String storage){
 //		return new File(getStorageRoot(), objectId+File.separator+storage);
 //	}
-
-	public void save(){
-		save(null);
-	}
+	
+	
 	public void save(String objectId){
 		try{
-			String json=Json.newObjectMapper(true).writeValueAsString(data);
 			File saveTo=new File(getStorageRoot(), null!=objectId?objectId+File.separator+getStorageFilename():getStorageFilename());
 			saveTo.getParentFile().mkdirs(); // ensure the parent exists
-//			System.out.println("Saving to: "+saveTo.getAbsolutePath());
-			IOUtils.write(json, new FileOutputStream(saveTo), "UTF-8");
+			if (String.class.isAssignableFrom(data.getClass())){
+				String dataAsString=(String)data;
+				IOUtils.write(dataAsString, new FileOutputStream(saveTo), "UTF-8");
+			}else{
+				String json=Json.newObjectMapper(true).writeValueAsString(data);
+				IOUtils.write(json, new FileOutputStream(saveTo), "UTF-8");
+			}
 			lastModified=saveTo.lastModified(); // save the modified date so when it's next accessed it doesnt force a reload after each save
 		}catch(JsonMappingException sinkButDontStop){
 			log.error("Unable to write metrics, printing trace but continuing - check the data structure: "+data);
@@ -111,5 +108,9 @@ public abstract class EntityStorage<T>{
 			log.error("Unable to write metrics, printing trace but continuing - check the data structure: "+data);
 			sinkButDontStop.printStackTrace();
 		}
+	}
+	
+	public void save(){
+		save(null);
 	}
 }

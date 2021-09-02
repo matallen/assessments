@@ -5,9 +5,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
@@ -35,6 +38,7 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.kie.api.runtime.KieSession;
 //import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,14 +46,20 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 import com.redhat.services.ae.Utils;
 import com.redhat.services.ae.model.MultipartBody;
 import com.redhat.services.ae.model.Survey;
 import com.redhat.services.ae.model.storage.Surveys;
+import com.redhat.services.ae.plugins.DroolsCompilationException;
+import com.redhat.services.ae.plugins.DroolsScoreRecommendationsPlugin;
 import com.redhat.services.ae.plugins.utils.MultipartReader;
 import com.redhat.services.ae.plugins.utils.MultipartReader.MultipartReaderResult;
 import com.redhat.services.ae.utils.Json;
 import com.redhat.services.ae.utils.StringUtils;
+
+import io.netty.handler.codec.base64.Base64Decoder;
 
 //import io.quarkus.mongodb.panache.PanacheMongoEntity;
 //import io.quarkus.mongodb.panache.PanacheMongoEntityBase;
@@ -225,12 +235,9 @@ public class SurveyAdminController{
 		Survey survey=Survey.findById(surveyId);
 		log.debug("Saving Plugins: "+json);
 		Map<String, Map<String, Object>> oJson=Json.newObjectMapper(true).readValue(json, new TypeReference<Map<String,Map<String,Object>>>(){});
-		
-		
 		survey.getPlugins().clear();
 		survey.getPlugins().putAll(oJson);
 		survey.persist();
-		
 		return Response.ok(Json.toJson(survey.getPlugins())).build();
 	}
 	
@@ -243,6 +250,43 @@ public class SurveyAdminController{
 		log.debug("Loading plugins for: "+surveyName);
 		return Response.ok(Json.toJson(survey.getPlugins())).build();
 	}
+	
+	/** #### GENERIC DRL RESULT RULE HANDLERS #### */
+	
+	@PUT
+	@Path("/{surveyId}/result/rules")
+	public Response saveTechnicalDRLResultRules(@PathParam("surveyId") String surveyId, Object rules) throws FileNotFoundException, IOException{
+		Survey survey=Survey.findById(surveyId);
+		String drl=new String(com.google.api.client.util.Base64.decodeBase64((String)rules));
+		log.debug("Saving Technical DRL Result Rules: "+drl);
+		survey.setRules(drl);
+		survey.saveRules();
+		survey.persist();
+		return Response.ok(survey.getRules()).build();
+	}
+	
+	@PUT
+	@Path("/{surveyId}/result/rules/validate")
+	public Response validateTechnicalDRLResultRules(@PathParam("surveyId") String surveyId, Object/*because String will give you a string with quotes in it!*/ rules) throws FileNotFoundException, IOException{
+		DroolsScoreRecommendationsPlugin p=new DroolsScoreRecommendationsPlugin();
+		try{
+			String drl=new String(com.google.api.client.util.Base64.decodeBase64((String)rules));
+			p.newKieSession(drl);
+			return Response.ok().entity("Rules are valid.").build();
+		}catch(DroolsCompilationException e){
+			return Response.status(200).entity(e.getMessage()).build();
+		}
+	}
+	
+	@GET
+	@PermitAll
+	@Path("/{surveyId}/result/rules")
+	public Response getGenericResultRules(@PathParam("surveyId") String surveyId) throws FileNotFoundException, IOException{
+		Survey survey=Survey.findById(surveyId);
+		log.debug("Loading Result Rules for: "+surveyId);
+		return Response.ok(survey.getRules()).build();
+	}
+	
 	
 	@DELETE
 	@Path("/{surveyId}/metrics/reset")
@@ -275,6 +319,41 @@ public class SurveyAdminController{
 		log.debug("Loading questions for: "+surveyName);
 		return Response.ok(Survey.findById(surveyId).getQuestions()).build();
 	}
+	
+	
+	/* this is for =Import(<url>) function an a google sheet for selection data validation */
+	@GET
+	@PermitAll
+	@Path("/{surveyId}/questionNames/{format}")
+	public Response getQuestions(@PathParam("surveyId") String surveyId, @PathParam("format") String format) throws FileNotFoundException, IOException{
+		String surveyName=surveyId+".json";
+		log.debug("Loading questionNames for: "+surveyName);
+		String questions=Survey.findById(surveyId).getQuestionsAsString();
+		mjson.Json root=mjson.Json.read(questions);
+		List<String> lines=Lists.newArrayList();
+		List<mjson.Json> pages=(List<mjson.Json>)root.at("pages").asJsonList();
+		
+		Function<String,String> addQuotes=s -> "\""+s+"\"";
+		
+		for(mjson.Json page:pages){
+			List<mjson.Json> elements=(List<mjson.Json>)page.at("elements").asJsonList();
+			for(mjson.Json question:elements){
+				String name=question.at("name").asString();
+				String type=question.at("type").asString();
+				String title=question.at("title").asString();
+//				lines.add(Joiner.on(", ").join(new String[]{name,type,title}));
+				lines.add(Lists.newArrayList(new String[]{name,type,title}).stream()
+						.map(addQuotes)
+						.collect(Collectors.joining(", "))
+				);
+			}
+		}
+		
+		String result=Joiner.on("\n").join(lines);
+		return Response.ok().entity(result).build();
+	}
+	
+	
 	
 	/** #### PLUGINS HANDLER #### */
 	@GET

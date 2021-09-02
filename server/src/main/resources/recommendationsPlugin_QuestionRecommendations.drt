@@ -1,0 +1,42 @@
+template header
+salience
+language
+description
+section
+questionId
+scoreLow
+scoreHigh
+answerValue
+resultLevel1
+resultLevel2
+resultText
+
+package com.redhat.services.ae;
+
+import com.redhat.services.ae.recommendations.domain.Answer;
+import com.redhat.services.ae.recommendations.domain.Recommendation;
+
+global java.util.LinkedList list
+
+template "question recommendations"
+
+rule "QuestionRule-@{row.rowNumber}: @{description}"
+salience @{salience}
+when
+	Answer(true==true
+		,language == "@{language}"
+		,questionId == "@{questionId}"
+		,score >= @{scoreLow}
+		,score <= @{scoreHigh}
+		,@{answerValue}
+	)
+then
+	list.add(new Recommendation.builder()
+			.section("@{section}")
+			.level1("@{resultLevel1}")
+			.level2("@{resultLevel2}")
+			.text("@{resultText}")
+	.build());
+end
+
+end template

@@ -6,15 +6,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.redhat.services.ae.recommendations.domain.Recommendation;
+
 public class ResultsBuilderTabs{
 
 	
-	public Map<String,Map<String,Map<String,List<String>>>> build(List<DroolsRecommendation> recommendations, Map<String, Integer> sectionScores){
+	public Map<String,Map<String,Map<String,List<String>>>> build(List<Recommendation> recommendations, Map<String, Integer> sectionScores){
 		Map<String,Map<String,Map<String,List<String>>>> resultSections=new LinkedHashMap<String,Map<String,Map<String,List<String>>>>();
 		
-		for (DroolsRecommendation r:recommendations){
+		for (Recommendation r:recommendations){
 //			System.out.println("XXXRecommendation - "+r);
-			if (null==r.getSection()) throw new RuntimeException("Please check the rules, there is a null section");
+			//if (null==r.getSection()) throw new RuntimeException("Please check the rules, there is a null section");
+			if (null==r.getSection()) r.setSection("Recommendations");
+			if (null==r.getLevel1()) r.setLevel1(" ");
+			if (null==r.getLevel2()) r.setLevel2(" ");
 			
 			if (!resultSections.containsKey(r.getSection())) resultSections.put(r.getSection(), new LinkedHashMap<>());
 			if (!resultSections.get(r.getSection()).containsKey(r.getLevel1())) resultSections.get(r.getSection()).put(r.getLevel1(), new LinkedHashMap<>());
