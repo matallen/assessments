@@ -1,0 +1,31 @@
+{
+	"AddTitleAndScore": {
+	  "active": true,
+	  "className": "com.redhat.services.ae.plugins.AddTitleAndScorePlugin",
+	  "scoreStrategy": "sum",
+	  "addQuestionFields": {
+	    "title": "title",
+	    "pageId": "page/name",
+	    "navigationTitle": "page/navigationTitle"
+	  }
+	},
+	"CalculateSectionScores": {
+	  "active": true,
+	  "className": "com.redhat.services.ae.plugins.SectionScorePlugin",
+	  "scoreStrategy": "sum"
+	},
+	"ResultsProducer": {
+	  "active": true,
+	  "extraDebug": true,
+	  "className": "com.redhat.services.ae.plugins.RecommendationsPlugin",
+	  "decisionTableLocation": "https://docs.google.com/spreadsheets/d/1r_ycFcNELpiAjH3NhKS-UeRU_oQFGuJb8emzgnFlu1U",
+	  "executors": [
+	    {
+	      "className": "com.redhat.services.ae.plugins.RecommendationsDTablePlugin",
+	      "sheetName": "Section Recommendations, Question Recommendations"
+	    }
+	  ],
+	  "thresholdSection": "Report Thresholds",
+	  "includeOverviewTab": false
+	}
+}
