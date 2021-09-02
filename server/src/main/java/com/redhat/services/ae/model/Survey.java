@@ -53,6 +53,7 @@ public class Survey{
 	public String theme;
 	public Map<String,Object> config;
 	
+	@JsonIgnore
 	public String getSurveyId(){return id;}
 	
 	@JsonIgnore
