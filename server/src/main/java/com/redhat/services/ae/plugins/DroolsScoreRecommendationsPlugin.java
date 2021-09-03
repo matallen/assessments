@@ -36,7 +36,8 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.redhat.services.ae.Initialization;
 import com.redhat.services.ae.MapBuilder;
-import com.redhat.services.ae.dt.GoogleDrive3;
+import com.redhat.services.ae.dt.GoogleDrive3_1;
+import com.redhat.services.ae.dt.GoogleDrive3_new;
 import com.redhat.services.ae.plugins.droolsscore.DroolsRecommendation;
 import com.redhat.services.ae.plugins.droolsscore.DroolsSurveyAnswer;
 import com.redhat.services.ae.plugins.droolsscore.DroolsSurveySection;
@@ -49,7 +50,7 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 //	private static final int CACHE_EXPIRY_IN_MS=10000;
 	private static final int DEFAULT_CACHE_EXPIRY_IN_MS=10000;
 //	private static final GoogleDrive3 drive=new GoogleDrive3(CACHE_EXPIRY_IN_MS);
-	private static final GoogleDrive3 drive=new GoogleDrive3(null!=System.getenv("GDRIVE_CACHE_EXPIRY_IN_MS")?Integer.parseInt(System.getenv("GDRIVE_CACHE_EXPIRY_IN_MS")):DEFAULT_CACHE_EXPIRY_IN_MS);
+	private static final GoogleDrive3_1 drive=new GoogleDrive3_1(null!=System.getenv("GDRIVE_CACHE_EXPIRY_IN_MS")?Integer.parseInt(System.getenv("GDRIVE_CACHE_EXPIRY_IN_MS")):DEFAULT_CACHE_EXPIRY_IN_MS);
 	
 	private List<String> drls=null;
 	boolean extraDebug=false;
@@ -141,8 +142,8 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 				
 				// Load the excel sheet with a retry loop?
 				List<Map<String, String>> parseExcelDocument=null;
-				parseExcelDocument=drive.parseExcelDocument(sheet, sheetName, new GoogleDrive3.HeaderRowFinder(){ public int getHeaderRow(XSSFSheet s){
-					return GoogleDrive3.SheetSearch.get(s).find(0, "Description").getRowIndex();
+				parseExcelDocument=drive.parseExcelDocumentAsStrings(sheet, sheetName, new GoogleDrive3_1.HeaderRowFinder(){ public int getHeaderRow(XSSFSheet s){
+					return GoogleDrive3_1.SheetSearch.get(s).find(0, "Description").getRowIndex();
 				}}, dateFormatter);
 				
 				
@@ -194,8 +195,8 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 		SimpleDateFormat dateFormatter=null;
 		File sheet=drive.downloadFile(decisionTableId);
 		
-		List<Map<String, String>> parseExcelDocument=drive.parseExcelDocument(sheet, configSheetName, new GoogleDrive3.HeaderRowFinder(){ public int getHeaderRow(XSSFSheet s){
-			return GoogleDrive3.SheetSearch.get(s).find(0, thresholdSection).getRowIndex();
+		List<Map<String, String>> parseExcelDocument=drive.parseExcelDocumentAsStrings(sheet, configSheetName, new GoogleDrive3_1.HeaderRowFinder(){ public int getHeaderRow(XSSFSheet s){
+			return GoogleDrive3_1.SheetSearch.get(s).find(0, thresholdSection).getRowIndex();
 		}}, dateFormatter);
 		
 		Map<String,Integer> ranges=new LinkedHashMap<>();

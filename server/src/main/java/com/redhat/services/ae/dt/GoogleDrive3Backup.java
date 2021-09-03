@@ -47,8 +47,8 @@ import com.redhat.services.ae.utils.Json;
  * Provides an API to download and parse (spreadsheets) from google drive, and manages the command line tools that provide this functionality (https://github.com/gdrive-org/gdrive) 
  * @author mallen
  */
-public class GoogleDrive3 {
-	public static final Logger log=LoggerFactory.getLogger(GoogleDrive3.class);
+public class GoogleDrive3Backup {
+	public static final Logger log=LoggerFactory.getLogger(GoogleDrive3Backup.class);
   
   public static String DEFAULT_EXECUTABLE="/%s/%s/drive_linux";
 //  public static final String DEFAULT_PULL_COMMAND=DEFAULT_EXECUTABLE+" pull -export xls -quiet=true --id %s"; //worked with 0.3.1
@@ -66,10 +66,10 @@ public class GoogleDrive3 {
 	  return String.format(DEFAULT_WORKING_FOLDER, ("linux".equals(getOS())?"home":"Users"), System.getProperty("user.name"));
   }
   
-  public GoogleDrive3(){
+  public GoogleDrive3Backup(){
     this.cacheExpiryInMs=-1;
   }
-  public GoogleDrive3(long cacheExpiryInMs){
+  public GoogleDrive3Backup(long cacheExpiryInMs){
     this.cacheExpiryInMs=cacheExpiryInMs;
   }
   
@@ -114,7 +114,7 @@ public class GoogleDrive3 {
   	try{
   		
   		// load the config
-  		String cfgString=IOUtils.toString(GoogleDrive3.class.getClassLoader().getResourceAsStream("GoogleDrive3_initialize.json"), "UTF-8");
+  		String cfgString=IOUtils.toString(GoogleDrive3Backup.class.getClassLoader().getResourceAsStream("GoogleDrive3_initialize.json"), "UTF-8");
   		Map<String,Map<String,String>> cfgs=Json.newObjectMapper(true).readValue(cfgString, new TypeReference<Map<String, Map<String,String>>>(){});
   		Map<String,String> cfg=cfgs.get(type+"/"+version+"/"+getOS());
   		
@@ -126,7 +126,7 @@ public class GoogleDrive3 {
   		DEFAULT_EXECUTABLE=new File(new File(getDefaultWorkingFolder(), gdriveType).getAbsolutePath(), exe).getAbsolutePath();
   		DEFAULT_PULL_COMMAND=cfg.get("commandTemplate");
   		
-	    if (!new File(GoogleDrive3.getDefaultExecutable()).exists()){
+	    if (!new File(GoogleDrive3Backup.getDefaultExecutable()).exists()){
 	    	File credsFile=null;
 	    	try{
 		    	
@@ -139,7 +139,7 @@ public class GoogleDrive3 {
 	    		
 	    		log.info("Deploying credentials.json in: "+credsFile);
 	    		credsFile.getParentFile().mkdirs();
-	        InputStream is=GoogleDrive3.class.getClassLoader().getResourceAsStream("/gd_credentials.json");
+	        InputStream is=GoogleDrive3Backup.class.getClassLoader().getResourceAsStream("/gd_credentials.json");
 	        if (null!=is){
 	        	log.info("... from internal classloader path of '/gd_credentials.json'");
 	        	IOUtils.copy(is, new FileOutputStream(credsFile));
@@ -159,7 +159,7 @@ public class GoogleDrive3 {
 	        e.printStackTrace();
 	    	}
 	    }else{
-	      log.info("gdrive already initialised. Existing binary is here: "+GoogleDrive3.getDefaultExecutable());
+	      log.info("gdrive already initialised. Existing binary is here: "+GoogleDrive3Backup.getDefaultExecutable());
 	    }
 	    
   	}catch(IOException e){
