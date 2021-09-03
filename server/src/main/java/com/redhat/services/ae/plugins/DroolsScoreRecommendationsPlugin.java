@@ -37,7 +37,6 @@ import com.google.common.collect.Lists;
 import com.redhat.services.ae.Initialization;
 import com.redhat.services.ae.MapBuilder;
 import com.redhat.services.ae.dt.GoogleDrive3_1;
-import com.redhat.services.ae.dt.GoogleDrive3_new;
 import com.redhat.services.ae.plugins.droolsscore.DroolsRecommendation;
 import com.redhat.services.ae.plugins.droolsscore.DroolsSurveyAnswer;
 import com.redhat.services.ae.plugins.droolsscore.DroolsSurveySection;

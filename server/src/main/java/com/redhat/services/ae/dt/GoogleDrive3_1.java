@@ -139,7 +139,7 @@ public class GoogleDrive3_1 {
   	try{
   		
   		// load the config
-  		String cfgString=IOUtils.toString(GoogleDrive3_new.class.getClassLoader().getResourceAsStream("GoogleDrive3_initialize.json"));
+  		String cfgString=IOUtils.toString(GoogleDrive3_1.class.getClassLoader().getResourceAsStream("GoogleDrive3_initialize.json"));
 //  		Map<String,Map<String,String>> cfgs=Json.newObjectMapper(true).readValue(cfgString, new TypeReference<Map<String, Map<String,String>>>(){});
   		Map<String,Map<String,String>> cfgs=Json.toObject(cfgString, new TypeReference<Map<String, Map<String,String>>>(){});
   		Map<String,String> cfg=cfgs.get(type+"/"+version+"/"+getOS());
@@ -154,7 +154,7 @@ public class GoogleDrive3_1 {
   		DEFAULT_PULL_COMMAND=cfg.get("commandTemplate");
   		
   		
-	    if (!new File(GoogleDrive3_new.getDefaultExecutable()).exists()){
+	    if (!new File(GoogleDrive3_1.getDefaultExecutable()).exists()){
 	    	File credsFile=null;
 	    	try{
 		    	
@@ -167,7 +167,7 @@ public class GoogleDrive3_1 {
 	    		
 	    		log.info("Deploying credentials.json in: "+credsFile);
 	    		credsFile.getParentFile().mkdirs();
-	        InputStream is=GoogleDrive3_new.class.getClassLoader().getResourceAsStream("/gd_credentials.json");
+	        InputStream is=GoogleDrive3_1.class.getClassLoader().getResourceAsStream("/gd_credentials.json");
 	        if (null!=is){
 	        	log.info("... from internal classloader path of '/gd_credentials.json'");
 	        	IOUtils.copy(is, new FileOutputStream(credsFile));
@@ -183,11 +183,11 @@ public class GoogleDrive3_1 {
 	    	}catch(IOException e){
 	        System.err.println("Failed to initialise gdrive and/or credentials, cleaning up exe and creds");
 	        if (null!=credsFile) credsFile.delete();
-	        new File(GoogleDrive3_new.getDefaultExecutable()).delete();
+	        new File(GoogleDrive3_1.getDefaultExecutable()).delete();
 	        e.printStackTrace();
 	    	}
 	    }else{
-	      log.info("gdrive already initialised. Existing binary is here: "+GoogleDrive3_new.getDefaultExecutable());
+	      log.info("gdrive already initialised. Existing binary is here: "+GoogleDrive3_1.getDefaultExecutable());
 	    }
 	    
   	}catch(IOException e){
