@@ -263,7 +263,7 @@ public class DroolsScoreRecommendationsPlugin extends Plugin{
 //							String pageId=value!=null && null!=value.get("pageId")?(String)value.get("pageId"):null;
 //							String title= value!=null && null!=value.get("title")?( String)value.get("title"):null;
 //							System.out.println("key="+e.getKey()+", pageId="+pageId+", lang="+language+", title="+title+", score="+score);
-							DroolsSurveyAnswer a=new DroolsSurveyAnswer(e.getKey(), null, language, score, null);
+							DroolsSurveyAnswer a=new DroolsSurveyAnswer(e.getKey(), null, language, score, Lists.newArrayList((String)value.get("answer")), null);
 							log.debug("Inserting fact: "+a);//(String.format("Answer: id=%s, page=%s, lang=%s, score=%s, text=%s", e.getKey(), language, (Integer)value.get("score"), (String)value.get("title") )));
 							kSession.insert(a);
 						}else{
