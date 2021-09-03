@@ -146,11 +146,13 @@ public class GoogleDrive3_1 {
   		
   		if (null==cfg) throw new RuntimeException("Unable to find config for: "+(type+"/"+version+"/"+getOS()));
   		
-//  		String exe=RegExHelper.extract(cfg.get("url"), ".+/(.+)$");
+  		String exe2=RegExHelper.extract(cfg.get("url"), ".+/(.+)$");
   		String exe=String.format("%s-%s-%s", type, getOS(), version);
   		gdriveType=type.name();
   		DEFAULT_WORKING_FOLDER=String.format(workingFolder, System.getProperty("user.name"));
-  		DEFAULT_EXECUTABLE=new File(new File(DEFAULT_WORKING_FOLDER, gdriveType).getAbsolutePath(), exe).getAbsolutePath();
+//  		DEFAULT_EXECUTABLE=new File(new File(new File(DEFAULT_WORKING_FOLDER, gdriveType).getAbsolutePath(), exe).getAbsolutePath(), exe2).getAbsolutePath();
+  		DEFAULT_EXECUTABLE=new File(new File(new File(DEFAULT_WORKING_FOLDER, gdriveType), exe), exe2).getAbsolutePath();
+//  		DEFAULT_EXECUTABLE=DEFAULT_WORKING_FOLDER+File.separator+gdriveType+File.separator+exe+File.separator+exe2;
   		DEFAULT_PULL_COMMAND=cfg.get("commandTemplate");
   		
   		
@@ -160,7 +162,8 @@ public class GoogleDrive3_1 {
 		    	
 	    		// attempt to download the binary
 	    		log.info("Downloading '"+type+"/"+version+"' from: "+cfg.get("url"));
-	    		new DownloadFile().get(cfg.get("url"), DEFAULT_EXECUTABLE, PosixFilePermission.OTHERS_EXECUTE);
+	    		File exeFile=new File(DEFAULT_EXECUTABLE);
+	    		new DownloadFile().get(cfg.get("url"), exeFile.getParentFile().getAbsolutePath(), PosixFilePermission.OTHERS_EXECUTE);
 	    		
 	    		// set the creds file location
 	    		credsFile=new File(String.format(cfg.get("credentialsLocation"), "home", System.getProperty("user.name")));
@@ -222,6 +225,8 @@ public class GoogleDrive3_1 {
   			cacheExpiry.remove(fileId);
   		}
   	}
+  	
+  	System.out.println("EXE is "+DEFAULT_EXECUTABLE);
   	
   	String command = String.format(DEFAULT_PULL_COMMAND, DEFAULT_EXECUTABLE, fileId);
   	
