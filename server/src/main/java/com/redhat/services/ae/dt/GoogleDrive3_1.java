@@ -163,7 +163,7 @@ public class GoogleDrive3_1 {
 	    		new DownloadFile().get(cfg.get("url"), DEFAULT_EXECUTABLE, PosixFilePermission.OTHERS_EXECUTE);
 	    		
 	    		// set the creds file location
-	    		credsFile=new File(String.format(cfg.get("credentialsLocation"), System.getProperty("user.name")));
+	    		credsFile=new File(String.format(cfg.get("credentialsLocation"), "home", System.getProperty("user.name")));
 	    		
 	    		log.info("Deploying credentials.json in: "+credsFile);
 	    		credsFile.getParentFile().mkdirs();
