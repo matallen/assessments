@@ -29,7 +29,7 @@ when
 		,questionId == "@{questionId}"
 		,score >= @{scoreLow}
 		,score <= @{scoreHigh}
-		,answer contains "@{answerValue}"
+		,answers contains "@{answerValue}"
 	)
 then
 	list.add(new DroolsRecommendation.Builder()
