@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 
@@ -35,7 +37,16 @@ public class Controller{
 //	public Response serveAssessmentAlias2(@PathParam("lang") String lang, @PathParam("surveyId") String surveyId, @DefaultValue("text/html; charset=UTF-8") @QueryParam("responseContentType") String responseContentType) throws FileNotFoundException, IOException{
 //		return serveAssessmentAlias1(lang, surveyId, responseContentType);
 //	}
-	
+	@GET
+	@Path("/{surveyId}/{lang}")
+	public Response serveAssessmentAlias2(@PathParam("lang") String lang, @PathParam("surveyId") String surveyId, @DefaultValue("text/html; charset=UTF-8") @QueryParam("responseContentType") String responseContentType) throws FileNotFoundException, IOException{
+		return serveAssessmentAlias1(lang, surveyId, responseContentType);
+	}
+	@GET
+	@Path("/{surveyId}")
+	public Response serveAssessmentAlias3(@PathParam("lang") String lang, @PathParam("surveyId") String surveyId, @DefaultValue("text/html; charset=UTF-8") @QueryParam("responseContentType") String responseContentType) throws FileNotFoundException, IOException, URISyntaxException{
+		return Response.status(302).location(new URI("/"+surveyId+"/en")).build();
+	}
 	
 	@GET
 	@Path("/surveys/{surveyId}/{lang}")

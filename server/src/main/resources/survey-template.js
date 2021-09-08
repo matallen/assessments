@@ -297,6 +297,8 @@ survey
 		// Hide the survey Navigation pane
 		$("#surveyNavigation").hide();
 		
+		AdobeUtils.sendFormSubmitEvent(surveyId, page.name, survey.locale!=""?survey.locale:languageCode);
+		
 		// extract time spent on page info
 		var timeTaken=result.currentPageValue.survey.koTimerInfoText();
 		if (""==timeTaken) return;
@@ -604,7 +606,7 @@ if (Utils.getParameterByName("data")!=undefined && !LocalStorage.hasState()){
 	survey.currentPageNo=initialData.currentPageNo;
 }
 
-// Support for _ params to initialise survey data. ie just straight into a specific section
+// Support for _ params to initialise survey data. ie just straight into a specific section. for example: http://localhost/RTADEV/en?_interests=[%22platforms%22,%22apps%22]&pageNo=1
 if (!LocalStorage.hasState()){
 	var parametersAsMap=Utils.getParametersAsMap();
 	for(key in parametersAsMap){

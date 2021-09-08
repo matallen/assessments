@@ -78,7 +78,7 @@ public class Surveys{
     }catch (IOException e){
       e.printStackTrace();
     }
-    log.error("Returning NULL Database - this is cause issues!");
+    log.error("Returning NULL Database - this will cause issues!");
     return null;
   }
   

@@ -223,6 +223,9 @@ public class Eloqua2Plugin extends EnrichAnswersPluginBase{
 					.header("Accept", ContentType.JSON.getAcceptHeader())
 					;
 			for (Entry<String, String> e:eloquaFields.entrySet()){
+//				if (RemoveReportPropertiesPlugin.looksLikeAnEmail(e.getValue())){
+//					log.debug(String.format("EloquaPlugin:: Adding queryParam:: %s = %s", e.getKey(), new RemoveReportPropertiesPlugin().obfuscate(e.getValue())));
+//				}else
 				log.debug(String.format("EloquaPlugin:: Adding queryParam:: %s = %s", e.getKey(), e.getValue()));
 				rs.queryParam(e.getKey(), e.getValue());
 //				rs.formParam(e.getKey(), e.getValue());

@@ -2,36 +2,33 @@ package com.redhat.services.ae.plugins;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import javax.validation.metadata.ExecutableDescriptor;
 
 import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.drools.template.ObjectDataCompiler;
-import org.mortbay.log.Log;
-import org.mvel2.MVEL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.redhat.services.ae.MapBuilder;
-import com.redhat.services.ae.dt.GoogleDrive3;
-import com.redhat.services.ae.plugins.AccountCompassRecommendationsPlugin.Utils;
+import com.redhat.services.ae.Initialization;
+import com.redhat.services.ae.dt.GoogleDrive3_1;
+import com.redhat.services.ae.model.Survey;
+import com.redhat.services.ae.recommendations.domain.Answer;
+import com.redhat.services.ae.recommendations.domain.Insight;
 import com.redhat.services.ae.recommendations.domain.Recommendation;
+import static com.redhat.services.ae.dt.GoogleDrive3_1.*;
+
+import mjson.Json;
 
 public class RecommendationsNaturalLanguagePlugin extends RecommendationsExecutor{
 	public static final Logger log=LoggerFactory.getLogger(RecommendationsNaturalLanguagePlugin.class);
-	private static final int DEFAULT_CACHE_EXPIRY_IN_MS=10000;
-	private static final GoogleDrive3 drive=new GoogleDrive3(null!=System.getenv("GDRIVE_CACHE_EXPIRY_IN_MS")?Integer.parseInt(System.getenv("GDRIVE_CACHE_EXPIRY_IN_MS")):DEFAULT_CACHE_EXPIRY_IN_MS);
+	private static final GoogleDrive3_1 drive=Initialization.newGoogleDrive();
+	
 	public List<String> getMandatoryConfigs(){ return Lists.newArrayList("decisionTableId","sheetName"); }
 	
 	@Override
@@ -42,8 +39,8 @@ public class RecommendationsNaturalLanguagePlugin extends RecommendationsExecuto
 		
 		List<Recommendation> recommendations=Lists.newArrayList();
 		
-		List<String> drls=compileNaturalLanguageToDrls(sheetId, sheets);
-		List<Recommendation> recommendations2=new RecommendationsPlugin().executeDrlRules(surveyResults, drls.toArray(new String[drls.size()]));
+		List<String> drls=compileNaturalLanguageToDrls(surveyId, sheetId, sheets);
+		List<Recommendation> recommendations2=new RecommendationsPlugin().executeDrlRules(surveyResults, drls);
 		
 		log.info(this.getClass().getSimpleName()+":: Added "+recommendations.size()+" recommendation(s) from this plugin");
 		
@@ -51,7 +48,21 @@ public class RecommendationsNaturalLanguagePlugin extends RecommendationsExecuto
 		return recommendations;
 	}
 	
-	private List<String> compileNaturalLanguageToDrls(String sheetId, String...sheets) throws IOException, InterruptedException{
+	protected List<String> getQuestionNames(String surveyId) throws JsonProcessingException{
+		List<String> result=Lists.newArrayList();
+		Survey s=Survey.findById(surveyId);
+		Json json=mjson.Json.read(s.getQuestionsAsString());
+		for (mjson.Json p:json.at("pages").asJsonList()){
+			for (mjson.Json q:p.at("elements").asJsonList()){
+				String name=q.at("name").asString();
+				result.add(name);
+			}
+		}
+		return result;
+//		return Lists.newArrayList("subscriptions", "orgSize", "happiness");
+	}
+	
+	private List<String> compileNaturalLanguageToDrls(String surveyId, String sheetId, String...sheets) throws IOException, InterruptedException{
 		List<String> result=Lists.newArrayList();
 		File sheet=drive.downloadFile(sheetId);
 		SimpleDateFormat dateFormatter=null;
@@ -63,8 +74,8 @@ public class RecommendationsNaturalLanguagePlugin extends RecommendationsExecuto
 		drl+="import com.redhat.services.ae.recommendations.domain.Recommendation;\n";
 		drl+="global java.util.LinkedList list\n\n";
 		for(String sheetName:sheets){
-			parseExcelDocument=drive.parseExcelDocument(sheet, sheetName, new GoogleDrive3.HeaderRowFinder(){ public int getHeaderRow(XSSFSheet s){
-				return GoogleDrive3.SheetSearch.get(s).find(0, "Rule name").getRowIndex();
+			parseExcelDocument=drive.parseExcelDocumentAsStrings(sheet, sheetName, new HeaderRowFinder(){ public int getHeaderRow(XSSFSheet s){
+				return SheetSearch.get(s).find(0, "Rule name").getRowIndex();
 			}}, dateFormatter);
 			
 			for(Map<String, String> rows:parseExcelDocument){
@@ -75,7 +86,7 @@ public class RecommendationsNaturalLanguagePlugin extends RecommendationsExecuto
 				String title2=rows.get("Title 2");
 				String recommendation=rows.get("Recommendation Text");
 				
-				List<String> lhs=parseLHS(preParsedLhs, Lists.newArrayList("subscriptions", "orgSize", "happiness"));
+				List<String> lhs=parseLHS(preParsedLhs, getQuestionNames(surveyId));
 				
 				drl+=String.format("rule \"%s\"\nwhen\n", ruleName);
 				for (String f:lhs)
@@ -88,17 +99,22 @@ public class RecommendationsNaturalLanguagePlugin extends RecommendationsExecuto
 		}
 		
 		if (extraDebug)
-			for(String r:result)
+			for(String r:result){
 				log.debug(r);
+				System.out.println(r);
+			}
 		return result;
 	}
 	
 	private List<String> parseLHS(String rawLhs, List<String> questionNames){
 		// split by operator (&&, ||, and, or)
 		List<String> result=Lists.newArrayList();
-		if (rawLhs.trim().startsWith("Answer") || rawLhs.trim().startsWith("Insight")){
+		
+		// eg. Answer(question=="test", answers contains "value")
+		if (rawLhs.trim().startsWith(Answer.class.getSimpleName()+"(") || rawLhs.trim().startsWith(Insight.class.getSimpleName()+"(")){
 			result.add(rawLhs);
 		}else{
+			// parse out the condition lines so we can convert from natural language to DRL
 			String[] fragments=rawLhs.split("(?=( and | or | \\&\\& | \\|\\| ))");
 			for(String f:fragments){
 				String op=null;
@@ -111,12 +127,26 @@ public class RecommendationsNaturalLanguagePlugin extends RecommendationsExecuto
 					f=f.replaceFirst("( or | \\|\\| )", "");
 				}
 				
+				int resultSizeBefore=result.size();
 				for(String q:questionNames)
 					if (f.contains(q)){
 						String condition=f.replaceFirst(q, "");
-						String fragment=(null!=op?" "+op+" ":"")+"Answer(question==\""+q+"\", answers "+condition+")";
+						String answerField=condition.matches(".*(equals|==).*")?"answer":"answers";
+						String fragment=(null!=op?" "+op+" ":"")+Answer.class.getSimpleName()+"(question==\""+q+"\", "+answerField+" "+condition+")";
 						result.add(fragment);
 					}
+				
+				if (result.size()==resultSizeBefore){
+					Matcher m=Pattern.compile("(.+)(contains|not contains|includes|not includes|equals|==)(.+)").matcher(f);
+					if (m.find()){
+						String entity=m.group(1).trim();
+						String op2=m.group(2);
+//						if (op2.contains("includes")) op2=op2.replaceAll("includes", "contains");
+						String comparison=m.group(3).trim();
+						String answerField=op2.matches(".*(equals|==).*")?"answer":"answers";
+						result.add((null!=op?" "+op+" ":"")+Answer.class.getSimpleName()+"(question==\""+entity+"\", "+answerField+" "+op2+" "+comparison+")");
+					}
+				}
 			}
 		}
 		return result;

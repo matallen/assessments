@@ -254,12 +254,22 @@ div.elevate li.noColor{
 }
 
 /* contact form panel elements need to be side-by-side. There's no class associated so i chose a class associated with panels and moved that to a grid structure */
-.sv_p_container>div:nth-of-type(3){
+.sv_page_contact_form .sv_p_container>div:nth-of-type(3){
 	display: grid;
   grid-gap: 15px;
   grid-template-columns: repeat(2,1fr);
 }
 
+
+.sv_main.sv_default_css .sv_p_root > .sv_row:nth-child(2n){
+	background-color: initial !important;
+}
+
+/*
+.sv_main.sv_default_css .sv_p_root > .sv_row{
+	border: 1px solid #cdcdcd !important;
+}
+*/
 /*
 .sv_page_select_interests sv_qstn->div{
 	background-color: initial;
@@ -305,7 +315,9 @@ div.elevate li.noColor{
 input{margin: 3px 0px !important;}
 
 .sv_row{
-    border: 1px solid #ccc;
+/*
+	border: 1px solid #ccc;  TODO: border around questions, but there seems to be a double border so removing this temporarily to see how it goes
+*/
     margin: 30px;
 }
 .sv_row:last-child{

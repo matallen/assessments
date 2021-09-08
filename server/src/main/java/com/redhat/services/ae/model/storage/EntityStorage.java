@@ -60,7 +60,7 @@ public abstract class EntityStorage<T>{
 //					data.put(objectId, oJson);
 				}catch(Exception e){
 					e.printStackTrace();
-					new ChatNotification().send(ChatEvent.onSystemError, "Error:: Investigate immediately! EntityStorage unable to load data - "+loadFrom);
+					new ChatNotification().send(ChatEvent.onError, "Error:: Investigate immediately! EntityStorage unable to load data - "+loadFrom);
 					
 					try{
 						FileStore fs=Files.getFileStore(Paths.get(loadFrom.getAbsolutePath()));

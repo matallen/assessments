@@ -31,7 +31,7 @@ public class DroolsTest{
 	public void runDrl() throws IOException{
 		String drl=IOUtils.toString(this.getClass().getClassLoader().getResource("drools-test.drl"), "UTF-8");
 //		DroolsSurveyAnswer answer1=new DroolsSurveyAnswer("question1", "page1", "en", 0, Lists.newArrayList(new String[]{"answer1","answer2"}), "title");
-		Collection<? extends Object> results=new DroolsExecutor().addDrl(drl)
+		Collection<? extends Object> results=new DrlExecutor().addDrl(drl)
 		.addFact(new Answer.builder().questionId("subscriptions").addAnswer("OpenShift","ACM").build())
 		.addFact(new Answer.builder().questionId("unhappyWithProducts").addAnswer("OpenShift").build())
 		.execute(new ObjectFilter(){

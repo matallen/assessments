@@ -22,15 +22,17 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.redhat.services.ae.Initialization;
 import com.redhat.services.ae.MapBuilder;
-import com.redhat.services.ae.dt.GoogleDrive3;
-import com.redhat.services.ae.plugins.AccountCompassRecommendationsPlugin.Utils;
+import com.redhat.services.ae.dt.GoogleDrive3_1;
+import com.redhat.services.ae.plugins.XAccountCompassRecommendationsPlugin.Utils;
 import com.redhat.services.ae.recommendations.domain.Recommendation;
+import static com.redhat.services.ae.dt.GoogleDrive3_1.*;
 
 public class RecommendationsDTablePlugin extends RecommendationsExecutor{
 	public static final Logger log=LoggerFactory.getLogger(RecommendationsDTablePlugin.class);
-	private static final int DEFAULT_CACHE_EXPIRY_IN_MS=10000;
-	private static final GoogleDrive3 drive=new GoogleDrive3(null!=System.getenv("GDRIVE_CACHE_EXPIRY_IN_MS")?Integer.parseInt(System.getenv("GDRIVE_CACHE_EXPIRY_IN_MS")):DEFAULT_CACHE_EXPIRY_IN_MS);
+	private static final GoogleDrive3_1 drive=Initialization.newGoogleDrive();
+	
 	public List<String> getMandatoryConfigs(){ return Lists.newArrayList("decisionTableId","sheetName"); }
 	
 	@Override
@@ -41,7 +43,7 @@ public class RecommendationsDTablePlugin extends RecommendationsExecutor{
 		String sheetId=getConfig("decisionTableId");
 		List<String> drls=compileSpreadsheetToDrls(surveyId, sheetId, sheets);
 		
-		List<Recommendation> recommendations=new RecommendationsPlugin().executeDrlRules(surveyResults, drls.toArray(new String[drls.size()]));
+		List<Recommendation> recommendations=new RecommendationsPlugin().executeDrlRules(surveyResults, drls);
 		
 		log.debug(this.getClass().getSimpleName()+":: Added "+recommendations.size()+" recommendation(s) from this plugin");
 		return recommendations;
@@ -58,8 +60,8 @@ public class RecommendationsDTablePlugin extends RecommendationsExecutor{
 			log.debug("TDablePlugin:: parsing sheet: "+sheetName);
 			// Load the excel sheet with a retry loop?
 			List<Map<String, String>> parseExcelDocument=null;
-			parseExcelDocument=drive.parseExcelDocument(sheet, sheetName, new GoogleDrive3.HeaderRowFinder(){ public int getHeaderRow(XSSFSheet s){
-				return GoogleDrive3.SheetSearch.get(s).find(0, "Description").getRowIndex();
+			parseExcelDocument=drive.parseExcelDocumentAsStrings(sheet, sheetName, new HeaderRowFinder(){ public int getHeaderRow(XSSFSheet s){
+				return SheetSearch.get(s).find(0, "Description").getRowIndex();
 			}}, dateFormatter);
 			
 			List<Map<String,Object>> dataTable = new ArrayList<>();
@@ -99,7 +101,7 @@ public class RecommendationsDTablePlugin extends RecommendationsExecutor{
 			}
 			
 			String templateName="recommendationsPlugin_"+sheetName.replaceAll(" ", "")+".drt";
-			InputStream template=AccountCompassRecommendationsPlugin.class.getClassLoader().getResourceAsStream(templateName);
+			InputStream template=XAccountCompassRecommendationsPlugin.class.getClassLoader().getResourceAsStream(templateName);
 			String drl=new ObjectDataCompiler().compile(dataTable, template);
 			if (extraDebug){
 				log.debug("DRL rules produced from spreadsheet:\n"+drl);

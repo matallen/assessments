@@ -83,7 +83,10 @@
 	
 	<script>
 	
-	function buildOverviewGraphic(title, rating, thresholds){
+	function buildOverviewGraphic(section, scores, thresholds){
+		if (scores==undefined) return "";
+		var title=section;
+		var rating=scores[title];
 		if (rating>=1){
 			return overviewGraphicHeader_tabular(title, rating) + overviewGraphicProgress_svg(title, rating, thresholds);
 		}else
@@ -382,7 +385,7 @@
 					for (var title in overviews[section]){
 						
 						if (undefined!=scores[section])
-							html+=`<tr><td>`+buildOverviewGraphic(section, scores[section], thresholds)+`</td></tr>`;
+							html+=`<tr><td>`+buildOverviewGraphic(section, scores, thresholds)+`</td></tr>`;
 						
 						html+=`<tr><td class='level2'>`;
 						for (var text in overviews[section][title]){
@@ -417,7 +420,7 @@
 			var html=`
 				<div id="`+tabName+`" class="tab-pane fade in `+(c==max-1 && undefined==overviews?`active`:``)+`">
 					<table>
-						<tr><td>`+buildOverviewGraphic(section, scores[section], thresholds)+`</td></tr>
+						<tr><td>`+buildOverviewGraphic(section, scores, thresholds)+`</td></tr>
 						`;
 				for(var l1 in report[section]){
 					html+=`<tr><td class='level1'>`;

@@ -59,19 +59,15 @@ import com.redhat.services.ae.recommendations.domain.Recommendation;
 
 public class RecommendationsPlugin extends Plugin{
 	public static final Logger log=LoggerFactory.getLogger(RecommendationsPlugin.class);
-	private static final int DEFAULT_CACHE_EXPIRY_IN_MS=10000;
-	private static final GoogleDrive3 drive=new GoogleDrive3(null!=System.getenv("GDRIVE_CACHE_EXPIRY_IN_MS")?Integer.parseInt(System.getenv("GDRIVE_CACHE_EXPIRY_IN_MS")):DEFAULT_CACHE_EXPIRY_IN_MS);
+	protected static Map<String,Integer> DEFAULT_THRESHOLDS=new MapBuilder<String,Integer>().put("Basic", 32).put("Intermediate", 50).put("Advanced", 100).build();
 	private List<RecommendationsExecutor> executors=Lists.newArrayList();
 	private boolean extraDebug=false;
 	private boolean includeOverviewTab;
 	public static Integer noScore=null;//-1000; // the score for a question if there is no score specified/found (it cannot be null as it throws NPE)
 	private Map<String,Integer> sectionScores=Maps.newHashMap();
 	private Map<String,String> kvReplacements=Maps.newHashMap();
-	
-	public RecommendationsPlugin(){
-		if (!drive.isInitialised()) new Initialization().onStartup(null);
-	}
-
+	private Map<String,Integer> thresholds=DEFAULT_THRESHOLDS;
+			
 	@Override
 	public Plugin setConfig(Map<String, Object> config){
 		// add these to configMap instead
@@ -79,6 +75,9 @@ public class RecommendationsPlugin extends Plugin{
 		includeOverviewTab=getBooleanFromConfig(config, "includeOverviewTab", true);
 		extraDebug=getBooleanFromConfig(config, "extraDebug", false);
 		List<String> configErrors=Lists.newLinkedList();
+		
+		if (config.containsKey("thresholds"))
+			this.thresholds.putAll((Map<String,Integer>)config.get("thresholds"));
 		
 		try{
 			if (List.class.isAssignableFrom(config.get("executors").getClass())){
@@ -108,16 +107,22 @@ public class RecommendationsPlugin extends Plugin{
 	@Override
 	@SuppressWarnings("rawtypes")
 	public Map<String, Object> execute(String surveyId, String visitorId, Map<String, Object> surveyResults) throws Exception{
+		List<String> drls=Lists.newArrayList();
 		
-		// fire the executors so they update the survey results _result entity
+		// add the default technical drl rules for later execution
+		drls.add(getSurveyDrlRules(surveyId));
+		
+		// fire the executors so can return either a list of recommendations, or a drl to be executed later (in one go)
 		List<Recommendation> recommendations=Lists.newArrayList();
 		for(RecommendationsExecutor e:executors){
 			recommendations.addAll(e.execute(surveyId, surveyResults));
+//			drls.put("com.redhat.services.ae."+e.getClass().getSimpleName(), e.getDrlRules());
+			drls.addAll(e.getDrlRules());
 		}
 		
 		// check if there are technical rules on the Survey and execute those too
 		if (StringUtils.isNotBlank(getSurveyDrlRules(surveyId))){
-			recommendations.addAll(executeDrlRules(surveyResults, new String[]{getSurveyDrlRules(surveyId)}));
+			recommendations.addAll(executeDrlRules(surveyResults, drls));
 		}
 		
 		log.info("Found "+recommendations.size()+" recommendation"+(recommendations.size()!=1?"s":"")+" in total:");
@@ -130,7 +135,7 @@ public class RecommendationsPlugin extends Plugin{
 		kvReplacements.putAll(surveyResults2);
 		doRecommendationTextReplacements(recommendations, kvReplacements);
 		
-		Map<String,Integer> thresholds=new MapBuilder<String,Integer>().put("Basic", 32).put("Improving", 50).put("Accelerating", 100).build();
+//		Map<String,Integer> thresholds=new MapBuilder<String,Integer>().put("Basic", 32).put("Improving", 50).put("Accelerating", 100).build();
 //		Map<String,Integer> thresholds=getThresholdRanges(decisionTableId);
 		
 		Object resultSections=new ResultsBuilderTabsOverview()
@@ -163,7 +168,7 @@ public class RecommendationsPlugin extends Plugin{
 	}
 	
 	@SuppressWarnings("unchecked")
-	protected List<Recommendation> executeDrlRules(Map<String, Object> surveyResults, String... drls) throws IOException, DroolsCompilationException{
+	protected List<Recommendation> executeDrlRules(Map<String, Object> surveyResults, List<String> drls) throws IOException, DroolsCompilationException{
 		
 		KieSession kSession=newKieSession(drls);
 		
@@ -212,7 +217,9 @@ public class RecommendationsPlugin extends Plugin{
 			}
 		}
 		
-		kSession.setGlobal("list", new LinkedList<>());
+		try{
+			kSession.setGlobal("list", new LinkedList<>());
+		}catch(RuntimeException sink){} // try/catch in case there is no global list - there appears to be no way to check the kSession if it exists
 		kSession.fireAllRules();
 		
 		
@@ -264,12 +271,15 @@ public class RecommendationsPlugin extends Plugin{
 	}
 	
 	private KieServices kieServices = KieServices.Factory.get();
-	private KieSession newKieSession(String... drls) throws IOException,DroolsCompilationException {
+	private KieSession newKieSession(List<String> drls) throws IOException,DroolsCompilationException {
 //  	KieServices ks = KieServices.Factory.get();
     KieFileSystem kfs = kieServices.newKieFileSystem();
     kfs.generateAndWritePomXML(kieServices.getRepository().getDefaultReleaseId());
     int i=0;
-    for(String drl:drls) kfs.write( "src/main/resources/com/redhat/services/ae/"+"drl"+(i+=1)+".drl", drl.getBytes());
+    for(String drl:drls){
+//    	String packageName=e.getKey().replaceAll("\\.", "/"); // should usually be com.redhat.services.ae
+    	kfs.write( "src/main/resources/com/redhat/services/ae/"+"drlRules"+(i+=1)+".drl", drl.getBytes());
+    }
     KieBuilder kb = kieServices.newKieBuilder(kfs).buildAll();
     if (kb.getResults().getMessages(Level.ERROR).size() != 0) {
     	throw new DroolsCompilationException(kb.getResults());

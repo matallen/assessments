@@ -15,6 +15,11 @@ import com.redhat.services.ae.utils.Http.Response;
 
 /**
  * Integration with google chat boards, to push notifications of events such as user promotions, script failures etc..
+ * Requires ENV variables:
+ * 	- NOTIFICATIONS_GOOGLE_CHAT_WEBHOOK_TEMPLATE -> take from a google chat room/webhooks
+ *  - NOTIFICATIONS -> [{"enabled": "true","channel":"https://chat.googleapis.com/v1/spaces/upUybAAAAAE/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=0g3sxujUXee_wlmEN9rj65CS3mC5847OVsXNMFwk_3c%3D","events": "onWarning,onError"}]
+ * 
+ * 
  * @author mallen
  */
 public class ChatNotification{
@@ -37,12 +42,7 @@ public class ChatNotification{
 		}
 	}
 	
-	public enum ChatEvent{onSystemError,onSystemWarning}
-//	public static void main(String[] asd){
-//		Config c=Config.get();
-//		System.out.println("googlehangoutschat.webhook.template="+c.getOptions().get("googlehangoutschat.webhook.template"));
-//		new ChatNotification().send(ChatEvent.onRegistration, "<https://your.site.com/people/fbloggs|Fred Bloggs> promoted to BLUE belt");
-//	}
+	public enum ChatEvent{onError,onWarning}
 	
 	public void send(ChatEvent type, String notificationText){
 		if (null!=notifications){
@@ -55,7 +55,7 @@ public class ChatNotification{
 //					String template= c.getOptions().get("googlehangoutschat.webhook.template");
 						String googleHangoutsChatPayload=String.format(template, notificationText);
 						Response r=Http.post(channel, googleHangoutsChatPayload, new MapBuilder<String, String>().put("Content-Type", "application/json; charset=UTF-8").build());
-						System.out.println("Response = "+r.getResponseCode());
+						log.debug("Response = "+r.getResponseCode());
 					}
 				}
 			}

@@ -42,6 +42,8 @@ public class AccountCompassPluginPipelineTest{
 		String surveyId="AC1";
 		Survey s=Survey.builder().id(surveyId).name(surveyId).build();
 		s.getPlugins().putAll(plugins);
+		s.setQuestionsAsString("{'pages':[{'elements':[{'name':'subscriptions'}]}]}".replaceAll("'","\""));
+		s.saveQuestions();
 		s.persist();
 		
 		

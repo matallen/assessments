@@ -15,17 +15,17 @@ import org.kie.api.runtime.KieSession;
 
 import com.google.common.collect.Lists;
 
-public class DroolsExecutor{
+public class DrlExecutor{
 	private KieServices kieServices=KieServices.get();
 	private List<String> drls=Lists.newArrayList();
 	private List<Object> facts=Lists.newArrayList();
 	
-	public DroolsExecutor addDrl(String... drls){
+	public DrlExecutor addDrl(String... drls){
 		for(String drl:drls) this.drls.add(drl);
 		return this;
 	}
 	
-	public DroolsExecutor addFact(Object... facts){
+	public DrlExecutor addFact(Object... facts){
 		for(Object fact:facts) this.facts.add(fact);
 		return this;
 	}

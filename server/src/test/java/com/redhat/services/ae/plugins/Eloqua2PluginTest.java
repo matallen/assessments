@@ -50,7 +50,8 @@ public class Eloqua2PluginTest extends TestBase{
 		Map<String,Object> vars=new MapBuilder<String,Object>()
 				.put("_consentAgreement", Lists.newArrayList("by Email","by Phone"))
 				.build();
-		System.out.println(MVEL.eval("(int)(_consentAgreement contains \"by Email\")", vars)); 
+		System.out.println(MVEL.eval("(int)(_consentAgreement contains \"by Email\")", vars));
+//		System.out.println(MVEL.eval("(_consentAgreement contains \"by Email\")?\"Yes\":\"No\"", vars));
 	}
 	
 	@Test

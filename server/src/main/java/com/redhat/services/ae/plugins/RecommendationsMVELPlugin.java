@@ -15,13 +15,14 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.redhat.services.ae.dt.GoogleDrive3;
+import com.redhat.services.ae.Initialization;
+import com.redhat.services.ae.dt.GoogleDrive3_1;
 import com.redhat.services.ae.recommendations.domain.Recommendation;
 
 public class RecommendationsMVELPlugin extends RecommendationsExecutor{
 	public static final Logger log=LoggerFactory.getLogger(RecommendationsMVELPlugin.class);
-	private static final int DEFAULT_CACHE_EXPIRY_IN_MS=10000;
-	private static final GoogleDrive3 drive=new GoogleDrive3(null!=System.getenv("GDRIVE_CACHE_EXPIRY_IN_MS")?Integer.parseInt(System.getenv("GDRIVE_CACHE_EXPIRY_IN_MS")):DEFAULT_CACHE_EXPIRY_IN_MS);
+	private static final GoogleDrive3_1 drive=Initialization.newGoogleDrive();
+	
 	public List<String> getMandatoryConfigs(){ return Lists.newArrayList("decisionTableId","sheetName"); }
 	
 	@Override
@@ -42,8 +43,8 @@ public class RecommendationsMVELPlugin extends RecommendationsExecutor{
 		facts.put("insights", insights);
 		
 		for(String sheetName:sheets){
-			parseExcelDocument=drive.parseExcelDocument(sheet, sheetName, new GoogleDrive3.HeaderRowFinder(){ public int getHeaderRow(XSSFSheet s){
-				return GoogleDrive3.SheetSearch.get(s).find(0, "Rule name").getRowIndex();
+			parseExcelDocument=drive.parseExcelDocumentAsStrings(sheet, sheetName, new GoogleDrive3_1.HeaderRowFinder(){ public int getHeaderRow(XSSFSheet s){
+				return GoogleDrive3_1.SheetSearch.get(s).find(0, "Rule name").getRowIndex();
 			}}, dateFormatter);
 			for(Map<String, String> rows:parseExcelDocument){
 				String ruleName=rows.get("Rule name");
