@@ -1,4 +1,8 @@
 {
 "speakingWith":["lob"],
-"subscriptions":["OpenShift","RHEL"]
+"subscriptions":["OpenShift","RHEL"],
+  "L1_contacts_dev_itdm" : "Unknown",
+  "L1_contacts_dev_team" : "NoContacts",
+  "L1_contacts_ops_itdm" : "HaveContacts",
+  "L1_contacts_ops_team" : "HaveContacts"
 }

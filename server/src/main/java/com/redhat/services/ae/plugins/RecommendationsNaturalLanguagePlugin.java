@@ -34,6 +34,11 @@ public class RecommendationsNaturalLanguagePlugin extends RecommendationsExecuto
 	
 	public List<String> getMandatoryConfigs(){ return Lists.newArrayList("decisionTableId","sheetName"); }
 	
+	public RecommendationsNaturalLanguagePlugin(){
+		if (!drive.isInitialised())
+			new Initialization().onStartup(null);
+	}
+	
 	
 	@Override
 	public List<String> getListOfDrlRules(String surveyId) throws Exception{
