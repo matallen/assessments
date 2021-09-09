@@ -109,21 +109,18 @@ public class RecommendationsPlugin extends Plugin{
 	public Map<String, Object> execute(String surveyId, String visitorId, Map<String, Object> surveyResults) throws Exception{
 		List<String> drls=Lists.newArrayList();
 		
-		// add the default technical drl rules for later execution
-		drls.add(getSurveyDrlRules(surveyId));
+		// check if there are technical rules on the Survey and execute those too
+		if (StringUtils.isNotBlank(getSurveyDrlRules(surveyId)))
+			drls.add(getSurveyDrlRules(surveyId));
 		
 		// fire the executors so can return either a list of recommendations, or a drl to be executed later (in one go)
 		List<Recommendation> recommendations=Lists.newArrayList();
 		for(RecommendationsExecutor e:executors){
-			recommendations.addAll(e.execute(surveyId, surveyResults));
-//			drls.put("com.redhat.services.ae."+e.getClass().getSimpleName(), e.getDrlRules());
-			drls.addAll(e.getDrlRules());
+			drls.addAll(e.getListOfDrlRules(surveyId));
+			recommendations.addAll(e.getListOfRecommendations(surveyId, surveyResults));
 		}
 		
-		// check if there are technical rules on the Survey and execute those too
-		if (StringUtils.isNotBlank(getSurveyDrlRules(surveyId))){
-			recommendations.addAll(executeDrlRules(surveyResults, drls));
-		}
+		recommendations.addAll(executeDrlRules(surveyResults, drls));
 		
 		log.info("Found "+recommendations.size()+" recommendation"+(recommendations.size()!=1?"s":"")+" in total:");
 		for (Recommendation r:recommendations)
@@ -169,7 +166,6 @@ public class RecommendationsPlugin extends Plugin{
 	
 	@SuppressWarnings("unchecked")
 	protected List<Recommendation> executeDrlRules(Map<String, Object> surveyResults, List<String> drls) throws IOException, DroolsCompilationException{
-		
 		KieSession kSession=newKieSession(drls);
 		
 		if (extraDebug){ // make sure we have some rule packages to execute

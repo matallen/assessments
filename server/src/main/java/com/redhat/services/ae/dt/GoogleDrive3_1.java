@@ -223,7 +223,7 @@ public class GoogleDrive3_1 {
   		}
   	}
   	
-  	System.out.println("EXE is "+DEFAULT_EXECUTABLE);
+//  	System.out.println("EXE is "+DEFAULT_EXECUTABLE);
   	
   	String command = String.format(DEFAULT_PULL_COMMAND, DEFAULT_EXECUTABLE, fileId);
   	

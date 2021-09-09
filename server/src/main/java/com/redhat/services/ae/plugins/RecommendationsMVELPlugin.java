@@ -22,12 +22,12 @@ import com.redhat.services.ae.recommendations.domain.Recommendation;
 public class RecommendationsMVELPlugin extends RecommendationsExecutor{
 	public static final Logger log=LoggerFactory.getLogger(RecommendationsMVELPlugin.class);
 	private static final GoogleDrive3_1 drive=Initialization.newGoogleDrive();
-	
+	public Type getType(){ return Type.recommender; }
 	public List<String> getMandatoryConfigs(){ return Lists.newArrayList("decisionTableId","sheetName"); }
-	
+
 	@Override
-	public List<Recommendation> execute(String surveyId, Map<String, Object> surveyResults) throws Exception{
-		log.info(this.getClass().getSimpleName()+":: Executing");
+	public List<Recommendation> getListOfRecommendations(String surveyId, Map<String, Object> surveyResults) throws Exception{
+		log.info(this.getClass().getSimpleName()+":: getListOfRecommendations()");
 		
 		String[] sheets=new String[]{getConfig("sheetName")};
 		String sheetId=getConfig("decisionTableId");
@@ -80,5 +80,5 @@ public class RecommendationsMVELPlugin extends RecommendationsExecutor{
 		
 		return recommendations;
 	}
-	
+
 }

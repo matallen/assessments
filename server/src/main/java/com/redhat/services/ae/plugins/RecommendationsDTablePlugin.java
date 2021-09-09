@@ -25,6 +25,7 @@ import com.google.common.collect.Maps;
 import com.redhat.services.ae.Initialization;
 import com.redhat.services.ae.MapBuilder;
 import com.redhat.services.ae.dt.GoogleDrive3_1;
+import com.redhat.services.ae.plugins.RecommendationsExecutor.Type;
 import com.redhat.services.ae.plugins.XAccountCompassRecommendationsPlugin.Utils;
 import com.redhat.services.ae.recommendations.domain.Recommendation;
 import static com.redhat.services.ae.dt.GoogleDrive3_1.*;
@@ -32,22 +33,33 @@ import static com.redhat.services.ae.dt.GoogleDrive3_1.*;
 public class RecommendationsDTablePlugin extends RecommendationsExecutor{
 	public static final Logger log=LoggerFactory.getLogger(RecommendationsDTablePlugin.class);
 	private static final GoogleDrive3_1 drive=Initialization.newGoogleDrive();
+	public Type getType(){ return Type.drlBuilder; }
 	
 	public List<String> getMandatoryConfigs(){ return Lists.newArrayList("decisionTableId","sheetName"); }
 	
+	
 	@Override
-	public List<Recommendation> execute(String surveyId, Map<String, Object> surveyResults) throws Exception{
-		log.info(this.getClass().getSimpleName()+":: Executing");
-		
+	public List<String> getListOfDrlRules(String surveyId) throws Exception{
+		log.info(this.getClass().getSimpleName()+":: getListOfDrlRules()");
+
 		List<String> sheets=Splitter.on(",").trimResults().splitToList(getConfig("sheetName"));
 		String sheetId=getConfig("decisionTableId");
-		List<String> drls=compileSpreadsheetToDrls(surveyId, sheetId, sheets);
-		
-		List<Recommendation> recommendations=new RecommendationsPlugin().executeDrlRules(surveyResults, drls);
-		
-		log.debug(this.getClass().getSimpleName()+":: Added "+recommendations.size()+" recommendation(s) from this plugin");
-		return recommendations;
+		return compileSpreadsheetToDrls(surveyId, sheetId, sheets);
 	}
+	
+//	@Override
+//	public List<Recommendation> getListOfRecommendations(String surveyId, Map<String, Object> surveyResults) throws Exception{
+//		log.info(this.getClass().getSimpleName()+":: getListOfRecommendations()");
+//		
+//		List<String> sheets=Splitter.on(",").trimResults().splitToList(getConfig("sheetName"));
+//		String sheetId=getConfig("decisionTableId");
+//		List<String> drls=compileSpreadsheetToDrls(surveyId, sheetId, sheets);
+//		
+//		List<Recommendation> recommendations=new RecommendationsPlugin().executeDrlRules(surveyResults, drls);
+//		
+//		log.debug(this.getClass().getSimpleName()+":: Added "+recommendations.size()+" recommendation(s) from this plugin");
+//		return recommendations;
+//	}
 	
 	private List<String> compileSpreadsheetToDrls(String surveyId, String sheetId, List<String> sheets) throws IOException, InterruptedException{
 		List<String> result=Lists.newArrayList();

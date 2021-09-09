@@ -14,10 +14,12 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.redhat.services.ae.Initialization;
 import com.redhat.services.ae.dt.GoogleDrive3_1;
 import com.redhat.services.ae.model.Survey;
+import com.redhat.services.ae.plugins.RecommendationsExecutor.Type;
 import com.redhat.services.ae.recommendations.domain.Answer;
 import com.redhat.services.ae.recommendations.domain.Insight;
 import com.redhat.services.ae.recommendations.domain.Recommendation;
@@ -28,25 +30,36 @@ import mjson.Json;
 public class RecommendationsNaturalLanguagePlugin extends RecommendationsExecutor{
 	public static final Logger log=LoggerFactory.getLogger(RecommendationsNaturalLanguagePlugin.class);
 	private static final GoogleDrive3_1 drive=Initialization.newGoogleDrive();
+	public Type getType(){ return Type.drlBuilder; }
 	
 	public List<String> getMandatoryConfigs(){ return Lists.newArrayList("decisionTableId","sheetName"); }
 	
+	
 	@Override
-	public List<Recommendation> execute(String surveyId, Map<String, Object> surveyResults) throws Exception{
-		log.info(this.getClass().getSimpleName()+":: Executing");
-		String[] sheets=new String[]{getConfig("sheetName")};
+	public List<String> getListOfDrlRules(String surveyId) throws Exception{
+		log.info(this.getClass().getSimpleName()+":: getListOfDrlRules()");
+
+		List<String> sheets=Splitter.on(",").trimResults().splitToList(getConfig("sheetName"));
 		String sheetId=getConfig("decisionTableId");
-		
-		List<Recommendation> recommendations=Lists.newArrayList();
-		
-		List<String> drls=compileNaturalLanguageToDrls(surveyId, sheetId, sheets);
-		List<Recommendation> recommendations2=new RecommendationsPlugin().executeDrlRules(surveyResults, drls);
-		
-		log.info(this.getClass().getSimpleName()+":: Added "+recommendations.size()+" recommendation(s) from this plugin");
-		
-		recommendations.addAll(recommendations2);
-		return recommendations;
+		return compileNaturalLanguageToDrls(surveyId, sheetId, sheets);
 	}
+	
+//	@Override
+//	public List<Recommendation> getListOfRecommendations(String surveyId, Map<String, Object> surveyResults) throws Exception{
+//		log.info(this.getClass().getSimpleName()+":: getListOfRecommendations()");
+//		String[] sheets=new String[]{getConfig("sheetName")};
+//		String sheetId=getConfig("decisionTableId");
+//		
+//		List<Recommendation> recommendations=Lists.newArrayList();
+//		
+//		List<String> drls=compileNaturalLanguageToDrls(surveyId, sheetId, sheets);
+//		List<Recommendation> recommendations2=new RecommendationsPlugin().executeDrlRules(surveyResults, drls);
+//		
+//		log.info(this.getClass().getSimpleName()+":: Added "+recommendations.size()+" recommendation(s) from this plugin");
+//		
+//		recommendations.addAll(recommendations2);
+//		return recommendations;
+//	}
 	
 	protected List<String> getQuestionNames(String surveyId) throws JsonProcessingException{
 		List<String> result=Lists.newArrayList();
@@ -62,7 +75,7 @@ public class RecommendationsNaturalLanguagePlugin extends RecommendationsExecuto
 //		return Lists.newArrayList("subscriptions", "orgSize", "happiness");
 	}
 	
-	private List<String> compileNaturalLanguageToDrls(String surveyId, String sheetId, String...sheets) throws IOException, InterruptedException{
+	private List<String> compileNaturalLanguageToDrls(String surveyId, String sheetId, List<String> sheets) throws IOException, InterruptedException{
 		List<String> result=Lists.newArrayList();
 		File sheet=drive.downloadFile(sheetId);
 		SimpleDateFormat dateFormatter=null;
