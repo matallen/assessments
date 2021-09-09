@@ -91,6 +91,7 @@ public class RecommendationsNaturalLanguagePlugin extends RecommendationsExecuto
 				return SheetSearch.get(s).find(0, "Rule name").getRowIndex();
 			}}, dateFormatter);
 			
+			int ruleCount=0;
 			for(Map<String, String> rows:parseExcelDocument){
 				String ruleName=rows.get("Rule name");
 				String preParsedLhs=rows.get("Logic");
@@ -107,14 +108,18 @@ public class RecommendationsNaturalLanguagePlugin extends RecommendationsExecuto
 				drl+="then\n\t";
 				drl+=String.format("insert(new Recommendation(%s));", "\""+Joiner.on("\",\"").skipNulls().join(Lists.newArrayList(section,title1,title2,recommendation))+"\"");
 				drl+="\nend\n\n";
+				ruleCount+=1;
 			}
+			if (extraDebug)
+				log.debug(Recommendation.class.getSimpleName()+":: Added "+ruleCount+" drl rules from "+sheetId+"/"+sheetName);
+			
 			result.add(drl);
 		}
 		
 		if (extraDebug)
 			for(String r:result){
 				log.debug(r);
-				System.out.println(r);
+//				System.out.println(r);
 			}
 		return result;
 	}
