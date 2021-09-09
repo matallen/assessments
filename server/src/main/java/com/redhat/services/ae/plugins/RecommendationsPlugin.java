@@ -76,8 +76,7 @@ public class RecommendationsPlugin extends Plugin{
 		extraDebug=getBooleanFromConfig(config, "extraDebug", false);
 		List<String> configErrors=Lists.newLinkedList();
 		
-		if (config.containsKey("thresholds"))
-			this.thresholds.putAll((Map<String,Integer>)config.get("thresholds"));
+		this.thresholds.putAll(config.containsKey("thresholds")?(Map<String,Integer>)config.get("thresholds"):DEFAULT_THRESHOLDS);
 		
 		try{
 			if (List.class.isAssignableFrom(config.get("executors").getClass())){
