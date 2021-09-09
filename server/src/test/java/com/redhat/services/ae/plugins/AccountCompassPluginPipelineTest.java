@@ -7,9 +7,12 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
+import org.mvel2.MVEL;
+import org.mvel2.integration.impl.CachingMapVariableResolverFactory;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.api.client.util.Maps;
 import com.google.common.collect.Lists;
 import com.redhat.services.ae.MapBuilder;
 import com.redhat.services.ae.controllers.PluginPipelineExecutor;
@@ -29,6 +32,36 @@ public class AccountCompassPluginPipelineTest{
 		List<String> configs=Lists.newArrayList("decisionTableId");
 		List<String> missing = Lists.newArrayList("decisionTableId","sheetId").stream().filter(e -> !configs.contains(e)).map(e -> {return String.format("Missing config '%s' for RecommendationsPlugin executor 'XXX'",e);}).collect(Collectors.toList());
 		System.out.println(missing);
+	}
+	
+	public class CustomVariableResolvableFactory extends CachingMapVariableResolverFactory{
+		public CustomVariableResolvableFactory(Map variables) { super(variables); }
+		@Override
+		public boolean isResolveable(String name) {
+			if(!super.isResolveable(name))
+				variables.put(name, null);
+			return true;
+		}
+	}
+	@Test
+	public void mveltest() throws Exception{
+		Map<String,Object> facts=new MapBuilder<String,Object>()
+		.put("L1_contacts_dev_itdm", Lists.newArrayList("NoContacts"))
+		.build();
+		
+		Object eval=MVEL.eval(parse(
+//				"doesntExist == empty",
+//				"L1_contacts_dev_itdm contains [\"NoContacts\"]", // doesnt work for lists containing lists
+//				"L1_contacts_dev_itdm.size > 0",
+				"L1_contacts_dev_itdm contains \"Unknown\" or L1_contacts_dev_itdm contains \"NoContacts\""),
+//				"L1_contacts_dev_itdm contains \"NoContacts\"",
+				new CustomVariableResolvableFactory(facts));
+		System.out.println("result is "+eval);
+	}
+	
+	private String parse(String exp){
+		exp=exp.replaceAll(" (?i)or ", " || ");
+		return exp;
 	}
 	
 	@Test

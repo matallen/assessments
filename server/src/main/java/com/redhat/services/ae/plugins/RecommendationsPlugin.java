@@ -109,8 +109,9 @@ public class RecommendationsPlugin extends Plugin{
 		List<String> drls=Lists.newArrayList();
 		
 		// check if there are technical rules on the Survey and execute those too
-		if (StringUtils.isNotBlank(getSurveyDrlRules(surveyId)))
-			drls.add(getSurveyDrlRules(surveyId));
+		String technicalDrlRules=getSurveyDrlRules(surveyId);
+		if (StringUtils.isNotBlank(technicalDrlRules))
+			drls.add(technicalDrlRules);
 		
 		// fire the executors so can return either a list of recommendations, or a drl to be executed later (in one go)
 		List<Recommendation> recommendations=Lists.newArrayList();
