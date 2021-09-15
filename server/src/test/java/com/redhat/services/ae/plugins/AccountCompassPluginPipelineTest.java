@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.io.IOUtils;
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.mvel2.MVEL;
 import org.mvel2.integration.impl.CachingMapVariableResolverFactory;
@@ -20,6 +21,8 @@ import com.redhat.services.ae.model.Survey;
 import com.redhat.services.ae.utils.Json;
 
 import io.quarkus.test.junit.QuarkusTest;
+
+import static org.junit.Assert.*;
 
 public class AccountCompassPluginPipelineTest{
 
@@ -65,7 +68,7 @@ public class AccountCompassPluginPipelineTest{
 	}
 	
 	@Test
-	public void test() throws Exception{
+	public void testPipeline() throws Exception{
 		
 		String pluginsJson=IOUtils.toString(this.getClass().getClassLoader().getResource("accountcompass-test_1_plugins.json"), "UTF-8");
 		Map<String, Map<String, Object>> plugins=Json.newObjectMapper(true).readValue(pluginsJson, new TypeReference<Map<String,Map<String,Object>>>(){});
@@ -82,14 +85,21 @@ public class AccountCompassPluginPipelineTest{
 		
 		PluginPipelineExecutor pluginExecutor=new PluginPipelineExecutor();
 		List<Plugin> activePlugins=pluginExecutor.getActivePlugins(s, surveyResults);
-		pluginExecutor.execute(s, surveyResults, "visitorId", activePlugins);
-
+		Map<String, Object> result=pluginExecutor.execute(s, surveyResults, "visitorId", activePlugins);
 		
-//		for(Plugin p:activePlugins){
-//			System.out.println(p.getClass().getSimpleName()+":: From:\n"+Json.toJson(surveyResults));
-//			surveyResults=p.execute(surveyId, "visitorId", surveyResults);
-//			System.out.println(p.getClass().getSimpleName()+":: To:\n"+Json.toJson(surveyResults));
-//		}
+		
+		String jsonResult=Json.toJson(result);
+		System.out.println(jsonResult);
+		
+		mjson.Json json=mjson.Json.read(jsonResult);
+		
+		String tabName="Recommendations";
+		assertTrue(json.has("_report"));
+		assertTrue(json.at("_report").has("thresholds"));
+		assertTrue(json.at("_report").has("tabs"));
+		assertTrue(json.at("_report").at("tabs").has(tabName));
+		assertTrue(json.has("_sectionScore"));
+		assertTrue(json.at("_sectionScore").has(tabName));
 		
 	}
 }

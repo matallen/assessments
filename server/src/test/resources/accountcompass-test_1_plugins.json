@@ -5,10 +5,17 @@
     "className": "com.redhat.services.ae.plugins.RecommendationsPlugin",
     "decisionTableLocation": "https://docs.google.com/spreadsheets/d/1eZ6_Yy7Go7RK2yh3SsUGJZ2jvXbVk3IdPiTO5emTzz0",
     "executors": [
-
+      {
+        "className": "com.redhat.services.ae.plugins.RecommendationsMVELPlugin",
+        "sheetName": "MVEL Insights"
+      },
+      {
+        "className": "com.redhat.services.ae.plugins.RecommendationsMVELPlugin",
+        "sheetName": "MVEL Recommendations"
+      },
       {
         "className": "com.redhat.services.ae.plugins.RecommendationsNaturalLanguagePlugin",
-        "sheetName": "Mats Sandbox2 - custom"
+        "sheetName": "Logic Recommendations"
       }
       
     ],

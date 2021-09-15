@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.api.client.util.Maps;
 import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.protobuf.Value;
 import com.redhat.services.ae.Initialization;
@@ -67,7 +68,14 @@ public class RecommendationsPlugin extends Plugin{
 	private Map<String,Integer> sectionScores=Maps.newHashMap();
 	private Map<String,String> kvReplacements=Maps.newHashMap();
 	private Map<String,Integer> thresholds=DEFAULT_THRESHOLDS;
-			
+	public static Predicate<Map.Entry<String, Object>> startsWith(String... startsWithAny) {
+		return e -> ( Stream.of(startsWithAny).anyMatch(s -> e.getKey().startsWith(s)) );
+	}
+	public static Predicate<Map.Entry<String, Object>> isNotNull() {
+		return e -> e.getValue()!=null;
+	}
+	
+	
 	@Override
 	public Plugin setConfig(Map<String, Object> config){
 		// add these to configMap instead
@@ -76,7 +84,7 @@ public class RecommendationsPlugin extends Plugin{
 		extraDebug=getBooleanFromConfig(config, "extraDebug", false);
 		List<String> configErrors=Lists.newLinkedList();
 		
-		this.thresholds.putAll(config.containsKey("thresholds")?(Map<String,Integer>)config.get("thresholds"):DEFAULT_THRESHOLDS);
+		this.thresholds=config.containsKey("thresholds")?(Map<String,Integer>)config.get("thresholds"):DEFAULT_THRESHOLDS;
 		
 		try{
 			if (List.class.isAssignableFrom(config.get("executors").getClass())){
@@ -103,6 +111,7 @@ public class RecommendationsPlugin extends Plugin{
 	}
 	
 	
+	
 	@Override
 	@SuppressWarnings("rawtypes")
 	public Map<String, Object> execute(String surveyId, String visitorId, Map<String, Object> surveyResults) throws Exception{
@@ -113,19 +122,54 @@ public class RecommendationsPlugin extends Plugin{
 		if (StringUtils.isNotBlank(technicalDrlRules))
 			drls.add(technicalDrlRules);
 		
+		
 		// fire the executors so can return either a list of recommendations, or a drl to be executed later (in one go)
-		List<Recommendation> recommendations=Lists.newArrayList();
+		Map<String,Object> wm=surveyAnswersToWorkingMemory1(surveyResults, Maps.newHashMap());
 		for(RecommendationsExecutor e:executors){
 			drls.addAll(e.getListOfDrlRules(surveyId));
-			recommendations.addAll(e.getListOfRecommendations(surveyId, surveyResults));
+			wm=e.execute(surveyId, wm);
 		}
 		
-		recommendations.addAll(executeDrlRules(surveyResults, drls));
+		List<Recommendation> recommendations=wm.values().stream()
+				.filter(e->Recommendation.class.isAssignableFrom(e.getClass()))
+				.map(e->(Recommendation)e)
+				.collect(Collectors.toList());
+		
+//		List<Object> wm=surveyAnswersToWorkingMemory(surveyResults);
+//		recommendations.addAll(executeDrlRules(wm, drls));
 		
 		log.info("Found "+recommendations.size()+" recommendation"+(recommendations.size()!=1?"s":"")+" in total:");
-		for (Recommendation r:recommendations)
-			if (extraDebug) log.debug(" - "+r);
-
+		for (Recommendation r:recommendations) if (extraDebug) log.debug(" - "+r);
+		
+		
+		Map<String,Double> scores=wm.entrySet().stream()
+				.filter(e->Double.class.isAssignableFrom(e.getValue().getClass()))
+				.collect(Collectors.toMap(e -> e.getKey(), e -> (Double)e.getValue()));
+		
+		for(Entry<String, Double> e:scores.entrySet()){
+			sectionScores.put(e.getKey(), e.getValue().intValue());
+		}
+		
+		
+//		boolean imple2=false;
+//		if (imple2){
+//			Map<String,Object> wm=Maps.newHashMap();
+//			wm.putAll(surveyResults);
+//			for(RecommendationsExecutor e:executors){
+//				wm=e.execute(surveyId, wm);
+//			}
+//			
+////			workingMemory.addAll(executeDrlRules(surveyResults, drls));
+////			workingMemory.addAll(executeDrlRules(surveyResults, drls, workingMemory.values()));
+//			recommendations=workingMemory.values().stream()
+//					.filter(e->Recommendation.class.isAssignableFrom(e.getClass()))
+//					.map(e->(Recommendation)e)
+//					.collect(Collectors.toList());
+//		}
+		
+//			log.info("Found "+recommendations.size()+" recommendation"+(recommendations.size()!=1?"s":"")+" in total:");
+//			for (Recommendation r:recommendations) if (extraDebug) log.debug(" - "+r);
+		
 		
 		Map<String,String> surveyResults2=surveyResults.entrySet().stream()
 				.collect(Collectors.toMap(Map.Entry::getKey, e -> List.class.isAssignableFrom(e.getValue().getClass())?Joiner.on(", ").join((List)e.getValue()):e.getValue().toString()));
@@ -139,7 +183,7 @@ public class RecommendationsPlugin extends Plugin{
 				.includeOverviewTab(includeOverviewTab)
 				.build(recommendations, sectionScores, thresholds);
 		
-		// add recommendations to the results
+		surveyResults.put("_sectionScore", sectionScores);
 		surveyResults.put("_report", resultSections);
 		
 		// Generate a unique. date-stamped result ID so we can identify old data easily later on
@@ -151,31 +195,22 @@ public class RecommendationsPlugin extends Plugin{
 		return surveyResults;
 	}
 	
-//	public static Predicate<Map.Entry<String, Object>> isNotNullAndNotDoesntStartWith(String... startsWithAny) {
-//		return e -> e.getValue()!=null && !( Stream.of(startsWithAny).anyMatch(s -> e.getKey().startsWith(s)) );
-//	}
-//	public static Predicate<Map.Entry<String, Object>> isSectionScore() {
-//		return e -> e.getValue()!=null && e.getKey().equals("_sectionScore");
-//	}
-	public static Predicate<Map.Entry<String, Object>> startsWith(String... startsWithAny) {
-		return e -> ( Stream.of(startsWithAny).anyMatch(s -> e.getKey().startsWith(s)) );
-	}
-	public static Predicate<Map.Entry<String, Object>> isNotNull() {
-		return e -> e.getValue()!=null;
+	
+	private Map<String,Object> surveyAnswersToWorkingMemory1(Map<String,Object> surveyResults, Map<String,Object> wm){
+		for (Entry<String, Object> e:surveyResults.entrySet()){
+			if (String.class.isAssignableFrom(e.getValue().getClass())){
+				wm.put(e.getKey(), Splitter.on(",").trimResults().splitToList(((String)e.getValue())));
+			}else
+				wm.put(e.getKey(), e.getValue());
+		}
+		return wm;
 	}
 	
-	@SuppressWarnings("unchecked")
-	protected List<Recommendation> executeDrlRules(Map<String, Object> surveyResults, List<String> drls) throws IOException, DroolsCompilationException{
-		KieSession kSession=newKieSession(drls);
+	// turns survey results list of into Answer, SectionScore, etc.. objects ready to be put in a ksession
+	private List<Object> surveyAnswersToWorkingMemory2(Map<String, Object> surveyResults){
+		List<Object> wm=Lists.newArrayList();
 		
-		if (extraDebug){ // make sure we have some rule packages to execute
-			log.debug("Rule Packages/Rules:");
-			for(KiePackage pkg:kSession.getKieBase().getKiePackages()){
-				for (Rule r:pkg.getRules()) log.debug(" - "+pkg.getName()+"."+r.getName());
-			}
-		}
 		String language=surveyResults.containsKey("language")?(String)surveyResults.get("language"):"en"; // default to en
-		
 		// Insert the sections (if they exist)
 		for(Entry<String, Object> e: surveyResults.entrySet().stream().filter(isNotNull().and(startsWith("_sectionScore"))).collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue())).entrySet() ){
 			for(Entry<String, Integer> e2:((Map<String, Integer>)e.getValue()).entrySet()){
@@ -184,7 +219,7 @@ public class RecommendationsPlugin extends Plugin{
 				log.info("Inserting fact: "+a);
 				kvReplacements.put("score_"+sectionName.replaceAll(" ", "_"), String.valueOf(e2.getValue()));
 				sectionScores.put(sectionName, e2.getValue());
-				kSession.insert(a);
+				wm.add(a);
 			}
 		}
 		
@@ -209,9 +244,64 @@ public class RecommendationsPlugin extends Plugin{
 			
 			if (null!=a){
 				log.debug("Inserting fact: "+a);
-				kSession.insert(a);
+				wm.add(a);
 			}
 		}
+		return wm;
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected List<Recommendation> executeDrlRules(List<Object> wm, /*Map<String, Object> surveyResults,*/ List<String> drls) throws IOException, DroolsCompilationException{
+		KieSession kSession=newKieSession(drls);
+		
+		if (extraDebug){ // make sure we have some rule packages to execute
+			log.debug("Rule Packages/Rules:");
+			for(KiePackage pkg:kSession.getKieBase().getKiePackages()){
+				for (Rule r:pkg.getRules()) log.debug(" - "+pkg.getName()+"."+r.getName());
+			}
+		}
+		
+		for(Object fact:wm){
+			kSession.insert(fact);
+		}
+//		String language=surveyResults.containsKey("language")?(String)surveyResults.get("language"):"en"; // default to en
+//		
+//		// Insert the sections (if they exist)
+//		for(Entry<String, Object> e: surveyResults.entrySet().stream().filter(isNotNull().and(startsWith("_sectionScore"))).collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue())).entrySet() ){
+//			for(Entry<String, Integer> e2:((Map<String, Integer>)e.getValue()).entrySet()){
+//				String sectionName=e2.getKey();
+//				DroolsSurveySection a=new DroolsSurveySection(sectionName, language, e2.getValue());
+//				log.info("Inserting fact: "+a);
+//				kvReplacements.put("score_"+sectionName.replaceAll(" ", "_"), String.valueOf(e2.getValue()));
+//				sectionScores.put(sectionName, e2.getValue());
+//				kSession.insert(a);
+//			}
+//		}
+//		
+//		// Insert the question/answer facts into the drools session
+//		for(Entry<String, Object> e: surveyResults.entrySet().stream().filter(isNotNull().and(startsWith("_","C_").negate())).collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue())).entrySet() ){
+//			
+//			Answer a=null;
+//			if (Map.class.isAssignableFrom(e.getValue().getClass())){
+//				Map<String, Object> value=(Map<String, Object>)e.getValue(); // enriched structure - it should have a pageId, navTitle, score (optional) & an answer
+//				Integer score=value.containsKey("score") && Integer.class.isAssignableFrom(value.get("score").getClass())?(Integer)value.get("score"):noScore;
+//				if (value.containsKey("answer")) // it's a single string answer
+//					a=new Answer.builder().questionId(e.getKey()).language(language).score(score).addAnswer((String)value.get("answer"))/*.pageId((String)value.get("pageId")).title((String)value.get("title"))*/.build();
+//				if (value.containsKey("answers")) // it's a list of strings answer
+//					a=new Answer.builder().questionId(e.getKey()).language(language).score(score).answer((List<String>)value.get("answers"))/*.pageId((String)value.get("pageId")).title((String)value.get("title"))*/.build();
+//				
+//			}else if (List.class.isAssignableFrom(e.getValue().getClass())){ // non-enriched structure - plain list of answers (radio or checkbox) (no scoring possible)
+//				a=new Answer.builder().questionId(e.getKey()).language(language).answer((List<String>)e.getValue()).build();
+//				
+//			}else if (String.class.isAssignableFrom(e.getValue().getClass())){ // non-enriched structure - plain string answer (boolean or textbox?) (no scoring possible)
+//				a=new Answer.builder().questionId(e.getKey()).language(language).addAnswer((String)e.getValue()).build();
+//			}
+//			
+//			if (null!=a){
+//				log.debug("Inserting fact: "+a);
+//				kSession.insert(a);
+//			}
+//		}
 		
 		try{
 			kSession.setGlobal("list", new LinkedList<>());

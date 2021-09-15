@@ -25,7 +25,6 @@ import com.google.common.collect.Maps;
 import com.redhat.services.ae.Initialization;
 import com.redhat.services.ae.MapBuilder;
 import com.redhat.services.ae.dt.GoogleDrive3_1;
-import com.redhat.services.ae.plugins.RecommendationsExecutor.Type;
 import com.redhat.services.ae.plugins.XAccountCompassRecommendationsPlugin.Utils;
 import com.redhat.services.ae.recommendations.domain.Recommendation;
 import static com.redhat.services.ae.dt.GoogleDrive3_1.*;
@@ -33,7 +32,7 @@ import static com.redhat.services.ae.dt.GoogleDrive3_1.*;
 public class RecommendationsDTablePlugin extends RecommendationsExecutor{
 	public static final Logger log=LoggerFactory.getLogger(RecommendationsDTablePlugin.class);
 	private static final GoogleDrive3_1 drive=Initialization.newGoogleDrive();
-	public Type getType(){ return Type.drlBuilder; }
+//	public Type getType(){ return Type.drlBuilder; }
 	
 	public List<String> getMandatoryConfigs(){ return Lists.newArrayList("decisionTableId","sheetName"); }
 	

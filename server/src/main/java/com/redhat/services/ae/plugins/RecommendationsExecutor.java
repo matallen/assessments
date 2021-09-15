@@ -5,16 +5,19 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.redhat.services.ae.recommendations.domain.Recommendation;
 
 public abstract class RecommendationsExecutor{
 	
-	public enum Type{drlBuilder,recommender} // recommender means it returns a list of Recommendations, a drlBuilder adds to the drls to be executed later/together
-	public abstract Type getType();
+//	public enum Type{drlBuilder,recommender} // recommender means it returns a list of Recommendations, a drlBuilder adds to the drls to be executed later/together
+//	public abstract Type getType();
 //	public abstract List<Recommendation> getListOfRecommendations(String surveyId, Map<String,Object> surveyResults) throws Exception;
 //	public abstract List<String> getListOfDrlRules(String surveyId) throws Exception;
 	public List<Recommendation> getListOfRecommendations(String surveyId, Map<String,Object> surveyResults) throws Exception{ return Lists.newArrayList(); }
 	public List<String> getListOfDrlRules(String surveyId) throws Exception{ return Lists.newArrayList(); }
+	
+	public Map<String,Object> execute(String surveyId, Map<String,Object> wm) throws Exception{ return wm; }
 	
 	
 	private Map<String, String> configMap;

@@ -19,7 +19,6 @@ import com.google.common.collect.Lists;
 import com.redhat.services.ae.Initialization;
 import com.redhat.services.ae.dt.GoogleDrive3_1;
 import com.redhat.services.ae.model.Survey;
-import com.redhat.services.ae.plugins.RecommendationsExecutor.Type;
 import com.redhat.services.ae.recommendations.domain.Answer;
 import com.redhat.services.ae.recommendations.domain.Insight;
 import com.redhat.services.ae.recommendations.domain.Recommendation;
@@ -30,7 +29,7 @@ import mjson.Json;
 public class RecommendationsNaturalLanguagePlugin extends RecommendationsExecutor{
 	public static final Logger log=LoggerFactory.getLogger(RecommendationsNaturalLanguagePlugin.class);
 	private static final GoogleDrive3_1 drive=Initialization.newGoogleDrive();
-	public Type getType(){ return Type.drlBuilder; }
+//	public Type getType(){ return Type.drlBuilder; }
 	
 	public List<String> getMandatoryConfigs(){ return Lists.newArrayList("decisionTableId","sheetName"); }
 	
