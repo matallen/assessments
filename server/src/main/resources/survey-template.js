@@ -611,7 +611,10 @@ if (!LocalStorage.hasState()){
 		var value=parametersAsMap[key];
 		if (/^_/i.test(key)){
 			var data=survey.data;
-			data[key.substring(1)]=JSON.parse(unescape(value));
+			var unescaped=unescape(value);
+			if (unescaped.includes("[") || unescaped.includes("\""))
+				unescaped=JSON.parse(unescaped);
+			data[key.substring(1)]=unescaped;
 			survey.data=data;
 		}
 	}
