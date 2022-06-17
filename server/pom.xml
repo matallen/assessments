@@ -92,7 +92,7 @@
 <dependency>
   <groupId>org.drools</groupId>
   <artifactId>drools-core</artifactId>
-  <version>7.40.0.Final</version>
+  <version>7.60.0.Final</version>
 </dependency>
 <dependency>
   <groupId>org.drools</groupId>
@@ -103,7 +103,7 @@
 <dependency>
   <groupId>org.drools</groupId>
   <artifactId>drools-core</artifactId>
-  <version>7.40.0.Final</version>
+  <version>7.60.0.Final</version>
 </dependency>
 <dependency>
   <groupId>org.drools</groupId>
